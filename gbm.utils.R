@@ -1,4 +1,4 @@
-.roc <-function (obsdat, preddat) {
+roc <-function (obsdat, preddat) {
 # code adapted from Ferrier, Pearce and Watson's code, by J.Elith
 # see: Hanley, J.A. & McNeil, B.J. (1982) The meaning and use of the area
 # under a Receiver Operating Characteristic (ROC) curve. Radiology, 143, 29-36
@@ -19,7 +19,7 @@
 }
 
 
-.calibration <- function(obs, preds, family = "binomial")  {
+calibration <- function(obs, preds, family = "binomial")  {
 # j elith/j leathwick 17th March 2005
 # calculates calibration statistics for either binomial or count data but the family argument must be specified for the latter
 # a conditional test for the latter will catch most failures to specify the family
@@ -57,7 +57,7 @@ return(calibration.result)
 }
 
 
-.gbm.predict.grids <- function(model, new.dat, want.grids = F, preds2R = T, sp.name = "preds",pred.vec = NULL, filepath = NULL,
+gbm.predict.grids <- function(model, new.dat, want.grids = F, preds2R = T, sp.name = "preds",pred.vec = NULL, filepath = NULL,
                                num.col = NULL,num.row = NULL, xll = NULL, yll = NULL, cell.size = NULL, no.data = NULL, plot=F,
                                full.grid=T, part.number=NULL, part.row = NULL, header = T)
 {
