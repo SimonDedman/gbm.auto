@@ -1,4 +1,4 @@
 gbm.auto
 =======
 
-Automatically runs numerous processes from R packages 'gbm' and 'dismo' &amp; script 'gbm.predict.grids'
+Automatically runs numerous processes [explain] from R packages 'gbm' and 'dismo' &amp; script 'gbm.utils.R' which contains Elith et al.'s functions: roc, calibration, and gbm.predict.grids.
