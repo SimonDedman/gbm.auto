@@ -31,7 +31,6 @@
 
 ####1. Check packages, start loop####
 if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
-# if (!require(splines)) {stop("you need to install the splines package to run this function")} #splines now a core package; no functions used here?
 if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
 if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
 if(map==TRUE) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
@@ -43,7 +42,7 @@ if(!exists("calibration")) {stop("you need to install the calibration function f
 require(gbm)
 require(dismo)
 require(beepr)
-options(error = function() {beep(9)})
+#options(error = function() {beep(9)})
 expvarnames<-names(samples[expvar]) # list of explanatory variable names
 expvarcols<-cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 
@@ -402,45 +401,53 @@ write.csv(Report, row.names=FALSE, na="", file = paste("./",names(samples[i]),"/
 
 ####22. Representativeness surface builder####
 # does NOT plot the surface, just builds it. If built, it will be plotted by map maker.
-if(RSB==TRUE){gbm.rsb(samples,grids,expvarnames,gridslat,gridslon,rsbres=i)}
+if(RSB==TRUE){rsbdf <- gbm.rsb(samples,grids,expvarnames,gridslat,gridslon,rsbres=i)}
 
 ####23. Map maker####
 if(map==TRUE) {
   # generate output image & set parameters
-  png(filename = paste("./",names(samples[i]),"/PredAbundMap.png",sep=""),
+  png(filename = paste("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png",sep=""),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
   par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
   # run gbm.map function with generated parameters
   gbm.map(x = grids[,gridslon],
                y = grids[,gridslat],
                z = grids[,predabund],
-               byx = byx,
-               byy = byy,
+#               byx = byx, #default now null so shouldn't need to provide anything here
+#               byy = byy,
                mapmain = "Predicted abundance: ",
                species = names(samples[i]),
                shape = coast,
                landcol = "darkgreen",
                legendloc = "bottomright",
-               legendtitle = legendtitle)
+               legendtitle = legendtitle,
+               grids=grids,
+               gridslon=gridslon,
+               gridslat=gridslat,
+               predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
   dev.off()
 
   # if RSB called, plot that surface separately
   if(RSB==TRUE){
-    png(filename = paste("./",names(samples[i]),"/RSB_Map.png",sep=""),
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
             z = rsbdf[,"Unrepresentativeness"],
-            byx = byx,
-            byy = byy,
+#            byx = byx,  # both will have been created by gbm.map if they weren't provided by the user
+#            byy = byy,
             mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
             #heatcol= rgb(seq(from=1,to=0,length.out=12),seq(from=1,to=0,length.out=12),seq(from=1,to=0,length.out=12)), # rgb(0,0,0,seq(from=0,to=0.5,length.out=12)) black, from opaque to transparent
             shape = coast,
             landcol = "darkgreen",
             legendloc = "bottomright",
-            legendtitle = "UnRep 0-1")
+            legendtitle = "UnRep 0-1",
+            grids=grids,
+            gridslon=gridslon,
+            gridslat=gridslat,
+            predabund=predabund)
     dev.off()
    } # close RSB mapper
   } # close Map Maker
