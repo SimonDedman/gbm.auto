@@ -33,6 +33,7 @@
 if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
 if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
 if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+if (!require(labeling)) {stop("you need to install the labeling package to run this function")}
 if(map==TRUE) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
 if(RSB==TRUE) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
 if(RSB==TRUE) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
@@ -42,6 +43,7 @@ if(!exists("calibration")) {stop("you need to install the calibration function f
 require(gbm)
 require(dismo)
 require(beepr)
+require(labeling)
 #options(error = function() {beep(9)})
 expvarnames<-names(samples[expvar]) # list of explanatory variable names
 expvarcols<-cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
@@ -75,6 +77,9 @@ if(!all(expvarnames %in% names(grids))) {stop("Not all expvar column names found
 # ZI entered in function above, this is auto entered by the test code only if check enabled
 # if(ZI=="CHECK") {run ZI test resulting in ZI=TRUE/FALSE} (else nothing: continue with ZI as is)
 
+# test to make sure response variable has zeroes (prevent user wasting hours debugging nested functions
+# only to find it's failing because they made a stupid mistake. Like I did!)
+if(min(samples[i])>0) print("No zeroes in response variable. Method expects unsuccessful, as well as successful, samples")
 # create binary (0/1) response variable, for bernoulli BRTs
 samples$brv <- ifelse(samples[i] > 0, 1, 0)
 brvcol <- which(colnames(samples)=="brv") # brv column number for BRT
@@ -128,7 +133,8 @@ if(m==1)
       Bin_Best_Model <- paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l,sep="")}
 
 # progress printer, right aligned
-print(paste("                                               Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),sep=""))
+print(paste("
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
 n <- n+1   # Add to print counter
 
 ####6. Gaussian BRT####
@@ -166,7 +172,8 @@ colnames(Report)[((m*5)-1):((m*5)+3)] <- c(paste("Parameter Combo ",m,sep=""),
                                            paste("Gaussian BRT ",m," name",sep=""))
 
 # progress printer, right aligned for visibility
-print(paste("                                               Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),sep=""))
+print(paste("
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
 n <- n+1   # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m+1   # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}}        # close loops, producing all BRT/GBM objects then continuing through model selection
@@ -189,6 +196,10 @@ if(min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
                                  family = get(Bin_Best_Model)$gbm.call$family,
                                  bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction))
 
+# progress printer, right aligned for visibility
+print(paste("
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Bin model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+
 # Same for Gaus
 Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
 if(min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
@@ -199,6 +210,10 @@ if(min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
                                  learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
                                  family = get(Gaus_Best_Model)$gbm.call$family,
                                  bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction))
+
+# progress printer, right aligned for visibility
+print(paste("
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
 
 ####10. Select final best models####
 # if Bin_Best has a simplified model:
@@ -253,8 +268,7 @@ dev.off()
 for (o in 1:length(get(Bin_Best_Model)$contributions$var)){
   png(filename = paste("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$contributions$var[o]),".png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = "cairo-png")
-  #par(mar=c(2.9,2,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0))
-par(mar=c(1.35,2.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)
+par(mar=c(1.35,3.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)  #mar=c(1.35,2.4,0.4,0.5)
     # bg=expvarcols[match(get(Bin_Best_Model)$contributions$var[o],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid<-plot.gbm(get(Bin_Best_Model),match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names),lwd=8,return.grid=TRUE)
 xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose=TRUE) # sets range & ticks
@@ -271,7 +285,7 @@ for (p in 1:length(get(Gaus_Best_Model)$contributions$var)){
   png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = "cairo-png")
   #par(mar=c(2.9,2,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0))
-par(mar=c(1.35,2.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)
+par(mar=c(1.35,3.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)
     # bg=expvarcols[match(get(Gaus_Best_Model)$contributions$var[p],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid<-plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names),lwd=8,return.grid=TRUE)
 xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose=TRUE) # sets range & ticks
@@ -329,18 +343,18 @@ png(filename = paste("./",names(samples[i]),"/Bin_Bars.png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
     type = "cairo-png")
 par(mar=c(2.5,0.3,0,0.5), fig=c(0,1,0,1), cex.lab=0.8,mgp=c(1.5,0.5,0), cex=1.3)
-midpoints<-barplot(rev(Bin_Bars[,2]), cex.lab=1.2, las=1, horiz=TRUE, cex.names=0.8, xlab="Influence %", xlim=c(0,30), col=rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1])) #xlim locked to standardise bars, return to: xlim=c(0,2.5+ceiling(max(Bin_Bars[,2])))
+midpoints<-barplot(rev(Bin_Bars[,2]), cex.lab=1.2, las=1, horiz=TRUE, cex.names=0.8, xlab="Influence %", col=rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]), xlim=c(0,2.5+ceiling(max(Bin_Bars[,2]))))
 text(0.1, midpoints,labels=rev(Bin_Bars[,1]),adj=0,cex=1.5)
-axis(side = 1, lwd = 6)
+axis(side = 1, lwd = 6, outer=TRUE, xpd=NA)
 dev.off()
 
 png(filename = paste("./",names(samples[i]),"/Gaus_Bars.png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
     type = "cairo-png")
 par(mar=c(2.5,0.3,0,0.5), fig=c(0,1,0,1), cex.lab=0.8,mgp=c(1.5,0.5,0), cex=1.3)
-midpoints<-barplot(rev(Gaus_Bars[,2]), cex.lab=1.2, las=1, horiz=TRUE, cex.names=0.8, xlab="Influence %", xlim=c(0,30), col=rev(expvarcols[match(Gaus_Bars[,1],expvarcols[,2]),1])) #xlim=c(0,2.5+ceiling(max(Gaus_Bars[,2])))
+midpoints<-barplot(rev(Gaus_Bars[,2]), cex.lab=1.2, las=1, horiz=TRUE, cex.names=0.8, xlab="Influence %", col=rev(expvarcols[match(Gaus_Bars[,1],expvarcols[,2]),1]), xlim=c(0,2.5+ceiling(max(Gaus_Bars[,2]))))
 text(0.1, midpoints,labels=rev(Gaus_Bars[,1]),adj=0,cex=1.5)
-axis(side = 1, lwd = 6)
+axis(side = 1, lwd = 6, outer=TRUE, xpd=NA)
 dev.off()
 
 ####15. Variable interactions####
@@ -363,10 +377,13 @@ grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds # add column in grid
 predabund <- which(colnames(grids)=="PredAbund") # predicted abundance column number for writecsv
 
 ####20. Final saves####
+# should names(samples[i]) be something else? This is currently "CPUE" but should be e.g. "Blonde Ray"...
+# CSV of Predicted values at each site inc predictor variables' values.
 write.csv(grids,row.names=FALSE, file = paste("./",names(samples[i]),"/Abundance_Preds_All.csv",sep=""))
+# CSV of Predicted values at each site without predictor variables' values.
 write.csv(grids[c(gridslat,gridslon,predabund)], row.names=FALSE, file = paste("./",names(samples[i]),"/Abundance_Preds_only.csv",sep=""))
-if (savegbm==TRUE) {save(Bin_Best_Model,file = paste("./",names(samples[i]),"Bin_Best_Model",sep=""))
-                    save(Gaus_Best_Model,file = paste("./",names(samples[i]),"Gaus_Best_Model",sep=""))}
+if (savegbm==TRUE) {save(Bin_Best_Model,file = paste("./",names(samples[i]),"/Bin_Best_Model",sep=""))
+                    save(Gaus_Best_Model,file = paste("./",names(samples[i]),"/Gaus_Best_Model",sep=""))}
 
 ####21. Finalise & Write Report####
 Report[1:2,(reportcolno-13)] <- c(paste("Model combo: ",Bin_Best_Model,sep=""),paste("Model CV score: ",Bin_Best_Score,sep=""))
