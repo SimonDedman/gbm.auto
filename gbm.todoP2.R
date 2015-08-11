@@ -122,7 +122,7 @@ gbm.auto(expvar=c(4:11,15,20,24,28,32,36,39),
          RSB= TRUE,
          legendtitle = "CPUE")
 
-####model:juve combined preds####
+####model:juve combined preds DON'T####
 # Set WD so I can run all these at once
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Combined Predators")
 #cuckoo

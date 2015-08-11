@@ -9,12 +9,12 @@
             ZI = TRUE,                    # are data zero-inflated? TRUE/FALSE/"CHECK". If TRUE do delta BRT, log-normalised Gaussian, later reverse log-normalised & bias corrected. If FALSE do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
             gridslat = 2,                 # column number for latitude in 'grids'
             gridslon = 1,                 # column number for longitude in 'grids'
-            cols = grey.colors(6,1,1),    # vector of colours for plots. Assignment in order of explanatory variables.
+            cols = grey.colors(6,1,1),    # barplot colour vector. Assignment in order of explanatory variables. Default: 6*white i.e. blank bars (has border)
             savegbm = TRUE,               # save the gbm objects externally? Can reopen later with (e.g.) load("Bin_Best_Model")
             RSB = FALSE,                  # run representativeness surface builder?
             map = FALSE,                  # save abundance map png files?
             legendtitle = "CPUE",         # gbm.map metric of abundance for legend title, from legend.grid in mapplots
-            ...)                          # additional parameters, e.g for gbm.map (mainmap, heatcol, shape, landcol, legendcol, bg). VALID?
+            ...)                          # additional parameters, e.g for gbm.map (mainmap, heatcol, shape, landcol, legendcol, bg, mapback, grdfun). VALID?
 {
 # Generalised Boosting Model / Boosted Regression Tree process chain automater.
 # Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
@@ -430,18 +430,39 @@ if(map==TRUE) {
   gbm.map(x = grids[,gridslon],
                y = grids[,gridslat],
                z = grids[,predabund],
-#               byx = byx, #default now null so shouldn't need to provide anything here
-#               byy = byy,
                mapmain = "Predicted abundance: ",
                species = names(samples[i]),
                shape = coast,
-               landcol = "darkgreen",
+               #landcol = "darkgreen",
+               #mapback = "lightblue",
+#commenting landcol & mapback out in the hope that they default to darkgreen & lightblue. Shape is defaulted also
                legendloc = "bottomright",
                legendtitle = legendtitle,
                grids=grids,
                gridslon=gridslon,
                gridslat=gridslat,
                predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
+  dev.off()
+  
+  # run again in black & white for journal submission
+  png(filename = paste("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png",sep=""),
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+  par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+  gbm.map(x = grids[,gridslon],
+          y = grids[,gridslat],
+          z = grids[,predabund],
+          mapmain = "Predicted abundance: ",
+          species = names(samples[i]),
+          shape = coast,
+          landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
+          mapback = "white",
+          heatcol = grey.colors(12, start=1, end=0), #Hans draw.grid default is 12 colours
+          legendloc = "bottomright",
+          legendtitle = legendtitle,
+          grids=grids,
+          gridslon=gridslon,
+          gridslat=gridslat,
+          predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
   dev.off()
 
   # if RSB called, plot that surface separately
@@ -452,13 +473,12 @@ if(map==TRUE) {
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
             z = rsbdf[,"Unrepresentativeness"],
-#            byx = byx,  # both will have been created by gbm.map if they weren't provided by the user
-#            byy = byy,
             mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
             #heatcol= rgb(seq(from=1,to=0,length.out=12),seq(from=1,to=0,length.out=12),seq(from=1,to=0,length.out=12)), # rgb(0,0,0,seq(from=0,to=0.5,length.out=12)) black, from opaque to transparent
             shape = coast,
             landcol = "darkgreen",
+            mapback = "lightblue",
             legendloc = "bottomright",
             legendtitle = "UnRep 0-1",
             grids=grids,
@@ -466,6 +486,28 @@ if(map==TRUE) {
             gridslat=gridslat,
             predabund=predabund)
     dev.off()
+    
+    #and again for b&w
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_",names(samples[i]),".png",sep=""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+            y = grids[,gridslat],
+            z = rsbdf[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            species = names(samples[i]),
+            heatcol = grey.colors(12, start=1, end=0), #Hans' draw.grid default is 12 colours
+            shape = coast,
+            landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
+            mapback = "white",
+            legendloc = "bottomright",
+            legendtitle = "UnRep 0-1",
+            grids=grids,
+            gridslon=gridslon,
+            gridslat=gridslat,
+            predabund=predabund)
+    dev.off()    
+    
    } # close RSB mapper
   } # close Map Maker
  } # close response variable (resvar) loop
