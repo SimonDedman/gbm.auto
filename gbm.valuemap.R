@@ -1,82 +1,64 @@
+###automate this as a function notes#
+# in maps, possible to have an option to set 0 as alpha?
+###automate this as a function notes#
+
+
 # Load gbm.map
 source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
-# load data
-matf<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Abundance_Preds_plusF.csv", header = TRUE)
-juve<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Abundance_Preds_plusF.csv", header = TRUE)
 
-#automate this as a function notes#
-# x/y/z data source as object to set at start e.g. matf
-
-#automate this as a function notes#
-
-
+####MatF####
 # set wd
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Analysis")
+setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/ConsValMaps")
 # load data
-data<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Abundance_Preds_plusF.csv", header = TRUE)
+data<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/MatF_Abundance_Preds_plusE.csv", header = TRUE)
+# note original number of columns for use later
+datacoln <- ncol(data)
 
-#Data input format: LATITUDE/LONGITUDE/{columns to be considered e.g. F, PredAbunds}
-#Need a system for including all predabunds and F.
-#Start with adding all predabunds
-data$PredAbundAll <- data$PredAbund_C + data$PredAbund_T + data$PredAbund_B + data$PredAbund_S # add column in grids for predicted abundance
+####Scale columns to 1####
+# Set column numbers to scale to 1
+scalerange <- c(3:7)
+# which column numbers are abundances (where higher = better)?
+goodcols <- c(4:7)
+# which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
+badcols <- c(3)
+# weighting multiple for goodcols array, no default
+goodweight <- c(1.5,1,3,1) #cuckoo 1.5, blonde 3
+# weighting multiple for goodcols array, no default
+#badweight <- rep(1,length(badcols))
+badweight <- 4  #fishing 4 times as important, for example.
+  
+# Scale values to 1 and add as columns to data
+for(i in scalerange){
+  data<-cbind(data,data[i]/max(data[i],na.rm=TRUE))
+  colnames(data)[ncol(data)]<- paste(names(data)[i],"s",sep="")
+  }
 
-####23. Map maker####
-if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
-require(mapplots)
-  # generate output image & set parameters
-  png(filename = "Conservation Value Mature Females.png",
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
-  par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-  # run gbm.map function with generated parameters
-  gbm.map(x = data[,"LONGITUDE"],
-          y = data[,"LATITUDE"],
-          z = data[,"PredAbundAll"],
-          mapmain = "Conservation Value: ",
-          species = "Mature Females",
-          shape = coast,
-          landcol = "darkgreen",
-          legendloc = "bottomright",
-          legendtitle = "Conservation Value",
-          grids=data,
-          gridslon=data[,"LONGITUDE"],
-          gridslat=data[,"LATITUDE"],
-          predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
-  dev.off()
+# If weighting factors given, multiply scaled values & overwrite
+if(exists("goodweight")) data[,match(goodcols,scalerange)+datacoln] <- goodweight * data[,match(goodcols,scalerange)+datacoln]
+if(exists("badweight")) data[,match(badcols,scalerange)+datacoln] <- badweight * data[,match(badcols,scalerange)+datacoln]
 
-mean(data[,"PredAbund_C"])
-mean(data[,"PredAbund_T"])
-mean(data[,"PredAbund_B"])
-mean(data[,"PredAbund_S"])
+# # column numbers for scaled variables in data:
+# data[,match(goodcols,scalerange)+datacoln]
+# data[,match(badcols,scalerange)+datacoln]
 
-# Scale Predicted abundances to 1 and add as columns to data
-data$PredAbund_Cs <- data$PredAbund_C / max(data$PredAbund_C,na.rm=TRUE)
-data$PredAbund_Ts <- data$PredAbund_T / max(data$PredAbund_T,na.rm=TRUE)
-data$PredAbund_Bs <- data$PredAbund_B / max(data$PredAbund_B,na.rm=TRUE)
-data$PredAbund_Ss <- data$PredAbund_S / max(data$PredAbund_S,na.rm=TRUE)
-# then add them together as column
-data$PredAbundAlls <- data$PredAbund_Cs + data$PredAbund_Ts + data$PredAbund_Bs + data$PredAbund_Ss
-# then map that
+# Sum the good & bad data as objects. Create object for good-bad
+ifelse(length(goodcols)>1,
+       gooddata<-rowSums(data[,match(goodcols,scalerange)+datacoln]),
+       gooddata<-data[,match(goodcols,scalerange)+datacoln])
+ifelse(length(badcols)>1,
+       baddata<-rowSums(data[,match(badcols,scalerange)+datacoln]),
+       baddata<-data[,match(badcols,scalerange)+datacoln])
+bothdata<-gooddata-baddata
+# summary(bothdata)
 
-png(filename = "Conservation Value Mature Females.png",
-    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
-par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-# run gbm.map function with generated parameters
-gbm.map(x = data[,"LONGITUDE"],
-        y = data[,"LATITUDE"],
-        z = data[,"PredAbundAlls"],
-        mapmain = "Conservation Value: ",
-        species = "Mature Females",
-        shape = coast,
-        landcol = "darkgreen",
-        legendloc = "bottomright",
-        legendtitle = "Conservation Value",
-        grids=data,
-        gridslon=data[,"LONGITUDE"],
-        gridslat=data[,"LATITUDE"],
-        predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
-dev.off()
 
-# manually run core of gbm.map in case
+#Map maker
+ if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
+ require(mapplots)
+ library(mapplots)
+ data(coast)
+
+# manually run core of gbm.map
 byx=NULL
 byy=NULL
   # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
@@ -95,53 +77,65 @@ byy=NULL
   byx<-mean(data$bydist,na.rm=TRUE)
   byy<-byx
 
-png(filename = "Conservation Value Mature Females Scaled.png",
+####map1####
+png(filename = "Conservation Value All Mature Females Scaled.png",
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
-par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
 
-grd <- make.grid(data[,"LONGITUDE"], data[,"LATITUDE"], data[,"PredAbundAlls"], byx, byy, xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]),fun=mean)
+grd <- make.grid(data[,"LONGITUDE"],
+                 data[,"LATITUDE"],
+                 gooddata,
+                 byx,
+                 byy,
+                 xlim=range(data[,"LONGITUDE"]),
+                 ylim=range(data[,"LATITUDE"]),
+                 fun=mean)
 breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
-basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Conservation Value: ","Mature Females",sep=""))
+basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Conservation Value All Mature Females Scaled",sep=""))
 draw.grid(grd,breaks) # plot grd data w/ breaks for colour breakpoints
 draw.shape(coast, col="darkgreen") # add coastline
 legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value")
 dev.off()
 
-# Scale Fishery catch to 1 and add as columns to data
-data$Fs <- data$HansF_LPUE / max(data$HansF_LPUE,na.rm=TRUE)
-# Subtract it from Predictions & add as new column
-data$PredsFs <- data$PredAbundAlls - data$Fs
-
-
-png(filename = "Cons.Val. Mat.F Scaled w F.png",
+#####map2####
+png(filename = "Fishing Effort Scaled.png",
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
-par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
 
-grd <- make.grid(data[,"LONGITUDE"], data[,"LATITUDE"], data[,"PredsFs"], byx, byy, xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]),fun=mean)
+grd <- make.grid(data[,"LONGITUDE"],
+                 data[,"LATITUDE"],
+                 baddata,
+                 byx,
+                 byy,
+                 xlim=range(data[,"LONGITUDE"]),
+                 ylim=range(data[,"LATITUDE"]),
+                 fun=mean)
 breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
-basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Conservation Value: ","Mature Females",sep=""))
+basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Fishing Effort",sep=""))
 draw.grid(grd,breaks) # plot grd data w/ breaks for colour breakpoints
 draw.shape(coast, col="darkgreen") # add coastline
 legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value")
 dev.off()
 
-# Makes NO difference!
-summary(data$HansF_LPUE)
-# ah. Crazy distribution:
-# Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-#    0.00     0.00     0.00    14.07     0.00 16980.00        1
-# insane peak with low average means everything scales to 0 except a few samples
-
-# plot fishing CPUE to test
-
-png(filename = "Fishery LPUE.png",
+#####map3####
+png(filename = "All Mature Females Minus Fishing Effort Scaled.png",
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
-par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
 
-grd <- make.grid(data[,"LONGITUDE"], data[,"LATITUDE"], data[,"HansF_LPUE"], byx, byy, xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]),fun=mean)
-breaks <- breaks.grid(grd,zero=TRUE,quantile=1,ncol=6) #ncol to try to make 6 colours (inc 0)
-basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Conservation Value: ","Mature Females",sep=""))
-draw.grid(grd,breaks)
-draw.shape(coast, col="darkgreen")
-legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Fishery LPUE")
+grd <- make.grid(data[,"LONGITUDE"],
+                 data[,"LATITUDE"],
+                 bothdata,
+                 byx,
+                 byy,
+                 xlim=range(data[,"LONGITUDE"]),
+                 ylim=range(data[,"LATITUDE"]),
+                 fun=mean)
+breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
+basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("All Mature Females Minus Fishing Effort Scaled.png",sep=""))
+draw.grid(grd,breaks) # plot grd data w/ breaks for colour breakpoints
+draw.shape(coast, col="darkgreen") # add coastline
+legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value")
 dev.off()
+
+####write csv####
+write.csv(data,row.names=FALSE, file = "Scaled Data.csv")

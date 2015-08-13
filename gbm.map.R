@@ -9,7 +9,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     heatcol,  #abundance colour scale, defaults to heatcol from mapplots, from legend.grid & draw.grid in mapplots
                     shape = coast, #basemap shape to draw, from draw.shape in mapplots. Defaults: 'coast': UK & Ire
                     landcol = "darkgreen", #colour for 'null' area of map, if appropriate, from draw.shape in mapplots
-                    mapback, #basemap background, defaults to "lightblue", from basemap
+                    mapback = "lightblue", #basemap background
                     legendloc = "bottomright", #location on map of legend box, from legend.grid in mapplots
                     legendtitle, #the metric of abundance, e.g. CPUE for fisheries, from legend.grid in mapplots
                     inset, #from legend.grid in mapplots

@@ -1,8 +1,7 @@
 ## gbm.todo.P2
 # working script for paper 2
 # 1/6/2015
-# could I incorporate gbm.utils, gbm.rsb and gbm.map into gbm.auto?
-# gbm.auto: add in second map & rsb generator for greyscale versions with appropriate names
+# could I incorporate gbm.utils, gbm.rsb and gbm.map into gbm.auto? In what sense?
 ##
 
 ####prep####
@@ -78,6 +77,7 @@ gbm.auto(expvar=c(4:11,15,18,22,26,30,34,38),
          legendtitle = "CPUE")
 
 #blonde without 15 interactions
+# scored better originally?
 gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          resvar=c(46),
          grids=mygrids,
@@ -92,7 +92,12 @@ gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          RSB= TRUE,
          legendtitle = "CPUE")
 
+####FAIL same problem####
+# Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]):contrasts can be applied only to factors with 2 or more levels
 #re run blonde w/ smaller LR for 15 interactions (1 combo), then test against scores for 2 & 5 interactions
+
+
+# scored worse originally
 gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          resvar=c(46),
          grids=mygrids,
@@ -106,6 +111,11 @@ gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          map = TRUE,
          RSB= TRUE,
          legendtitle = "CPUE")
+####12/08/2015 FAIL####
+##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
+##contrasts can be applied only to factors with 2 or more levels In addition: There were 50 or more warnings (use warnings() to see the first 50)
+# commented out lines 361 & 362, find interactions in gbm.auto, causing the problem.
+# also 413-416, which includes the results in the report
 
 #spotted
 gbm.auto(expvar=c(4:11,15,20,24,28,32,36,39),
@@ -200,7 +210,7 @@ gbm.auto(expvar=c(4:11,15,43),
          RSB= TRUE,
          legendtitle = "CPUE")
 
-# individual - blonde: no prediced abundance & rsb figures, why? Not enough data.
+# individual - blonde: no predicted abundance & rsb figures, why? Not enough data? Worked before?
 
 ####model: mat F####
 # set wd for mature female samples sheets
@@ -252,6 +262,14 @@ gbm.auto(expvar=4:10,
          map = TRUE,
          RSB= TRUE,
          legendtitle = "CPUE")
+
+# 12/08/2015:
+1: In cor(y_i, u_i) : the standard deviation is zero
+2: glm.fit: algorithm did not converge 
+3: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+4: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+# seems to have worked though?
+
 
 # restart model with a smaller learning rate or smaller step size...
 # Error in if (get(paste("Bin_BRT", ".tc", j, ".lr", k * 100, ".bf", l, :argument is of length zero
