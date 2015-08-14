@@ -1,5 +1,5 @@
 ###automate this as a function notes#
-# in maps, possible to have an option to set 0 as alpha?
+# option to set alpha yes/no, zero yes/no, data, scalerange, goodcols, badcols, goodweight, badweight, coast shape, quantile,
 ###automate this as a function notes#
 
 
@@ -8,24 +8,27 @@ source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
 
 ####MatF####
 # set wd
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/ConsValMaps")
-# load data
-data<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/MatF_Abundance_Preds_plusE.csv", header = TRUE)
+setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConsValMaps")
+# load data. Expecting Longitude, Latitude, data columns: predicted abundances, fishing effort etc.
+data<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Both_Abundance_Preds_plusE.csv", header = TRUE)
 # note original number of columns for use later
 datacoln <- ncol(data)
 
 ####Scale columns to 1####
 # Set column numbers to scale to 1
-scalerange <- c(3:7)
+scalerange <- c(3:11)
+
 # which column numbers are abundances (where higher = better)?
-goodcols <- c(4:7)
+goodcols <- c(4:11)
+
 # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
 badcols <- c(3)
+
 # weighting multiple for goodcols array, no default
-goodweight <- c(1.5,1,3,1) #cuckoo 1.5, blonde 3
-# weighting multiple for goodcols array, no default
-#badweight <- rep(1,length(badcols))
-badweight <- 4  #fishing 4 times as important, for example.
+  #goodweight <- c(1.5,1,3,1) #cuckoo 1.5, blonde 3
+
+# weighting multiple for badcols array, no default
+  #badweight <- 4  #fishing 4 times as important, for example.
   
 # Scale values to 1 and add as columns to data
 for(i in scalerange){
@@ -92,9 +95,20 @@ grd <- make.grid(data[,"LONGITUDE"],
                  fun=mean)
 breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
 basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Conservation Value All Mature Females Scaled",sep=""))
-draw.grid(grd,breaks) # plot grd data w/ breaks for colour breakpoints
+
+if(breaks[2]==0) { # if zero=true in breaks
+  draw.grid(grd,breaks,col=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))) #add alpha as 1st colour in palette
+} else {
+  draw.grid(grd,breaks) # else don't
+}
+
 draw.shape(coast, col="darkgreen") # add coastline
-legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value")
+
+if(breaks[2]==0) { # if zero=true in breaks
+  legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value", col=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))) #add alpha as 1st colour in palette
+} else {
+  legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value") # else don't
+}
 dev.off()
 
 #####map2####
@@ -112,9 +126,21 @@ grd <- make.grid(data[,"LONGITUDE"],
                  fun=mean)
 breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
 basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("Fishing Effort",sep=""))
-draw.grid(grd,breaks) # plot grd data w/ breaks for colour breakpoints
+
+if(breaks[2]==0) { # if zero=true in breaks
+  draw.grid(grd,breaks,col=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))) #add alpha as 1st colour in palette
+} else {
+  draw.grid(grd,breaks) # else don't
+}
+
 draw.shape(coast, col="darkgreen") # add coastline
-legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value")
+
+if(breaks[2]==0) { # if zero=true in breaks
+  legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value", col=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))) #add alpha as 1st colour in palette
+} else {
+  legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value") # else don't
+}
+
 dev.off()
 
 #####map3####
@@ -132,9 +158,21 @@ grd <- make.grid(data[,"LONGITUDE"],
                  fun=mean)
 breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
 basemap(xlim=range(data[,"LONGITUDE"]), ylim=range(data[,"LATITUDE"]), main=paste("All Mature Females Minus Fishing Effort Scaled.png",sep=""))
-draw.grid(grd,breaks) # plot grd data w/ breaks for colour breakpoints
+
+if(breaks[2]==0) { # if zero=true in breaks
+  draw.grid(grd,breaks,col=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))) #add alpha as 1st colour in palette
+} else {
+  draw.grid(grd,breaks) # else don't
+}
+
 draw.shape(coast, col="darkgreen") # add coastline
-legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value")
+
+if(breaks[2]==0) { # if zero=true in breaks
+  legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value", col=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))) #add alpha as 1st colour in palette
+} else {
+  legend.grid("bottomright", breaks=breaks, type=2, inset=0, bg="white", title="Conservation Value") # else don't
+}
+
 dev.off()
 
 ####write csv####

@@ -49,7 +49,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
     byy<-byx
   }
   grd <- make.grid(x, y, z, byx, byy, xlim=range(x), ylim=range(y),fun=grdfun) #create gridded data. fun defaults to sum which is bad
-  breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd
+  breaks <- breaks.grid(grd,zero=TRUE,quantile=1) # define breakpoints from grd, allow 0 category, max=max Z from grd. ncol defaults to 12.
   basemap(xlim=range(x), ylim=range(y), main=paste(mapmain,species,sep=""), bg=mapback)
   draw.grid(grd,breaks,col=heatcol) # plot grd data w/ breaks for colour breakpoints
   draw.shape(shape, col=landcol) # add coastline
