@@ -19,4 +19,5 @@ file<-read.csv(file="Scallop_Rects.csv")
 # Run function. File is auto-output - change name if using again
 icesplus(file)
 
+# remove everything
 rm(list = ls())

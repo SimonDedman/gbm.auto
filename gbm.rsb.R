@@ -23,7 +23,7 @@ gbm.rsb <- function(samples, grids, expvarnames,gridslat,gridslon,rsbres){
     nmax<-max(grids[,expvarnames[q]],samples[,expvarnames[q]],na.rm=TRUE)
     # bin range is the length between the two
     binrange<-nmax-nmin
-    # 10 bins. length of one bin = binrange/10
+    # 10 bins. Length of one bin = binrange/10
     bin<-binrange/10
     # set breaks, min to max, 10 binrange increments. 0.01 added as findInterval (later) needs x to be < nmax, and some will == nmax, causing NAs.
     binbreaks<-c(nmin,nmin+bin,nmin+(bin*2),nmin+(bin*3),nmin+(bin*4),nmin+(bin*5),nmin+(bin*6),nmin+(bin*7),nmin+(bin*8),nmin+(bin*9),nmax+0.01)

@@ -1,15 +1,76 @@
-### BRT code todo ####
+####Line plots begin @ 0####
+# they shouldn't: salinity & temp (& current speed?) don't lend themselves to this.
+# check whether data ranges include zeroes in place of NAs?
+# see dotplots: they do have zeroes. Aren't these (x) just the raw values though? Fitted (y) are generated
+summary(mysamples[,"Salinity"])
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.00    0.00    0.00   11.51   33.99   35.08 
+hist(mysamples[,"Salinity"])
+sum(samples[,"Salinity"]==0,na.rm=TRUE)
+#4452
 
-ZI TEST
-# so far it's proving tricky to automate this but humans do it easily.
-# Heuristic IF statements? If >x% of data == 0 then isZI=TRUE? See ILL journal article.
+####mapmaker defaults @ toplevel####
+# see gbm.auto section23, landcol mapback legendloc legendtitle??
+# mainmap, heatcol, shape, landcol, legendcol, bg, mapback, grdfun (line17)
+# can the user edit these, ACTUALLY? Try changing all of them and see which work
 
-Bag fraction optimiser
+####ZI TEST####
+# See paper by Tu in Qiqqa, ZI data.
+if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>=0.5) ZI=TRUE else ZI=FALSE
+if(ZI=TRUE) #run bin analysis
+  # "else" do nothing i.e. only do gaus. Also have to change final multiplication and folder creation etc]
+
+  ZI="CHECK"
+if(ZI=="CHECK") if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>=0.5) ZI=TRUE else ZI=FALSE
+  
+
+# logs of resvar for ZI data & reverse lognormalise & bias correct later (line 117 gaus BRT gbm.y & sections 22 & 23)
+# asked here: https://stats.stackexchange.com/questions/112292/r-are-data-zero-inflated
+
+#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- log1p(samples[resvar]), #yes
+#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- samples[resvar]) #no
+# pscl package
+
+# Zero-inflation is about the shape of the distribution. Therefore, you will have to specify the distribution for the non-zero part (Poisson, Negative Binomial, etc), if you want a formal test. Then you can use a likelihood ratio test to see if the zero-inflated parameters can be dropped from the model. This can be done in R.
+# In cruder terms, zero inflation is defined not only by proportion of zeros but also by the total number of observations. Say, if you assume a zero-inflated Poisson model and your data contain 50% of zeros, you still won't be able to say with certainty that it's zero inflated if the total number of points is only 4. On the other hand, 10% of zeros in 1000 observations can result in a positive test for zero-inflation.
+# Zero-inflated property is associated with count-based data, so I haven't heard of "zero-inflated normal". E.g. in this package:
+
+# fit Poisson model where the zero and non-zero components contain only the intercept
+# then
+# check if the intercept from the zero component has a significant p-value.
+
+# remember: if NOT ZI then it's ONLY the gaussian BRTs and NOT log-normalised. Need to work out how to do that
+# maybe just, for BIN BRT: if(ZI) {run as is} (no else, don't run it, move on)
+# for Gaus: samples have already been logged or not depending on ZI-ness so no change
+# at end: if(ZI) {unlog procedure} else {maybe do nothing? check}
+# ZI entered in function above, this is auto entered by the test code only if check enabled
+
+# Lines to edit:
+# 91-119
+# 115-118 move/edit progress printer?
+# 137-156 sort report
+# 165-186
+# 203-212
+# 223-224 delete?
+# 227-237
+# 252-266
+# 286-294
+# 313-317
+# 326-333
+# 345
+# 349-350
+# 357: unlog
+# 360-361: multiply
+# 369
+# 373-401 sort report
+
+
+####Bag fraction optimiser####
 # Trial & error iterative approach to determine the optimal bag fraction for a data set? How? Stop @ whole percentages?
 # Try OPTIM function & see http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
 # Possibly have an option to start with this in the R function.
 
-OPTIMISE PARAMETERS
+####OPTIMISE PARAMETERS####
 # Trial & error iterative approach to determine the optimal bag fraction (/ all parameters?)
 # for a data set? How? Stop @ whole percentages. Try OPTIM function & see
 # http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
@@ -26,7 +87,9 @@ OPTIMISE PARAMETERS
 # https://www.youtube.com/watch?v=7Jbb2ItbTC4
 # see gbm.fixed in BRT_ALL.R - having processed the optimal BRT, might as well just use those details going forward rather than re-running the best one again.
 
-MULTICORE PROCESSING - already supposedly incorporated; doesnt work
+####MULTICORE PROCESSING####
+#already supposedly incorporated; doesnt work
+
 # Re-investigate multicore R
 # https://stackoverflow.com/questions/4775098/r-with-a-multi-core-processor
 # http://www.google.com/url?q=http%3A%2F%2Fcran.r-project.org%2Fweb%2Fviews%2FHighPerformanceComputing.html&sa=D&sntz=1&usg=AFQjCNEshsLTzWAF9g4cUGzvn5zIfIywsA
@@ -53,7 +116,7 @@ MULTICORE PROCESSING - already supposedly incorporated; doesnt work
 # See:
 # C:\Users\Simon\Dropbox\Galway\Analysis\R\Coilin R code\rmpi_example.R
 
-Processing time estimate
+####Processing time estimate####
 #  option to have R poll the computer and, when you say go, popup a box saying
 # "Based on the parameters you've selected to try, this will run X models on a Y-item-sized dataset (Y = variables * count)
 # which may take about Z minutes based on your processor. You have a multicore processor so it will take Z/#processors (time)
@@ -62,15 +125,16 @@ Processing time estimate
 # Also could print the current resvar name. Maybe do a running time thing? "This is BRT N of X, Y% complete, took time Z, total
 # expected time AA, time remaining AB
 
-Clean workspace - dump fails: TRY rm() rather than dump() - dont need this for function
+####Clean workspace####
+#dump fails: TRY rm() rather than dump() - dont need this for function
 # rm(list = ls()) removes everything
 # running function the dumping everyithng means R is still using 1.7gb of RAM!
 # rm all model-generated files after each run? List what they are here.
 
-3D PLOT
+####3D PLOT####
 # what to do? Bother with it?
 
-Allow deep subfunction calls. So deep.
+####Allow deep subfunction calls####
 # Allow user to call extra parameters with '...' which will be parsed to gbm.step in places?
 # function (data,                             # the input dataframe
 #           gbm.x,                                    # the predictors

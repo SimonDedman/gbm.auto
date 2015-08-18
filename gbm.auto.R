@@ -2,11 +2,11 @@
   function (grids,                        # explantory data to predict to. Import with (e.g.) read.csv and specify object name. Default is mygrids
             samples,                      # explanatory & response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset. Default is mysamples
             expvar,                       # list of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default
-            resvar,                       # column number of response variable (e.g. CPUE) in samples. Expected, e.g. 94. No default
+            resvar,                       # column number of response variable (e.g. CPUE) in samples. Expected, e.g. 94. No default. Column name should be species name.
             tc = c(2,5),                  # list of permutations of tree complexity allowed, expected e.g. and default: c(2,5)
             lr = c(0.01,0.005),           # list of permutations of learning rate allowed, expected e.g. and default: c(0.01,0.005)
             bf = 0.5,                     # list permutations of bag fraction allowed, expected e.g. & default: 0.5
-            ZI = TRUE,                    # are data zero-inflated? TRUE/FALSE/"CHECK". If TRUE do delta BRT, log-normalised Gaussian, later reverse log-normalised & bias corrected. If FALSE do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
+            ZI = TRUE,                    # are data zero-inflated? TRUE/FALSE/"CHECK". TRUE? do delta BRT, log-normalised Gaussian, later reverse log-normalised & bias corrected. FALSE: do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
             gridslat = 2,                 # column number for latitude in 'grids'
             gridslon = 1,                 # column number for longitude in 'grids'
             cols = grey.colors(6,1,1),    # barplot colour vector. Assignment in order of explanatory variables. Default: 6*white i.e. blank bars (has border)
@@ -54,31 +54,10 @@ n=1   # Print counter for all loops of BRT combos (i.e. counter for l)
 if(!all(expvarnames %in% names(grids))) {stop("Not all expvar column names found as column names in grids")}
 
 ####2. ZI check & log TODO####
-# logs of resvar for ZI data & reverse lognormalise & bias correct later (line 117 gaus BRT gbm.y & sections 22 & 23)
-# asked here: https://stats.stackexchange.com/questions/112292/r-are-data-zero-inflated
-# bother with this or just have an element in the function function(x,...,zeroinflated) where zeroinflated can be Y or N?
-# ifelse(samples[resvar]=zeroinflated, #test
-#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- log1p(samples[resvar]), #yes
-#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- samples[resvar]) #no
-# pscl package
+# if user has asked code to check for ZI, check it & set new ZI status
+if(ZI=="CHECK") if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>=0.5) ZI=TRUE else ZI=FALSE
 
-# Zero-inflation is about the shape of the distribution. Therefore, you will have to specify the distribution for the non-zero part (Poisson, Negative Binomial, etc), if you want a formal test. Then you can use a likelihood ratio test to see if the zero-inflated parameters can be dropped from the model. This can be done in R.
-# In cruder terms, zero inflation is defined not only by proportion of zeros but also by the total number of observations. Say, if you assume a zero-inflated Poisson model and your data contain 50% of zeros, you still won't be able to say with certainty that it's zero inflated if the total number of points is only 4. On the other hand, 10% of zeros in 1000 observations can result in a positive test for zero-inflation.
-# Zero-inflated property is associated with count-based data, so I haven't heard of "zero-inflated normal". E.g. in this package:
-
-# fit Poisson model where the zero and non-zero components contain only the intercept
-# then
-# check if the intercept from the zero component has a significant p-value.
-
-# remember: if NOT ZI then it's ONLY the gaussian BRTs and NOT log-normalised. Need to work out how to do that
-# maybe just, for BIN BRT: if(ZI) {run as is} (no else, don't run it, move on)
-# for Gaus: samples have already been logged or not depending on ZI-ness so no change
-# at end: if(ZI) {unlog procedure} else {maybe do nothing? check}
-# ZI entered in function above, this is auto entered by the test code only if check enabled
-# if(ZI=="CHECK") {run ZI test resulting in ZI=TRUE/FALSE} (else nothing: continue with ZI as is)
-
-# test to make sure response variable has zeroes (prevent user wasting hours debugging nested functions
-# only to find it's failing because they made a stupid mistake. Like I did!)
+# ensure resvar has zeroes (expects mix of successful & unsuccessful samples)
 if(min(samples[i])>0) print("No zeroes in response variable. Method expects unsuccessful, as well as successful, samples")
 # create binary (0/1) response variable, for bernoulli BRTs
 samples$brv <- ifelse(samples[i] > 0, 1, 0)
@@ -122,8 +101,6 @@ for(j in tc){   # list permutations of tree complexity allowed
 # create blanks for best results
 Bin_Best_Score <- 0
 Bin_Best_Model <- 0
-Gaus_Best_Score <- 0
-Gaus_Best_Model <- 0
 
 if(m==1)
   {Bin_Best_Score <- get(paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l,sep=""))$self.statistics$correlation[[1]]
@@ -142,6 +119,10 @@ assign(paste("Gaus_BRT",".tc",j,".lr",k*100,".bf",l,sep=""),gbm.step(data=sample
     gbm.x = expvar, gbm.y = grvcol, family = "gaussian", tree.complexity = j, learning.rate = k, bag.fraction = l))
 
 ####7. Select best Gaus model####
+# create blanks for best results
+Gaus_Best_Score <- 0
+Gaus_Best_Model <- 0
+
 if(m==1)
   {Gaus_Best_Score <- get(paste("Gaus_BRT",".tc",j,".lr",k*100,".bf",l,sep=""))$self.statistics$correlation[[1]]
   Gaus_Best_Model <- paste("Gaus_BRT",".tc",j,".lr",k*100,".bf",l,sep="")
@@ -236,8 +217,6 @@ Gaus_Best_Model<<-get(Gaus_Best_Model) # globally assign final model for externa
 
 ####11. Line plots####
 dir.create(names(samples[i])) # create resvar-named directory for outputs
-opar<-par() # save par defaults
-# par(mar=c(10,2,2,2), fig=c(0,1,0.5,1), cex.lab=0.8) # grow margins so labels fit. This bit redundant: needs to be between png() & gbm.plot()
 
 # All plots on one image for Bin & Gaus
 png(filename = paste("./",names(samples[i]),"/Bin_Best_line.png",sep=""),
@@ -284,8 +263,7 @@ dev.off() }
 for (p in 1:length(get(Gaus_Best_Model)$contributions$var)){
   png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = "cairo-png")
-  #par(mar=c(2.9,2,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0))
-par(mar=c(1.35,3.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)
+  par(mar=c(1.35,3.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)
     # bg=expvarcols[match(get(Gaus_Best_Model)$contributions$var[p],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid<-plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names),lwd=8,return.grid=TRUE)
 xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose=TRUE) # sets range & ticks
@@ -302,22 +280,11 @@ dev.off() }
 png(filename = paste("./",names(samples[i]),"/Bin_Best_dot.png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
 gbm.plot.fits(get(Bin_Best_Model))
-#   unused? , plot.layout = c(ceiling(sqrt(length(get(Bin_Best_Model)$contributions$var))), #plot.layout unused argument?
-#              ifelse(sqrt(length(get(Bin_Best_Model)$contributions$var))
-#               - floor(sqrt(length(get(Bin_Best_Model)$contributions$var))) <0.5,
-#               floor(sqrt(length(get(Bin_Best_Model)$contributions$var))),
-#               floor(sqrt(length(get(Bin_Best_Model)$contributions$var)))+1))
 dev.off()
 
 png(filename = paste("./",names(samples[i]),"/Gaus_Best_dot.png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
 gbm.plot.fits(get(Gaus_Best_Model))
-#   unused? , plot.layout = c(ceiling(sqrt(length(get(Gaus_Best_Model)$contributions$var))),
-#              ifelse(sqrt(length(get(Gaus_Best_Model)$contributions$var))
-#               - floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))) <0.5,
-#               floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))),
-#               floor(sqrt(length(get(Gaus_Best_Model)$contributions$var)))+1))
-
 dev.off()
 
 ####13. 3D plot TODO####
@@ -358,8 +325,8 @@ axis(side = 1, lwd = 6, outer=TRUE, xpd=NA)
 dev.off()
 
 ####15. Variable interactions####
-find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
-find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
+# find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
+# find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
 
 ####16. Binomial predictions####
 gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
@@ -377,7 +344,6 @@ grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds # add column in grid
 predabund <- which(colnames(grids)=="PredAbund") # predicted abundance column number for writecsv
 
 ####20. Final saves####
-# should names(samples[i]) be something else? This is currently "CPUE" but should be e.g. "Blonde Ray"...
 # CSV of Predicted values at each site inc predictor variables' values.
 write.csv(grids,row.names=FALSE, file = paste("./",names(samples[i]),"/Abundance_Preds_All.csv",sep=""))
 # CSV of Predicted values at each site without predictor variables' values.
@@ -410,10 +376,10 @@ Report[1:(length(Bin_Bars[,1])),(reportcolno-5)] <- as.character(Bin_Bars$var)
 Report[1:(length(Bin_Bars[,2])),(reportcolno-4)] <- as.character(Bin_Bars$rel.inf)
 Report[1:(length(Gaus_Bars[,1])),(reportcolno-3)] <- as.character(Gaus_Bars$var)
 Report[1:(length(Gaus_Bars[,2])),(reportcolno-2)] <- as.character(Gaus_Bars$rel.inf)
-Report[1:2,(reportcolno-1)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1],sep=""),
-                                 paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2],sep=""))
-Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.names[1]," and ",find.int_Gaus$rank.list$var2.names[1],". Size: ",find.int_Gaus$rank.list$int.size[1],sep=""),
-                               paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2],sep=""))
+# Report[1:2,(reportcolno-1)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1],sep=""),
+#                                  paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2],sep=""))
+# Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.names[1]," and ",find.int_Gaus$rank.list$var2.names[1],". Size: ",find.int_Gaus$rank.list$int.size[1],sep=""),
+#                                paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2],sep=""))
 write.csv(Report, row.names=FALSE, na="", file = paste("./",names(samples[i]),"/Report.csv",sep=""))
 
 ####22. Representativeness surface builder####
@@ -433,15 +399,14 @@ if(map==TRUE) {
                mapmain = "Predicted abundance: ",
                species = names(samples[i]),
                shape = coast,
-               #landcol = "darkgreen",
-               #mapback = "lightblue",
-#commenting landcol & mapback out in the hope that they default to darkgreen & lightblue. Shape is defaulted also
-               legendloc = "bottomright",
-               legendtitle = legendtitle,
+               #landcol = "darkgreen", #these work if commented out but does that mean users can only
+               #mapback = "lightblue", #have default colours? See line 17; set defaults at top level?
+               legendloc = "bottomright", #ditto
+               legendtitle = legendtitle, #ditto
                grids=grids,
                gridslon=gridslon,
                gridslat=gridslat,
-               predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
+               predabund=predabund)  # parses grids dataset to gbm.map to use
   dev.off()
   
   # run again in black & white for journal submission
@@ -456,13 +421,13 @@ if(map==TRUE) {
           shape = coast,
           landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
           mapback = "white",
-          heatcol = grey.colors(12, start=1, end=0), #Hans draw.grid default is 12 colours
+          heatcol = grey.colors(12, start=1, end=0), #draw.grid default is 12 colours
           legendloc = "bottomright",
           legendtitle = legendtitle,
           grids=grids,
           gridslon=gridslon,
           gridslat=gridslat,
-          predabund=predabund)  # hopefully parses grids dataset to gbm.map to use
+          predabund=predabund)  # parses grids dataset to gbm.map to use
   dev.off()
 
   # if RSB called, plot that surface separately
@@ -496,7 +461,7 @@ if(map==TRUE) {
             z = rsbdf[,"Unrepresentativeness"],
             mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
-            heatcol = grey.colors(12, start=1, end=0), #Hans' draw.grid default is 12 colours
+            heatcol = grey.colors(12, start=1, end=0), #draw.grid default is 12 colours
             shape = coast,
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
             mapback = "white",
@@ -511,6 +476,6 @@ if(map==TRUE) {
    } # close RSB mapper
   } # close Map Maker
  } # close response variable (resvar) loop
-####END####
 beep(8) # notify the user with a noise, since this process can take a long time.
 } # close the function
+####END####

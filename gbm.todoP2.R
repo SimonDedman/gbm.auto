@@ -26,7 +26,7 @@ mygrids<-read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal
 
 ####model:juve individual preds####
 # load samples
-mysamples<-read.csv("Hauls&J&Preds&Enviros_Trimmed.csv", header = TRUE, row.names=NULL)
+mysamples<-read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly.csv", header = TRUE, row.names=NULL)
 
 # Samples Response variables (CTBS) columns 44-47 inc.
 # colnames(mysamples), I need 4:9 (enviros), 10 (hans lpue), 11 (combined scallop icesrects), 15 (whelk CPUE icesrects)
@@ -52,7 +52,7 @@ gbm.auto(expvar=c(4:11,15,17,21,25,29,33,37),
          grids=mygrids,
          samples=mysamples,
          tc=c(2,5,15),
-         lr=c(0.01, 0.005),
+         lr=c(0.005, 0.001),
          bf=c(0.5),
          gridslat = 2,
          gridslon = 1,
@@ -60,6 +60,11 @@ gbm.auto(expvar=c(4:11,15,17,21,25,29,33,37),
          map = TRUE,
          RSB= TRUE,
          legendtitle = "CPUE")
+# FAIL contrasts can be applied only to factors with 2 or more levels
+##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
+##contrasts can be applied only to factors with 2 or more levels In addition: There were 50 or more warnings (use warnings() to see the first 50)
+# commented out lines 328&9, find interactions in gbm.auto, causing the problem.
+# also 379-82, which includes the results in the report
 
 #thornback
 gbm.auto(expvar=c(4:11,15,18,22,26,30,34,38),
@@ -77,7 +82,7 @@ gbm.auto(expvar=c(4:11,15,18,22,26,30,34,38),
          legendtitle = "CPUE")
 
 #blonde without 15 interactions
-# scored better originally?
+# scored better originally
 gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          resvar=c(46),
          grids=mygrids,
@@ -111,6 +116,7 @@ gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          map = TRUE,
          RSB= TRUE,
          legendtitle = "CPUE")
+#17/08/15 succeeded
 ####12/08/2015 FAIL####
 ##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
 ##contrasts can be applied only to factors with 2 or more levels In addition: There were 50 or more warnings (use warnings() to see the first 50)
@@ -131,6 +137,7 @@ gbm.auto(expvar=c(4:11,15,20,24,28,32,36,39),
          map = TRUE,
          RSB= TRUE,
          legendtitle = "CPUE")
+# FAIL: contrasts can be applied only to factors with 2 or more levels 
 
 ####model:juve combined preds DON'T####
 # Set WD so I can run all these at once
@@ -233,13 +240,13 @@ gbm.auto(expvar=4:10,
          RSB= TRUE,
          legendtitle = "CPUE")
 
-#thornback
+#thornback: fails @lr=0.01
 gbm.auto(expvar=4:10,
          resvar=12,
          grids=mygrids,
          samples=mysamples,
          tc=c(2,6),
-         lr=c(0.01, 0.005),
+         lr=c(0.005),
          bf=c(0.5),
          gridslat = 2,
          gridslon = 1,
@@ -328,13 +335,13 @@ cor(y_i3, u_i3) # In cor(y_i3, u_i3) : the standard deviation is zero
 # Huh. So it fails for that too...!
 # but not when run as part of the full model.
 
-#spotted
+#spotted #failed @lr=0.01
 gbm.auto(expvar=4:10,
          resvar=14,
          grids=mygrids,
          samples=mysamples,
          tc=c(2,6),
-         lr=c(0.01, 0.005),
+         lr=c(0.005),
          bf=c(0.5),
          gridslat = 2,
          gridslon = 1,
