@@ -1,28 +1,60 @@
-####Line plots begin @ 0####
-# they shouldn't: salinity & temp (& current speed?) don't lend themselves to this.
-# check whether data ranges include zeroes in place of NAs?
-# see dotplots: they do have zeroes. Aren't these (x) just the raw values though? Fitted (y) are generated
-summary(mysamples[,"Salinity"])
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.00    0.00    0.00   11.51   33.99   35.08 
-hist(mysamples[,"Salinity"])
-sum(samples[,"Salinity"]==0,na.rm=TRUE)
-#4452
+####grids to be optional####
+# if grids=FALSE, ignore:
+# lines 10,11, (don't need to change, can be set but unused objects) 40, 54, 
+# sections 16-20, 22-23
+#WORKED!
+
+####variable interactions switch####
+# option to switch off variable interactions if they fail
+# topline switch defaults to varint=TRUE
+# false wraps if(varint) {existing lines}
+# "contrasts can be applied only to factors with 2 or more levels"
+# worked!
 
 ####mapmaker defaults @ toplevel####
 # see gbm.auto section23, landcol mapback legendloc legendtitle??
-# mainmap, heatcol, shape, landcol, legendcol, bg, mapback, grdfun (line17)
+# mapmain, heatcol, shape, landcol, legendcol, lejback, mapback, grdfun (line17)
 # can the user edit these, ACTUALLY? Try changing all of them and see which work
+# works!
+
+####make b&w an option?####
+# default to true
+# WORKS!
+
+####win linux mac####
+# does directory creation work the same? aren't the slashes different ways around?
+# dir.create, l237
+# probably works fine!
+
+####shape default to world?####
+# gbm.map l33 only if shape=coast load coast.
+# or change from data(coast) to data(shape) ? No. Load shape at the start.
+# http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-2.3.4.zip
+
+#if i have function(shape=null){if(!is.null(shape)) {data(coast)
+# shape=coast}} # it doesn't seem to evaluate. But this works:
+# shope = NULL
+# if(is.null(shope)) {print("yay")
+#  print("yay2")}
+
+# could just do function(shape=coast){data(coast) ; draw.shape(shape=coast)}
+# like before and just ignore the fact that data(coast) is called processed & wasted.
+# Or could upfront the data call:
+install.packages("shapefiles")
+require(shapefiles)
+mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHHS_h_L1")
+# and make mymap a named parameter in gbm.auto, and gbm.map
+
+####gbm.map terms####
+# x/y/z are the same as grids[,gridslon]/grids[,gridslat]/grids[,predabund]  ??
+# if so: replace grids/gridslon/gridslat/predabund with x/y/z etc in byx/byy generator
+# done
+# and remove those those terms in gbm.map function : done
+# and references to them in gbm.auto: done
+
 
 ####ZI TEST####
 # See paper by Tu in Qiqqa, ZI data.
-if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>=0.5) ZI=TRUE else ZI=FALSE
-if(ZI=TRUE) #run bin analysis
-  # "else" do nothing i.e. only do gaus. Also have to change final multiplication and folder creation etc]
-
-  ZI="CHECK"
-if(ZI=="CHECK") if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>=0.5) ZI=TRUE else ZI=FALSE
-  
 
 # logs of resvar for ZI data & reverse lognormalise & bias correct later (line 117 gaus BRT gbm.y & sections 22 & 23)
 # asked here: https://stats.stackexchange.com/questions/112292/r-are-data-zero-inflated
@@ -38,31 +70,6 @@ if(ZI=="CHECK") if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>
 # fit Poisson model where the zero and non-zero components contain only the intercept
 # then
 # check if the intercept from the zero component has a significant p-value.
-
-# remember: if NOT ZI then it's ONLY the gaussian BRTs and NOT log-normalised. Need to work out how to do that
-# maybe just, for BIN BRT: if(ZI) {run as is} (no else, don't run it, move on)
-# for Gaus: samples have already been logged or not depending on ZI-ness so no change
-# at end: if(ZI) {unlog procedure} else {maybe do nothing? check}
-# ZI entered in function above, this is auto entered by the test code only if check enabled
-
-# Lines to edit:
-# 91-119
-# 115-118 move/edit progress printer?
-# 137-156 sort report
-# 165-186
-# 203-212
-# 223-224 delete?
-# 227-237
-# 252-266
-# 286-294
-# 313-317
-# 326-333
-# 345
-# 349-350
-# 357: unlog
-# 360-361: multiply
-# 369
-# 373-401 sort report
 
 
 ####Bag fraction optimiser####
@@ -128,7 +135,7 @@ if(ZI=="CHECK") if(sum(samples[,resvar]==0,na.rm=TRUE)/length(samples[,resvar])>
 ####Clean workspace####
 #dump fails: TRY rm() rather than dump() - dont need this for function
 # rm(list = ls()) removes everything
-# running function the dumping everyithng means R is still using 1.7gb of RAM!
+# running function then dumping everything means R is still using 1.7gb of RAM!
 # rm all model-generated files after each run? List what they are here.
 
 ####3D PLOT####
