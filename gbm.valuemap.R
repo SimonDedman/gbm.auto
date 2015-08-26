@@ -64,7 +64,7 @@ for(q in Esteps){
                goodcols = c(5), # only one: resvar
                badcols = c(3), # only one: E
                #goodweight = 1, #not weighting resvar in proper run?
-               #badweight = q,  #
+               #badweight = q,  #.
                species = names(samples[i]), #or set manually
                loop = "both", # only map bothdata,
                mapmain = paste("FishingE weighting: ",badweight,", Total Bpa: ",bpasum=sum(bothdata),sep=""), # Print bothdata sum on map
