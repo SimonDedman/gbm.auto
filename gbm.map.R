@@ -6,7 +6,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     grdfun = mean,   #make.grid operand for >=2 values per cell. Default:mean, other options: sum prod min max sd se var
                     mapmain = "Predicted abundance: ",  #output map image response variable title, from basemap in mapplots
                     species = "Response Variable",  #Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
-                    heatcol,  #abundance colour scale, defaults to heatcol from mapplots, from legend.grid & draw.grid in mapplots.
+                    heatcol = colorRampPalette(c("lightyellow", "yellow", "orange","red", "brown4"))(12), #abundance colour scale, defaults to the heatcol from legend.grid & draw.grid in mapplots.
                     shape = coast, #basemap shape to draw, from draw.shape in mapplots. Defaults: 'coast': UK & Ire
                     landcol = "darkgreen", #colour for 'null' area of map, if appropriate, from draw.shape in mapplots
                     mapback = "lightblue", #basemap background
@@ -14,7 +14,8 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     legendtitle = "CPUE", #the metric of abundance, e.g. CPUE for fisheries, from legend.grid in mapplots
                     lejback = "white",  #backgroud colour of legend, from legend.grid in mapplots
                     zero = TRUE, # allow 0 category in breaks.grid & thus legend? Default TRUE
-                    quantile = 1) # sex max breakpoint; lower this to cutoff outliers
+                    quantile = 1, # sex max breakpoint; lower this to cutoff outliers
+                    ...) # breaks. vector of breakpoints for colour scales; default blank, generated automatically
 
 # Generalised Boosting Models, automated map generator. Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
 
@@ -45,9 +46,9 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
     byx<-mean(cells$bydist,na.rm=TRUE)
     byy<-byx
   }
-  if(zero){heatcol=c("#00000000",colorRampPalette(c("lightyellow", "yellow", "orange", "red", "brown4"))(length(breaks)-2))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
   grd <- make.grid(x, y, z, byx, byy, xlim=range(x), ylim=range(y),fun=grdfun) #create gridded data. fun defaults to sum which is bad
-  breaks <- breaks.grid(grd,zero=zero,quantile=quantile) # define breakpoints from grd, allow 0 category, max=max Z from grd. ncol defaults to 12.
+  if(!exists("breaks")) breaks <- breaks.grid(grd,zero=zero,quantile=quantile)  #if breaks specified, do nothing (it'll be used later). Else generate it.
+  if(zero){heatcol=c("#00000000",colorRampPalette(heatcol)(length(heatcol)-1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
   basemap(xlim=range(x), ylim=range(y), main=paste(mapmain,species,sep=""), bg=mapback)
   draw.grid(grd,breaks,col=heatcol) # plot grd data w/ breaks for colour breakpoints
   draw.shape(shape=shape, col=landcol) # add coastline

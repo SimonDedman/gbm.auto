@@ -1,102 +1,10 @@
-####grids to be optional####
-# if grids=FALSE, ignore:
-# lines 10,11, (don't need to change, can be set but unused objects) 40, 54, 
-# sections 16-20, 22-23
-#WORKED!
+####TO DO####
 
-####variable interactions switch####
-# option to switch off variable interactions if they fail
-# topline switch defaults to varint=TRUE
-# false wraps if(varint) {existing lines}
-# "contrasts can be applied only to factors with 2 or more levels"
-# worked!
+####gbm.auto tc default####
+# should be 2,length(expvar) not 2,5. How to do though? Make not default, if not set by user, sets to that?
 
-####mapmaker defaults @ toplevel####
-# see gbm.auto section23, landcol mapback legendloc legendtitle??
-# mapmain, heatcol, shape, landcol, legendcol, lejback, mapback, grdfun (line17)
-# can the user edit these, ACTUALLY? Try changing all of them and see which work
-# works!
-
-####make b&w an option?####
-# default to true
-# WORKS!
-
-####win linux mac####
-# does directory creation work the same? aren't the slashes different ways around?
-# dir.create, l237
-# probably works fine!
-
-####shape default to world?####
-# gbm.map l33 only if shape=coast load coast.
-# or change from data(coast) to data(shape) ? No. Load shape at the start.
-# http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-2.3.4.zip
-
-#if i have function(shape=null){if(!is.null(shape)) {data(coast)
-# shape=coast}} # it doesn't seem to evaluate. But this works:
-# shope = NULL
-# if(is.null(shope)) {print("yay")
-#  print("yay2")}
-
-# could just do function(shape=coast){data(coast) ; draw.shape(shape=coast)}
-# like before and just ignore the fact that data(coast) is called processed & wasted.
-# Or could upfront the data call:
-install.packages("shapefiles")
-require(shapefiles)
-mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHHS_h_L1")
-# and make mymap a named parameter in gbm.auto, and gbm.map
-
-####gbm.map terms####
-# x/y/z are the same as grids[,gridslon]/grids[,gridslat]/grids[,predabund]  ??
-# if so: replace grids/gridslon/gridslat/predabund with x/y/z etc in byx/byy generator
-# done
-# and remove those those terms in gbm.map function : done
-# and references to them in gbm.auto: done
-
-
-####ZI TEST####
-# See paper by Tu in Qiqqa, ZI data.
-
-# logs of resvar for ZI data & reverse lognormalise & bias correct later (line 117 gaus BRT gbm.y & sections 22 & 23)
-# asked here: https://stats.stackexchange.com/questions/112292/r-are-data-zero-inflated
-
-#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- log1p(samples[resvar]), #yes
-#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- samples[resvar]) #no
-# pscl package
-
-# Zero-inflation is about the shape of the distribution. Therefore, you will have to specify the distribution for the non-zero part (Poisson, Negative Binomial, etc), if you want a formal test. Then you can use a likelihood ratio test to see if the zero-inflated parameters can be dropped from the model. This can be done in R.
-# In cruder terms, zero inflation is defined not only by proportion of zeros but also by the total number of observations. Say, if you assume a zero-inflated Poisson model and your data contain 50% of zeros, you still won't be able to say with certainty that it's zero inflated if the total number of points is only 4. On the other hand, 10% of zeros in 1000 observations can result in a positive test for zero-inflation.
-# Zero-inflated property is associated with count-based data, so I haven't heard of "zero-inflated normal". E.g. in this package:
-
-# fit Poisson model where the zero and non-zero components contain only the intercept
-# then
-# check if the intercept from the zero component has a significant p-value.
-
-
-####Bag fraction optimiser####
-# Trial & error iterative approach to determine the optimal bag fraction for a data set? How? Stop @ whole percentages?
-# Try OPTIM function & see http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
-# Possibly have an option to start with this in the R function.
-
-####OPTIMISE PARAMETERS####
-# Trial & error iterative approach to determine the optimal bag fraction (/ all parameters?)
-# for a data set? How? Stop @ whole percentages. Try OPTIM function & see
-# http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
-# Possibly have an option to start with this in the R function? Separate function?
-# Maybe do as separate function then feed into this so the outputs are jkl?
-# or make one uber function but can use all 3 separately. Uberfunction doesn't need the loops?
-# optim: use Method "L-BFGS-B"
-# require(optimx)
-# see: https://stats.stackexchange.com/questions/103495/how-to-find-optimal-values-for-the-tuning-parameters-in-boosting-trees/105653#105653
-## The caret package in R is tailor made for this.
-# Its train function takes a grid of parameter values and evaluates the performance using various flavors of cross-validation or the bootstrap. The package author has written a book, Applied predictive modeling, which is highly recommended. 5 repeats of 10-fold cross-validation is used throughout the book.
-# For choosing the tree depth, I would first go for subject matter knowledge about the problem, i.e. if you do not expect any interactions - restrict the depth to 1 or go for a flexible parametric model (which is much easier to understand and interpret). That being said, I often find myself tuning the tree depth as subject matter knowledge is often very limited.
-# I think the gbm package tunes the number of trees for fixed values of the tree depth and shrinkage.
-# https://www.youtube.com/watch?v=7Jbb2ItbTC4
-# see gbm.fixed in BRT_ALL.R - having processed the optimal BRT, might as well just use those details going forward rather than re-running the best one again.
-
-####MULTICORE PROCESSING####
+####Multicore Processing####
 #already supposedly incorporated; doesnt work
-
 # Re-investigate multicore R
 # https://stackoverflow.com/questions/4775098/r-with-a-multi-core-processor
 # http://www.google.com/url?q=http%3A%2F%2Fcran.r-project.org%2Fweb%2Fviews%2FHighPerformanceComputing.html&sa=D&sntz=1&usg=AFQjCNEshsLTzWAF9g4cUGzvn5zIfIywsA
@@ -119,9 +27,75 @@ mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHH
 # 6: In title(...) : "n.cores" is not a graphical parameter
 # 7: "n.cores" is not a graphical parameter
 # So: fails and is supposedly done by default anyway.
-#
 # See:
 # C:\Users\Simon\Dropbox\Galway\Analysis\R\Coilin R code\rmpi_example.R
+
+
+####Map shape default####
+# option to default it to world?
+# can I automatically download the zip, unpack the file I need to WD, then import & use?
+# NO! Extensively detail this for people but have them do it themselves.
+# Or make a little function that just does that?
+# gbm.map l33 only if shape=coast load coast.
+# or change from data(coast) to data(shape) ? No. Load shape at the start.
+# http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-2.3.4.zip
+
+#if i have function(shape=null){if(!is.null(shape)) {data(coast)
+# shape=coast}} # it doesn't seem to evaluate. But this works:
+# shope = NULL
+# if(is.null(shope)) {print("yay")
+#  print("yay2")}
+
+# could just do function(shape=coast){data(coast) ; draw.shape(shape=coast)}
+# like before and just ignore the fact that data(coast) is called processed & wasted.
+# Or could upfront the data call:
+install.packages("shapefiles")
+require(shapefiles)
+mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHHS_h_L1")
+# and make mymap a named parameter in gbm.auto, and gbm.map
+
+
+####ZI TEST####
+# See paper by Tu in Qiqqa, ZI data.
+
+# logs of resvar for ZI data & reverse lognormalise & bias correct later (line 117 gaus BRT gbm.y & sections 22 & 23)
+# asked here: https://stats.stackexchange.com/questions/112292/r-are-data-zero-inflated
+
+#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- log1p(samples[resvar]), #yes
+#  samples[paste("grv_",names(samples[resvar]),"4model",sep="")] <- samples[resvar]) #no
+# pscl package
+
+# Zero-inflation is about the shape of the distribution. Therefore, you will have to specify the distribution for the non-zero part (Poisson, Negative Binomial, etc), if you want a formal test. Then you can use a likelihood ratio test to see if the zero-inflated parameters can be dropped from the model. This can be done in R.
+# In cruder terms, zero inflation is defined not only by proportion of zeros but also by the total number of observations. Say, if you assume a zero-inflated Poisson model and your data contain 50% of zeros, you still won't be able to say with certainty that it's zero inflated if the total number of points is only 4. On the other hand, 10% of zeros in 1000 observations can result in a positive test for zero-inflation.
+# Zero-inflated property is associated with count-based data, so I haven't heard of "zero-inflated normal". E.g. in this package:
+
+# fit Poisson model where the zero and non-zero components contain only the intercept
+# then
+# check if the intercept from the zero component has a significant p-value.
+
+
+####OPTIMISE PARAMETERS####
+# Bag fraction optimiser
+# Trial & error iterative approach to determine the optimal bag fraction for a data set? How? Stop @ whole percentages?
+# Try OPTIM function & see http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
+# Possibly have an option to start with this in the R function.
+#
+# Trial & error iterative approach to determine the optimal bag fraction (/ all parameters?)
+# for a data set? How? Stop @ whole percentages. Try OPTIM function & see
+# http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
+# Possibly have an option to start with this in the R function? Separate function?
+# Maybe do as separate function then feed into this so the outputs are jkl?
+# or make one uber function but can use all 3 separately. Uberfunction doesn't need the loops?
+# optim: use Method "L-BFGS-B"
+# require(optimx)
+# see: https://stats.stackexchange.com/questions/103495/how-to-find-optimal-values-for-the-tuning-parameters-in-boosting-trees/105653#105653
+## The caret package in R is tailor made for this.
+# Its train function takes a grid of parameter values and evaluates the performance using various flavors of cross-validation or the bootstrap. The package author has written a book, Applied predictive modeling, which is highly recommended. 5 repeats of 10-fold cross-validation is used throughout the book.
+# For choosing the tree depth, I would first go for subject matter knowledge about the problem, i.e. if you do not expect any interactions - restrict the depth to 1 or go for a flexible parametric model (which is much easier to understand and interpret). That being said, I often find myself tuning the tree depth as subject matter knowledge is often very limited.
+# I think the gbm package tunes the number of trees for fixed values of the tree depth and shrinkage.
+# https://www.youtube.com/watch?v=7Jbb2ItbTC4
+# see gbm.fixed in BRT_ALL.R - having processed the optimal BRT, might as well just use those details going forward rather than re-running the best one again.
+
 
 ####Processing time estimate####
 #  option to have R poll the computer and, when you say go, popup a box saying
@@ -131,6 +105,37 @@ mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHH
 # Edit the BRT progrss counter to account for multiple resvars: currently does e.g. n/8 then loops back to 1. Not useful.
 # Also could print the current resvar name. Maybe do a running time thing? "This is BRT N of X, Y% complete, took time Z, total
 # expected time AA, time remaining AB
+# see proc.time()
+# see http://www.ats.ucla.edu/stat/r/faq/timing_code.htm
+ptm <- proc.time() # Start the clock!
+proc.time() - ptm # Stop the clock
+ptm$elapsed # is the time taken in seconds
+# maybe add to gbm.auto's report. Plus:
+   #  size (total cells, dim) of 'active' database,
+   #  whether maps generated,
+   #  RSB,
+   #  BnW,
+   #  savegbm, 
+   #  varint,
+   #  sizes of tc,lr,bf, (smaller numbers take longer)
+   #  length of tc,lr,bf,
+   #  CPU speed,
+   #  number of CPU cores (assuming multithreading sorted!),
+   #  RAM size
+   #  
+   #  Assumedly something like time=
+   #  dbasesize*sizes(tc,lr,bf)*length(tc*lr*bf) #sizes would need a reciprocal, smaller takes longer
+   #  +savegbm
+   #  +varint
+   #   all*(2 if ZI=true?)
+   #  +map*prod(lengths(tc,lr,bf))
+   #  +RSB*prod(lengths(tc,lr,bf))
+   #  +BnW*prod(lengths(tc,lr,bf))
+   # All divided by CPU*cores*RAM?
+# Run gbm.auto loads of times, changing one parameter through its range each time, and calculate relationship of
+# model parameters to processing time on MY laptop. Then can logically work out how long it should take on another
+# machine? Try it on my home one. RAM doesn't matter unless it's limiting? Limitingness is a function of dbasesize
+# and parameters, especially if I'm not cleaning the workspace within the function run?
 
 ####Clean workspace####
 #dump fails: TRY rm() rather than dump() - dont need this for function
@@ -173,3 +178,46 @@ mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHH
 #           ...)                                      # allows for any additional plotting parameters
 #
 # include eliths BRT_ALL within this code?
+
+
+####DONE####
+####grids to be optional####
+# if grids=FALSE, ignore:
+# lines 10,11, (don't need to change, can be set but unused objects) 40, 54, 
+# sections 16-20, 22-23
+#WORKED!
+
+####variable interactions switch####
+# option to switch off variable interactions if they fail
+# topline switch defaults to varint=TRUE
+# false wraps if(varint) {existing lines}
+# "contrasts can be applied only to factors with 2 or more levels"
+# worked!
+
+####mapmaker defaults @ toplevel####
+# see gbm.auto section23, landcol mapback legendloc legendtitle??
+# mapmain, heatcol, shape, landcol, legendcol, lejback, mapback, grdfun (line17)
+# can the user edit these, ACTUALLY? Try changing all of them and see which work
+# works!
+
+####make b&w an option?####
+# default to true
+# WORKS!
+
+####win linux mac####
+# does directory creation work the same? aren't the slashes different ways around?
+# dir.create, l237
+# probably works fine!
+
+####gbm.map terms####
+# x/y/z are the same as grids[,gridslon]/grids[,gridslat]/grids[,predabund]  ??
+# if so: replace grids/gridslon/gridslat/predabund with x/y/z etc in byx/byy generator
+# done
+# and remove those those terms in gbm.map function : done
+# and references to them in gbm.auto: done
+
+####gbm.auto: BnW####
+# heatcol defaulting to colours not b&w, why? Multiple arguments to same parameter. Fixed now I've set a default?
+# in gbm.map, if people define heatcols, and zero=TRUE, L51 will overwrite heatcol with (alpha + actual heatcolours)
+# zero defaults to true. it will always override heatcols.
+# DONE!
