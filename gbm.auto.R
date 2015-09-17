@@ -3,7 +3,7 @@
             samples = mysamples,          # explanatory & response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset. Default is mysamples
             expvar,                       # list of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default
             resvar,                       # column number of response variable (e.g. CPUE) in samples. Expected, e.g. 94. No default. Column name should be species name.
-            tc = c(2,5),                  # list of permutations of tree complexity allowed, expected e.g. and default: c(2,5) SHOULD DEFAULT TO 2,length(expvar)
+            #tc = c(2,5),                  # list of permutations of tree complexity allowed, expected e.g. and default: c(2,5) SHOULD DEFAULT TO 2,length(expvar)
             lr = c(0.01,0.005),           # list of permutations of learning rate allowed, expected e.g. and default: c(0.01,0.005)
             bf = 0.5,                     # list permutations of bag fraction allowed, expected e.g. & default: 0.5
             ZI = "CHECK",                 # are data zero-inflated? TRUE/FALSE/"CHECK". TRUE? do delta BRT, log-normalised Gaussian, later reverse log-normalised & bias corrected. FALSE: do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
@@ -48,6 +48,7 @@ require(labeling)
 
 expvarnames<-names(samples[expvar]) # list of explanatory variable names
 expvarcols<-cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
+if(!exists("tc")) tc <- c(2,length(expvar)) # if tc not set by user, default to 2,length(expvar)
 
 for(i in resvar){
 m=1 # jkl combo loop counter to allow best bin/gaus BRT choice

@@ -1,8 +1,5 @@
 ####TO DO####
 
-####gbm.auto tc default####
-# should be 2,length(expvar) not 2,5. How to do though? Make not default, if not set by user, sets to that?
-
 ####Multicore Processing####
 #already supposedly incorporated; doesnt work
 # Re-investigate multicore R
@@ -29,6 +26,7 @@
 # So: fails and is supposedly done by default anyway.
 # See:
 # C:\Users\Simon\Dropbox\Galway\Analysis\R\Coilin R code\rmpi_example.R
+# mpi doesn't work on my laptop? due to daily rstudio build, or broken laptop, or neither?
 
 
 ####Map shape default####
@@ -220,4 +218,8 @@ ptm$elapsed # is the time taken in seconds
 # heatcol defaulting to colours not b&w, why? Multiple arguments to same parameter. Fixed now I've set a default?
 # in gbm.map, if people define heatcols, and zero=TRUE, L51 will overwrite heatcol with (alpha + actual heatcolours)
 # zero defaults to true. it will always override heatcols.
+# DONE!
+
+####gbm.auto tc default####
+# should be 2,length(expvar) not 2,5. How to do though? Make not default, if not set by user, sets to that?
 # DONE!
