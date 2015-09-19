@@ -8,7 +8,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     species = "Response Variable",  #Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
                     heatcol = colorRampPalette(c("lightyellow", "yellow", "orange","red", "brown4"))(12), #abundance colour scale, defaults to the heatcol from legend.grid & draw.grid in mapplots.
                     shape = coast, #basemap shape to draw, from draw.shape in mapplots. Defaults: 'coast': UK & Ire
-                    landcol = "darkgreen", #colour for 'null' area of map, if appropriate, from draw.shape in mapplots
+                    landcol = "grey80", #colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey
                     mapback = "lightblue", #basemap background
                     legendloc = "bottomright", #location on map of legend box, from legend.grid in mapplots
                     legendtitle = "CPUE", #the metric of abundance, e.g. CPUE for fisheries, from legend.grid in mapplots

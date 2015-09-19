@@ -7,15 +7,21 @@
 ####prep####
 # set & test working directory
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles")
+setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles")
 getwd()
 
 # load gmb.utils, which contains various of Elith's packages not contained in dismo
 source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
+source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
 
 # load gbm functions
 source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
 source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
 source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R")
+
+source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
+source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
+source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R")
 
 # load grids
 mygrids<-read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA.csv", header = TRUE)
@@ -46,6 +52,7 @@ mysamples<-read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly.csv", header = TRUE, r
 
 # Set WD so I can run all these at once
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators")
+setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators")
 #cuckoo
 gbm.auto(expvar=c(4:11,15,17,21,25,29,33,37),
          resvar=c(44),
@@ -142,6 +149,7 @@ gbm.auto(expvar=c(4:11,15,20,24,28,32,36,39),
 ####model:juve combined preds DON'T####
 # Set WD so I can run all these at once
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Combined Predators")
+setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Combined Predators")
 #cuckoo
 gbm.auto(expvar=c(4:11,15,40),
          resvar=c(44),
@@ -222,6 +230,7 @@ gbm.auto(expvar=c(4:11,15,43),
 ####model: mat F####
 # set wd for mature female samples sheets
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F")
+setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F")
 # load samples
 mysamples<-read.csv("F_Mat_plus_LPUE_plus_Enviro_IS_AllSp.csv", header = TRUE, row.names=NULL)
 
@@ -349,6 +358,62 @@ gbm.auto(expvar=4:10,
          map = TRUE,
          RSB= TRUE,
          legendtitle = "CPUE")
+
+####Conservation maps####
+# simply add Abundance_Preds_only.csv[,Predabund] for juve individual preds & mat Fs
+# then use as z in gbm.map
+for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
+  juves<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matfs<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
+  setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
+
+png(filename = paste("./Conservation_Map_",i,".png",sep=""),
+    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+gbm.map(x = juves[,2],
+        y = juves[,1],
+        z = juves[,3]+matfs[,3],
+        mapmain = "Conservation Value: ",
+        species = i,
+        legendtitle="Combined CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+        #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
+dev.off()}
+
+# C: combo scale 0-2.8, juve 1.9 matF 1.1. Some diff perceptible, some value in it.
+# T: combo 3.5 juve 2.9 matF 0.61. Noticeable influence of matF in offshore band.
+# B: combo 1.1 juve 0.87 matF 0.56. Somewhat noticeable; matF just strengthens central patch.
+# S: Imperceptible diff btwn juve (scale 0-8.4) & combo (0-8.9). Imperceptible influence of matFs (0-1.1)
+
+
+### Scale both to 1
+for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
+  juves<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matfs<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
+  setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
+  
+  juvescale <- juves[,3]/max(juves[,3],na.rm=TRUE)
+  matfscale <- matfs[,3]/max(matfs[,3],na.rm=TRUE)
+  png(filename = paste("./Scale1-1_Conservation_Map_",i,".png",sep=""),
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+  par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+  gbm.map(x = juves[,2],
+          y = juves[,1],
+          z = juvescale+matfscale,
+          mapmain = "Conservation Value: ",
+          species = i,
+          legendtitle="Combined Scaled CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+  #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
+  dev.off()}
+
+# C: combo 1.9. See Blonde.
+# T: combo 1.9 ditto
+# B: combo 1.6. Artifically raises matf's general low abundances areas, slightly obscuring real highs.
+# Unhelpful for mgt? Or useful insofar as you'd only close the top areas anyway, & since matFs are rarer, they more valuable?
+# S: combo 1.6. Does add extra areas around juve peaks, potentially useful.
+
+### Should have equal weighting? Are of equal conservation importance?
 
 ####test section####
 #cuckoo

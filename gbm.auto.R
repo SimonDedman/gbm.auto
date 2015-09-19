@@ -10,6 +10,7 @@
             gridslat = 2,                 # column number for latitude in 'grids'
             gridslon = 1,                 # column number for longitude in 'grids'
             cols = grey.colors(6,1,1),    # barplot colour vector. Assignment in order of explanatory variables. Default: 6*white i.e. blank bars (has border)
+            linesfiles = FALSE,           # save individual line plots' data as csv's?
             savegbm = TRUE,               # save the gbm objects externally? Can reopen later with (e.g.) load("Bin_Best_Model")
             varint = TRUE,                # calculate variable interactions? Default:TRUE, set FALSE if code fails with "contrasts can be applied only to factors with 2 or more levels"
             map = TRUE,                   # save abundance map png files?
@@ -272,6 +273,7 @@ for (o in 1:length(get(Bin_Best_Model)$contributions$var)){
 par(mar=c(1.35,3.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)  #mar=c(1.35,2.4,0.4,0.5)
     # bg=expvarcols[match(get(Bin_Best_Model)$contributions$var[o],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid<-plot.gbm(get(Bin_Best_Model),match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names),lwd=8,return.grid=TRUE)
+if(linesfiles) write.csv(plotgrid, row.names=FALSE, na="", file = paste("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$contributions$var[o]),".csv",sep=""))
 xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose=TRUE) # sets range & ticks
 yy <- labeling::extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose=TRUE) # sets range & ticks
 plot(range(xx),range(yy), t="n", xaxt="n", yaxt="n", bty="n", ylab=NA)
@@ -289,6 +291,7 @@ for (p in 1:length(get(Gaus_Best_Model)$contributions$var)){
   par(mar=c(1.35,3.4,0.4,0.5), fig=c(0,1,0,1), las=1, lwd=8, bty="n", mgp=c(2,0.5,0), xpd=NA)
     # bg=expvarcols[match(get(Gaus_Best_Model)$contributions$var[p],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid<-plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names),lwd=8,return.grid=TRUE)
+if(linesfiles) write.csv(plotgrid, row.names=FALSE, na="", file = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".csv",sep=""))
 xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose=TRUE) # sets range & ticks
 yy <- labeling::extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose=TRUE) # sets range & ticks
 plot(range(xx),range(yy), t="n", xaxt="n", yaxt="n", bty="n", ylab=NA)
