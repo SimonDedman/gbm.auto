@@ -46,7 +46,7 @@ gbm.rsb <- function(samples, grids, expvarnames,gridslat,gridslon,rsbres){
     colnames(rsbdf)[(length(rsbdf)-1):length(rsbdf)] <- c(paste(expvarnames[q],"_hist_diff",sep=""),paste(expvarnames[q],"_hist_diff_mod",sep=""))
     # close expvar loop
   }
-  # create vector of sum of mod diffs, scaled to score out of 1. Add to rsbdf. Globally assign so it's available to gbm.map as Z later. Will cause problems in lops?
+  # create vector of sum of mod diffs, scaled to score out of 1. Add to rsbdf. Globally assign so it's available to gbm.map as Z later. Will cause problems in loops?
   rsbdf<-data.frame(rsbdf,"Unrepresentativeness"=rowMeans(rsbdf[ls(pattern="_hist_diff_mod")]))
   # write out grids to a csv
   write.csv(c(grids[c(gridslat,gridslon)],rsbdf), row.names=FALSE, file=paste("./",names(samples[rsbres]),"/RSB.csv",sep=""))

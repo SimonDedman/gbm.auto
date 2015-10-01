@@ -16,7 +16,8 @@
             map = TRUE,                   # save abundance map png files?
             RSB = TRUE,                   # run representativeness surface builder?
             BnW = TRUE,                   # repeat map (& RSB if TRUE) in black & white for print journals
-            ...)                          # additional parameters, esp for gbm.map (byx, byy, mapmain, heatcol, shape, mapback, landcol, legendtitle, lejback, legendloc, grdfun, zero, quantile)
+            alerts = TRUE,                # play sounds to mark progress steps
+            ...)                          # additional parameters, esp for gbm.map (byx, byy, mapmain, heatcolours, colournumber, shape, mapback, landcol, legendtitle, lejback, legendloc, grdfun, zero, quantile)
 {
 # Generalised Boosting Model / Boosted Regression Tree process chain automater.
 # Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
@@ -47,6 +48,8 @@ require(dismo)
 require(beepr)
 require(labeling)
 
+if(alerts) options(error = function() {beep(9)})  # give warning noise if it fails
+    
 expvarnames<-names(samples[expvar]) # list of explanatory variable names
 expvarcols<-cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 if(!exists("tc")) tc <- c(2,length(expvar)) # if tc not set by user, default to 2,length(expvar)
@@ -116,8 +119,8 @@ if(m==1)
       Bin_Best_Model <- paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l,sep="")}
 
 # progress printer, right aligned
-print(paste("
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXX  Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 n <- n+1   # Add to print counter
 } # close ZI option
 
@@ -169,8 +172,8 @@ if(ZI) {colnames(Report)[((m*5)-1):((m*5)+3)] <- c(paste("Parameter Combo ",m,se
 }
 
 # progress printer, right aligned for visibility
-print(paste("
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 n <- n+1   # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m+1   # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}}        # close loops, producing all BRT/GBM objects then continuing through model selection
@@ -195,8 +198,8 @@ if(min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
                                  bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction))
 
 # progress printer, right aligned for visibility
-print(paste("
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Bin model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Bin model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 } # close ZI
 
 # Same for Gaus
@@ -211,8 +214,8 @@ if(min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
                                  bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction))
 
 # progress printer, right aligned for visibility
-print(paste("
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
 
 ####10. Select final best models####
 if(ZI) {  # don't do if ZI=FALSE
@@ -234,6 +237,10 @@ if(min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
      Gaus_Best_Model <- "Gaus_Best_Simp"}
 # globally assign final model for external testing later
 Gaus_Best_Model<<-get(Gaus_Best_Model)
+
+# progress printer, right aligned for visibility
+if(alerts) beep(2)
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Best models selected    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
 
 ####11. Line plots####
 dir.create(names(samples[i])) # create resvar-named directory for outputs
@@ -302,6 +309,10 @@ axis(2, lwd.ticks=8, lwd=8, at=yy)
 rug(samples[as.character(get(Gaus_Best_Model)$contributions$var[p])][,1], side=1, lwd=5, ticksize=0.03) # all points rug
 dev.off() }
 
+# progress printer, right aligned for visibility
+if(alerts) beep(2)
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+
 ####12. Dot plots####
 if(ZI) {  # don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Best_dot.png",sep=""),
@@ -314,6 +325,10 @@ png(filename = paste("./",names(samples[i]),"/Gaus_Best_dot.png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
 gbm.plot.fits(get(Gaus_Best_Model))
 dev.off()
+
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Dot plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 
 ####13. 3D plot TODO####
 # gbm.perspec(Bin_Best,3,2, z.range=c(0,31), theta=340, phi=35,smooth="none",border="#00000025",col="#ff003310",shade = 0.95, ltheta = 80, lphi = 50)
@@ -334,6 +349,10 @@ Gaus_Bars <- summary(get(Gaus_Best_Model),
         n.trees=get(Gaus_Best_Model)$n.trees,
         plotit=FALSE, order=TRUE, normalize=TRUE, las=1, main=NULL)
 write.csv(Gaus_Bars, file=paste("./",names(samples[i]),"/Gaussian BRT Variable contributions.csv",sep=""), row.names=FALSE)
+
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 
 # produce graphics
 if(ZI) {  # don't do if ZI=FALSE
@@ -356,10 +375,17 @@ text(0.1, midpoints,labels=rev(Gaus_Bars[,1]),adj=0,cex=1.5)
 axis(side = 1, lwd = 6, outer=TRUE, xpd=NA)
 dev.off()
 
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
+
 ####15. Variable interactions####
 # only do them if varint=TRUE, the default. Only do bin if ZI=TRUE
 if(ZI) if(varint) find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
 if(varint) find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
+# progress printer, right aligned for visibility
+if(varint) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXX    Variable interactions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))}
+if(alerts) beep(2)
 
 #avoid sections 16-20 if not predicting to grids
 if(!is.null(grids)) {
@@ -368,10 +394,18 @@ if(ZI) {  # don't do if ZI=FALSE
 gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
 grids$Bin_Preds <- Bin_Preds
 } # close ZI
+  
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Binomial predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 
 ####17. Gaussian predictions####
 gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
 if(ZI) {grids$Gaus_Preds <- Gaus_Preds
+
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Gaussian predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 
 ####18. Backtransform logged Gaus to unlogged####
 grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals,na.rm=FALSE)^2)
@@ -379,6 +413,10 @@ grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residua
 ####19. BIN*positive abundance = final abundance####
 grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
 predabund <- which(colnames(grids)=="PredAbund") # predicted abundance column number for writecsv
+
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Final abundance calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 
 ####20. Final saves####
 # CSV of Predicted values at each site inc predictor variables' values.
@@ -388,6 +426,10 @@ write.csv(grids[c(gridslat,gridslon,predabund)], row.names=FALSE, file = paste("
 if(savegbm) {save(Gaus_Best_Model,file = paste("./",names(samples[i]),"/Gaus_Best_Model",sep=""))
   if(ZI) {save(Bin_Best_Model,file = paste("./",names(samples[i]),"/Bin_Best_Model",sep=""))}} #only save bin if ZI=TRUE
 } #close grids option from above section 16
+
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Output CSVs written   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
 
 ####21. Finalise & Write Report####
 # only do final variable interaction lines if varint=TRUE
@@ -421,14 +463,21 @@ if(varint) Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.nam
                               paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2],sep=""))
 write.csv(Report, row.names=FALSE, na="", file = paste("./",names(samples[i]),"/Report.csv",sep=""))
 
+# progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Report CSV written    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+if(alerts) beep(2)
+
 #avoid sections 22&23 if not predicting to grids
 if(!is.null(grids)) {
   
 ####22. Representativeness surface builder####
 # does NOT plot the surface, just builds it. If built, it will be plotted by map maker.
-if(RSB==TRUE){rsbdf <- gbm.rsb(samples,grids,expvarnames,gridslat,gridslon,rsbres=i)}
-
+  if(RSB==TRUE){rsbdf_bin <- gbm.rsb(samples,grids,expvarnames,gridslat,gridslon,rsbres=i)
+  pos_samples <- subset(samples, brv >0)
+  rsbdf_gaus <- gbm.rsb(pos_samples,grids,expvarnames,gridslat,gridslon,rsbres=i)}
+  
 ####23. Map maker####
+if(!exists("mainlegendtitle")) mainlegendtitle = "CPUE" # create mainlegendtitle default if absent. Else will cause error if unset.
 if(map==TRUE) {
   # generate output image & set parameters
   png(filename = paste("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png",sep=""),
@@ -439,9 +488,14 @@ if(map==TRUE) {
           y = grids[,gridslat],
           z = grids[,predabund],
           species = names(samples[i]),
+          legendtitle = mainlegendtitle,
           ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
-  # byx, byy, mapmain, heatcol, shape, mapback, landcol, legendtitle, lejback, legendloc, grdfun, zero, quantile
+  # byx, byy, mapmain, heatcol, shape, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
   dev.off()
+  
+  # progress printer, right aligned for visibility
+  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+  if(alerts) beep(2)
   
   # if BnW=TRUE, run again in black & white for journal submission
   if(BnW){
@@ -452,47 +506,127 @@ if(map==TRUE) {
           y = grids[,gridslat],
           z = grids[,predabund],
           species = names(samples[i]),
+          legendtitle = mainlegendtitle,
           landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
           mapback = "white",
-          heatcol = grey.colors(12, start=1, end=0), #draw.grid default is 12 colours
+          heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
           ...) # allows gbm.auto's optional terms to be passed to subfunctions
   dev.off()} # close & save plotting device & close BnW optional
   
-
+  # progress printer, right aligned for visibility
+  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Black & white map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+  if(alerts) beep(2)
+  
   # if RSB called, plot that surface separately
   if(RSB==TRUE){
-    png(filename = paste("./",names(samples[i]),"/RSB_Map_",names(samples[i]),".png",sep=""),
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf[,"Unrepresentativeness"],
+            z = rsbdf_bin[,"Unrepresentativeness"],
             mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
             legendtitle = "UnRep 0-1",
             ...)
     dev.off()
     
-    # if BnW=TRUE, do again for b&w
-    if(BnW){
-    png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_",names(samples[i]),".png",sep=""),
+    # progress printer, right aligned for visibility
+    print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+    if(alerts) beep(2)
+    
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf[,"Unrepresentativeness"],
+            z = rsbdf_gaus[,"Unrepresentativeness"],
             mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
-            heatcol = grey.colors(12, start=1, end=0), #draw.grid default is 12 colours
+            legendtitle = "UnRep 0-1",
+            ...)
+    dev.off()
+    
+    # progress printer, right aligned for visibility
+    print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+    if(alerts) beep(2)
+    
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png",sep=""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+            y = grids[,gridslat],
+            z = rsbdf_bin[,"Unrepresentativeness"]+rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            species = names(samples[i]),
+            legendtitle = "UnRep 0-2",
+            ...)
+    dev.off()
+    
+    # progress printer, right aligned for visibility
+    print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB combination map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+    if(alerts) beep(2)
+    
+    # if BnW=TRUE, do again for b&w
+    if(BnW){
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png",sep=""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+            y = grids[,gridslat],
+            z = rsbdf_bin[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            species = names(samples[i]),
+            heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
             legendtitle = "UnRep 0-1",
             ...)
+    dev.off()
+    
+    # progress printer, right aligned for visibility
+    print(paste("XXXXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+    if(alerts) beep(2)
+    
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png",sep=""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+            y = grids[,gridslat],
+            z = rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            species = names(samples[i]),
+            heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
+            landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
+            legendtitle = "UnRep 0-1",
+            ...)
+    dev.off()
+    
+    # progress printer, right aligned for visibility
+    print(paste("XXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+    if(alerts) beep(2)
+    
+    png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png",sep=""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
+    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+            y = grids[,gridslat],
+            z = rsbdf_bin[,"Unrepresentativeness"]+rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            species = names(samples[i]),
+            heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
+            landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
+            legendtitle = "UnRep 0-2",
+            ...)
     dev.off()}
+
+    # progress printer, right aligned for visibility
+    print(paste("XXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Combination map generated    XXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
+    if(alerts) beep(2)
     
     } # close RSB mapper
    } # close Map Maker
   } #close grids option from above section 22
  } # close response variable (resvar) loop
-beep(8) # notify the user with a noise, since this process can take a long time.
+if(alerts) beep(8) # notify the user with a noise, since this process can take a long time.
 } # close the function
 ####END####

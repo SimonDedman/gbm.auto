@@ -262,6 +262,10 @@ if("fish" %in% plotthis){  # min area for Bpa, starting with best fish cells
        break}}
     }
 
+####Fix proposal####
+# Instead of running gbm.map as a whole, run the component lines in order, but add an extra draw.grid
+
+
 if("fishermen" %in% plotthis){  # min area for Bpa, starting with best fisherman effort cells
   minEmap <- data.frame(data[,loncolno], data[,latcolno], pmax(0,gooddata - data[,ncol(data)])*m)
   minEmap <- minEmap[ order(minEmap[,3]),] # smallest to largest B

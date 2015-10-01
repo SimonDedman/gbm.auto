@@ -65,8 +65,31 @@ gbm.auto(expvar=c(4:11,15,17,21,25,29,33,37),
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
-         legendtitle = "CPUE")
+         RSB = TRUE,
+         varint = FALSE,
+         zero = FALSE)
+
+# FAIL 25/9/15
+# Error in gbm.map(x = grids[, gridslon], y = grids[, gridslat], z = rsbdf[,  :
+# formal argument "legendtitle" matched by multiple actual arguments
+# line 472. Ah ok, legendtitle set by top call (here, above) as CPUE, then unset in gbm.map so defaults to gbm.map's default
+# which is also CPUE.
+# when gbm.auto reaches line 472, legendtitle, why doesn't it either
+# A: allow the gbm.auto code to overwrite legendtitle with "Unrep 0-1" or
+# B: overwrite legendtitle with CPUE?
+# Essentially, how can there be >1 objects with the same name?
+# Should i take legendtitle out of gbm.map's formal arguments and put it in the body as
+# if(isblank) or whatever?
+# no: legendtitle IS a formal argument in gbm.map, it's required.
+# This is a problem at gbm.auto level, NOT gbm.map level. Gbm.map is fine.
+# what if I set the normal gbm.map calls in gbm.auto with legendtitle=mainlegendtitle or something?
+# then set mainlegendtitle="CPUE" in the top call, here?
+# but what if mainlegendtitle is left blank by user?
+# in gbm.auto:
+if(!exists("mainlegendtitle")) mainlegendtitle = "CPUE"
+# add this info to P4
+
+
 # FAIL contrasts can be applied only to factors with 2 or more levels
 ##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
 ##contrasts can be applied only to factors with 2 or more levels In addition: There were 50 or more warnings (use warnings() to see the first 50)
@@ -86,7 +109,8 @@ gbm.auto(expvar=c(4:11,15,18,22,26,30,34,38),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 
 #blonde without 15 interactions
 # scored better originally
@@ -102,7 +126,8 @@ gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 
 ####FAIL same problem####
 # Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]):contrasts can be applied only to factors with 2 or more levels
@@ -122,7 +147,8 @@ gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 #17/08/15 succeeded
 ####12/08/2015 FAIL####
 ##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
@@ -143,7 +169,8 @@ gbm.auto(expvar=c(4:11,15,20,24,28,32,36,39),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 # FAIL: contrasts can be applied only to factors with 2 or more levels 
 
 ####model:juve combined preds DON'T####
@@ -163,7 +190,9 @@ gbm.auto(expvar=c(4:11,15,40),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         legendtitle = "CPUE",
+         varint = FALSE,
+         zero = FALSE)
 
 #thornback
 gbm.auto(expvar=c(4:11,15,41),
@@ -178,7 +207,9 @@ gbm.auto(expvar=c(4:11,15,41),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         legendtitle = "CPUE",
+         varint = FALSE,
+         zero = FALSE)
 
 #blonde without 10 interactions
 gbm.auto(expvar=c(4:11,15,42),
@@ -193,7 +224,8 @@ gbm.auto(expvar=c(4:11,15,42),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         legendtitle = "CPUE",
+         zero = FALSE)
 
 #re run blonde w/ smaller LR for 10 interactions (1 combo), then test against scores for 2 & 5 interactions
 gbm.auto(expvar=c(4:11,15,42),
@@ -208,7 +240,9 @@ gbm.auto(expvar=c(4:11,15,42),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         legendtitle = "CPUE",
+         varint = FALSE,
+         zero = FALSE)
 
 #spotted
 gbm.auto(expvar=c(4:11,15,43),
@@ -223,7 +257,9 @@ gbm.auto(expvar=c(4:11,15,43),
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         legendtitle = "CPUE",
+         varint = FALSE,
+         zero = FALSE)
 
 # individual - blonde: no predicted abundance & rsb figures, why? Not enough data? Worked before?
 
@@ -240,14 +276,15 @@ gbm.auto(expvar=4:10,
          grids=mygrids,
          samples=mysamples,
          tc=c(2,6),
-         lr=c(0.01, 0.005),
+         lr=c(0.005),
          bf=c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 
 #thornback: fails @lr=0.01
 gbm.auto(expvar=4:10,
@@ -262,7 +299,8 @@ gbm.auto(expvar=4:10,
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 
 #blonde
 gbm.auto(expvar=4:10,
@@ -277,7 +315,8 @@ gbm.auto(expvar=4:10,
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 
 # 12/08/2015:
 1: In cor(y_i, u_i) : the standard deviation is zero
@@ -357,7 +396,8 @@ gbm.auto(expvar=4:10,
          ZI = TRUE,
          map = TRUE,
          RSB= TRUE,
-         legendtitle = "CPUE")
+         varint = FALSE,
+         zero = FALSE)
 
 ####Conservation maps####
 # simply add Abundance_Preds_only.csv[,Predabund] for juve individual preds & mat Fs
@@ -374,9 +414,10 @@ par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
 gbm.map(x = juves[,2],
         y = juves[,1],
         z = juves[,3]+matfs[,3],
-        mapmain = "Conservation Value: ",
+        mapmain = "Predicted CPUE (numbers per hour): ",
         species = i,
-        legendtitle="Combined CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+        zero=FALSE,
+        legendtitle="CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
         #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
 dev.off()}
 
@@ -400,12 +441,14 @@ for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
   par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
   gbm.map(x = juves[,2],
           y = juves[,1],
-          z = juvescale+matfscale,
-          mapmain = "Conservation Value: ",
+          z = (juvescale+matfscale)*50,
+          mapmain = "Predicted CPUE (numbers per hour): ",
           species = i,
-          legendtitle="Combined Scaled CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+          zero=FALSE,
+          legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
   #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
   dev.off()}
+beep(8)
 
 # C: combo 1.9. See Blonde.
 # T: combo 1.9 ditto
@@ -414,6 +457,50 @@ for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
 # S: combo 1.6. Does add extra areas around juve peaks, potentially useful.
 
 ### Should have equal weighting? Are of equal conservation importance?
+
+### Glue scaled outputs together
+  juve_C<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Cuckoo/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  juve_T<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Thornback/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  juve_B<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Blonde/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  juve_S<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Spotted/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matf_C<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Cuckoo/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matf_T<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Thornback/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matf_B<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Blonde/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matf_S<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Spotted/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/",sep=""))
+  setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/",sep=""))
+  
+  juve_C_scale <- juve_C[,3]/max(juve_C[,3],na.rm=TRUE)
+  juve_T_scale <- juve_T[,3]/max(juve_T[,3],na.rm=TRUE)
+  juve_B_scale <- juve_B[,3]/max(juve_B[,3],na.rm=TRUE)
+  juve_S_scale <- juve_S[,3]/max(juve_S[,3],na.rm=TRUE)
+  matf_C_scale <- matf_C[,3]/max(matf_C[,3],na.rm=TRUE)
+  matf_T_scale <- matf_T[,3]/max(matf_T[,3],na.rm=TRUE)
+  matf_B_scale <- matf_B[,3]/max(matf_B[,3],na.rm=TRUE)
+  matf_S_scale <- matf_S[,3]/max(matf_S[,3],na.rm=TRUE)
+  
+  allscaled <-  {juve_C_scale + 
+                juve_T_scale + 
+                juve_B_scale + 
+                juve_S_scale +
+                matf_C_scale +
+                matf_T_scale +
+                matf_B_scale +
+                matf_S_scale}
+  
+  png(filename = "Scaled_Conservation_Map.png",
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+  par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+  gbm.map(x = juves[,2],
+          y = juves[,1],
+          z = allscaled,
+          mapmain = "Predicted CPUE (numbers per hour): ",
+          species = "All Species",
+          zero=FALSE,
+          legendtitle="CPUE (Scaled)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+  #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
+  dev.off()
+
 
 ####test section####
 #cuckoo

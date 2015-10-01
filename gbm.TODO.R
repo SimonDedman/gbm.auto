@@ -1,5 +1,9 @@
 ####TO DO####
 
+####gbm.auto heatcols for BnW gbm.map####
+#manually setting heatcolours in the gbm.auto(call) passes heatcolours to gbm.auto for gbm.map
+#but it'll override the grey colours for the B&W maps
+
 ####Multicore Processing####
 #already supposedly incorporated; doesnt work
 # Re-investigate multicore R
