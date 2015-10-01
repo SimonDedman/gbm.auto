@@ -50,6 +50,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   grd <- make.grid(x, y, z, byx, byy, xlim=range(x), ylim=range(y),fun=grdfun) #create gridded data. fun defaults to sum which is bad
   heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
   if(!exists("breaks")) breaks <- breaks.grid(grd,zero=zero,quantile=quantile,ncol=length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
+  thebreaks <<- breaks
   if(zero){heatcol=c("#00000000",colorRampPalette(heatcol)(length(heatcol)-1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
   basemap(xlim=range(x), ylim=range(y), main=paste(mapmain,species,sep=""), bg=mapback, xlab = "Longitude (°W)", ylab = "Latitude (°N)")
   #remove xlab & ylab above for general code

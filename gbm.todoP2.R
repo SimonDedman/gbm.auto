@@ -445,6 +445,35 @@ for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
           mapmain = "Predicted CPUE (numbers per hour): ",
           species = i,
           zero=FALSE,
+          breaks = c(0,20,40,60,80,100),
+          colournumber = 5,
+          legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+  #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
+  dev.off()}
+beep(8)
+
+# Do again in B&W
+for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
+  juves<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  matfs<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
+  dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
+  setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
+  
+  juvescale <- juves[,3]/max(juves[,3],na.rm=TRUE)
+  matfscale <- matfs[,3]/max(matfs[,3],na.rm=TRUE)
+  png(filename = paste("./Scale1-1_Conservation_Map_BnW_",i,".png",sep=""),
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+  par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+  gbm.map(x = juves[,2],
+          y = juves[,1],
+          z = (juvescale+matfscale)*50,
+          mapmain = "Predicted CPUE (numbers per hour): ",
+          species = i,
+          zero=FALSE,
+          breaks = c(0,20,40,60,80,100),
+          colournumber = 5,
+          heatcolours = grey.colors(5, start=1, end=0),
+          mapback = "white",
           legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
   #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
   dev.off()}
@@ -493,11 +522,31 @@ beep(8)
   par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
   gbm.map(x = juves[,2],
           y = juves[,1],
-          z = allscaled,
+          z = allscaled*12.5,
           mapmain = "Predicted CPUE (numbers per hour): ",
           species = "All Species",
           zero=FALSE,
-          legendtitle="CPUE (Scaled)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+          #breaks = c(0,20,40,60,80,100),
+          #colournumber = 5,
+          legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+  #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
+  dev.off()
+  
+  # again in B&W
+  png(filename = "Scaled_Conservation_Map_BnW.png",
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+  par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+  gbm.map(x = juves[,2],
+          y = juves[,1],
+          z = allscaled*12.5,
+          mapmain = "Predicted CPUE (numbers per hour): ",
+          species = "All Species",
+          zero=FALSE,
+          #breaks = c(0,20,40,60,80,100),
+          #colournumber = 5,
+          heatcolours = grey.colors(5, start=1, end=0),
+          mapback = "white",
+          legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
   #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
   dev.off()
 
