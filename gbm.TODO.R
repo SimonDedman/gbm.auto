@@ -1,5 +1,9 @@
 ####TO DO####
 
+# check model object saves are working - previously was saving only the name of the best model, wasn't using get()
+# line 428
+# fails with get() works without. Why didn't work on previous runs then?!
+
 ####gbm.auto heatcols for BnW gbm.map####
 #manually setting heatcolours in the gbm.auto(call) passes heatcolours to gbm.auto for gbm.map
 #but it'll override the grey colours for the B&W maps
@@ -56,6 +60,7 @@ require(shapefiles)
 mymap <- read.shapefile("C:/Users/Simon/Desktop/gshhg-shp-2.3.4/GSHHS_shp/h/GSHHS_h_L1")
 # and make mymap a named parameter in gbm.auto, and gbm.map
 
+# see also: gmap in dismo
 
 ####ZI TEST####
 # See paper by Tu in Qiqqa, ZI data.

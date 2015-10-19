@@ -23,6 +23,7 @@ mygrids<-read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subset
 
 # set directory, without fishing E as an expvar
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/Without E")
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/Without E")
 #cuckoo
 gbm.auto(expvar=c(4:9),resvar=c(12),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
          gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
@@ -67,25 +68,28 @@ gbm.auto(expvar=c(4:9,11),resvar=c(12:15),grids=mygrids,tc=c(2,6),lr=c(0.005, 0.
 
 
 ####run valuemaps####
+# with E
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
 preddata <- read.csv(file="C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPredsWithE_F_E.csv")
 
+# without E
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/Without E/ValueMaps")
 preddata <- read.csv(file="C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/Without E/AllPredsWithE_F_E.csv")
 
-#linux
+#linux with E
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
 preddata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPredsWithE_F_E.csv")
 
+#linux without E
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/Without E/ValueMaps")
 preddata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/Without E/AllPredsWithE_F_E.csv")
 
 # Cuckoo
 gbm.valuemap(data=preddata,
-             #scalerange=c(3,8),
+             scalerange=c(3,8),
              goodcols=c(3),
              badcols=c(8),
-             goodname="Cuckoo65unscaled",
+             goodname="Cuckoo66scaled",
              #goodweight = c(3),
              #badweight = c(1),
              steps=10,
@@ -93,11 +97,12 @@ gbm.valuemap(data=preddata,
              #savethis = c("data","report"),
              savethis = NULL,
              #plotthis = c("good","bad","both","line","fish","fishermen"),
-             plotthis = c("fish"),
+             plotthis = c("both"),
              #plotthis = NULL,
              latcolno = 1,
              loncolno = 2,
-             m = 1)
+             m = 1,
+             zero = FALSE)
              
 # fishermen map takes ages, but now works. Weird that it takes so long...
 # 34 effort map (bad) inverted. Put inversion lower down. Only good/bad/both, no line, no "fish"?

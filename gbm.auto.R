@@ -227,7 +227,7 @@ if(min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
   {Bin_Best_Score <- Bin_Best_Simp$self.statistics$correlation
    Bin_Best_Model <- "Bin_Best_Simp"}
 # globally assign final model for external testing later
-Bin_Best_Model<<-get(Bin_Best_Model)
+#Bin_Best_Model<<-get(Bin_Best_Model)
 } # close ZI
 
 # Same for Gaus:
@@ -236,7 +236,7 @@ if(min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
     {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
      Gaus_Best_Model <- "Gaus_Best_Simp"}
 # globally assign final model for external testing later
-Gaus_Best_Model<<-get(Gaus_Best_Model)
+#Gaus_Best_Model<<-get(Gaus_Best_Model)
 
 # progress printer, right aligned for visibility
 if(alerts) beep(2)
@@ -423,9 +423,15 @@ if(alerts) beep(2)
 write.csv(grids,row.names=FALSE, file = paste("./",names(samples[i]),"/Abundance_Preds_All.csv",sep=""))
 # CSV of Predicted values at each site without predictor variables' values.
 write.csv(grids[c(gridslat,gridslon,predabund)], row.names=FALSE, file = paste("./",names(samples[i]),"/Abundance_Preds_only.csv",sep=""))
-if(savegbm) {save(Gaus_Best_Model,file = paste("./",names(samples[i]),"/Gaus_Best_Model",sep=""))
-  if(ZI) {save(Bin_Best_Model,file = paste("./",names(samples[i]),"/Bin_Best_Model",sep=""))}} #only save bin if ZI=TRUE
 } #close grids option from above section 16
+# Save model objects if switched on
+Bin_Best_Model_Object<-get(Bin_Best_Model)
+Bin_Best_Model<<-Bin_Best_Model_Object
+Gaus_Best_Model_Object<-get(Gaus_Best_Model)
+Gaus_Best_Model<<-Gaus_Best_Model_Object
+
+if(savegbm) {save(Gaus_Best_Model_Object,file = paste("./",names(samples[i]),"/Gaus_Best_Model",sep=""))
+  if(ZI) {save(Bin_Best_Model_Object,file = paste("./",names(samples[i]),"/Bin_Best_Model",sep=""))}} #only save bin if ZI=TRUE
 
 # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Output CSVs written   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
@@ -433,7 +439,11 @@ if(alerts) beep(2)
 
 ####21. Finalise & Write Report####
 # only do final variable interaction lines if varint=TRUE
-if(ZI) Report[1:2,(reportcolno-13)] <- c(paste("Model combo: ",Bin_Best_Model,sep=""),paste("Model CV score: ",Bin_Best_Score,sep=""))
+if(ZI) Report[1:5,(reportcolno-13)] <- c(paste("Model combo: ",Bin_Best_Model,sep=""),
+                                         paste("Model CV score: ",Bin_Best_Score,sep=""),
+                                         paste("Training data AUC score: ",get(Bin_Best_Model)$self.statistics$discrimination,sep=""),
+                                         paste("CV AUC score: ",get(Bin_Best_Model)$cv.statistics$discrimination.mean,sep=""),
+                                         paste("CV AUC se: ",get(Bin_Best_Model)$cv.statistics$discrimination.se,sep=""))
 Report[1:2,(reportcolno-12)] <- c(paste("Model combo: ",Gaus_Best_Model,sep=""),paste("Model CV score: ",Gaus_Best_Score,sep=""))
 if(ZI) Report[1:dim(subset(Bin_Best_Simp_Check$final.drops,order>0))[1],(reportcolno-11)] <- as.character(subset(Bin_Best_Simp_Check$final.drops,order>0)$preds)
 if(ZI) Report[1:(length(Bin_Best_Simp_Check$final.drops$preds)-dim(subset(Bin_Best_Simp_Check$final.drops,order>0))[1]),(reportcolno-10)] <-
@@ -494,6 +504,7 @@ if(map==TRUE) {
   dev.off()
   
   # progress printer, right aligned for visibility
+  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Reticulating Splines     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
   if(alerts) beep(2)
   
@@ -524,10 +535,10 @@ if(map==TRUE) {
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Unrepresentativeness"],
-            mapmain = "Unrepresentativeness: ",
+            z = rsbdf_bin[,"Representativeness"],
+            mapmain = "Representativeness: ",
             species = names(samples[i]),
-            legendtitle = "UnRep 0-1",
+            legendtitle = "Rep 0-1",
             ...)
     dev.off()
     
@@ -540,10 +551,10 @@ if(map==TRUE) {
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_gaus[,"Unrepresentativeness"],
-            mapmain = "Unrepresentativeness: ",
+            z = rsbdf_gaus[,"Representativeness"],
+            mapmain = "Representativeness: ",
             species = names(samples[i]),
-            legendtitle = "UnRep 0-1",
+            legendtitle = "Rep 0-1",
             ...)
     dev.off()
     
@@ -556,10 +567,10 @@ if(map==TRUE) {
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Unrepresentativeness"]+rsbdf_gaus[,"Unrepresentativeness"],
-            mapmain = "Unrepresentativeness: ",
+            z = rsbdf_bin[,"Representativeness"]+rsbdf_gaus[,"Representativeness"],
+            mapmain = "Representativeness: ",
             species = names(samples[i]),
-            legendtitle = "UnRep 0-2",
+            legendtitle = "Rep 0-2",
             ...)
     dev.off()
     
@@ -574,12 +585,12 @@ if(map==TRUE) {
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Unrepresentativeness"],
-            mapmain = "Unrepresentativeness: ",
+            z = rsbdf_bin[,"Representativeness"],
+            mapmain = "Representativeness: ",
             species = names(samples[i]),
             heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
-            legendtitle = "UnRep 0-1",
+            legendtitle = "Rep 0-1",
             ...)
     dev.off()
     
@@ -592,12 +603,12 @@ if(map==TRUE) {
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_gaus[,"Unrepresentativeness"],
-            mapmain = "Unrepresentativeness: ",
+            z = rsbdf_gaus[,"Representativeness"],
+            mapmain = "Representativeness: ",
             species = names(samples[i]),
             heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
-            legendtitle = "UnRep 0-1",
+            legendtitle = "Rep 0-1",
             ...)
     dev.off()
     
@@ -610,12 +621,12 @@ if(map==TRUE) {
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
     gbm.map(x = grids[,gridslon], # add representativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Unrepresentativeness"]+rsbdf_gaus[,"Unrepresentativeness"],
-            mapmain = "Unrepresentativeness: ",
+            z = rsbdf_bin[,"Representativeness"]+rsbdf_gaus[,"Representativeness"],
+            mapmain = "Representativeness: ",
             species = names(samples[i]),
             heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
-            legendtitle = "UnRep 0-2",
+            legendtitle = "Rep 0-2",
             ...)
     dev.off()}
 

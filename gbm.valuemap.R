@@ -197,9 +197,9 @@ if("both" %in% plotthis){
   gbm.map(x = data[,loncolno],
           y = data[,latcolno],
           z = bothdata*m,
-          mapmain = "Fishing Effort: ",
-          species = "",
-          legendtitle=legendtitleV, # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+          mapmain = "Biomass + Fishing Effort: ",
+          species = goodname,
+          legendtitle=legendtitleV, # passes the legendtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
           ...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
   dev.off()}
 
