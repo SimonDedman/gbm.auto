@@ -13,6 +13,7 @@ source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
 
 ####run gbm.auto without E####
+####FULL DATASET GBM.AUTO RUNS FOR FUTURE REFERENCE####
 # Load data
 mysamples<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names=NULL)
 mygrids<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
@@ -40,9 +41,16 @@ gbm.auto(expvar=c(4:9),resvar=c(14),grids=mygrids,samples=mysamples,tc=c(2,6),lr
 gbm.auto(expvar=c(4:9),resvar=c(15),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
          gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
 
+####SINGLE LINE FULL DATASET GBM.AUTO RUN####
 #all at once
 gbm.auto(expvar=c(4:9),resvar=c(12:15),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
          gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
+
+####everything below now defunct####
+
+
+
+
 
 ####run gbm.auto with E####
 setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E")
@@ -155,6 +163,7 @@ gbm.valuemap(data=preddata,
 # 63 extents did nothing. Changed from NA to 0
 # 64 works. try par(new=TRUE) to overlay
 # 65 nope.
+# 66 dunno what I changed. Potentially manually drew in the blacks w/ GIMP colour replace. Need to run gbm.map elements separately, see Hans' email.
 
 goodweight = NULL
 if(!is.null(goodweight)) print("shouldn't evaluate")
