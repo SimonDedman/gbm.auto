@@ -1,8 +1,13 @@
 ####TO DO####
+# gbm.auto:
+# unrep plots: log+1 & have scale go to 2.
+# gbm.map: log scale option. Where? Breaks? Data are between low values. We want it to always go to 2.
+ # So should do the log1p of rsbdfs @ gbm.auto lines 538 554 570? As an option i.e. ifelse(logRSB,logem,dont)
+# could I incorporate gbm.utils, gbm.rsb and gbm.map into gbm.auto? In what sense?
 
-# check model object saves are working - previously was saving only the name of the best model, wasn't using get()
-# line 428
-# fails with get() works without. Why didn't work on previous runs then?!
+# gbm.auto / gbm.todo2 / gbm.conserve
+# make p2 conservation scaling into a script.
+# Integrate into gbm.auto, maybe as a wrapper?
 
 ####gbm.auto heatcols for BnW gbm.map####
 #manually setting heatcolours in the gbm.auto(call) passes heatcolours to gbm.auto for gbm.map
@@ -188,6 +193,8 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# unrep plots: Change title back to unrep
+
 ####grids to be optional####
 # if grids=FALSE, ignore:
 # lines 10,11, (don't need to change, can be set but unused objects) 40, 54, 

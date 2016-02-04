@@ -17,7 +17,8 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     zero = TRUE, # allow 0 category in breaks.grid & thus legend? Default TRUE
                     quantile = 1, # set max breakpoint; lower this to cutoff outliers
                     byxout = FALSE, # export byx to use elsewhere? Default:FALSE
-                    ...) # breaks. vector of breakpoints for colour scales; default blank, generated automatically
+                    breaks = NULL, # breaks. vector of breakpoints for colour scales; default blank, generated automatically
+                    ...) 
 
 # Generalised Boosting Models, automated map generator. Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
 
@@ -51,7 +52,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   }
   grd <- make.grid(x, y, z, byx, byy, xlim=range(x), ylim=range(y),fun=grdfun) #create gridded data. fun defaults to sum which is bad
   heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
-  if(!exists("breaks")) breaks <- breaks.grid(grd,zero=zero,quantile=quantile,ncol=length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
+  if(is.null(breaks)) breaks <- breaks.grid(grd,zero=zero,quantile=quantile,ncol=length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
   if(zero){heatcol=c("#00000000",colorRampPalette(heatcol)(length(heatcol)-1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
   basemap(xlim=range(x), ylim=range(y), main=paste(mapmain,species,sep=""), bg=mapback, xlab = "Longitude (°W)", ylab = "Latitude (°N)")
   #remove xlab & ylab above for general code

@@ -1,14 +1,35 @@
 ####Script to Run P3 analysis:
 # valuemaps, scaled data, weighted scaled data, scales (&weighted?) + inverted effort combo data, maps & closed areas
 
-####Load scripts & data####
-source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
-source('C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
-source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
-source('C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
-source('C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
 
-#linux
+####todo####
+
+# L119 only 1 badcols allowed. meh.
+
+# PerSpeciesClosedAreaMpas: need to make the scale from 1:4 (0:4?) not auto. There are 1+4 items in the legend, correctly.
+# L309 set breaks. gbm.map allows them to be parsed in "..."? Didn't change anything.
+# tweaked colours, added breaks1 & 2 globals to gbm.map, manually set valuemap to only run the effort loop
+# breaks1: 0:4 correct. breaks2: didn't appear, so unhelpful run! But at least means the breaks I want are passed into the system...
+# breaks is being changed somewhere near bottom of gbm.map, but by what?
+# instead of 0-1,1-2,2-3,3-4, have it be C T B S! Still need to sort the numbering problem first.
+
+# PerSpeciesClosedArea colours kinda suck. How to change? It goes through an awkard route.
+
+# If you don't map "both" then you don't get byxport & subsequent maps have the pixel size error
+
+# Option to set which loops you run (Combo (aka both), Biomass (aka good), Effort (aka bad), Conservation)
+# from a switch in the function, populate maploopnames & maploopcodes, how?
+
+# In cumulative closures, sum the HRMSY% for each species, e.g. 4th one will be ~100%, how much is the 1st? 150%?
+# where to put that, in legend?
+
+# Need B&W outputs as well
+
+# Metrics: add %area covered
+ # dispersion factor / standard deviation / clustering /contagious-uniform distribution. Number of closed areas created. Don’t need all that right now.
+
+
+####Load scripts & data####
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
@@ -20,80 +41,156 @@ source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
 mysamples<-read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names=NULL)
 mygrids<-read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
 
-# set directory, without fishing E as an expvar
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E")
+# set directory, with fishing E as an expvar
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E")
 
 # run gbm.autos
 #cuckoo
-gbm.auto(expvar=c(4:9,11),resvar=c(12),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
-         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
+gbm.auto(expvar = c(4:9,11),resvar = c(12),grids = mygrids,samples = mysamples,tc = c(2,6),lr = c(0.005, 0.001),bf = c(0.5),
+         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB = TRUE)
 
 #thornback
-gbm.auto(expvar=c(4:9,11),resvar=c(13),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
-         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
+gbm.auto(expvar = c(4:9,11),resvar = c(13),grids = mygrids,samples = mysamples,tc = c(2,6),lr = c(0.005, 0.001),bf = c(0.5),
+         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB = TRUE)
 
 #blonde
-gbm.auto(expvar=c(4:9,11),resvar=c(14),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
-         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
+gbm.auto(expvar = c(4:9,11),resvar = c(14),grids = mygrids,samples = mysamples,tc = c(2,6),lr = c(0.005, 0.001),bf = c(0.5),
+         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB = TRUE)
 
 #spotted
-gbm.auto(expvar=c(4:9,11),resvar=c(15),grids=mygrids,samples=mysamples,tc=c(2,6),lr=c(0.005, 0.001),bf=c(0.5),
-         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB= TRUE)
+gbm.auto(expvar = c(4:9,11),resvar = c(15),grids = mygrids,samples = mysamples,tc = c(2,6),lr = c(0.005, 0.001),bf = c(0.5),
+         gridslat = 2,gridslon = 1,ZI = TRUE,map = TRUE,RSB = TRUE)
 
 #all at once
-gbm.auto(expvar=c(4:9,11),resvar=c(12:15),grids=mygrids,tc=c(2,6),lr=c(0.005, 0.001),ZI = TRUE)
+gbm.auto(expvar = c(4:9,11),resvar = c(12:15),grids = mygrids,tc = c(2,6),lr = c(0.005, 0.001),ZI = TRUE)
 
 
-
-# Load data & set WD win
-mydata <- read.csv(file="C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-#mygrids<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
-
-# Load  & set WD linux
+####From here to run all automatically####
+#(this is an overnight job!)
+# Load data & set WD
+conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
 mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-#mygrids<-read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
+mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
-
-
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
-mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+
+# need to have made 4 blank folders in ValueMaps: Blonde 0.08, Goodweight 10s, Badweight 10, Goodweight 4 3.5 1.5 1:
+dir.create("Blonde 0.08")
+dir.create("Goodweight 10s")
+dir.create("Badweight 10")
+dir.create("Goodweight 4 3.5 1.5 1")
 
 ####Run gbm.valuemap####
+# normal 1:1 values
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Blonde 0.08")
 gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
              loncolno = 2, # column number in data which has longitudes
              latcolno = 1, # column number in data which has latitudes
-             goodcols = c(5,3,4,6),  # which column numbers are abundances (where higher = better)?
+             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
              badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
+             conservecol = 8, #conservation column
              plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = "close",
-             savethis = c("data"), #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
-             #savethis = "close",
-             HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
-             #HRMSY = c(0.15,0.15,0.15,0.15), #fake values
-             # from: /home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Sam's BPA & Biomass Conversion/ THESE FILES
-             # Blonde change to 0.05 on Sam's chat. Realigned to new goodcols - have to redo graphics
-             #goodweight = NULL,  # single or vector of weighting multiple(s) for goodcols array, no default
-             #badweight = NULL,  # ditto for badcols array, no default
+             #plotthis = c("close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
+             #plotthis = "NULL",
+             #savethis = TRUE, #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
+             #HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
+             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
+             #goodweight = c(4,3.5,1.5,1),  # single or vector of weighting multiple(s) for goodcols array, no default
+             badweight = NULL,  # ditto for badcols array, no default
              #m = 1, # multiplication factor for Bpa units, default 1. 1000 to convert tonnes to kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
              #mapmain = paste(get(paste(p,"name",sep=""))," Value: ",sep=""), #default uses badcols steps value in map title
              #... # optional terms for goodweight & badweight. And for gbm.map: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile species
              )
 
-# Run Notes:
+# run with effort weight as 10 "badweight"
+rm(list = ls())
+conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
+mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
+mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
+
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Badweight 10")
+gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
+             loncolno = 2, # column number in data which has longitudes
+             latcolno = 1, # column number in data which has latitudes
+             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
+             badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
+             conservecol = 8, #conservation column
+             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
+             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
+             badweight = 10)
+
+# run with species weights all as 10 "goodweight"
+rm(list = ls())
+conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
+mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
+mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
+
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Goodweight 10s")
+gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
+             loncolno = 2, # column number in data which has longitudes
+             latcolno = 1, # column number in data which has latitudes
+             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
+             badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
+             conservecol = 8, #conservation column
+             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
+             #plotthis = c("close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
+             #plotthis = "NULL",
+             #savethis = TRUE, #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
+             #HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
+             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
+             goodweight = c(10,10,10,10))
+
+# run with species weights set individually "Goodweight 4 3.5 1.5 1"
+rm(list = ls())
+conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
+mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
+mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
+
+setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Goodweight 4 3.5 1.5 1")
+gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
+             loncolno = 2, # column number in data which has longitudes
+             latcolno = 1, # column number in data which has latitudes
+             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
+             badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
+             conservecol = 8, #conservation column
+             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
+             #plotthis = c("close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
+             #plotthis = "NULL",
+             #savethis = TRUE, #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
+             #HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
+             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
+             goodweight = c(4,3.5,1.5,1))
+
+####Run Notes####
 #1. plotthis=NULL, savethis=data: ...) used in an incorrect context
 #2. beepr didn't load
-#3.  Error in `[<-.data.frame`(`*tmp*`, , datacoln + i, value = c(0.00480244254949487,  : new columns would leave holes after existing columns 
+#3.  Error in `[<-.data.frame`(`*tmp*`, , datacoln + i, value = c(0.00480244254949487,  : new columns would leave holes after existing columns
   #L34. L33 was i in c(goodcols,badcols), would have meant col# data[,datacoln+i] was 7+3 not 7+1
 #4.  Error in `[.data.frame`(data, , datacoln + goodcols, drop = FALSE) : undefined columns selected
   #L39,40,42,43: colnumbers logical error, maths was wrong
-#5. Error in `[.data.frame`(bioboth, , SortCol0 + 1) : undefined columns selected 
+#5. Error in `[.data.frame`(bioboth, , SortCol0 + 1) : undefined columns selected
   #L183: "close" switched off but bioboth processing after j loop finished was done in top environment
   #i.e. irrespective of "close" switch status, would expect to be processing bioboth
 #6. COMPLETED: plotthis=NULL & savethis=data. Scaling wrong: L34 not fully fixed, missed bits
@@ -104,7 +201,7 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
 #8. Works but need to create new colnames for gooddata before they get added to data via bothdata (L62 & 63). Done, L64 & 65
 #9. works. Minor tweak from _wc to _swc. RUN 1 COMPLETE: "data".
 #10. plotthis=null savethis=null test. Works
-#11. plotthis="bad".  Error in seq.default(xlim[1], xlim[2], by = byx) : wrong sign in 'by' argument 
+#11. plotthis="bad".  Error in seq.default(xlim[1], xlim[2], by = byx) : wrong sign in 'by' argument
   #L50, gbm.map L50, make.grid // lat & lon numbers were the wrong way round, might not change anything but re-running
 #12. COMPLETED bad. try good
 #13. COMPLETED good. try both (needs good & bad first? nope)
@@ -112,7 +209,7 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
 #15. Error: object 'byx' not found. Where? L136 was !is.null but that assumes byx is in the function parameters. True for gbm.map but not here. Changed to !exists("byx")
 #16. Error in `[.data.frame`(z, i) : undefined columns selected. L159, z = bioboth[,get(paste("sort",j,sep=""))] probably the problem.
   # From L156, L110. Is just last col, use that
-#17. j loop overlay maps work! Yay! Error in `[.data.frame`(bioboth, order(-bioboth[, SortCol0 + 1], -bioboth[,  : undefined columns selected 
+#17. j loop overlay maps work! Yay! Error in `[.data.frame`(bioboth, order(-bioboth[, SortCol0 + 1], -bioboth[,  : undefined columns selected
   # L186. Not sure if bioboth is available; probably a less messy way to set the column numbers also. Global assign sortcols & bioboth to inspect.
   # Just needed a comma at the end to indicate it was a row sort. Apparently defaults to column sort.
 #18. Error in rowSums(bioboth[, SortCol0 + 1:SortCol0 + 4], drop = FALSE) : unused argument (drop = FALSE). L194. Removed.
@@ -131,7 +228,7 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
 #30. COMPLETED. NOICE. Fix black cell size from #22. byx size is different in ClosedValueComboMap & CumulativeClosedAreaMap?
   # added lines 171 & 241
 #31. COMPLETED. Nope, byxs & byys are the same size. Hmm. is byx/byy the only control of cell size? Maybe check the plotting data?
-  # make.grid & draw.grid are the grid points. grd is the actual object. Swapped 171 & 241 for grd export. Not 100% sure it's not 
+  # make.grid & draw.grid are the grid points. grd is the actual object. Swapped 171 & 241 for grd export. Not 100% sure it's not
   # just using the same grd/byx values both times though...This will tell me. byxs MIGHT be the same but grds MUST NOT be. They're identical
   # this isn't getting the two different grds. How to do? Do in gbm.map AND valuemap (as tmps)?
   # L171 in valuemap ^ last line of gbm.map, is from closed area grd2 and the final loop of j so BCTS closed areas.
@@ -258,22 +355,96 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
 #82. Added effort percentage calculator for cum.closed.areas L235:238
 
 
-# weighting simulations : NOOOOO
-
-#PRESENTATION
-# redo graphics. Add smiley/flat/ frowny faces
-
-# note down where I've used fixed values instead of algorithmic
-# clean up code, improve notes if poss
-
-# L110 badcols only 1 allowed
-
-
-# unrep plots: log+1 & have scale go to 2. Cange title back to unrep
 
 
 
-####todo later maybe####
+
+####DONE####
+# note down where I've used fixed values instead of algorithmic: just the last section? yes. DONE
+# improve notes DONE
+# L22 object alerts not found DONE
+# Add processs printers DONE checkem DONE
+# edit savethis since it can only be one thing. DONE
+
+# Thornback closed areas based on P2 conservation
+# cbind conservation map predabund column, initial latlongs are the same? YES DONE here L57
+# ProcessedData.csv from valuemap run as normal, compare to
+# see if valuemap still works now!
+##NOT QUITE: ClosedValueMapXXXX_Species are wrong for 1st species i.e. blonde: basemap is effort,
+# I.e. it's using a relative column which isn't expecting the presence of conserve.
+# L133. L140 is the z which is the problem. CHANGED
+# Fixed for 1st species but now differently weird for 3rd & 4th. CTBS problem?
+# ClosedValueMapCombo_Blonde has blonde closed area w/ cuckoo basemap, i.e.:
+# it's observing the original mydata column order not goodcols
+# z = dbase[,ncol(dbase)-length(goodcols)+j]  L140
+# colnames are Blonde_swc	Cuckoo_swc	Thornback_swc	Spotted_swc
+# colnames are correct... data are wrong?
+# L33 scaling using correct columns, so species_s col data are CORRECT
+# L64 species_swc data look to be CORRECT also. Simply calling them wrongly?
+# maploopnames for combo (L111) not doing the same as hans_e_map, which is correct? (bothdata map L97)
+# L97: z = dbase[,bothdatarange[j]]  #12:16 original, 13:17 new
+# L70: dbase[,bothdatarange] <- bothdata*m
+# L69: bothdatarange <- (ncol(dbase)-length(goodcols)+1):ncol(dbase)
+# L111 "dbase[order(-dbase[,bothdatarange[1]-1+j]),]"
+# L141 z = dbase[,ncol(dbase)-length(goodcols)+j]. FIXED
+#
+# ClosedValueMapBiomass & ClosedValueMapEffort_species is CTBS not BCTS order for closed areas (blacks!)
+# L176 z = dbase[,ncol(dbase)] # it's ONLY spotted i.e. the last one, doesn't move with the loop.
+# Or is the last column necessarily the loop?
+# [L125:7 added species name instead of number for sort.]
+# if the last column is wrong, called @ L179, it's made @ L129
+# so is J pointing to the wrong place in maploopcodes?
+# After o loop (maploopcode) 1, the blacks go from BCTS to CTBS. It looks like they're summing the correct amounts,
+# but are distributed in the wrong place, due to the wrong sort?
+# L114 o2 & 3?
+# L115: reverts back to the top of the o loop, j is still 4, L116 j set back to 1.
+#
+# biomass is CTBS, effort is just S. What the actual FUCK?!
+# biomass: L114 2+j is defo wrong, this results in the CTBS. Should be what? Simply goodcols[j]? CHANGED
+# biomass FIXED. Effort I think is CTBS rather than BCTS? Defo. So what, it's ordered by least effort.
+# A-HA! Least effort value is 0. LOADS of values are 0. Thus for MOST of the dataset, for all of the zeroes,
+# it'll just be using the previous sort? But that would be spotted, NOT CTBS...?
+# is there something in the effort sort which would pseudo-default biomass sorts to ctbs?
+# Needed to sort by effort THEN adundance. Which makes sense if you think about it. DONE
+#
+# So: closed areas based on P2 abundance i.e. "conserve" column, colno=8
+# added to L112 & 118. 119 changed from 1:3 to 1:length(maploopnames)
+# DONE, WORKED!
+
+
+# 4 species cumulative closed area based on combo (4 pic panel; different colour per growth)
+# Changed 4s to length(goodcols) in a few places for generalisability later
+# L236 removed zeroes in the cbind since they're a space waste
+# L275 down: coded SpeciesGrow but commented out for 1st run to check eveything working after minor tweaks.
+# L293&294 need to work out colours.
+# tweaks work. Uncomment out that bit, sort out colours and see what happens. DONE RUN
+# done!
+
+# Change text in L175: main=paste("Predicted Abundance + Fishing Effort:   ?
+# DONE
+
+# weighting simulations: 10:1 rays:E, 1:10, (1-10):1 mixed ray weightings
+# already coded, just try it out
+# works for multiple goodweights
+# fails for single badweight: trying to array multiple a length1 item:
+# "Error in as.matrix(dbase[, dbasecoln + length(goodcols) + seq(1, length(badcols))]) %*%: non-conformable arguments" L44
+
+# Sam email/chat HRMSY blonde (?) changed from 8% to 5% to make more conservative? LESS.
+# nope. HRMSY is max that can be sustainably removed, NOT the minimum you need to conserve.
+# Added invHRMSY. Need to re-run combos.
+
+# Re-running now super slow because it's counting up to e.g. 95% instead of up to 5%
+# also the column referencing for the counts was wrong: was using CTBS_original not BCTS_userset. CHANGED
+# Reverse the ordering & the counting? removed invHRMSY
+# same order, counting up from bottom to get to the 5% not down from top to get to the 95% DONE
+
+# L134: add "1 of 16" counter for each line so you can see where you are in the grand scheme DONE
+
+
+
+
+
+
   ####running this (in gbm.auto to begin with)####
   source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")  #SD specific, remove @ end
   ####MatF####
@@ -281,7 +452,7 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
   setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConsValMaps")
   # load data. Expecting Longitude, Latitude, data columns: predicted abundances, fishing effort etc.. E.g.: Abundance_Preds_All.csv from gbm.auto
   data<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Both_Abundance_Preds_plusE.csv", header = TRUE)
-  
+
   gbm.valuemap(data,
                loncolno = 1,
                latcolno = 2,
@@ -292,5 +463,5 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
                badweight = 4,  #fishing 4 times as important, for example.
                species = names(samples[i]),
                ...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
-  
+
   # preddata[,5] <- preddata[,badcols] - Esteps[q]

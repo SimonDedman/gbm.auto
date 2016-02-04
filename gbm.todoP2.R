@@ -1,30 +1,24 @@
 ## gbm.todo.P2
 # working script for paper 2
 # 1/6/2015
-# could I incorporate gbm.utils, gbm.rsb and gbm.map into gbm.auto? In what sense?
 ##
 
 ####prep####
 # set & test working directory
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles")
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles")
 getwd()
 
 # load gmb.utils, which contains various of Elith's packages not contained in dismo
-source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
 
 # load gbm functions
-source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
-source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
-source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R")
-
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R")
+library(beepr)
 
 # load grids
-mygrids<-read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA.csv", header = TRUE)
+mygrids <- read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
 
 # load saved models if re-running aspects from a previous run
 # load("Bin_Best_Model")
@@ -32,7 +26,21 @@ mygrids<-read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal
 
 ####model:juve individual preds####
 # load samples
-mysamples<-read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly.csv", header = TRUE, row.names=NULL)
+mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays.csv", header = TRUE, row.names = NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays_93-08only.csv", header = TRUE, row.names=NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly.csv", header = TRUE, row.names=NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_oldbkup.csv", header = TRUE, row.names=NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_oldbkup_formattest.csv", header = TRUE, row.names=NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_oldbkup_formattest_93-08only.csv", header = TRUE, row.names=NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_Reorder.csv", header = TRUE, row.names=NULL)
+# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_SortYr.csv", header = TRUE, row.names=NULL)
+
+# Ok so it's not the:
+# - row order (used new data in oldbkup order)
+# - new enviro order (bound new data to old enviros which should be the same anyway)
+# - presence of big gaps in fish data (removed dead spots (93-08only) works for old data not new)
+# Both old & new data have same mean deviance
+# old & new have same ray data BUT IN DIFFERENT ORDER. Find out which is right. Simply use old's? Yes
 
 # Samples Response variables (CTBS) columns 44-47 inc.
 # colnames(mysamples), I need 4:9 (enviros), 10 (hans lpue), 11 (combined scallop icesrects), 15 (whelk CPUE icesrects)
@@ -51,16 +59,33 @@ mysamples<-read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly.csv", header = TRUE, r
 # column names from #samples in #grids)
 
 # Set WD so I can run all these at once
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators")
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators")
-#cuckoo
-gbm.auto(expvar=c(4:11,15,17,21,25,29,33,37),
-         resvar=c(44),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5,15),
-         lr=c(0.005, 0.001),
-         bf=c(0.5),
+
+#cuckoo original worked
+gbm.auto(expvar = c(4:11,15,17,21,25,29,33,37),
+         resvar = c(44),
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,15),
+         lr = c(0.005, 0.001),
+         bf = c(0.5),
+         gridslat = 2,
+         gridslon = 1,
+         ZI = TRUE,
+         map = TRUE,
+         RSB = TRUE,
+         varint = FALSE,
+         zero = FALSE)
+
+#cuckoo original without ComSkt_C since it's empty
+names(mysamples)[33]
+gbm.auto(expvar = c(4:11,15,17,21,25,29,37),
+         resvar = c(44),
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,14),
+         lr = c(0.005, 0.001),
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
@@ -86,48 +111,50 @@ gbm.auto(expvar=c(4:11,15,17,21,25,29,33,37),
 # then set mainlegendtitle="CPUE" in the top call, here?
 # but what if mainlegendtitle is left blank by user?
 # in gbm.auto:
-if(!exists("mainlegendtitle")) mainlegendtitle = "CPUE"
+#if(!exists("mainlegendtitle")) mainlegendtitle = "CPUE"
 # add this info to P4
 
 
 # FAIL contrasts can be applied only to factors with 2 or more levels
-##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
+##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) :
 ##contrasts can be applied only to factors with 2 or more levels In addition: There were 50 or more warnings (use warnings() to see the first 50)
 # commented out lines 328&9, find interactions in gbm.auto, causing the problem.
 # also 379-82, which includes the results in the report
 
 #thornback
-gbm.auto(expvar=c(4:11,15,18,22,26,30,34,38),
-         resvar=c(45),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5,15),
-         lr=c(0.01, 0.005),
-         bf=c(0.5),
+max((mysamples)[34]) # ComSkt_T max = 0, remove it
+gbm.auto(expvar = c(4:11,15,18,22,26,30,38),
+         resvar = c(45),
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,14),
+         lr = c(0.01, 0.005),
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
+         RSB = TRUE,
          varint = FALSE,
          zero = FALSE)
 
 #blonde without 15 interactions
 # scored better originally
-gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
-         resvar=c(46),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5),
-         lr=c(0.005),  #0.01, 
-         bf=c(0.5),
+max((mysamples)[35]) # ComSkt_B max = 0, remove it
+gbm.auto(expvar = c(4:11,15,19,23,27,31),
+         resvar = c(46),
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,13),  #14 added 6.12.15 no improvement in output line issue Blonde should be 14 cos no self predation, 13 w/o comskt
+         lr = c(0.01, 0.005),
+         #lr = c(0.0001),  #0.01,
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
-         varint = FALSE,
-         zero = FALSE)
+         RSB = TRUE,
+         varint = FALSE) #zero removed 6.12.15 no improvement in output line issue
 
 ####FAIL same problem####
 # Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]):contrasts can be applied only to factors with 2 or more levels
@@ -135,43 +162,44 @@ gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
 
 
 # scored worse originally
-gbm.auto(expvar=c(4:11,15,19,23,27,31,35),
-         resvar=c(46),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(15),
-         lr=c(0.005),
-         bf=c(0.5),
+gbm.auto(expvar = c(4:11,15,19,23,27,31,35),
+         resvar = c(46),
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(14),
+         lr = c(0.005),
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
+         RSB = TRUE,
          varint = FALSE,
          zero = FALSE)
 #17/08/15 succeeded
 ####12/08/2015 FAIL####
-##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
+##Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) :
 ##contrasts can be applied only to factors with 2 or more levels In addition: There were 50 or more warnings (use warnings() to see the first 50)
 # commented out lines 361 & 362, find interactions in gbm.auto, causing the problem.
 # also 413-416, which includes the results in the report
 
 #spotted
-gbm.auto(expvar=c(4:11,15,20,24,28,32,36,39),
-         resvar=c(47),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5,15),
-         lr=c(0.01, 0.005),
-         bf=c(0.5),
+max((mysamples)[36]) # ComSkt_B max = 0, remove it
+gbm.auto(expvar = c(4:11,15,20,24,28,32,39),
+         resvar = c(47),
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,14),
+         lr = c(0.01, 0.005),
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
+         RSB = TRUE,
          varint = FALSE,
          zero = FALSE)
-# FAIL: contrasts can be applied only to factors with 2 or more levels 
+# FAIL: contrasts can be applied only to factors with 2 or more levels
 
 ####model:juve combined preds DON'T####
 # Set WD so I can run all these at once
@@ -265,7 +293,6 @@ gbm.auto(expvar=c(4:11,15,43),
 
 ####model: mat F####
 # set wd for mature female samples sheets
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F")
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F")
 # load samples
 mysamples<-read.csv("F_Mat_plus_LPUE_plus_Enviro_IS_AllSp.csv", header = TRUE, row.names=NULL)
@@ -320,9 +347,9 @@ gbm.auto(expvar=4:10,
 
 # 12/08/2015:
 1: In cor(y_i, u_i) : the standard deviation is zero
-2: glm.fit: algorithm did not converge 
-3: glm.fit: fitted probabilities numerically 0 or 1 occurred 
-4: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+2: glm.fit: algorithm did not converge
+3: glm.fit: fitted probabilities numerically 0 or 1 occurred
+4: glm.fit: fitted probabilities numerically 0 or 1 occurred
 # seems to have worked though?
 
 
@@ -343,8 +370,8 @@ gbm.auto(expvar=4:10,
 #
 # 1: In cor(y_i, u_i) : the standard deviation is zero
 # 2: In cor(y_i, u_i) : the standard deviation is zero
-# 3: glm.fit: algorithm did not converge 
-# 4: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+# 3: glm.fit: algorithm did not converge
+# 4: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #
 # so y.data == u_i which is (from gbm.step)
 ##73 u_i <- sum(y.data * site.weights)/sum(site.weights)
@@ -419,7 +446,24 @@ gbm.map(x = juves[,2],
         zero=FALSE,
         legendtitle="CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
         #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
-dev.off()}
+dev.off()
+
+png(filename = paste("./Conservation_Map_BnW",i,".png",sep=""),
+    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
+gbm.map(x = juves[,2],
+        y = juves[,1],
+        z = juves[,3]+matfs[,3],
+        mapmain = "Predicted CPUE (numbers per hour): ",
+        species = i,
+        zero=FALSE,
+        colournumber = 5,
+        heatcolours = grey.colors(5, start=1, end=0),
+        mapback = "white",
+        legendtitle="CPUE") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
+#...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
+dev.off()
+}
 
 # C: combo scale 0-2.8, juve 1.9 matF 1.1. Some diff perceptible, some value in it.
 # T: combo 3.5 juve 2.9 matF 0.61. Noticeable influence of matF in offshore band.
@@ -433,7 +477,7 @@ for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
   matfs<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
   dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
   setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
-  
+
   juvescale <- juves[,3]/max(juves[,3],na.rm=TRUE)
   matfscale <- matfs[,3]/max(matfs[,3],na.rm=TRUE)
   png(filename = paste("./Scale1-1_Conservation_Map_",i,".png",sep=""),
@@ -441,7 +485,7 @@ for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
   par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
   gbm.map(x = juves[,2],
           y = juves[,1],
-          z = (juvescale+matfscale)*50,
+          z = (juvescale+matfscale)*50, #why *50? 1+1=2 max so this makes it 100 max
           mapmain = "Predicted CPUE (numbers per hour): ",
           species = i,
           zero=FALSE,
@@ -458,7 +502,7 @@ for(i in c("Cuckoo","Blonde","Thornback","Spotted")){
   matfs<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/",i,"/Abundance_Preds_only.csv",sep=""), header = TRUE)
   dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
   setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/",i,"/",sep=""))
-  
+
   juvescale <- juves[,3]/max(juves[,3],na.rm=TRUE)
   matfscale <- matfs[,3]/max(matfs[,3],na.rm=TRUE)
   png(filename = paste("./Scale1-1_Conservation_Map_BnW_",i,".png",sep=""),
@@ -488,6 +532,7 @@ beep(8)
 ### Should have equal weighting? Are of equal conservation importance?
 
 ### Glue scaled outputs together
+#Can do this all algorithmically?
   juve_C<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Cuckoo/Abundance_Preds_only.csv",sep=""), header = TRUE)
   juve_T<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Thornback/Abundance_Preds_only.csv",sep=""), header = TRUE)
   juve_B<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators/Blonde/Abundance_Preds_only.csv",sep=""), header = TRUE)
@@ -498,7 +543,7 @@ beep(8)
   matf_S<-read.csv(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F/Spotted/Abundance_Preds_only.csv",sep=""), header = TRUE)
   dir.create(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/",sep=""))
   setwd(paste("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/",sep=""))
-  
+
   juve_C_scale <- juve_C[,3]/max(juve_C[,3],na.rm=TRUE)
   juve_T_scale <- juve_T[,3]/max(juve_T[,3],na.rm=TRUE)
   juve_B_scale <- juve_B[,3]/max(juve_B[,3],na.rm=TRUE)
@@ -507,22 +552,26 @@ beep(8)
   matf_T_scale <- matf_T[,3]/max(matf_T[,3],na.rm=TRUE)
   matf_B_scale <- matf_B[,3]/max(matf_B[,3],na.rm=TRUE)
   matf_S_scale <- matf_S[,3]/max(matf_S[,3],na.rm=TRUE)
-  
-  allscaled <-  {juve_C_scale + 
-                juve_T_scale + 
-                juve_B_scale + 
+
+  allscaled <-  {juve_C_scale +
+                juve_T_scale +
+                juve_B_scale +
                 juve_S_scale +
                 matf_C_scale +
                 matf_T_scale +
                 matf_B_scale +
                 matf_S_scale}
-  
+
+  #save as csv for later
+  allscaleddf <- data.frame(LATITUDE=juve_C[,1], LONGITUDE=juve_C[,2], allscaled)
+  write.csv(allscaleddf,row.names=FALSE, file = paste("./AllScaledData.csv",sep=""))
+
   png(filename = "Scaled_Conservation_Map.png",
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
   par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)
   gbm.map(x = juves[,2],
           y = juves[,1],
-          z = allscaled*12.5,
+          z = allscaled*12.5, #8 max, this raises to 100
           mapmain = "Predicted CPUE (numbers per hour): ",
           species = "All Species",
           zero=FALSE,
@@ -531,7 +580,7 @@ beep(8)
           legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
   #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
   dev.off()
-  
+
   # again in B&W
   png(filename = "Scaled_Conservation_Map_BnW.png",
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
@@ -549,6 +598,15 @@ beep(8)
           legendtitle="CPUE (Scaled %)") # passes the lgenedtitleV set by user in gbm.valuemap call to legendtitle in gbm.map
   #...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
   dev.off()
+  beep(8)
+
+
+
+
+
+
+
+
 
 
 ####test section####
@@ -573,10 +631,10 @@ gbm.auto(expvar=5:11,
 mysamples$brv <- ifelse(mysamples[4] > 0, 1, 0)
 brvcol <- which(colnames(mysamples)=="brv") # brv column number for BRT
 
-gbm.step(data = mysamples, gbm.x = 5:11, gbm.y = brvcol, family = "bernoulli", 
+gbm.step(data = mysamples, gbm.x = 5:11, gbm.y = brvcol, family = "bernoulli",
          tree.complexity = 5, learning.rate = 0.001, bag.fraction = 0.5)
 
-# Error in while (delta.deviance > tolerance.test & n.fitted < max.trees) { : 
+# Error in while (delta.deviance > tolerance.test & n.fitted < max.trees) { :
 # missing value where TRUE/FALSE needed
 
 gbm.step

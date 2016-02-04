@@ -1,9 +1,8 @@
-"gbm.auto" <-
-  function (grids = NULL,                 # explantory data to predict to. Import with (e.g.) read.csv and specify object name. Defaults to NULL (won't predict to grids)
+gbm.auto <- function (grids = NULL,       # explantory data to predict to. Import with (e.g.) read.csv and specify object name. Defaults to NULL (won't predict to grids)
             samples = mysamples,          # explanatory & response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset. Default is mysamples
             expvar,                       # list of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default
             resvar,                       # column number of response variable (e.g. CPUE) in samples. Expected, e.g. 94. No default. Column name should be species name.
-            #tc = c(2,5),                  # list of permutations of tree complexity allowed, expected e.g. and default: c(2,5) SHOULD DEFAULT TO 2,length(expvar)
+            #tc = c(2,5),                 # list of permutations of tree complexity allowed, expected e.g. and default: c(2,5) SHOULD DEFAULT TO 2,length(expvar)
             lr = c(0.01,0.005),           # list of permutations of learning rate allowed, expected e.g. and default: c(0.01,0.005)
             bf = 0.5,                     # list permutations of bag fraction allowed, expected e.g. & default: 0.5
             ZI = "CHECK",                 # are data zero-inflated? TRUE/FALSE/"CHECK". TRUE? do delta BRT, log-normalised Gaussian, later reverse log-normalised & bias corrected. FALSE: do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
@@ -14,7 +13,7 @@
             savegbm = TRUE,               # save the gbm objects externally? Can reopen later with (e.g.) load("Bin_Best_Model")
             varint = TRUE,                # calculate variable interactions? Default:TRUE, set FALSE if code fails with "contrasts can be applied only to factors with 2 or more levels"
             map = TRUE,                   # save abundance map png files?
-            RSB = TRUE,                   # run representativeness surface builder?
+            RSB = TRUE,                   # run Unrepresentativeness surface builder?
             BnW = TRUE,                   # repeat map (& RSB if TRUE) in black & white for print journals
             alerts = TRUE,                # play sounds to mark progress steps
             ...)                          # additional parameters, esp for gbm.map (byx, byy, mapmain, heatcolours, colournumber, shape, mapback, landcol, legendtitle, lejback, legendloc, grdfun, zero, quantile)
@@ -27,7 +26,7 @@
 # Loops through all permutations of parameters provided (learning rate, tree complexity, bag fraction), chooses the best,
 # then tries to simplify that. Generates line, dot & bar plots, and outputs these and the predictions and a report of all
 # variables used, statistics for tests, variable interactions, predictors used & dropped, etc.. If selected, generates
-# predicted abundance maps, and representativeness surfaces.
+# predicted abundance maps, and Unrepresentativeness surfaces.
 #
 # Underlying functions are from packages gbm and dismo, functions from Elith et al. 2008 (bundled as gbm.utils.R), mapplots,
 # and my own functions gbm.map, gbm.rsb, gbm.valuemap
@@ -49,7 +48,7 @@ require(beepr)
 require(labeling)
 
 if(alerts) options(error = function() {beep(9)})  # give warning noise if it fails
-    
+
 expvarnames<-names(samples[expvar]) # list of explanatory variable names
 expvarcols<-cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 if(!exists("tc")) tc <- c(2,length(expvar)) # if tc not set by user, default to 2,length(expvar)
@@ -291,7 +290,7 @@ axis(2, lwd.ticks=8, lwd=8, at=yy)
 rug(samples[as.character(get(Bin_Best_Model)$contributions$var[o])][,1], side=1, lwd=5, ticksize=0.03) # all points rug
 dev.off() }
 } # close ZI option
-  
+
 for (p in 1:length(get(Gaus_Best_Model)$contributions$var)){
   png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".png",sep=""),
     width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = "cairo-png")
@@ -394,7 +393,7 @@ if(ZI) {  # don't do if ZI=FALSE
 gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
 grids$Bin_Preds <- Bin_Preds
 } # close ZI
-  
+
 # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Binomial predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
 if(alerts) beep(2)
@@ -479,13 +478,13 @@ if(alerts) beep(2)
 
 #avoid sections 22&23 if not predicting to grids
 if(!is.null(grids)) {
-  
-####22. Representativeness surface builder####
+
+####22. Unrepresentativeness surface builder####
 # does NOT plot the surface, just builds it. If built, it will be plotted by map maker.
   if(RSB==TRUE){rsbdf_bin <- gbm.rsb(samples,grids,expvarnames,gridslat,gridslon,rsbres=i)
   pos_samples <- subset(samples, brv >0)
   rsbdf_gaus <- gbm.rsb(pos_samples,grids,expvarnames,gridslat,gridslon,rsbres=i)}
-  
+
 ####23. Map maker####
 if(!exists("mainlegendtitle")) mainlegendtitle = "CPUE" # create mainlegendtitle default if absent. Else will cause error if unset.
 if(map==TRUE) {
@@ -502,12 +501,12 @@ if(map==TRUE) {
           ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
   # byx, byy, mapmain, heatcol, shape, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
   dev.off()
-  
+
   # progress printer, right aligned for visibility
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Reticulating Splines     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
   if(alerts) beep(2)
-  
+
   # if BnW=TRUE, run again in black & white for journal submission
   if(BnW){
   png(filename = paste("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png",sep=""),
@@ -523,117 +522,120 @@ if(map==TRUE) {
           heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
           ...) # allows gbm.auto's optional terms to be passed to subfunctions
   dev.off()} # close & save plotting device & close BnW optional
-  
+
   # progress printer, right aligned for visibility
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Black & white map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
   if(alerts) beep(2)
-  
+
   # if RSB called, plot that surface separately
   if(RSB==TRUE){
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+    gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Representativeness"],
-            mapmain = "Representativeness: ",
+            z = rsbdf_bin[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
-            legendtitle = "Rep 0-1",
+            legendtitle = "UnRep 0-1",
             ...)
     dev.off()
-    
+
     # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
     if(alerts) beep(2)
-    
+
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+    gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_gaus[,"Representativeness"],
-            mapmain = "Representativeness: ",
+            z = rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
-            legendtitle = "Rep 0-1",
+            legendtitle = "UnRep 0-1",
             ...)
     dev.off()
-    
+
     # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
     if(alerts) beep(2)
-    
+
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+    gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Representativeness"]+rsbdf_gaus[,"Representativeness"],
-            mapmain = "Representativeness: ",
+            z = rsbdf_bin[,"Unrepresentativeness"]+rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
             species = names(samples[i]),
-            legendtitle = "Rep 0-2",
+            legendtitle = "UnRep 0-2",
             ...)
     dev.off()
-    
+
     # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB combination map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
     if(alerts) beep(2)
-    
+
     # if BnW=TRUE, do again for b&w
     if(BnW){
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+    gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Representativeness"],
-            mapmain = "Representativeness: ",
+            z = rsbdf_bin[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            mapback = "white",
             species = names(samples[i]),
             heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
-            legendtitle = "Rep 0-1",
+            legendtitle = "UnRep 0-1",
             ...)
     dev.off()
-    
+
     # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
     if(alerts) beep(2)
-    
+
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+    gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_gaus[,"Representativeness"],
-            mapmain = "Representativeness: ",
+            z = rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            mapback = "white",
             species = names(samples[i]),
             heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
-            legendtitle = "Rep 0-1",
+            legendtitle = "UnRep 0-1",
             ...)
     dev.off()
-    
+
     # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
     if(alerts) beep(2)
-    
+
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png",sep=""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
     par(mar=c(3.2,3,1.3,0), las=1, mgp=c(2.1,0.5,0),xpd=FALSE)  #mgp:c:2,0.5,0, xpd=NA
-    gbm.map(x = grids[,gridslon], # add representativeness alpha surface
+    gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
-            z = rsbdf_bin[,"Representativeness"]+rsbdf_gaus[,"Representativeness"],
-            mapmain = "Representativeness: ",
+            z = rsbdf_bin[,"Unrepresentativeness"]+rsbdf_gaus[,"Unrepresentativeness"],
+            mapmain = "Unrepresentativeness: ",
+            mapback = "white",
             species = names(samples[i]),
             heatcolours = grey.colors(8, start=1, end=0), #default 8 greys; setting heatcolours & colournumber overrides this
             landcol = grey.colors(1, start=0.8, end=0.8), #light grey. 0=black 1=white
-            legendtitle = "Rep 0-2",
+            legendtitle = "UnRep 0-2",
             ...)
     dev.off()}
 
     # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Combination map generated    XXXXXXXXXXXXXXXXXXXXXXXXXX",sep=""))
     if(alerts) beep(2)
-    
+
     } # close RSB mapper
    } # close Map Maker
   } #close grids option from above section 22
