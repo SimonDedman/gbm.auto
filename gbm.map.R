@@ -18,7 +18,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     quantile = 1, # set max breakpoint; lower this to cutoff outliers
                     byxout = FALSE, # export byx to use elsewhere? Default:FALSE
                     breaks = NULL, # breaks. vector of breakpoints for colour scales; default blank, generated automatically
-                    ...) 
+                    ...)
 
 # Generalised Boosting Models, automated map generator. Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
 
@@ -30,33 +30,33 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   require(mapplots)
   library(mapplots)
   # get Britain & Ireland coast data. I'm looking to make this global but am having a problem w/ the maps packge
-  data(coast,package="mapplots")
+  data(coast, package = "mapplots")
   # if users hasn't entered byx or byy values, generate them from the data
-  if(is.null(byx)) {
+  if (is.null(byx)) {
     # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
-    bydist<-rep(NA,length(x))
+    bydist <- rep(NA, length(x))
     # and attach it to grids
-    cells<-data.frame(LONGITUDE=x,bydist=bydist,stringsAsFactors=FALSE)
+    cells <- data.frame(LONGITUDE = x, bydist = bydist, stringsAsFactors = FALSE)
     # fill it: if [next longitude minus current longitude] equals [current longitude minus previous longitude], that's a uniform cell.
     # data rounded to prevent tiny fluctuations counting as differences. Need to set that tolerance.
     # Could do 10% of average distance between uniform points, but you don't know that til the end!
-    cells[2:(length(x)-1),"bydist"] <-
-      ifelse(round(cells[2:(length(x)-1),1]-cells[1:(length(x)-2),1],digits=5)
+    cells[2:(length(x) - 1),"bydist"] <-
+      ifelse(round(cells[2:(length(x) - 1),1] - cells[1:(length(x) - 2),1], digits = 5)
              ==
-               round(cells[3:length(x),1]-cells[2:(length(x)-1),1],digits=5),
-             round(cells[2:(length(x)-1),1]-cells[1:(length(x)-2),1],digits=5),NA)
+               round(cells[3:length(x),1] - cells[2:(length(x) - 1),1], digits = 5),
+             round(cells[2:(length(x) - 1),1] - cells[1:(length(x) - 2),1], digits = 5), NA)
     # Take an average of those distances, they should all be identical anyway. Apply it to byx & byy.
-    byx<-mean(cells$bydist,na.rm=TRUE)
-    byy<-byx
-    if(byxout) byxport <<- byx
+    byx <- mean(cells$bydist, na.rm = TRUE)
+    byy <- byx
+    if (byxout) byxport <<- byx
   }
-  grd <- make.grid(x, y, z, byx, byy, xlim=range(x), ylim=range(y),fun=grdfun) #create gridded data. fun defaults to sum which is bad
+  grd <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = grdfun) #create gridded data. fun defaults to sum which is bad
   heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
-  if(is.null(breaks)) breaks <- breaks.grid(grd,zero=zero,quantile=quantile,ncol=length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
-  if(zero){heatcol=c("#00000000",colorRampPalette(heatcol)(length(heatcol)-1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-  basemap(xlim=range(x), ylim=range(y), main=paste(mapmain,species,sep=""), bg=mapback, xlab = "Longitude (°W)", ylab = "Latitude (°N)")
+  if (is.null(breaks)) breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
+  if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
+  basemap(xlim = range(x), ylim = range(y), main = paste(mapmain, species, sep = ""), bg = mapback, xlab = "Longitude (°W)", ylab = "Latitude (°N)")
   #remove xlab & ylab above for general code
-  draw.grid(grd,breaks,col=heatcol) # plot grd data w/ breaks for colour breakpoints
-  draw.shape(shape=shape, col=landcol) # add coastline
-  legend.grid(legendloc, breaks=breaks, type=2, inset=0, bg=lejback, title=legendtitle, col=heatcol) #breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
+  draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
+  draw.shape(shape = shape, col = landcol) # add coastline
+  legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = legendtitle, col = heatcol) #breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
   }

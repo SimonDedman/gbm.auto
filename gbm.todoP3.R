@@ -4,6 +4,25 @@
 
 ####todo####
 
+# Improve closed area calculation algorithm. Use some kind of sorting algorithm rather than one by one counting. Clever loop system or something?
+# HRMSY% e.g. 8% is max can be removed, i.e. OPEN area, we need to CLOSE the rest i.e. 1-HRMSY
+# L175:
+# CPUEMSY <- (sum(dbase[,goodcols[j]]) * HRMSY[j]) # HRMSY% * total biomass for J'th species = biomass to protect i.e. 'sum-to threshold'
+# CPUEMSY is WRONG, i'm STILL protecting the 8%, not the 92%, right?
+
+# L176 sorts dbase by:
+# 1:Combo: largest to smallest bothdata value for that species, i.e. highest cpue lowest e combo.
+# 2:Biomass largest to smallest gooddata value for that species, i.e. highest biomass.
+# 3:Effort: smallest to largest baddata value (universal) THEN largest to smallest gooddata value for that species, i.e. lowest effort THEN highest biomass
+# 4:Conservation: largest to smallest conserve value (universal), i.e. highest conservation value (includes all species)
+
+# L179 cum.counts from the LAST row towards the first until HRMSY is reached then closes the inverse i.e. the top.
+# There's no logic saying that 1-"the worst
+# There we go: closing the INVERSE/worst bottom-up counted-to HRMSY% is closing the BEST 1-HRMSY%. GO ME!!
+# So, I'm counting to up to 8% instead of down to 92%. Fine. How to make this quicker though?
+
+
+
 # L119 only 1 badcols allowed. meh.
 
 # PerSpeciesClosedAreaMpas: need to make the scale from 1:4 (0:4?) not auto. There are 1+4 items in the legend, correctly.
@@ -23,7 +42,7 @@
 # In cumulative closures, sum the HRMSY% for each species, e.g. 4th one will be ~100%, how much is the 1st? 150%?
 # where to put that, in legend?
 
-# Need B&W outputs as well
+# Need B&W outputs as well for per species closed area
 
 # Metrics: add %area covered
  # dispersion factor / standard deviation / clustering /contagious-uniform distribution. Number of closed areas created. Don’t need all that right now.
@@ -38,8 +57,8 @@ source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
 
 ####run gbm.auto with E####
 # Load linux
-mysamples<-read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names=NULL)
-mygrids<-read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
+mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names = NULL)
+mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
 
 # set directory, with fishing E as an expvar
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E")
@@ -68,120 +87,88 @@ gbm.auto(expvar = c(4:9,11),resvar = c(12:15),grids = mygrids,tc = c(2,6),lr = c
 ####From here to run all automatically####
 #(this is an overnight job!)
 # Load data & set WD
-conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
-mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
+conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
+mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
+mydata <- cbind(mydata, conserve = conserve[,3]) #add conservation data as a column to mydata
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
 
-# need to have made 4 blank folders in ValueMaps: Blonde 0.08, Goodweight 10s, Badweight 10, Goodweight 4 3.5 1.5 1:
+# Create target folders
 dir.create("Blonde 0.08")
 dir.create("Goodweight 10s")
 dir.create("Badweight 10")
-dir.create("Goodweight 4 3.5 1.5 1")
+dir.create("Goodweight 4.17 3.5 2.33 1")
 
 ####Run gbm.valuemap####
 # normal 1:1 values
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Blonde 0.08")
+setwd("Blonde 0.08")
 gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
              loncolno = 2, # column number in data which has longitudes
              latcolno = 1, # column number in data which has latitudes
-             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
+             goodcols = c(5,3,6,4),  # which column numbers are abundances (where higher = better)? C B S T
              badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
              conservecol = 8, #conservation column
-             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = c("close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = "NULL",
-             #savethis = TRUE, #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
-             #HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
-             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
-             #goodweight = c(4,3.5,1.5,1),  # single or vector of weighting multiple(s) for goodcols array, no default
-             badweight = NULL,  # ditto for badcols array, no default
-             #m = 1, # multiplication factor for Bpa units, default 1. 1000 to convert tonnes to kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
-             #mapmain = paste(get(paste(p,"name",sep=""))," Value: ",sep=""), #default uses badcols steps value in map title
-             #... # optional terms for goodweight & badweight. And for gbm.map: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile species
-             )
+             HRMSY = c(0.14,0.08,0.08,0.15))
 
 # run with effort weight as 10 "badweight"
-rm(list = ls())
-conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
-mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+rm(list = ls()) # remove everything to clear workspace, free memory & reload
+conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
+mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
+mydata <- cbind(mydata, conserve = conserve[,3])
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
-
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Badweight 10")
-gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
-             loncolno = 2, # column number in data which has longitudes
-             latcolno = 1, # column number in data which has latitudes
-             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
-             badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
-             conservecol = 8, #conservation column
-             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
-             badweight = 10)
+setwd("../Badweight 10")
+gbm.valuemap(dbase = mydata,
+             loncolno = 2,
+             latcolno = 1,
+             goodcols = c(5,3,6,4),
+             badcols = 7,
+             conservecol = 8,
+             HRMSY = c(0.14,0.08,0.08,0.15),
+             badweight = 10) # effort weight as 10
 
 # run with species weights all as 10 "goodweight"
 rm(list = ls())
-conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
-mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
+mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
+mydata <- cbind(mydata, conserve = conserve[,3])
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
-
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Goodweight 10s")
-gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
-             loncolno = 2, # column number in data which has longitudes
-             latcolno = 1, # column number in data which has latitudes
-             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
-             badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
-             conservecol = 8, #conservation column
-             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = c("close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = "NULL",
-             #savethis = TRUE, #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
-             #HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
-             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
-             goodweight = c(10,10,10,10))
+setwd("../Goodweight 10s")
+gbm.valuemap(dbase = mydata,
+             loncolno = 2,
+             latcolno = 1,
+             goodcols = c(5,3,6,4),
+             badcols = 7,
+             conservecol = 8,
+             HRMSY = c(0.14,0.08,0.08,0.15),
+             goodweight = c(10,10,10,10)) # species weights all 10s
 
 # run with species weights set individually "Goodweight 4 3.5 1.5 1"
 rm(list = ls())
-conserve <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names=NULL)
-mydata <- read.csv(file="/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names=NULL)
-mydata <- cbind(mydata,conserve=conserve[,3]) #add conservation data as a column to mydata
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
+conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
+mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
+mydata <- cbind(mydata, conserve = conserve[,3])
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
-
-setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps/Goodweight 4 3.5 1.5 1")
-gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
-             loncolno = 2, # column number in data which has longitudes
-             latcolno = 1, # column number in data which has latitudes
-             goodcols = c(3,5,6,4),  # which column numbers are abundances (where higher = better)? C B S T
-             badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
-             conservecol = 8, #conservation column
-             plotthis = c("good","bad","both","close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = c("close"), # what to plot, defaults to everything, can delete any, to delete all set to NULL
-             #plotthis = "NULL",
-             #savethis = TRUE, #which csvs to export, defaults to everything, can delete any, to delete all set to NULL
-             #HRMSY = c(0.05,0.14,0.08,0.15), # maximum percentage of the stock which can be removed each year, as decimal e.g. 0.15 = 15%
-             HRMSY = c(0.08,0.14,0.08,0.15), # less conservative guess for blonde
-             goodweight = c(4,3.5,1.5,1))
+setwd("../Goodweight 4.17 3.5 2.33 1")
+gbm.valuemap(dbase = mydata,
+             loncolno = 2,
+             latcolno = 1,
+             goodcols = c(5,3,6,4),
+             badcols = 7,
+             conservecol = 8,
+             HRMSY = c(0.14,0.08,0.08,0.15),
+             goodweight = c(4.17,3.5,2.33,1)) # species weights individualised
 
 ####Run Notes####
 #1. plotthis=NULL, savethis=data: ...) used in an incorrect context
