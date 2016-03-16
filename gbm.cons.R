@@ -5,9 +5,10 @@ gbm.cons <- function(grids,         # csv file (inc relative location) of gridde
                      alerts = TRUE, # play sounds to mark progress steps
                      map = TRUE,    # produce maps
                      BnW = TRUE,    # also produce B&W maps
+                     resvars,  # vector of resvars cols from conssamples for gbm.autos, length(subsets)*species, no default
+                     gbmautos = TRUE, # do gbm.auto runs for species?
                      expvars,  # list object of expvar vectors for gbm.autos,
                      # length = no. of subsets * no. of species. No default
-                     resvars,  # vector of resvars cols from conssamples for gbm.autos, length(subsets)*species, no default
                      tcs = NULL, # autocalculated below if not provided by user
                      lrs = rep(list(c(0.01,0.005)),length(resvars)),
                      bfs = rep(0.5, length(resvars)),
@@ -49,7 +50,7 @@ gbm.cons <- function(grids,         # csv file (inc relative location) of gridde
 # load gmb.utils, containing Elith's packages not in dismo, & SD's gbm functions
 #### require check these, have user load em####
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R") # loads beepr (but needed earlier), gbm.map gbm.rsb, gbm.utils
-  # maybe just try gbm.auto check and that will then launch the other package checks when it gets there? except beepr.
+# maybe just try gbm.auto check and that will then launch the other package checks when it gets there? except beepr.
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
@@ -59,15 +60,14 @@ if (!require(beepr)) {stop("you need to install the beepr package to run this fu
 library(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 
-if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length
-for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}
+if (gbmautos) {if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length
+for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
 
 # load saved models if re-running aspects from a previous run
 # load("Bin_Best_Model")
 # load("Gaus_Best_Model")
 
 mygrids <<- read.csv(grids, header = TRUE)  # load grids, <<- bad but reqd
-dir.create("ConservationMaps") # create conservation maps directory
 
 # create a list of response variables for name ranges
 GS <- length(resvars)/length(subsets) # calculate group size, e.g. 8/2
@@ -82,7 +82,7 @@ for (i in 1:length(subsets)) {  #currently 2
 # name samples by subset name & load
 assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
 
-dir.create(paste("./", subsets[i], sep = "")) # Create WD for subset[i] name
+if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
 setwd(paste("./", subsets[i], sep = ""))  # go there
 
 for (j in 1:GS) {  #loop through all species in group e.g. 4
@@ -93,39 +93,38 @@ for (j in 1:GS) {  #loop through all species in group e.g. 4
 
 mysamples <<- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
 # gbm.auto pulls relevant group-ignoring variable from user entries or defaults
-gbm.auto(grids = mygrids,
-         expvar = expvars[[((i - 1) * GS) + j]],
-         resvar = resvars[[((i - 1) * GS) + j]],
-         tc = tcs[[((i - 1) * GS) + j]],
-         lr = lrs[[((i - 1) * GS) + j]],
-         bf = bfs[[((i - 1) * GS) + j]],
-         ZI = ZIs[[((i - 1) * GS) + j]],
-         gridslat = gridslats[[((i - 1) * GS) + j]],
-         gridslon = gridslons[[((i - 1) * GS) + j]],
-         cols = colss[[((i - 1) * GS) + j]],
-         linesfiles = linesfiless[[((i - 1) * GS) + j]],
-         savegbm = savegbms[[((i - 1) * GS) + j]],
-         varint = varints[[((i - 1) * GS) + j]],
-         map = maps[[((i - 1) * GS) + j]],
-         RSB = RSBs[[((i - 1) * GS) + j]],
-         BnW = BnWs[[((i - 1) * GS) + j]],
-         zero = zeroes[[((i - 1) * GS) + j]])
-if (alerts) beep(2) # ping for each completion
+if (gbmautos) {gbm.auto(grids = mygrids,
+                        expvar = expvars[[((i - 1) * GS) + j]],
+                        resvar = resvars[[((i - 1) * GS) + j]],
+                        tc = tcs[[((i - 1) * GS) + j]],
+                        lr = lrs[[((i - 1) * GS) + j]],
+                        bf = bfs[[((i - 1) * GS) + j]],
+                        ZI = ZIs[[((i - 1) * GS) + j]],
+                        gridslat = gridslats[[((i - 1) * GS) + j]],
+                        gridslon = gridslons[[((i - 1) * GS) + j]],
+                        cols = colss[[((i - 1) * GS) + j]],
+                        linesfiles = linesfiless[[((i - 1) * GS) + j]],
+                        savegbm = savegbms[[((i - 1) * GS) + j]],
+                        varint = varints[[((i - 1) * GS) + j]],
+                        map = maps[[((i - 1) * GS) + j]],
+                        RSB = RSBs[[((i - 1) * GS) + j]],
+                        BnW = BnWs[[((i - 1) * GS) + j]],
+                        zero = zeroes[[((i - 1) * GS) + j]])
+if (alerts) beep(2)} # ping for each completion
 
 # create object for resulting abundance preds csv, e.g. Juveniles_Cuckoo
 assign(paste(subsets[i], "_", names(mysamples)[(resvars)[resvarrange[[i]]]][j], sep = ""),
        read.csv(paste("./", names(mysamples)[(resvars)[resvarrange[[i]]]][j], "/Abundance_Preds_only.csv", sep = ""), header = TRUE))
 # names(mysamples)[(resvars)[resvarrange[[i]]]][j] is the (species) name for the
 # column no. in samples, for the j'th response variable in this subsets' group
-
-} # reloop/end j loop of species
 print(paste("XXXXXXXXXXXXXXXXXXXXXX           Species ", j, " of ", GS, ", Subset ", i, " of ", length(subsets), "           XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+} # reloop/end j loop of species
 setwd("../") # go back up to /Maps root folder for correct placement @ restart
 } # reloop/end i loop of subsets
 
 ####Conservation maps####
+dir.create("ConservationMaps") # create conservation maps directory
 # Loop through subsets then add them together
-
 for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
   # name list from last mysamples & last subset resvarnames list, e.g. CTBS
   # make grids-length blank objects e.g. All_Cuckoo, Scaled_Cuckoo & allscaled
@@ -137,23 +136,18 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
   for (i in 1:length(subsets)) {
     # replace All_Cuckoo (starts blank) w/ All_Cuckoo + e.g. Juveniles_Cuckoo
     assign(paste("All_", k, sep = ""),get(paste("All_", k, sep = "")) + get(paste(subsets[i], "_", k, sep = ""))[,3])
-
     # scale subsets' values to 1 for species k & add to blanks
     assign(paste("Scaled_", k, sep = ""),
            get(paste("Scaled_", k, sep = ""))
-           +
-           (get(paste(subsets[i], "_", k, sep = ""))[,3]
-           /
-           max(get(paste(subsets[i], "_", k, sep = ""))[,3], na.rm = TRUE)))
+           + (get(paste(subsets[i], "_", k, sep = ""))[,3]
+           / max(get(paste(subsets[i], "_", k, sep = ""))[,3], na.rm = TRUE)))
 
     xtmp <- get(paste(subsets[i], "_", k, sep = ""))[,2] # LONG for later
     ytmp <- get(paste(subsets[i], "_", k, sep = ""))[,1] # LAT for later
     } # end/reloop i & add next subset of same species e.g. Adult Females_Cuckoo
 print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "          XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
-
   # create simple temp object name for e.g. All_Cuckoo
   ztmp <- get(paste("All_", k, sep = "")) # already includes the [,3]
-
   dir.create(paste("./ConservationMaps/", k, sep = ""))
   setwd(paste("./ConservationMaps/", k, sep = ""))
 
@@ -190,7 +184,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "    
           legendtitle = "CPUE")
   dev.off()}} # close BnW & mapping IFs
   if (alerts) beep(2)
-print(paste("XXXXXXXXXXXXXXXXXXXXXX      Unscaled conservation map(s) generated       XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####Scaled-to-1 conservation maps####
   if (map) {
@@ -226,10 +220,10 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX      Unscaled conservation map(s) generated 
           mapback = "white",
           legendtitle = "CPUE (Scaled %)")
   dev.off()}} # close BnW & mapping IF
+print(paste("XXXXXXXXXXXXXXXXXXXXXX    Scaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
   setwd("../") # go back up to ConservationMaps
   setwd("../")} # go back up to Maps & end/reloop k for next species
 if (alerts) beep(2) # ping on completion
-print(paste("XXXXXXXXXXXXXXXXXXXXXX       Scaled conservation map(s) generated        XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####Add scaled outputs, all species####
 dir.create(paste("./ConservationMaps/Combo/", sep = ""))
@@ -273,6 +267,6 @@ gbm.map(x = xtmp,
         legendtitle = "CPUE (Scaled %)")
 dev.off()}} # close BnW & mapping IF
 print(paste("XXXXXXXXXXXXXXXXXXXXXX     All-scaled conservation map(s) generated      XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
-print(paste("XXXXXXXXXXXXXXXXXXXXXX                Everything complete                XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXX                Everything complete                XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 if (alerts) beep(8)} # complete sound & close function
 ####END####
