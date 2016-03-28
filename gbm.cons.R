@@ -22,7 +22,8 @@ gbm.cons <- function(grids,         # csv file (inc relative location) of gridde
                      maps = rep(TRUE, length(resvars)),
                      RSBs = rep(TRUE, length(resvars)),
                      BnWs = rep(TRUE, length(resvars)),
-                     zeroes = rep(TRUE, length(resvars))){
+                     zeroes = rep(TRUE, length(resvars)),
+                     pngtype = "cairo-png") # filetype for png files, alternatively try "quartz"{
 
   ####todo: make running gbm.auto optional####
   # if they've already been run.
@@ -156,7 +157,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "    
   if (map) {
   png(filename = paste("./Conservation_Map_", k, ".png", sep = ""),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = "cairo-png")
+      bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = xtmp,
           y = ytmp,
@@ -170,7 +171,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "    
   if (BnW) {  # again in B&W
   png(filename = paste("./Conservation_Map_BnW", k, ".png", sep = ""),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = "cairo-png")
+      bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
   gbm.map(x = xtmp,
           y = ytmp,
@@ -190,7 +191,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) gener
   if (map) {
   png(filename = paste("./Scale1-1_Conservation_Map_",k,".png",sep = ""),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = "cairo-png")
+      bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
   gbm.map(x = xtmp,
           y = ytmp,
@@ -206,7 +207,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) gener
   if (BnW) {   # again in B&W
   png(filename = paste("./Scale1-1_Conservation_Map_BnW_",k,".png", sep = ""),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = "cairo-png")
+      bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
   gbm.map(x = xtmp,
           y = ytmp,
@@ -240,7 +241,7 @@ write.csv(allscaleddf, row.names = FALSE, file = paste("./AllScaledData.csv", se
 if (map) {
 png(filename = "Scaled_Conservation_Map.png",
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-    bg = "white", res = NA, family = "", type = "cairo-png")
+    bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 gbm.map(x = xtmp,
         y = ytmp,
@@ -254,7 +255,7 @@ dev.off()
 if (BnW) { # again in B&W
 png(filename = "Scaled_Conservation_Map_BnW.png",
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-    bg = "white", res = NA, family = "", type = "cairo-png")
+    bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 gbm.map(x = xtmp,
         y = ytmp,

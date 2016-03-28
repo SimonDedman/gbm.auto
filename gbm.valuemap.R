@@ -21,7 +21,8 @@ gbm.valuemap <- function(
   BnW = TRUE,  # also produce greyscale images for print publications
   mapshape = NULL, #  set coastline shapefile, else
 # uses British Isles. Generate your own with gbm.basemap
-...) {  # optional terms for gbm.map: byx byy mapmain heatcol shape mapback
+  pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
+  ...) {  # optional terms for gbm.map: byx byy mapmain heatcol shape mapback
 # landcol legendtitle lejback legendloc grdfun zero quantile species
 
 # Check & load gbm.map
@@ -60,7 +61,7 @@ ifelse(!is.null(badweight), # assuming there's only going to be one baddata colu
 if ("bad" %in% plotthis) {
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       Mapping Baddata     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
   png(filename = paste("./",badname,"_Map.png",sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno],  # run gbm.map function with generated parameters
           y = dbase[,latcolno], z = baddata, mapmain = "Fishing Effort",
@@ -69,7 +70,7 @@ if ("bad" %in% plotthis) {
 
   if (BnW) {
     png(filename = paste("./",badname,"_Map_BnW.png",sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = dbase[,loncolno],
             y = dbase[,latcolno], z = baddata,
@@ -99,7 +100,7 @@ for (j in 1:length(goodcols)) {  #loop through gooddata columns
 if ("good" %in% plotthis) {
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Mapping Gooddata ",j,"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
 png(filename = paste("./", goodname[j], "_Map.png", sep = ""),
-    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
         species = goodname[j])
@@ -107,7 +108,7 @@ dev.off()
 
 if (BnW) {
   png(filename = paste("./",goodname[j],"_Map_BnW.png",sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
           species = goodname[j],
@@ -123,7 +124,7 @@ if (BnW) {
 if ("both" %in% plotthis) {
  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Mapping Bothdata ",j,"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
   png(filename = paste("./",goodname[j]," plus ", badname, "_Map.png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
           z = dbase[,bothdatarange[j]],
@@ -137,7 +138,7 @@ if ("both" %in% plotthis) {
 
   if (BnW) {
     png(filename = paste("./",goodname[j]," plus ",badname,"_Map_BnW.png",sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
             z = dbase[,bothdatarange[j]],
@@ -189,7 +190,7 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
 
             # INDIVIDUAL MAPS: Map bothdata. Then Overlay map onto bothdata map: ncol=1 zeroes=TRUE. Heatcol="black".
             png(filename = paste("./ClosedValueMap_",maploopnames[o],"_",goodname[j],".png",sep = ""), # map species j's bothdata with black closed areas overlaid
-                width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+                width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 
             # run gbm.map function's internal code. Set parameters
@@ -249,7 +250,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
 
             if (BnW) {
               png(filename = paste("./ClosedValueMap_",maploopnames[o],"_",goodname[j],"_BnW.png",sep = ""),
-                  width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+                  width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 
               # run gbm.map function's internal code. Set parameters
@@ -347,7 +348,7 @@ for (l in 1:length(goodcols)) {
 ####Cumulative closed area maps####
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ",((o - 1) * length(maploopcodes)) + l," of ",length(goodcols)*length(maploopcodes)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
   png(filename = paste("./CumulativeClosedArea",maploopnames[o],"Map_",goodname[l],".png",sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
@@ -375,7 +376,7 @@ colnames(dbase)[ncol(dbase)] <- paste("SpeciesGrow_", maploopnames[o], sep = "")
 ####Per species closed area maps####
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(goodcols)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
 png(filename = paste("./PerSpeciesClosedArea",maploopnames[o],"Map.png",sep = ""),
-    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 
 gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,ncol(dbase)],
@@ -389,7 +390,7 @@ dev.off()
 
 if (BnW) {
   png(filename = paste("./PerSpeciesClosedArea_BnW", maploopnames[o], "Map.png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
