@@ -30,6 +30,7 @@ gbm.auto <- function(
   RSB = TRUE,           # run Unrepresentativeness surface builder?
   BnW = TRUE,           # repeat maps in black & white e.g. for print journals
   alerts = TRUE,        # play sounds to mark progress steps
+  pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
   ...)                  # additional/optional parameters, for tc & gbm.map
 # (byx, byy, mapmain, heatcolours, colournumber, shape, mapback, landcol,
 # legendtitle, lejback, legendloc, grdfun, zero, quantile)
@@ -256,7 +257,7 @@ dir.create(names(samples[i])) # create resvar-named directory for outputs
 # All plots on one image for Bin & Gaus
 if (ZI) {  # don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Best_line.png", sep = ""),
-    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
 gbm.plot(get(Bin_Best_Model),
          n.plots = length(get(Bin_Best_Model)$contributions$var),
          write.title = F, y.label = "Marginal Effect",
@@ -268,7 +269,7 @@ gbm.plot(get(Bin_Best_Model),
 dev.off()} # close ZI
 
 png(filename = paste("./",names(samples[i]),"/Gaus_Best_line.png", sep = ""),
-    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
 gbm.plot(get(Gaus_Best_Model),
          n.plots = length(get(Gaus_Best_Model)$contributions$var),
          write.title = F, y.label = "Marginal Effect",
@@ -283,7 +284,7 @@ dev.off()
 if (ZI) {  # don't do if ZI=FALSE
 for (o in 1:length(get(Bin_Best_Model)$contributions$var)) {
   png(filename = paste("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$contributions$var[o]),".png", sep = ""),
-    width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
     # bg=expvarcols[match(get(Bin_Best_Model)$contributions$var[o],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
@@ -300,7 +301,7 @@ dev.off() }} # close ZI option
 
 for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
   png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".png", sep = ""),
-    width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
 plotgrid <- plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
 if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$contributions$var[p]), ".csv", sep = ""))
@@ -319,12 +320,12 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXX
 ####12. Dot plots####
 if (ZI) {  # don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Best_dot.png", sep = ""),
-    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
 gbm.plot.fits(get(Bin_Best_Model))
 dev.off()} # close ZI
 
 png(filename = paste("./",names(samples[i]),"/Gaus_Best_dot.png", sep = ""),
-    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = "cairo-png")
+    width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
 gbm.plot.fits(get(Gaus_Best_Model))
 dev.off()
 
@@ -355,7 +356,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots created      XXXXX
 if (ZI) {  # produce graphics. Don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Bars.png", sep = ""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
-    type = "cairo-png")
+    type = pngtype)
 par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.8,mgp = c(1.5,0.5,0), cex = 1.3)
 midpoints <- barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1, horiz = TRUE, cex.names = 0.8, xlab = "Influence %", col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]), xlim = c(0,2.5 + ceiling(max(Bin_Bars[,2]))))
 text(0.1, midpoints, labels = rev(Bin_Bars[,1]), adj = 0, cex = 1.5)
@@ -364,7 +365,7 @@ dev.off()} # close ZI
 
 png(filename = paste("./",names(samples[i]),"/Gaus_Bars.png", sep = ""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
-    type = "cairo-png")
+    type = pngtype)
 par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.8,mgp = c(1.5,0.5,0), cex = 1.3)
 midpoints <- barplot(rev(Gaus_Bars[,2]), cex.lab = 1.2, las = 1, horiz = TRUE, cex.names = 0.8, xlab = "Influence %", col = rev(expvarcols[match(Gaus_Bars[,1],expvarcols[,2]),1]), xlim = c(0,2.5 + ceiling(max(Gaus_Bars[,2]))))
 text(0.1, midpoints, labels = rev(Gaus_Bars[,1]), adj = 0, cex = 1.5)
@@ -483,7 +484,7 @@ if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
 if (!exists("mainlegendtitle")) mainlegendtitle = "CPUE" # create if absent else error
 if (map == TRUE) {   # generate output image & set parameters
   png(filename = paste("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   # run gbm.map function with generated parameters
   gbm.map(x = grids[,gridslon],
@@ -501,7 +502,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXX
 
   if (BnW) { # if BnW=TRUE, run again in black & white for journal submission
   png(filename = paste("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = grids[,gridslon],
           y = grids[,gridslat],
@@ -519,7 +520,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Black & white map generated    XX
 
   if (RSB == TRUE) { # if RSB called, plot that surface separately
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png", sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
             y = grids[,gridslat],
@@ -535,7 +536,7 @@ if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png", sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = grids[,gridslon],
             y = grids[,gridslat],
@@ -550,7 +551,7 @@ if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png", sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = grids[,gridslon],
             y = grids[,gridslat],
@@ -566,7 +567,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB combination map generated 
 
     if (BnW) {     # if BnW=TRUE, do again for b&w
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png", sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = grids[,gridslon],
             y = grids[,gridslat],
@@ -584,7 +585,7 @@ if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png", sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = grids[,gridslon],
             y = grids[,gridslat],
@@ -602,7 +603,7 @@ if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png", sep = ""),
-        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = "cairo-png")
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = grids[,gridslon],
             y = grids[,gridslat],
