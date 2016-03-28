@@ -135,6 +135,8 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# user setting tc overrides auto-calc default?
+
 # gbm.rsb plots: log+1 & have scale go to 2 (for 'both' else 1)
 
 # clean workspace
