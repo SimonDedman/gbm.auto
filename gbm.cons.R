@@ -56,8 +56,8 @@ source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
 source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
 
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-library(beepr)
+if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+  if (alerts) library(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 
 if (gbmautos) {if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length

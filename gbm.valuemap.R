@@ -27,8 +27,8 @@ gbm.valuemap <- function(
 # Check & load gbm.map
 if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
   require(gbm.map) #for mapping
-if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  require(beepr) #for progress noises
+if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+  if (alerts) require(beepr) #for progress noises
 if (alerts) options(error = function() {beep(9)})  # warn for fails
 
 if (is.null(mapshape)) {data(coast,package = "mapplots")

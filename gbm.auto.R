@@ -65,7 +65,7 @@ if (!exists("roc")) {stop("you need to install the roc function from gbm.utils.R
 if (!exists("calibration")) {stop("you need to install the calibration function from gbm.utils.R to run this function")}
 require(gbm)
 require(dismo)
-require(beepr)
+if (alerts) require(beepr)
 require(labeling)
 
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
