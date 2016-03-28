@@ -54,7 +54,7 @@ gbm.auto <- function(
 ####1. Check packages, start loop####
 if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
 if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
-if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
 if (!require(labeling)) {stop("you need to install the labeling package to run this function")}
 if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
