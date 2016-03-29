@@ -191,7 +191,7 @@ if (ZI) {colnames(Report)[((m*5) - 1):((m*5) + 3)] <- c(paste("Parameter Combo "
 }
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"    XXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 n <- n + 1 # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}} # close loops, making all BRT objects & continuing through model selection
@@ -251,7 +251,7 @@ if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
 } # close simp optional
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Best models selected    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Best models selected     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####10. Line plots####
 dir.create(names(samples[i])) # create resvar-named directory for outputs
@@ -353,7 +353,7 @@ Gaus_Bars <- summary(get(Gaus_Best_Model),
 write.csv(Gaus_Bars, file = paste("./", names(samples[i]), "/Gaussian BRT Variable contributions.csv", sep = ""), row.names = FALSE)
 
 if (alerts) beep(2)# progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX        Bar plot csvs created        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 if (ZI) {  # produce graphics. Don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Bars.png", sep = ""),
@@ -382,7 +382,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXX
 if (ZI) if (varint) find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
 if (varint) find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
 if (alerts) beep(2) # progress printer, right aligned for visibility
-if (varint) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXX    Variable interactions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
+if (varint) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Variable interactions done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
 #avoid sections 16-20 if not predicting to grids
 if (!is.null(grids)) {
@@ -429,7 +429,7 @@ save(Gaus_Best_Model_Object,file = paste("./",names(samples[i]),"/Gaus_Best_Mode
 if (ZI) {save(Bin_Best_Model_Object,file = paste("./",names(samples[i]),"/Bin_Best_Model", sep = ""))}} #only save bin if ZI=TRUE
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Output CSVs written   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####20. Finalise & Write Report####
 # only do final variable interaction lines if varint=TRUE
@@ -468,7 +468,7 @@ if (varint) Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.na
 write.csv(Report, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Report.csv", sep = ""))
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Report CSV written    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
 
@@ -625,7 +625,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Combination map generat
     } # close RSB mapper
    } # close Map Maker
   } #close grids option from above section 22
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Grids & maps & everything complete    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
  } # close response variable (resvar) loop
 if (alerts) beep(8)} # final user notification, then close the function
 ####END####
