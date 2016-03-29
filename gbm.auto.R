@@ -439,11 +439,11 @@ if (ZI) Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Mode
                                          paste("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean, sep = ""),
                                          paste("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se, sep = ""))
 Report[1:2,(reportcolno - 12)] <- c(paste("Model combo: ", Gaus_Best_Model, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
-if (ZI) Report[1:dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 11)] <- as.character(subset(Bin_Best_Simp_Check$final.drops, order > 0)$preds)
-if (ZI) Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 10)] <-
+if (simp) if (ZI) Report[1:dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 11)] <- as.character(subset(Bin_Best_Simp_Check$final.drops, order > 0)$preds)
+if (simp) if (ZI) Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 10)] <-
   as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
-Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 9)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
-Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 8)] <-
+if (simp) Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 9)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
+if (simp) Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 8)] <-
   as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
 if (ZI) Report[1:6,(reportcolno - 7)] <-   c(paste("trees: ", get(paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""))$n.trees, sep = ""),
                                    paste("Training Data Correlation: ",get(paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""))$self.statistics$correlation[[1]], sep = ""),
