@@ -32,7 +32,7 @@
 # C:\Users\Simon\Dropbox\Galway\Analysis\R\Coilin R code\rmpi_example.R
 # mpi doesn't work on my laptop? due to daily rstudio build, or broken laptop, or neither?
 gbm.auto(expvar = c(4:9,11), resvar = 12, grids = mygrids, lr = c(0.02), ZI = TRUE, map = FALSE, RSB = FALSE, tc = 2, varint = FALSE, savegbm = FALSE)
-
+# posted to stack exchange, no answer
 
 ####OPTIMISE PARAMETERS####
 # Bag fraction optimiser
@@ -40,7 +40,7 @@ gbm.auto(expvar = c(4:9,11), resvar = 12, grids = mygrids, lr = c(0.02), ZI = TR
 # Try OPTIM function & see http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
 # Possibly have an option to start with this in the R function.
 #
-# Trial & error iterative approach to determine the optimal bag fraction (/ all parameters?)
+# Trial & error iterative approach to determine the optimal bag fraction & lr concurrently
 # for a data set? How? Stop @ whole percentages. Try OPTIM function & see
 # http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
 # Possibly have an option to start with this in the R function? Separate function?
@@ -100,16 +100,14 @@ ptm$elapsed # is the time taken in seconds
 ####3D PLOT####
 # what to do? Bother with it?
 
-####Allow deep subfunction calls####
-# Allow user to call extra parameters with '...' which will be parsed to gbm.step in places?
-# function (data,                             # the input dataframe
-#           gbm.x,                                    # the predictors
-#           gbm.y,                                    # and response
+# include eliths BRT_ALL within this code?
+
+
+####DONE####
+# Allow user to call extra parameters with '...' which will be parsed to gbm.step
+# Ls 124 & 149.
 #           offset = NULL,                            # allows an offset to be specified
 #           fold.vector = NULL,                       # allows a fold vector to be read in for CV with offsets,
-#           tree.complexity = 1,                      # sets the complexity of individual trees
-#           learning.rate = 0.01,                     # sets the weight applied to inidivudal trees
-#           bag.fraction = 0.75,                      # sets the proportion of observations used in selecting variables
 #           site.weights = rep(1, nrow(data)),        # allows varying weighting for sites
 #           var.monotone = rep(0, length(gbm.x)),     # restricts responses to individual predictors to monotone
 #           n.folds = 10,                             # number of folds
@@ -130,11 +128,7 @@ ptm$elapsed # is the time taken in seconds
 #           keep.fold.vector = FALSE,                 # allows the vector defining fold membership to be kept
 #           keep.fold.fit = FALSE,                    # allows the predicted values for observations from CV to be kept
 #           ...)                                      # allows for any additional plotting parameters
-#
-# include eliths BRT_ALL within this code?
 
-
-####DONE####
 # allow different image device for Mac OSX
 
 # user setting tc overrides auto-calc default?

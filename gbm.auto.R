@@ -32,9 +32,7 @@ gbm.auto <- function(
   BnW = TRUE,           # repeat maps in black & white e.g. for print journals
   alerts = TRUE,        # play sounds to mark progress steps
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
-  ...)                  # additional/optional parameters, for tc & gbm.map
-# (byx, byy, mapmain, heatcolours, colournumber, shape, mapback, landcol,
-# legendtitle, lejback, legendloc, grdfun, zero, quantile)
+  ...)                  # optional arguments for tc, gbm.map & gbm.step
 {
 # Generalised Boosting Model / Boosted Regression Tree process chain automater.
 # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
@@ -121,7 +119,7 @@ for (j in tc) {   # list permutations of tree complexity allowed
 ####4. Binomial BRT####
 if (ZI) {  # don't do if ZI=FALSE
 (assign(paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""), gbm.step(data = samples,
-    gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l)))
+    gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...)))
 
 ####5. Select best Bin model####
 # Makes an object w/ BRT training data correlation score of the 1st variable
@@ -146,7 +144,7 @@ n <- n + 1}   # Add to print counter & close ZI option
 
 ####6. Gaussian BRT####
 assign(paste("Gaus_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""), gbm.step(data = grv_yes,
- gbm.x = expvar, gbm.y = grvcol, family = "gaussian", tree.complexity = j, learning.rate = k, bag.fraction = l))
+ gbm.x = expvar, gbm.y = grvcol, family = "gaussian", tree.complexity = j, learning.rate = k, bag.fraction = l, ...))
 
 ####7. Select best Gaus model####
 Gaus_Best_Score <- 0 # create blanks for best results
