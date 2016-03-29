@@ -355,6 +355,7 @@ gbm.valuemap(dbase = mydata,
 
 
 ####DONE####
+# allow different image device for Mac OSX
 # add alert pings for maps and loops and such
 # perspeciesclosedarea maps colours get fucked
 # Option to set which loops you run (Combo (aka both), Biomass (aka good), Effort (aka bad), Conservation)

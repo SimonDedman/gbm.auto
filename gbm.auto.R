@@ -18,6 +18,7 @@ gbm.auto <- function(
 # TRUE: delta BRT, log-normalised Gaus, reverse log-norm & bias corrected.
 # FALSE: do Gaussian only, no log-normalisation.
 # CHECK: Tests data for you. Default is TRUE.
+  simp = TRUE,          # try simplfying best BRTs?
   gridslat = 2,         # column number for latitude in 'grids'
   gridslon = 1,         # column number for longitude in 'grids'
   cols = grey.colors(1,1,1), # barplot colour vector. Assignment in order of
@@ -198,8 +199,8 @@ m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selec
 ####9. Test simplification benefit, do so if better####
 samples <<- samples # global assign: bad practice but fixes problem where code
 # runs manually but crashes in loop: "unable to access samples".
-# if ZI=TRUE, run simplification test on best bin model
-if (ZI) {Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
+# if simp TRUE & ZI=TRUE, run simplification test on best bin model
+if (simp) { if (ZI) {Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
 
 # if best number of variables to remove isn't 0 (i.e. it's worth simplifying),
 # re-run best model (Bin_Best_Model, using gbm.call to get its values) with
@@ -233,7 +234,7 @@ if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####10. Select final best models####
+## Select final best models
 if (ZI) {  # don't do if ZI=FALSE. If Bin_Best has a simplified model:
 if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
 # & if the simplified model has better correlation than Bin_Best itself
@@ -247,11 +248,12 @@ if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
   if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1])
     {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
      Gaus_Best_Model <- "Gaus_Best_Simp"}
+} # close simp optional
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Best models selected    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####11. Line plots####
+####10. Line plots####
 dir.create(names(samples[i])) # create resvar-named directory for outputs
 
 # All plots on one image for Bin & Gaus
@@ -317,7 +319,7 @@ dev.off() }
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####12. Dot plots####
+####11. Dot plots####
 if (ZI) {  # don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Best_dot.png", sep = ""),
     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
@@ -332,11 +334,11 @@ dev.off()
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Dot plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####13. 3D plot TODO####
+####12. 3D plot TODO####
 # gbm.perspec(Bin_Best,3,2, z.range=c(0,31), theta=340, phi=35,smooth="none",border="#00000025",col="#ff003310",shade = 0.95, ltheta = 80, lphi = 50)
 # gbm.perspec(Gaus_Best,3,2, z.range=c(0,31), theta=340, phi=35,smooth="none",border="#00000025",col="#ff003310",shade = 0.95, ltheta = 80, lphi = 50)
 
-####14. Bar plots of variable influence####
+####13. Bar plots of variable influence####
 if (ZI) {  # create tables. Don't do if ZI=FALSE
 Bin_Bars <- summary(get(Bin_Best_Model),
         cBars = length(get(Bin_Best_Model)$var.names),
@@ -375,7 +377,7 @@ dev.off()
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####15. Variable interactions####
+####14. Variable interactions####
 # only do them if varint=TRUE, the default. Only do bin if ZI=TRUE
 if (ZI) if (varint) find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
 if (varint) find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
@@ -385,7 +387,7 @@ if (varint) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXX    Variable interactions c
 #avoid sections 16-20 if not predicting to grids
 if (!is.null(grids)) {
 
-####16. Binomial predictions####
+####15. Binomial predictions####
 if (ZI) {  # don't do if ZI=FALSE
 gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
 grids$Bin_Preds <- Bin_Preds} # close ZI
@@ -393,24 +395,24 @@ grids$Bin_Preds <- Bin_Preds} # close ZI
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Binomial predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####17. Gaussian predictions####
+####16. Gaussian predictions####
 gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
 if (ZI) {grids$Gaus_Preds <- Gaus_Preds
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Gaussian predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####18. Backtransform logged Gaus to unlogged####
+####17. Backtransform logged Gaus to unlogged####
 grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals,na.rm=FALSE)^2)
 
-####19. BIN*positive abundance = final abundance####
+####18. BIN*positive abundance = final abundance####
 grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
 predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Final abundance calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####20. Final saves####
+####19. Final saves####
 # CSV of Predicted values at each site inc predictor variables' values.
 write.csv(grids, row.names = FALSE, file = paste("./", names(samples[i]), "/Abundance_Preds_All.csv", sep = ""))
 # CSV of Predicted values at each site without predictor variables' values.
@@ -429,7 +431,7 @@ if (ZI) {save(Bin_Best_Model_Object,file = paste("./",names(samples[i]),"/Bin_Be
 if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Output CSVs written   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-####21. Finalise & Write Report####
+####20. Finalise & Write Report####
 # only do final variable interaction lines if varint=TRUE
 if (ZI) Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Model, sep = ""),
                                          paste("Model CV score: ", Bin_Best_Score, sep = ""),
@@ -470,7 +472,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Report CSV written    XXXXXXX
 
 if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
 
-####22. Unrepresentativeness surface builder####
+####21. Unrepresentativeness surface builder####
 # builds doesn't plot surface. If built, plotted by map maker.
   if (RSB) {
   rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
@@ -480,7 +482,7 @@ if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
   write.csv(rsbdf_both, row.names = FALSE, file = paste("./", names(samples[i]), "/RSB.csv", sep = ""))
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      RSB CSV written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
-####23. Map maker####
+####22. Map maker####
 if (!exists("mainlegendtitle")) mainlegendtitle = "CPUE" # create if absent else error
 if (map == TRUE) {   # generate output image & set parameters
   png(filename = paste("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png", sep = ""),
@@ -575,7 +577,8 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB combination map generated 
             mapmain = "Unrepresentativeness: ",
             mapback = "white",
             species = names(samples[i]),
-            heatcolours = grey.colors(8, start = 1, end = 0), #default 8 greys; setting heatcolours & colournumber overrides this
+            heatcolours = grey.colors(8, start = 1, end = 0), #default 8 greys
+####BUG:setting heatcolours & colournumber overrides this####
             landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
             legendtitle = "UnRep 0-1",
             breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = FALSE))/2000)

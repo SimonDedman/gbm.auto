@@ -1,8 +1,8 @@
 ####TO DO####
 ####gbm.auto heatcols for BnW gbm.map####
-#manually setting heatcolours in the gbm.auto(call) passes heatcolours to gbm.auto for gbm.map
-#but it'll override the grey colours for the B&W maps
-# See gbm.auto L584
+# manually setting heatcolours in the gbm.auto(call) passes heatcolours to gbm.auto for gbm.map
+# but it'll override the grey colours for the B&W maps
+# See gbm.auto L578
 
 ####Multicore Processing####
 # already supposedly incorporated; doesnt work
@@ -135,6 +135,8 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# allow different image device for Mac OSX
+
 # user setting tc overrides auto-calc default?
 
 # gbm.rsb plots: log+1 & have scale go to 2 (for 'both' else 1)
