@@ -22,8 +22,7 @@ gbm.valuemap <- function(
   mapshape = NULL, #  set coastline shapefile, else
 # uses British Isles. Generate your own with gbm.basemap
   pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
-  ...) {  # optional terms for gbm.map: byx byy mapmain heatcol shape mapback
-# landcol legendtitle lejback legendloc grdfun zero quantile species
+  ...) {  # optional terms for gbm.map
 
 # Check & load gbm.map
 if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
