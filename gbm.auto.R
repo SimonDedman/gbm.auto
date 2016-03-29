@@ -353,7 +353,7 @@ Gaus_Bars <- summary(get(Gaus_Best_Model),
 write.csv(Gaus_Bars, file = paste("./", names(samples[i]), "/Gaussian BRT Variable contributions.csv", sep = ""), row.names = FALSE)
 
 if (alerts) beep(2)# progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX        Bar plot csvs created        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Bar plot csvs created    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 if (ZI) {  # produce graphics. Don't do if ZI=FALSE
 png(filename = paste("./",names(samples[i]),"/Bin_Bars.png", sep = ""),
@@ -393,14 +393,14 @@ gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Pre
 grids$Bin_Preds <- Bin_Preds} # close ZI
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Binomial predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####16. Gaussian predictions####
 gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
 if (ZI) {grids$Gaus_Preds <- Gaus_Preds
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Gaussian predictions calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####17. Backtransform logged Gaus to unlogged####
 grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals,na.rm=FALSE)^2)
@@ -410,7 +410,7 @@ grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbu
 predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Final abundance calculated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####19. Final saves####
 # CSV of Predicted values at each site inc predictor variables' values.
@@ -480,7 +480,7 @@ if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
   rsbdf_gaus <- gbm.rsb(pos_samples, grids, expvarnames, gridslat, gridslon)
   rsbdf_both <- data.frame(rsbdf_bin, "Unrep_Gaus" = rsbdf_gaus[,"Unrepresentativeness"], "Unrep_Both" = (rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"]))
   write.csv(rsbdf_both, row.names = FALSE, file = paste("./", names(samples[i]), "/RSB.csv", sep = ""))
-  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      RSB CSV written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
+  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
 ####22. Map maker####
 if (!exists("mainlegendtitle")) mainlegendtitle = "CPUE" # create if absent else error
@@ -517,8 +517,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXX
   dev.off()} # close & save plotting device & close BnW optional
 
 if (alerts) beep(2)  # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Black & white map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
-
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
   if (RSB == TRUE) { # if RSB called, plot that surface separately
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png", sep = ""),
@@ -535,7 +534,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Black & white map generated    XX
     # res there, but high values captures in the last few bins.
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png", sep = ""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
@@ -550,7 +549,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB binary map generated   
     dev.off()
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png", sep = ""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
@@ -565,7 +564,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB Gaussian map generated  
     dev.off()
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB combination map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     if (BnW) {     # if BnW=TRUE, do again for b&w
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png", sep = ""),
@@ -585,7 +584,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXX    Colour RSB combination map generated 
     dev.off()
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB binary map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     B&W RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png", sep = ""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
@@ -603,7 +602,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB binary map generated
     dev.off()
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Gaussian map generated    XXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png", sep = ""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
@@ -621,7 +620,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Gaussian map generated
     dev.off()} # close BnW RSBs
 
 if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXX    Black & white RSB Combination map generated    XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
     } # close RSB mapper
    } # close Map Maker
   } #close grids option from above section 22
