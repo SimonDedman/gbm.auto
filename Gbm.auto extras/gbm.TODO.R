@@ -1,4 +1,12 @@
 ####TO DO####
+# if nrows (either original for bin or grv_yes for gaus) are <= 42 it'll crash @ 0.5 bf.
+# make a function which solves for your row number??
+
+# improve how functions are checked/loaded.
+# see this from gbm:
+if (!requireNamespace("gbm")) {
+  stop("you need to install the gbm package to run this function")
+
 ####gbm.auto heatcols for BnW gbm.map####
 # manually setting heatcolours in the gbm.auto(call) passes heatcolours to gbm.auto for gbm.map
 # but it'll override the grey colours for the B&W maps
