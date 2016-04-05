@@ -4,7 +4,7 @@
 
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
-  resvarcol, # response variable column in samples
+  resvar, # response variable column in samples
   ZI = "CHECK") # are samples zero-inflated? TRUE/FALSE/"CHECK"
 {
 
@@ -13,9 +13,9 @@ minbfbin <- 21/nrow(samples)
 print(paste("  binary bag fraction must be at least ", round(minbfbin,3), sep = ""))
 
 # if user has asked code to check for ZI, check it & set new ZI status
-if (ZI == "CHECK")  if (sum(samples[,resvarcol] == 0, na.rm = TRUE) / length(samples[,resvarcol]) >= 0.5) ZI = TRUE else ZI = FALSE
-logem <- log1p(samples[,resvarcol])
-dont  <- samples[,resvarcol]
+if (ZI == "CHECK")  if (sum(samples[,resvar] == 0, na.rm = TRUE) / length(samples[,resvar]) >= 0.5) ZI = TRUE else ZI = FALSE
+logem <- log1p(samples[,resvar])
+dont  <- samples[,resvar]
 if (ZI) {samples$grv <- logem} else {samples$grv <- dont}
 grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
 grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
