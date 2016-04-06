@@ -21,12 +21,6 @@ library(maptools) # for crop
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
 
-ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
-  download.file(paste("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip", sep = ""), "GSHHG.zip")
-  unzip("GSHHG.zip")
-  setwd("./GSHHS_shp")}
-  , setwd(getzip)) # else just setwd to there
-
 if (res == 1) res <- "c" # If res provided as number convert to letter
 if (res == 2) res <- "l"
 if (res == 3) res <- "i"
@@ -41,7 +35,13 @@ if (res == "CALC") { # Calculate res based on size of bounds
   if (29 > scope & scope >= 9) res <- "h"
   if (9 > scope) res <- "f"}
 
-setwd(paste("./", res, sep = "")) #setwd to that folder
+ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
+  download.file(paste("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip", sep = ""), "GSHHG.zip")
+  unzip("GSHHG.zip")
+  setwd("./GSHHS_shp")}
+  , setwd(getzip)) # else just setwd to there
+
+setwd(paste("./", res, sep = "")) #setwd to res subfolder
 
 # read in worldmap
 world <- readOGR(dsn = "./", layer = paste("GSHHS_", res, "_L1", sep = ""))
