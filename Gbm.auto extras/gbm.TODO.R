@@ -1,6 +1,62 @@
 ####TO DO####
-# if nrows (either original for bin or grv_yes for gaus) are <= 42 it'll crash @ 0.5 bf.
-# make a function which solves for your row number??
+# incorporate gbm.basemap as a gbm.auto default somehow?
+# basemap =
+# gbm.map(shape = coast, ...) # change to "shape,"
+# data(coast, package = "mapplots") #kill this
+# draw.shape(shape = shape, ...)
+#
+# remove coast as default. Force it to be provided. Call it each time in my calls.
+# in gbm.auto's gbm.map calls, reference shape
+# if I don't do this there's no way to provide basemaps to gbm.map calls?
+# all except 1st map call don't have ... : why?
+# probably removed in my trimming
+# if I remove shape=coast from gbm.map then I NEED to either have shape=shape in the gbm.auto calls
+# or shape = cropshp or shape = mymap
+# This allows "mymap," as a gbm.auto argument, which is fine.
+# THEN:
+if (!is.null(grids)) if (isnull(mymap)){
+  xbounds <- range(grids[,gridslon], na.rm = TRUE)
+  ybounds <- range(grids[,gridslat], na.rm = TRUE)
+  bounds <- c(xbounds, ybounds)
+  mymap <- gbm.basemap(bounds = bounds, res = 4)
+  }
+
+# separate bin & gaus parameters?
+# bin/gaus jkl loops 114:195
+# currently:
+# bin brt, best bin model, progress printer
+# gaus brt, best gaus model,
+# add stats to report,
+# progres printer
+# counters
+#
+# could be:
+# LOOP1: bin brt, best bin model, add bin stats to report, counters, progress printer
+# LOOP2: gaus brt, best gaus model, add gaus stats to report, counters, progress printer
+# fix report L434
+#
+# but then what? have lrbin & lrgaus, tcbin & tcgaus, bfbin & bfgaus?
+# lr is always lrbin but lrgaus is optional, lr used unless lrgaus supplied?
+if (isnull(lrgaus)) lr <- lrgaus
+for (k in lrgaus){}
+
+lr = c(0.01,0.005)
+lr = list(bin = c(0.01, 0.05), gaus = c(0.005, 0.0001))
+class(lr) # numeric / list
+lr
+lr$bin
+length(lr$bin)
+as.vector(lr)
+for (k in lr) {
+  }
+
+gbm.step(data = samples, gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...)
+
+
+# Process & map bin only? nightmarish. requires reordering of all bin/gaus/bin/gaus to bin/bin/bin
+ # gaus = TRUE
+# if (gaus)
+#Ls: 94:99,
 
 # improve how functions are checked/loaded.
 # see this from gbm:
@@ -112,6 +168,11 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# gbm.basemap: calculate default res based on size of bounds?
+
+# if nrows (either original for bin or grv_yes for gaus) are <= 42 it'll crash @ 0.5 bf.
+# make a function which solves for your row number?? gbm.bfcheck
+
 # Allow user to call extra parameters with '...' which will be parsed to gbm.step
 # Ls 124 & 149.
 #           offset = NULL,                            # allows an offset to be specified
