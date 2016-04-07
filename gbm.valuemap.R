@@ -176,11 +176,11 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
   dbase <- eval(parse(text = maploopcodes[o])) #sort according to O'th maploopcode
    for (k in 1:nrow(dbase)) { # run the loop for every row, if required
       print(paste("Run ",((o - 1) * length(maploopcodes)) + j," of ", length(goodcols) * length(maploopcodes),"; ",n,", ",round((sum(dbase[n:nrow(dbase),goodcols[j]])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
-          if (sum(dbase[n:nrow(dbase),goodcols[j]]) < CPUEMSY) {n = n - 1} else {#if sum of rows form end to this point < CPUEMSY aka HRMSY% add another row and sum again, ELSE:
+          if (sum(dbase[n:nrow(dbase),goodcols[j]]) < CPUEMSY) {n = n - 1} else {#if sum of rows from end to this point < CPUEMSY aka HRMSY% move 1 row up & resum, ELSE:
             assign(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""),rep(0,nrow(dbase))) # create a vector of zeroes called sort[j name]
             dbase <- cbind(dbase,get(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""))) # bind it to dbase
             colnames(dbase)[ncol(dbase)] <- paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = "") # reinstate its name (lost because bound with get())
-            dbase[1:n + 1,ncol(dbase)] <- rep(1,n) # populate first n-1 rows with 1 [k:n]
+            dbase[1:n + 1,ncol(dbase)] <- rep(1,n) # populate first n+1 rows with 1 [k:n]
             badcut <- sum(dbase[1:n + 1,badcols]) # sum badcols values (i.e. total badcol value in closed area)
             badall <- sum(dbase[,badcols])    # total badcols values
             badpct <- round((badcut/badall)*100,1) # percent of badcols values in closed area

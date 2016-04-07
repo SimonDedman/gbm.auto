@@ -3,7 +3,7 @@
 
 
 ####todo####
-# Label perspeciesareamap legend items w/ species names not 1:4 numbers.
+# Label perspeciesareamap legend items w/ species names not 1:4 numbers (L387 & 402)
 # legend <- c("Open", goodname), in legend.grid(), L61 of gbm.map. Hmm...
 # gbm.map allows ... optionals to be passed to it
 # but legend.grid is currently sealed
@@ -14,26 +14,41 @@
 # or legend the parameter of legend the function. UNBELIEVABLY stupid parameter naming by legend function builders.
 # Asked hans c("Open", goodname, recursive = TRUE) for later, if it's possible
 # decompile hans code for legend.grid and build it back up manually thius passing legend(parameter) to legend (function) directly
+# in legend.grid: 'type' populates 'legend' argument to legend function.
+# change legend.grid so there's a type option to allow character strings
+# change gbm.map L61 to call legend.grid with type = type
+# change gbm.map arguments: add type = 2,
+# in gbm.valuemap L387 & 402 add "type = goodname"
+goodname <- c("Blonde", "Cuckoo", "Spotted", "Thornback")
+class(goodname) # "character"
+if (class(goodname) == "character") print("success")
+goodname <- 1
+# insert into legend.grid @ L17:
+if (class(type) == "character") legend <- type
+# asked hans
 
 
+# L177 do I use k for anything? Is that a problem?
 
 # Improve closed area calculation algorithm. Use some kind of sorting algorithm rather than one by one counting. Clever loop system or something?
-# HRMSY% e.g. 8% is max can be removed, i.e. OPEN area, we need to CLOSE the rest i.e. 1-HRMSY
-# L175:
-# CPUEMSY <- (sum(dbase[,goodcols[j]]) * HRMSY[j]) # HRMSY% * total biomass for J'th species = biomass to protect i.e. 'sum-to threshold'
-# CPUEMSY is WRONG, i'm STILL protecting the 8%, not the 92%, right?
-
-# L176 sorts dbase by:
-# 1:Combo: largest to smallest bothdata value for that species, i.e. highest cpue lowest e combo.
-# 2:Biomass largest to smallest gooddata value for that species, i.e. highest biomass.
-# 3:Effort: smallest to largest baddata value (universal) THEN largest to smallest gooddata value for that species, i.e. lowest effort THEN highest biomass
-# 4:Conservation: largest to smallest conserve value (universal), i.e. highest conservation value (includes all species)
-
-# L179 cum.counts from the LAST row towards the first until HRMSY is reached then closes the inverse i.e. the top.
-# There's no logic saying that 1-"the worst
-# There we go: closing the INVERSE/worst bottom-up counted-to HRMSY% is closing the BEST 1-HRMSY%. GO ME!!
-# So, I'm counting to up to 8% instead of down to 92%. Fine. How to make this quicker though?
+# Closing the INVERSE/worst bottom-up counted-to HRMSY% is closing the BEST 1-HRMSY%.
+# I'm counting to up to 8% instead of down to 92%. Fine. How to make this quicker though?
 # asked on stackoverflow, no reply
+dbase <- data.frame(CPUE = runif(378570, min = 0, max = 1), row.names = NULL)
+HRMSY = 0.08
+n <- nrow(dbase)
+CPUEMSY <- (sum(dbase[,"CPUE"]) * HRMSY)
+
+for (k in 1:nrow(dbase)) {
+  print(paste(n,", ",round((sum(dbase[n:nrow(dbase),"CPUE"])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
+  if (sum(dbase[n:nrow(dbase),"CPUE"]) < CPUEMSY) {n = n - 1} else { #if sum of rows from end to this point < CPUEMSY aka HRMSY% add another row and sum again, ELSE:
+    print(paste("close rows 1:", n + 1, sep = ""))
+    break
+    }
+  }
+# Asked Coilin. See email, potentially investigate halving with rounding.
+# 18 splits for my 378570 rows. 18 loops would phenomenally reduce processing time.
+
 
 
 # search this: ####remove xlab & ylab above for general code####
