@@ -1,5 +1,5 @@
 ## Script to convert ICES Rectangle codes to lat-longs
-icesplus <- function(x, # data object
+icesplus <- function(x, # data object 
                      datacol = 1, # Set for ICES rect codes
                      filename = "ICES Rect to LatLonWKT.csv"){ 
   require(mapplots)
