@@ -14,10 +14,12 @@ gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
 print(paste("if rgdal install fails in linux try: sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"))
 if (!require(rgdal)) install.packages("rgdal")
 library(rgdal) # for readOGR
+if (!require(rgeos)) install.packages("rgeos")
+library(rgeos) # subfunctions for rgdal & others
 if (!require(raster)) install.packages("raster")
 library(raster) # for crop
 if (!require(maptools)) install.packages("maptools")
-library(maptools) # for crop
+library(maptools) # for WriteSpatialShape
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
 
