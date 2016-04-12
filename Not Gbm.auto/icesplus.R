@@ -19,4 +19,4 @@ icesplus <- function(x, # data object
                            file = filename,
                            row.names = FALSE)
   return(x)
-} #test
+}
