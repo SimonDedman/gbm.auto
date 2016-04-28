@@ -8,12 +8,11 @@ gbm.auto <- function(
   expvar,               # list of column numbers of explanatory variables in
 # 'samples', expected e.g. c(1,35,67,etc.). No default
   resvar,               # column number of response variable (e.g. CPUE) in
-# samples. Expected, e.g. 94. No default. Column name should be species name.
+# samples. Expected, e.g. 12. No default. Column name should be species name.
   #tc = c(2,5),         # list of permutations of tree complexity allowed,
 # defaults to c(2,length(expvar)) @L55
-  lr = c(0.01,0.005),   # list of permutations of learning rate allowed,
-# expected e.g. and default: c(0.01,0.005)
-  bf = 0.5,             # bag fraction permutations, can be e.g. c(0.5,0.7)
+  lr = c(0.01,0.005),   # list of permutations of learning rate allowed
+  bf = 0.5,             # bag fraction permutations, can be vector: c(0.5,0.7)
   ZI = "CHECK",         # are data zero-inflated? TRUE/FALSE/"CHECK".
 # TRUE: delta BRT, log-normalised Gaus, reverse log-norm & bias corrected.
 # FALSE: do Gaussian only, no log-normalisation.
