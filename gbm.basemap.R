@@ -1,6 +1,6 @@
 gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
                         getzip = TRUE, # download & unpack GSHHS data to WD?
-  # "TRUE" or absolute/relative reference to GSHHS_shp folder, including folder
+  # "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
                         zipvers = "2.3.4", # GSHHS version, in case it updates
                         savename = "Crop_Map", #shapefile savename, no extension
                         res = "CALC") { # resolution, 1:5 (low:high) OR c,l,i,h,f

@@ -31,8 +31,15 @@ if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to
   if (alerts) require(beepr) #for progress noises
 if (alerts) options(error = function() {beep(9)})  # warn for fails
 
-if (is.null(mapshape)) {data(coast,package = "mapplots")
-  mapshape <- coast}
+if (is.null(mapshape)) {
+  if (!require(gbm.basemap)) {stop("you need to install gbm.basemap to run this function")}
+  mapshape <- gbm.basemap(bounds = c(min(dbase[,loncolno]),
+                                     max(dbase[,loncolno]),
+                                     min(dbase[,latcolno]),
+                                     max(dbase[,latcolno])))
+  #data(coast,package = "mapplots")
+  #mapshape <- coast
+  }
 
 goodname = colnames(dbase)[goodcols] #the response varible(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
 badname = colnames(dbase)[badcols] #ditto for badcols. Both of these moved out of function parameters list to foce user to specify in colnames
