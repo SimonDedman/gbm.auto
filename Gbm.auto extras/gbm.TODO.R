@@ -1,4 +1,7 @@
 ####TO DO####
+# remove log1p since grv_yes subset now has no zeroes L95
+# also reverse log properly L404
+
 # incorporate gbm.basemap as a gbm.auto default somehow?
 # basemap =
 # gbm.map(shape = coast, ...) # change to "shape,"

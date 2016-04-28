@@ -2,6 +2,9 @@
 # working script for paper 2
 # 1/6/2015
 ##
+####TODO####
+# have per-species cons maps underpin the Conservation Sort in p3, rather than
+# all 4 species underpinned by the 4-sp gbm.cons map.
 
 ####prep####
 # set & test working directory
