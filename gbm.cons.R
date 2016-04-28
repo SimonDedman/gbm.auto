@@ -1,11 +1,12 @@
-gbm.cons <- function(grids,         # csv file (inc relative location) of gridded lat+long+data to predict to
+gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
-                     conssamples,   # single or vector of samples data csv files
-                     # (inc relative location) corresponding to subsets
+                     conssamples,   # single/vector of samples csv names & 
+                     # locations corresponding to subsets
                      alerts = TRUE, # play sounds to mark progress steps
                      map = TRUE,    # produce maps
                      BnW = TRUE,    # also produce B&W maps
-                     resvars,  # vector of resvars cols from conssamples for gbm.autos, length(subsets)*species, no default
+                     resvars,  # vector of resvars cols from conssamples for
+                     # gbm.autos, length(subsets)*species, no default
                      gbmautos = TRUE, # do gbm.auto runs for species?
                      expvars,  # list object of expvar vectors for gbm.autos,
                      # length = no. of subsets * no. of species. No default
@@ -68,8 +69,6 @@ for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
 # load("Bin_Best_Model")
 # load("Gaus_Best_Model")
 
-mygrids <<- read.csv(grids, header = TRUE)  # load grids, <<- bad but reqd
-
 # create a list of response variables for name ranges
 GS <- length(resvars)/length(subsets) # calculate group size, e.g. 8/2
 resvarrange = list() # create blank list
@@ -84,6 +83,7 @@ for (i in 1:length(subsets)) {  #currently 2
 assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
 
 if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
+  ## change to name(conssamples[i])?
 setwd(paste("./", subsets[i], sep = ""))  # go there
 
 for (j in 1:GS) {  #loop through all species in group e.g. 4
