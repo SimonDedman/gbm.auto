@@ -1,13 +1,13 @@
-# gbm.bfcheck: provides minimum bag fractions for gbm.auto,
-# preventing failure due to bf & samples rows limit
-# Simon Dedman, 2016, simondedman@gmail.com, github.com/SimonDedman/gbm.auto
-
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
   resvar, # response variable column in samples
   ZI = "CHECK") # are samples zero-inflated? TRUE/FALSE/"CHECK"
 {
 
+# gbm.bfcheck: provides minimum bag fractions for gbm.auto,
+# preventing failure due to bf & samples rows limit
+# Simon Dedman, 2016, simondedman@gmail.com, github.com/SimonDedman/gbm.auto
+  
 # Minimum bag fraction for binary
 minbfbin <- 21/nrow(samples)
 print(paste("  binary bag fraction must be at least ", round(minbfbin,3), sep = ""))
