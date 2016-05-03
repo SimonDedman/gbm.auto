@@ -2,28 +2,6 @@
 # remove log1p since grv_yes subset now has no zeroes L95
 # also reverse log properly L404
 
-# incorporate gbm.basemap as a gbm.auto default somehow?
-# basemap =
-# gbm.map(shape = coast, ...) # change to "shape,"
-# data(coast, package = "mapplots") #kill this
-# draw.shape(shape = shape, ...)
-#
-# remove coast as default. Force it to be provided. Call it each time in my calls.
-# in gbm.auto's gbm.map calls, reference shape
-# if I don't do this there's no way to provide basemaps to gbm.map calls?
-# all except 1st map call don't have ... : why?
-# probably removed in my trimming
-# if I remove shape=coast from gbm.map then I NEED to either have shape=shape in the gbm.auto calls
-# or shape = cropshp or shape = mymap
-# This allows "mymap," as a gbm.auto argument, which is fine.
-# THEN:
-if (!is.null(grids)) if (isnull(mymap)){
-  xbounds <- range(grids[,gridslon], na.rm = TRUE)
-  ybounds <- range(grids[,gridslat], na.rm = TRUE)
-  bounds <- c(xbounds, ybounds)
-  mymap <- gbm.basemap(bounds = bounds, res = 4)
-  }
-
 # separate bin & gaus parameters?
 # bin/gaus jkl loops 114:195
 # currently:
@@ -171,6 +149,8 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# incorporate gbm.basemap as a gbm.auto default
+
 # gbm.basemap: calculate default res based on size of bounds?
 
 # if nrows (either original for bin or grv_yes for gaus) are <= 42 it'll crash @ 0.5 bf.
