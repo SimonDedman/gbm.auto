@@ -67,7 +67,7 @@ require(dismo)
 if (alerts) require(beepr)
 require(labeling)
 
-if (!is.null(grids)) if (!exists(shape)) { # create basemap if not provided
+if (!is.null(grids)) if (!exists("shape")) { # create basemap if not provided
     if (!require(gbm.basemap)) {stop("you need to install gbm.basemap to run this function")}
     shape <- gbm.basemap(bounds = c(min(grids[,gridslon]),
                                     max(grids[,gridslon]),

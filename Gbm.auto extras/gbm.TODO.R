@@ -2,6 +2,12 @@
 # remove log1p since grv_yes subset now has no zeroes L95
 # also reverse log properly L404
 
+# Diya:
+# Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
+# 3 env vars categorical. Changed to numeric.
+# If data need to be numeric I need to reflect that in the documentation AOR
+# create a converter.
+
 # separate bin & gaus parameters?
 # bin/gaus jkl loops 114:195
 # currently:
@@ -30,7 +36,6 @@ length(lr$bin)
 as.vector(lr)
 for (k in lr) {
   }
-
 gbm.step(data = samples, gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...)
 
 

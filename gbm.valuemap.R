@@ -26,13 +26,13 @@ gbm.valuemap <- function(
 
 # Check & load gbm.map
 if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
-  require(gbm.map) #for mapping
+  #require(gbm.map) #for mapping; can't use require on non-CRAN?
 if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr) #for progress noises
 if (alerts) options(error = function() {beep(9)})  # warn for fails
 
 if (is.null(mapshape)) {
-  if (!require(gbm.basemap)) {stop("you need to install gbm.basemap to run this function")}
+  if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
   mapshape <- gbm.basemap(bounds = c(min(dbase[,loncolno]),
                                      max(dbase[,loncolno]),
                                      min(dbase[,latcolno]),
@@ -180,15 +180,23 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
   # min area for HRMSY, starting with best fish cells
   # Sort by bothdata descending then map that then overlay 15% biomass by highest bothdata
   CPUEMSY <- (sum(dbase[,goodcols[j]]) * HRMSY[j]) # HRMSY% * total biomass for J'th species = biomass to protect i.e. 'sum-to threshold'
+  # CPUEMSY won't exist if you don't run 
   dbase <- eval(parse(text = maploopcodes[o])) #sort according to O'th maploopcode
    for (k in 1:nrow(dbase)) { # run the loop for every row, if required
       print(paste("Run ",((o - 1) * length(maploopcodes)) + j," of ", length(goodcols) * length(maploopcodes),"; ",n,", ",round((sum(dbase[n:nrow(dbase),goodcols[j]])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
-          if (sum(dbase[n:nrow(dbase),goodcols[j]]) < CPUEMSY) {n = n - 1} else {#if sum of rows from end to this point < CPUEMSY aka HRMSY% move 1 row up & resum, ELSE:
+          #if (sum(dbase[n:nrow(dbase),goodcols[j]]) < CPUEMSY) {n = n - 1} else {#if sum of rows from end to this point < CPUEMSY aka HRMSY% move 1 row up & resum, ELSE:
+            n <- which.min((cumsum(dbase[nrow(dbase):1,goodcols[j]]) - CPUEMSY) ^ 2)
+            # coilins <- which.min((cumsum(dbase[nrow(dbase):1,"CPUE"]) - CPUEMSY) ^ 2)
+            print(n)
+            # cumsum from end (n) upwards towards 1 of CPUE until the row X
+            # where end:X = CPUEMSY i.e. 'open' cells; close rest i.e. n-X
             assign(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""),rep(0,nrow(dbase))) # create a vector of zeroes called sort[j name]
             dbase <- cbind(dbase,get(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""))) # bind it to dbase
             colnames(dbase)[ncol(dbase)] <- paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = "") # reinstate its name (lost because bound with get())
             dbase[1:n + 1,ncol(dbase)] <- rep(1,n) # populate first n+1 rows with 1 [k:n]
+            #dbase[1:n, ncol(dbase)] <- rep(1,n) # populate first n+1 rows with 1 [k:n]
             badcut <- sum(dbase[1:n + 1,badcols]) # sum badcols values (i.e. total badcol value in closed area)
+            #badcut <- sum(dbase[1:n, badcols]) # sum badcols values (i.e. total badcol value in closed area)
             badall <- sum(dbase[,badcols])    # total badcols values
             badpct <- round((badcut/badall)*100,1) # percent of badcols values in closed area
             # this counts UP from the WORST row (last) until reaching HRMSY% (e.g. 8%) then closes the inverse
@@ -307,7 +315,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               dev.off()
             } # close BnW
 
-         break} # end of ELSE section
+         #break} # end of ELSE section
           } # end of FOR loop k (data rows)
   if (alerts) beep(2)} # alert user & end of 2nd FOR loop j (species)
 

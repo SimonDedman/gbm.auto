@@ -34,21 +34,34 @@ if (class(type) == "character") legend <- type
 # Closing the INVERSE/worst bottom-up counted-to HRMSY% is closing the BEST 1-HRMSY%.
 # I'm counting to up to 8% instead of down to 92%. Fine. How to make this quicker though?
 # asked on stackoverflow, no reply
+dbase <- data.frame(CPUE = rep(2,10), row.names = NULL)
 dbase <- data.frame(CPUE = runif(378570, min = 0, max = 1), row.names = NULL)
+
+HRMSY = 0.4
 HRMSY = 0.08
+
 n <- nrow(dbase)
+
 CPUEMSY <- (sum(dbase[,"CPUE"]) * HRMSY)
 
 for (k in 1:nrow(dbase)) {
   print(paste(n,", ",round((sum(dbase[n:nrow(dbase),"CPUE"])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
   if (sum(dbase[n:nrow(dbase),"CPUE"]) < CPUEMSY) {n = n - 1} else { #if sum of rows from end to this point < CPUEMSY aka HRMSY% add another row and sum again, ELSE:
-    print(paste("close rows 1:", n + 1, sep = ""))
+    print(paste("close rows 1:", n - 1, sep = ""))
     break
     }
   }
 # Asked Coilin. See email, potentially investigate halving with rounding.
 # 18 splits for my 378570 rows. 18 loops would phenomenally reduce processing time.
-
+# Coilin answer:
+which.min((cumsum(dbase[nrow(dbase):1,"CPUE"]) - CPUEMSY) ^ 2)
+# This asks which index (-1) has the cumulative CPUE closest to the CPUEMSY.
+# Maybe not what you are after but cumsum could assist.
+coilins <- n - which.min((cumsum(dbase[n:1,"CPUE"]) - CPUEMSY) ^ 2)
+# cumsum from end (n) upwards towards 1 of CPUE until the row X where end:X = CPUEMSY i.e. 'open' cells
+# close the rest i.e. inverse i.e. n-X
+#edited Ls 186 & 313. try it out.
+# edited L193&5 changing n+1 to n. Not sure why it's n+1. Doubt 1 row has much effect in any case but check it out later.
 
 
 # search this: ####remove xlab & ylab above for general code####
@@ -84,6 +97,7 @@ plotthis = c("both","close")
 ####Load scripts & data####
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.basemap.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
@@ -123,6 +137,8 @@ dir.create("Badweight 10")
 dir.create("Goodweight 4.17 3.5 2.33 1")
 
 ####Run gbm.valuemap####
+data(coast, package = "mapplots")
+
 # normal 1:1 values
 setwd("Blonde 0.08")
 gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
@@ -131,7 +147,8 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
              goodcols = c(5,3,6,4),  # which column numbers are abundances (where higher = better)? C B S T
              badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
              conservecol = 8, #conservation column
-             HRMSY = c(0.14,0.08,0.08,0.15))
+             HRMSY = c(0.14,0.08,0.08,0.15),
+             mapshape = coast)
 
 # run with effort weight as 10 "badweight"
 rm(list = ls()) # remove everything to clear workspace, free memory & reload
