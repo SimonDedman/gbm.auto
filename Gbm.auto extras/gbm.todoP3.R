@@ -106,10 +106,16 @@ source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
 # Load linux
 mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names = NULL)
 mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
-
+# Load linux no grain
+mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E_NoGrain.csv", header = TRUE, row.names = NULL)
+mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE_NoGrain.csv", header = TRUE)
 # set directory, with fishing E as an expvar
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E")
 
+# load mapplots coast and set as shape
+library(mapplots)
+data(coast)
+shape = coast
 # run gbm.autos; cuckoo
 gbm.auto(expvar = c(4:9,11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 #thornback
@@ -120,6 +126,17 @@ gbm.auto(expvar = c(4:9,11), resvar = 14, grids = mygrids, lr = c(0.005, 0.001),
 gbm.auto(expvar = c(4:9,11), resvar = 15, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 #all at once
 gbm.auto(expvar = c(4:9,11), resvar = c(12:15), grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+
+# run gbm.autos, NoGrain; cuckoo
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+#thornback
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 13, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+#blonde
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 14, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+#spotted
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 15, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+#all at once
+gbm.auto(expvar = c(4:7, 9, 11), resvar = c(12:15), grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 
 ####From here to run all automatically####
 #(this is an overnight job!)
