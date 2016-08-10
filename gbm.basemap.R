@@ -47,7 +47,7 @@ ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
 setwd(paste("./", res, sep = "")) #setwd to res subfolder
 
 # read in worldmap
-world <- readOGR(dsn = "./", layer = paste("GSHHS_", res, "_L1", sep = ""))
+world <- readOGR(dsn = paste("GSHHS_", res, "_L1.shp", sep = ""), layer = paste("GSHHS_", res, "_L1", sep = ""))
 cropshp <<- crop(world, bounds) # crop to extents
 setwd(startdir)
 dir.create("CroppedMap") # create conservation maps directory
