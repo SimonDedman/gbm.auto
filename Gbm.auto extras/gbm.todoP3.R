@@ -117,15 +117,15 @@ library(mapplots)
 data(coast)
 shape = coast
 # run gbm.autos; cuckoo
-gbm.auto(expvar = c(4:9,11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
-#thornback
-gbm.auto(expvar = c(4:9,11), resvar = 13, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
-#blonde
-gbm.auto(expvar = c(4:9,11), resvar = 14, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
-#spotted
-gbm.auto(expvar = c(4:9,11), resvar = 15, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
-#all at once
-gbm.auto(expvar = c(4:9,11), resvar = c(12:15), grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+# gbm.auto(expvar = c(4:7,9,11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+# #thornback
+# gbm.auto(expvar = c(4:7,9,11), resvar = 13, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+# #blonde
+# gbm.auto(expvar = c(4:7,9,11), resvar = 14, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+# #spotted
+# gbm.auto(expvar = c(4:7,9,11), resvar = 15, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+# #all at once
+# gbm.auto(expvar = c(4:9,11), resvar = c(12:15), grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 
 # run gbm.autos, NoGrain; cuckoo
 gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)

@@ -1,7 +1,4 @@
 ####TO DO####
-# remove log1p since grv_yes subset now has no zeroes L95
-# also reverse log properly L404
-
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
 # 3 env vars categorical. Changed to numeric.
@@ -154,6 +151,8 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# remove log1p since grv_yes subset now has no zeroes L104 & 8
+
 # incorporate gbm.basemap as a gbm.auto default
 
 # gbm.basemap: calculate default res based on size of bounds?

@@ -543,7 +543,6 @@ gbm.step(data = mysamples, gbm.x = 5:11, gbm.y = brvcol, family = "bernoulli",
 # missing value where TRUE/FALSE needed
 
 gbm.step
-
 #see gbm.step.debug
 #159: code after { doesn't evaluate to TRUE/FALSE ?
 # no,  The condition must have either a TRUE or FALSE result. The { afterwards is what to do.
@@ -574,6 +573,12 @@ gbm.step
 
 # "delta.deviance > tolerance.test" = 1 > tolerance.test
 # tolerance.test: 0.001 * total.deviance/119
+# 1 > 0.001 * total.deviance/119
+# 119 > 0.001 * total.deviance
+# 119000 > total.deviance
+# where's total.deviance?
+# gbm.step:
+# total.deviance <- calc.deviance(y_i, u_i, weights = site.weights, family = family, calc.mean = FALSE)
 
 ## calc.deviance(obs, pred, weights = rep(1,length(obs)), family="binomial", calc.mean = TRUE)
 # calc.deviance(y_i, u_i, weights = site.weights, family = family, calc.mean = FALSE)

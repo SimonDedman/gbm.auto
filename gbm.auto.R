@@ -231,7 +231,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Bin model    XXXXX
 # Same for Gaus
 Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
 if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
-  assign("Gaus_Best_Simp", gbm.step(data = samples,
+  assign("Gaus_Best_Simp", gbm.step(data = grv_yes,
                                  gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
                                  gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
                                  tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
