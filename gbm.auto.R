@@ -101,11 +101,12 @@ samples$brv <- ifelse(samples[i] > 0, 1, 0)
 brvcol <- which(colnames(samples) == "brv") # brv column number for BRT
 
 # create logged response variable, for gaussian BRTs when data is zero-inflated (otherwise just use resvar directly)
-logem <- log1p(samples[,i])
+logem <- log(samples[,i])
 dont  <- samples[,i]
 if (ZI) {samples$grv <- logem} else {samples$grv <- dont}
 grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
-grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
+grv_yes <- subset(samples, grv >= 0) # nonzero subset for gaussian BRTs
+# actually not nonzero but 'not -Inf' since zeroes logged to "-Inf"
 
 ####3. Begin Report####
 reportcolno = (3 + (5*(length(tc)*length(lr)*length(bf))) + 14)  # calculate number of columns for report: standard elements (3&12) + 5 elements for each loop
@@ -410,7 +411,7 @@ if (alerts) beep(2) # progress printer, right aligned for visibility
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
 ####17. Backtransform logged Gaus to unlogged####
-grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals,na.rm=FALSE)^2)
+grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
 
 ####18. BIN*positive abundance = final abundance####
 grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
