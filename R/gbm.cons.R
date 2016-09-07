@@ -24,8 +24,8 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      RSBs = rep(TRUE, length(resvars)),
                      BnWs = rep(TRUE, length(resvars)),
                      zeroes = rep(TRUE, length(resvars)),
-                     pngtype = "cairo-png") # filetype for png files, alternatively try "quartz"{
-
+                     pngtype = "cairo-png") # filetype for png files, alternatively try "quartz"
+{
   ####todo: make running gbm.auto optional####
   # if they've already been run.
   # Have to have subset folders & species folder names correct.
