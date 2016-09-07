@@ -1,3 +1,40 @@
+#' Conservation Area Mapping
+#'
+#' Gbm.cons runs gbm.auto for multiple subsets of the same overall dataset and
+#' scales the combined results, leading to maps which highlight areas of high
+#' conservation importance for multiple species in the same study area e.g.
+#' using juvenile and adult female subsets to locate candidate nursery grounds
+#' and spawning areas respectively.
+#'
+#' @param mygrids Gridded lat+long+data object to predict to
+#' @param subsets Subset name(s): character; single or vector
+#' @param conssamples Single/vector of samples csv names & locations corresponding to subsets
+#' @param alerts Play sounds to mark progress steps
+#' @param map Produce maps
+#' @param BnW Also produce B&W maps?
+#' @param resvars Vector of resvars cols from conssamples for gbm.autos, length(subsets)*species, no default
+#' @param gbmautos Do gbm.auto runs for species?
+#' @param expvars List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default
+#' @param tcs Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param lrs Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param bfs Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param ZIs Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param gridslats Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param gridslons Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param colss Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param linesfiless Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param savegbms Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param varints Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param maps Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param BnWs Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param zeroes Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param pngtype Filetype for png files, alternatively try "quartz"
+#'
+#' @return  Maps via gbm.map & saved data as csv file
+#' @export
+#'
+#' @examples
+#'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
                      conssamples,   # single/vector of samples csv names &
