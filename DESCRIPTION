@@ -1,0 +1,20 @@
+Package: gbm.auto
+Title: Automated Boosted Regression Tree Modelling and Mapping Suite 
+Version: 1.0.0
+Authors@R: person("Simon", "Dedman", email = "simondedman@gmail.com", role = c("aut", "cre"))
+Description: Automates delta log-normal boosted regression tree abundance prediction.
+    Loops through parameters provided (LR, TC, BF), chooses best, simplifies, &
+    generates line, dot & bar plots, & outputs these & predictions & a report,
+    makes predicted abundance maps, and Unrepresentativeness surfaces.
+Depends: R (>= 3.3.1)
+License: AGPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Imports: gbm (>= 2.1.1),
+    dismo (>= 1.0-15),
+    beepr (>= 1.2),
+    labeling (>= 0.3),
+    mapplots (>= 1.5),
+    rgdal (>= 1.1-10),
+    rgeos (>= 0.3-19),
+    raster (>= 2.5-8)
