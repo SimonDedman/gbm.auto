@@ -1,6 +1,6 @@
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
-                     conssamples,   # single/vector of samples csv names & 
+                     conssamples,   # single/vector of samples csv names &
                      # locations corresponding to subsets
                      alerts = TRUE, # play sounds to mark progress steps
                      map = TRUE,    # produce maps
@@ -269,5 +269,6 @@ gbm.map(x = xtmp,
 dev.off()}} # close BnW & mapping IF
 print(paste("XXXXXXXXXXXXXXXXXXXXXX     All-scaled conservation map(s) generated      XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 print(paste("XXXXXXXXXXXXXXXXXXXXXX                Everything complete                XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
-if (alerts) beep(8)} # complete sound & close function
+if (alerts) beep(8) # complete sound & close function
 ####END####
+}
