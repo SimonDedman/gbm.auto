@@ -1,4 +1,6 @@
 ####TO DO####
+# Man pages for each of the data files. How?
+
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
 # 3 env vars categorical. Changed to numeric.
