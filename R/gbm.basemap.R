@@ -1,3 +1,22 @@
+#' Creates Basemaps for Gbm.auto mapping from your data range
+#'
+#' Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set
+#' box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
+#' "Use secure download method for HTTP" in Tools > Global Options > Packages.
+#' Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
+#'
+#' @param bounds Region to crop to: c(xmin,xmax,ymin,ymax)
+#' @param getzip Download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
+#' @param zipvers GSHHS version, in case it updates. Please email developer (SD) if this is incorrect
+#' @param savename Shapefile savename, no extension
+#' @param res resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
+#'
+#' @return basemap coastline file for gbm.map in gbm.auto
+#'
+#' @export
+#'
+#' @examples
+#'
 gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
                         getzip = TRUE, # download & unpack GSHHS data to WD?
   # "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder

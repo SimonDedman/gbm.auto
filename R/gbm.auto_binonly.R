@@ -38,6 +38,7 @@
 #' @export
 #'
 #' @examples
+#'
 gbm.auto <- function(
   grids = NULL,         # explantory data to predict to. Import with (e.g.)
 # read.csv & specify object name. Defaults to NULL (won't predict to grids)

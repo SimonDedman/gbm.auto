@@ -1,3 +1,39 @@
+#' Decision Support Tool that generates (Marine) Protected Area options using species’ predicted abundance maps
+#'
+#' Scales response variable data, maps a user-defined explanatory variable to be
+#' avoided, e.g. fishing effort, combines them into a map showing areas to
+#' preferentially close. Bpa – the precautionary biomass required to protect the
+#' spawning stock – is used to calculate MPA size. MPA is then grown to add
+#' subsequent species starting from the most conservationally at-risk species,
+#' resulting in one MPA map per species, and a multicolour MPA map of all.
+#' All maps list the percentage of the avoid-variable’s total that is overlapped
+#' by the MPA in the map legend.
+#'
+#' @param dbase data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
+#' @param loncolno Column number in dbase which has longitudes
+#' @param latcolno Column number in dbase which has latitudes
+#' @param goodcols Which column numbers are abundances (where higher = better)? List them in order of highest conservation importance first e.g. c(3,1,2,4)
+#' @param badcols Which col no.s are 'negative' e.g. fishing (where higher = worse)?
+#' @param conservecol Conservation column, from gbm.conserve
+#' @param plotthis To plot? delete any,or all w/ NULL
+#' @param maploops Sort loops to run
+#' @param savethis Export all data as csv?
+#' @param HRMSY Maximum % of each goodcols stock which can be removed yearly, as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or vector. Same order as goodcols
+#' @param goodweight Single/vector weighting multiple(s) for goodcols array
+#' @param badweight Ditto for badcols array
+#' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
+#' @param alerts Play sounds to mark progress steps
+#' @param BnW Also produce greyscale images for print publications
+#' @param mapshape Set coastline shapefile, else uses British Isles. Generate your own with gbm.basemap
+#' @param pngtype Filetype for png files, alternatively try "quartz"
+#' @param ... Optional terms for gbm.map
+#'
+#' @return Species abundance, abundance vs 'avoid variable', and MPA maps per
+#' species and sort type, in b&w if set. CSVs of all maps if set.
+#'
+#' @export
+#'
+#' @examples None
 gbm.valuemap <- function(
   dbase,  # data.frame to load. Expects Lon, Lat & data columns: predicted
 # abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
@@ -180,7 +216,7 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
   # min area for HRMSY, starting with best fish cells
   # Sort by bothdata descending then map that then overlay 15% biomass by highest bothdata
   CPUEMSY <- (sum(dbase[,goodcols[j]]) * HRMSY[j]) # HRMSY% * total biomass for J'th species = biomass to protect i.e. 'sum-to threshold'
-  # CPUEMSY won't exist if you don't run 
+  # CPUEMSY won't exist if you don't run
   dbase <- eval(parse(text = maploopcodes[o])) #sort according to O'th maploopcode
    for (k in 1:nrow(dbase)) { # run the loop for every row, if required
       print(paste("Run ",((o - 1) * length(maploopcodes)) + j," of ", length(goodcols) * length(maploopcodes),"; ",n,", ",round((sum(dbase[n:nrow(dbase),goodcols[j]])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
