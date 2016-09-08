@@ -1,5 +1,6 @@
 ####TO DO####
 # Man pages for each of the data files. How?
+# Examples for all functions man pages
 
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
