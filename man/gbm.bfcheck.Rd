@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.bfcheck.R
 \name{gbm.bfcheck}
 \alias{gbm.bfcheck}
-\title{Gbm.bfcheck: calculates minimum Bag Fraction size for gbm.auto}
+\title{Calculates minimum Bag Fraction size for gbm.auto}
 \usage{
 gbm.bfcheck(samples, resvar, ZI = "CHECK")
 }
@@ -17,7 +17,7 @@ gbm.bfcheck(samples, resvar, ZI = "CHECK")
 Prints minimum Bag Fraction size.
 }
 \description{
-gbm.bfcheck: provides minimum bag fractions for gbm.auto, preventing failure
+Provides minimum bag fractions for gbm.auto, preventing failure
 due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
 github.com/SimonDedman/gbm.auto
 }

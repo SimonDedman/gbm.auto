@@ -1,7 +1,8 @@
-#' roc, calibration & gbm.predict.grids: automated BRT/GBM modelling
+#' gbm.utils: roc, calibration & gbm.predict.grids functions bundle
 #'
 #' [Note: Man page named after 1st function in script i.e. roc but script
 #' contains 3. Should be no need for users to interact with these directly]
+#'
 #' roc: adapted from Ferrier, Pearce and Watson's code, by J.Elith, see: Hanley,
 #' J.A. & McNeil, B.J. (1982) The meaning and use of the area under a Receiver
 #' Operating Characteristic (ROC) curve. Radiology, 143, 29-36. Also Pearce, J.
@@ -10,12 +11,12 @@
 #' is the non-parametric calculation for area under the ROC curve, using the
 #' fact that a MannWhitney U statistic is closely related to the area. In dismo,
 #' this is used in the gbm routines, but not elsewhere (see evaluate).
-#' ~~~
+#'
 #' calibration: j elith/j leathwick 17th March 2005. Calculates calibration
 #' statistics for either binomial or count data but the family argument must be
 #' specified for the latter a conditional test for the latter will catch most
 #' failures to specify the family
-#' ~~~
+#'
 #' Gbm.predict.grids: J.Elith / J.Leathwick, March 07. To make predictions to
 #' sites or grids. If to sites, the predictions are written to the R workspace.
 #' If to grid, the grids are written to a nominated directory and optionally

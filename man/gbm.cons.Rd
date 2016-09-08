@@ -67,7 +67,7 @@ gbm.cons(mygrids, subsets, conssamples, alerts = TRUE, map = TRUE,
 Maps via gbm.map & saved data as csv file
 }
 \description{
-Gbm.cons runs gbm.auto for multiple subsets of the same overall dataset and
+Runs gbm.auto for multiple subsets of the same overall dataset and
 scales the combined results, leading to maps which highlight areas of high
 conservation importance for multiple species in the same study area e.g.
 using juvenile and adult female subsets to locate candidate nursery grounds

@@ -1,4 +1,4 @@
-#' Decision Support Tool that generates (Marine) Protected Area options using species’ predicted abundance maps
+#' Decision Support Tool that generates (Marine) Protected Area options using species predicted abundance maps
 #'
 #' Scales response variable data, maps a user-defined explanatory variable to be
 #' avoided, e.g. fishing effort, combines them into a map showing areas to

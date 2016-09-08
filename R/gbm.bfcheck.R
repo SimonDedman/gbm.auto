@@ -1,6 +1,6 @@
-#' Gbm.bfcheck: calculates minimum Bag Fraction size for gbm.auto
+#' Calculates minimum Bag Fraction size for gbm.auto
 #'
-#' gbm.bfcheck: provides minimum bag fractions for gbm.auto, preventing failure
+#' Provides minimum bag fractions for gbm.auto, preventing failure
 #' due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
 #' github.com/SimonDedman/gbm.auto
 #'

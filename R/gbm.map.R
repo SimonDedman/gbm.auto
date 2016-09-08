@@ -1,4 +1,4 @@
-#' Gbm.map: maps of predicted abundance from Boosted Regression Tree modelling
+#' Maps of predicted abundance from Boosted Regression Tree modelling
 #'
 #' Generates maps from the outputs of gbm.step then gbm.predict.grids, handled
 #' automatically within gbm.auto but can be run alone, and generates
@@ -37,7 +37,7 @@
 #' gbm.map(...)
 #' dev.off()
 #'
-#'  Suggested parameter values for use with gbm.rsb:
+#' Suggested parameter values for use with gbm.rsb:
 #' z = rsbdf[,"Unrepresentativeness"]
 #' mapmain = "Unrepresentativeness: "
 #' legendtitle = "UnRep 0-1"

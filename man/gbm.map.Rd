@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.map.R
 \name{gbm.map}
 \alias{gbm.map}
-\title{Gbm.map: maps of predicted abundance from Boosted Regression Tree modelling}
+\title{Maps of predicted abundance from Boosted Regression Tree modelling}
 \usage{
 gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
   mapmain = "Predicted CPUE (numbers per hour): ",
@@ -72,7 +72,7 @@ par(...)
 gbm.map(...)
 dev.off()
 
- Suggested parameter values for use with gbm.rsb:
+Suggested parameter values for use with gbm.rsb:
 z = rsbdf[,"Unrepresentativeness"]
 mapmain = "Unrepresentativeness: "
 legendtitle = "UnRep 0-1"

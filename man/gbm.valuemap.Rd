@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.valuemap.R
 \name{gbm.valuemap}
 \alias{gbm.valuemap}
-\title{Decision Support Tool that generates (Marine) Protected Area options using species’ predicted abundance maps}
+\title{Decision Support Tool that generates (Marine) Protected Area options using species predicted abundance maps}
 \usage{
 gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
   conservecol = NULL, plotthis = c("good", "bad", "both", "close"),
