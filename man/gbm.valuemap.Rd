@@ -49,7 +49,7 @@ gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
 \item{...}{Optional terms for gbm.map}
 }
 \value{
-Species abundance, abundance vs 'avoid variable', and MPA maps per
+Species abundance, abundance vs avoid variable, and MPA maps per
 species and sort type, in b&w if set. CSVs of all maps if set.
 }
 \description{
