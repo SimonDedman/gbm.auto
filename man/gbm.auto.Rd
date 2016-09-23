@@ -67,18 +67,6 @@ and a report of all variables used, statistics for tests, variable
 interactions, predictors used & dropped, etc.. If selected, generates
 predicted abundance maps, and Unrepresentativeness surfaces.
 }
-\details{
-Errors and their origins:
-1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
-> Explanatory variables are expected to be numeric
-2. At bf=0.5, if nrows <= 42 gbm.step will crash
-> Use gbm.bfcheck to determine optimal viable bf size
-3. Maps/plots don't work/output
-> If on a Mac, try changing pngtype to "quartz"
-4. Error in while (delta.deviance > tolerance.test & n.fitted < max.trees) { :
-   missing value where TRUE/FALSE needed
-> Data are expected to contain zeroes (lots of them in zero-inflated cases), have you already filtered them out?
-}
 \examples{
 gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
 }
