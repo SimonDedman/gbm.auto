@@ -67,12 +67,6 @@ and a report of all variables used, statistics for tests, variable
 interactions, predictors used & dropped, etc.. If selected, generates
 predicted abundance maps, and Unrepresentativeness surfaces.
 }
-\author{
-Simon Dedman
-}
-\email{
-simondedman@@gmail.com
-}
 \details{
 Errors and their origins:
 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
@@ -88,4 +82,3 @@ Errors and their origins:
 \examples{
 gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
 }
-
