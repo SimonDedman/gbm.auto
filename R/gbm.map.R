@@ -98,7 +98,6 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   if (is.null(breaks)) breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it's used later in draw.grid). Else generate it.
   if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero = TRUE add alpha as 1st colour (1st 2 breakpoints)
   basemap(xlim = range(x), ylim = range(y), main = paste(mapmain, species, sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
-  #remove xlab & ylab above for general code
   draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
   draw.shape(shape = shape, col = landcol) # add coastline
   legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = legendtitle, col = heatcol, ...) #breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
