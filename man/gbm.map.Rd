@@ -77,4 +77,7 @@ z = rsbdf[,"Unrepresentativeness"]
 mapmain = "Unrepresentativeness: "
 legendtitle = "UnRep 0-1"
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 

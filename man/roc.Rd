@@ -45,4 +45,7 @@ character vector,but without the final file name - eg "c:/gbm/"
 \examples{
 None
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 

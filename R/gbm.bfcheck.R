@@ -10,7 +10,7 @@
 #'
 #' @return Prints minimum Bag Fraction size.
 #' @export
-#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto

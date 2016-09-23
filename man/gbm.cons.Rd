@@ -76,4 +76,7 @@ and spawning areas respectively.
 \examples{
 
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 

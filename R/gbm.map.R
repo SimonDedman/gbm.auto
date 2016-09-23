@@ -30,7 +30,7 @@
 #' Representativeness Surface Builder maps using data provided by gbm.rsb, to be
 #' run in a png/par/gbm.map/dev.off sequence.
 #' @export
-#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples Suggested code for outputting to e.g. png:
 #' png(...)
 #' par(...)

@@ -31,7 +31,7 @@
 #'
 #' @return roc & calibration stats internally within gbm runs e.g. in gbm.auto; gbm.predict.grids powers the predictive mapping element of gbm.map
 #' @export
-#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
 roc <-function (obsdat, preddat) {
 # code adapted from Ferrier, Pearce and Watson's code, by J.Elith

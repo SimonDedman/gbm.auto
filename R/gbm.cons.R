@@ -32,7 +32,7 @@
 #'
 #' @return  Maps via gbm.map & saved data as csv file
 #' @export
-#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to

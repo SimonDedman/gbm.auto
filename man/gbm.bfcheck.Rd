@@ -24,4 +24,7 @@ github.com/SimonDedman/gbm.auto
 \examples{
 None
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 
