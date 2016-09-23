@@ -33,8 +33,6 @@
 #'
 #' @export
 #'
-#' @author Simon Dedman, \email{simondedman@@gmail.com}
-#'
 #' @examples None
 gbm.valuemap <- function(
   dbase,  # data.frame to load. Expects Lon, Lat & data columns: predicted

@@ -65,7 +65,4 @@ by the MPA in the map legend.
 \examples{
 None
 }
-\author{
-Simon Dedman, \email{simondedman@gmail.com}
-}
 
