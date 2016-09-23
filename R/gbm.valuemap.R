@@ -28,7 +28,7 @@
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param ... Optional terms for gbm.map
 #'
-#' @return Species abundance, abundance vs 'avoid variable', and MPA maps per
+#' @return Species abundance, abundance vs avoid variable, and MPA maps per
 #' species and sort type, in b&w if set. CSVs of all maps if set.
 #'
 #' @export

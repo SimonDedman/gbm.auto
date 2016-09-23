@@ -41,7 +41,7 @@
 #' > Explanatory variables are expected to be numeric
 #' 2. At bf=0.5, if nrows <= 42 gbm.step will crash
 #' > Use gbm.bfcheck to determine optimal viable bf size
-#' 3. Maps/plots don't work/output
+#' 3. Maps/plots dont work/output
 #' > If on a Mac, try changing pngtype to "quartz"
 #' 4. Error in while (delta.deviance > tolerance.test & n.fitted < max.trees)  :
 #'  missing value where TRUE/FALSE needed
