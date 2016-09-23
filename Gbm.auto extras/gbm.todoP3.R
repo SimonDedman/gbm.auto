@@ -27,45 +27,7 @@ goodname <- 1
 if (class(type) == "character") legend <- type
 # asked hans
 
-
 # L177 do I use k for anything? Is that a problem?
-
-# Improve closed area calculation algorithm. Use some kind of sorting algorithm rather than one by one counting. Clever loop system or something?
-# Closing the INVERSE/worst bottom-up counted-to HRMSY% is closing the BEST 1-HRMSY%.
-# I'm counting to up to 8% instead of down to 92%. Fine. How to make this quicker though?
-# asked on stackoverflow, no reply
-dbase <- data.frame(CPUE = rep(2,10), row.names = NULL)
-dbase <- data.frame(CPUE = runif(378570, min = 0, max = 1), row.names = NULL)
-
-HRMSY = 0.4
-HRMSY = 0.08
-
-n <- nrow(dbase)
-
-CPUEMSY <- (sum(dbase[,"CPUE"]) * HRMSY)
-
-for (k in 1:nrow(dbase)) {
-  print(paste(n,", ",round((sum(dbase[n:nrow(dbase),"CPUE"])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
-  if (sum(dbase[n:nrow(dbase),"CPUE"]) < CPUEMSY) {n = n - 1} else { #if sum of rows from end to this point < CPUEMSY aka HRMSY% add another row and sum again, ELSE:
-    print(paste("close rows 1:", n - 1, sep = ""))
-    break
-    }
-  }
-# Asked Coilin. See email, potentially investigate halving with rounding.
-# 18 splits for my 378570 rows. 18 loops would phenomenally reduce processing time.
-# Coilin answer:
-which.min((cumsum(dbase[nrow(dbase):1,"CPUE"]) - CPUEMSY) ^ 2)
-# This asks which index (-1) has the cumulative CPUE closest to the CPUEMSY.
-# Maybe not what you are after but cumsum could assist.
-coilins <- n - which.min((cumsum(dbase[n:1,"CPUE"]) - CPUEMSY) ^ 2)
-# cumsum from end (n) upwards towards 1 of CPUE until the row X where end:X = CPUEMSY i.e. 'open' cells
-# close the rest i.e. inverse i.e. n-X
-#edited Ls 186 & 313. try it out.
-# edited L193&5 changing n+1 to n. Not sure why it's n+1. Doubt 1 row has much effect in any case but check it out later.
-
-
-# search this: ####remove xlab & ylab above for general code####
-# actually a change in gbm.map L57. Put xlab & ylab as gbm.map parameters?
 
 # Only 1 badcols allowed.
 # e.g. L77 invert baddata meh.
@@ -257,11 +219,11 @@ gbm.valuemap(dbase = mydata,
   # L186. Not sure if bioboth is available; probably a less messy way to set the column numbers also. Global assign sortcols & bioboth to inspect.
   # Just needed a comma at the end to indicate it was a row sort. Apparently defaults to column sort.
 #18. Error in rowSums(bioboth[, SortCol0 + 1:SortCol0 + 4], drop = FALSE) : unused argument (drop = FALSE). L194. Removed.
-#19.  Error in `[.data.frame`(bioboth, , SortCol0 + 1:SortCol0 + 4) : undefined columns selected L194. Dunno why; copied pmax L190 info instead of range
+#19. Error in `[.data.frame`(bioboth, , SortCol0 + 1:SortCol0 + 4) : undefined columns selected L194. Dunno why; copied pmax L190 info instead of range
 #20. Error in rowSums(bioboth[, SortCol0 + 1], bioboth[, SortCol0 + 2], bioboth[,  : unused argument (bioboth[, SortCol0 + 4])
   # can't use rowSums as a list, has to be one x for the array. Went back to range, needed to put (SortCol0+1):(SortCol0+4) in brackets otherwise it evaluates wrongly
 #21. Error in MPAgrow[, 3] : subscript out of bounds. Was cbinding to zeroes each time instead of growing MPAgrow.
-#22 COMPLETED! Black cells are an odd size... Do I need blue background? Not for those at least. Changed. Ideally turn off legend.
+#22. COMPLETED! Black cells are an odd size... Do I need blue background? Not for those at least. Changed. Ideally turn off legend.
 #23. Goodcols reordering attempt, 5,3,4,6. COMPLETED. White background is worse, changed back. Might be better if cells were black. L232
 #24. plotthis=close savethis=close. Fresh run new day, Error: object 'coast' not found. mapplots was loaded... for some reason L136 data(coast) now  needs ",package="mapplots""
 #25. coast STILL not found! Saved in gbm.map as it should have been, trying again
@@ -399,11 +361,39 @@ gbm.valuemap(dbase = mydata,
 #82. Added effort percentage calculator for cum.closed.areas L235:238
 
 
-
-
-
-
 ####DONE####
+# search this: ####remove xlab & ylab above for general code####
+# actually a change in gbm.map L57. Put xlab & ylab as gbm.map parameters?
+
+# Improve closed area calculation algorithm. Use some kind of sorting algorithm rather than one by one counting. Clever loop system or something?
+# Closing the INVERSE/worst bottom-up counted-to HRMSY% is closing the BEST 1-HRMSY%.
+# I'm counting to up to 8% instead of down to 92%. Fine. How to make this quicker though?
+# asked on stackoverflow, no reply
+dbase <- data.frame(CPUE = rep(2,10), row.names = NULL)
+dbase <- data.frame(CPUE = runif(378570, min = 0, max = 1), row.names = NULL)
+HRMSY = 0.4
+HRMSY = 0.08
+n <- nrow(dbase)
+CPUEMSY <- (sum(dbase[,"CPUE"]) * HRMSY)
+for (k in 1:nrow(dbase)) {
+  print(paste(n,", ",round((sum(dbase[n:nrow(dbase),"CPUE"])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
+  if (sum(dbase[n:nrow(dbase),"CPUE"]) < CPUEMSY) {n = n - 1} else {#if sum of rows from end to this point < CPUEMSY aka HRMSY% add another row and sum again, ELSE:
+    print(paste("close rows 1:", n - 1, sep = ""))
+    break
+  }
+}
+# Asked Coilin. See email, potentially investigate halving with rounding.
+# 18 splits for my 378570 rows. 18 loops would phenomenally reduce processing time.
+# Coilin answer:
+which.min((cumsum(dbase[nrow(dbase):1,"CPUE"]) - CPUEMSY) ^ 2)
+# This asks which index (-1) has the cumulative CPUE closest to the CPUEMSY.
+# Maybe not what you are after but cumsum could assist.
+coilins <- n - which.min((cumsum(dbase[n:1,"CPUE"]) - CPUEMSY) ^ 2)
+# cumsum from end (n) upwards towards 1 of CPUE until the row X where end:X = CPUEMSY i.e. 'open' cells
+# close the rest i.e. inverse i.e. n-X
+# edited Ls 186 & 313. try it out.
+# edited L193&5 changing n+1 to n. Not sure why it's n+1. Doubt 1 row has much effect in any case but check it out later.
+
 # allow different image device for Mac OSX
 # add alert pings for maps and loops and such
 # perspeciesclosedarea maps colours get fucked
@@ -491,29 +481,3 @@ gbm.valuemap(dbase = mydata,
 # same order, counting up from bottom to get to the 5% not down from top to get to the 95% DONE
 
 # L134: add "1 of 16" counter for each line so you can see where you are in the grand scheme DONE
-
-
-
-
-
-
-  ####running this (in gbm.auto to begin with)####
-  source("C:/Users/Simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")  #SD specific, remove @ end
-  ####MatF####
-  # set wd
-  setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConsValMaps")
-  # load data. Expecting Longitude, Latitude, data columns: predicted abundances, fishing effort etc.. E.g.: Abundance_Preds_All.csv from gbm.auto
-  data<-read.csv("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Both_Abundance_Preds_plusE.csv", header = TRUE)
-
-  gbm.valuemap(data,
-               loncolno = 1,
-               latcolno = 2,
-               scalerange = c(3:11),
-               goodcols = c(4:11),
-               badcols = c(3),
-               goodweight = c(1.5,1,3,1,1.5,1,3,1), #CTBS mf & j
-               badweight = 4,  #fishing 4 times as important, for example.
-               species = names(samples[i]),
-               ...)  # optional terms: byx byy mapmain heatcol shape mapback landcol legendtitle lejback legendloc grdfun zero quantile
-
-  # preddata[,5] <- preddata[,badcols] - Esteps[q]
