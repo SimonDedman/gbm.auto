@@ -7,11 +7,11 @@
 gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
 }
 \arguments{
-\item{samples}{Data frame with response & explanatory variables}
+\item{samples}{Data frame with response and explanatory variables}
 
-\item{grids}{Data frame of (more/different) explanatory variables & no response variable, to be predicted to by gbm.predict.grids}
+\item{grids}{Data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids}
 
-\item{expvarnames}{Vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples & grids.}
+\item{expvarnames}{Vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.}
 
 \item{gridslat}{Column number for latitude in 'grids'}
 
@@ -27,7 +27,7 @@ samples represents the range being predicted to in grids. Assigns a
 representativeness score per variable per site in grids, and takes the
 average score per site if there's more than 1 expvar. Saves this to a CSV;
 it's plotted by gbm.map if called in gbm.auto. This shows you which areas
-have the most & least representative coverage by samples, therefore where you
+have the most and least representative coverage by samples, therefore where you
 can have the most/least confidence in the predictions from gbm.predict.grids.
 Can be called directly, and choosing a subset of expvars allows one to see
 their individual / collective representativeness.

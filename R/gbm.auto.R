@@ -37,10 +37,13 @@
 #' @details Errors and their origins:
 #' 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
 #' > Explanatory variables are expected to be numeric
+#'
 #' 2. At bf=0.5, if nrows <= 42 gbm.step will crash
 #' > Use gbm.bfcheck to determine optimal viable bf size
+#'
 #' 3. Maps/plots dont work/output
 #' > If on a Mac, try changing pngtype to "quartz"
+#'
 #' 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted < max.trees)  :
 #'  missing value where TRUE/FALSE needed
 #' > Data are expected to contain zeroes (lots of them in zero-inflated cases),

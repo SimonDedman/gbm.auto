@@ -6,14 +6,14 @@
 #' representativeness score per variable per site in grids, and takes the
 #' average score per site if there's more than 1 expvar. Saves this to a CSV;
 #' it's plotted by gbm.map if called in gbm.auto. This shows you which areas
-#' have the most & least representative coverage by samples, therefore where you
+#' have the most and least representative coverage by samples, therefore where you
 #' can have the most/least confidence in the predictions from gbm.predict.grids.
 #' Can be called directly, and choosing a subset of expvars allows one to see
 #' their individual / collective representativeness.
 #'
-#' @param samples Data frame with response & explanatory variables
-#' @param grids Data frame of (more/different) explanatory variables & no response variable, to be predicted to by gbm.predict.grids
-#' @param expvarnames Vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples & grids.
+#' @param samples Data frame with response and explanatory variables
+#' @param grids Data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids
+#' @param expvarnames Vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.
 #' @param gridslat Column number for latitude in 'grids'
 #' @param gridslon Column number for longitude in 'grids'
 #'
@@ -27,13 +27,13 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
 # Loops through explanatory variables comparing their histogram in samples to their histogram in grids to see how well the explanatory
 # variable range in samples represents the range being predicted to in grids. Assigns a representativeness score per variable per site in
 # grids, and takes the average score per site if there's more than 1 expvar. Saves this to a CSV; it's plotted by gbm.map if called in
-# gbm.auto. This shows you which areas have the most & least representative coverage by samples, therefore where you can have the most /
+# gbm.auto. This shows you which areas have the most and least representative coverage by samples, therefore where you can have the most /
 # least confidence in the predictions from gbm.predict.grids. Can be called directly, and choosing a subset of expvars allows one to see
 # their individual / collective representativeness.
 
-# samples: data frame with response & explanatory variables
-# grids: data frame of (more/different) explanatory variables & no response variable, to be predicted to by gbm.predict.grids
-# expvarnames: vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples & grids.
+# samples: data frame with response and explanatory variables
+# grids: data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids
+# expvarnames: vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.
 # gridslat: column number for latitude in 'grids'
 # gridslon: column number for longitude in 'grids'
 
