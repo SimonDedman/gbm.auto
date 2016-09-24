@@ -69,6 +69,7 @@ predicted abundance maps, and Unrepresentativeness surfaces.
 }
 \details{
 Errors and their origins:
+
 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
 > Explanatory variables are expected to be numeric
 
