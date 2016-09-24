@@ -14,7 +14,7 @@
 #' @return basemap coastline file for gbm.map in gbm.auto
 #'
 #' @export
-#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #'
 gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)

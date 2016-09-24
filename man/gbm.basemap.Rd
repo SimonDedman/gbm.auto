@@ -30,4 +30,7 @@ Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 \examples{
 
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 

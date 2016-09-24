@@ -19,7 +19,7 @@
 #'
 #' @return Gridded data table of representativeness values which is then mapped with gbm.map and also saved as a csv
 #' @export
-#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
 gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
 # Generalised Boosting Models, Representativeness Surface Builder. Simon Dedman, 2014, simondedman@gmail.com
