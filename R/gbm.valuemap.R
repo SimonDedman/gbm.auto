@@ -18,7 +18,7 @@
 #' @param plotthis To plot? delete any,or all w/ NULL
 #' @param maploops Sort loops to run
 #' @param savethis Export all data as csv?
-#' @param HRMSY Maximum % of each goodcols stock which can be removed yearly, as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or vector. Same order as goodcols
+#' @param HRMSY Maximum percent of each goodcols stock which can be removed yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single number or vector. Same order as goodcols
 #' @param goodweight Single/vector weighting multiple(s) for goodcols array
 #' @param badweight Ditto for badcols array
 #' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.

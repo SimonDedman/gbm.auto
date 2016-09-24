@@ -30,7 +30,7 @@ gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
 
 \item{savethis}{Export all data as csv?}
 
-\item{HRMSY}{Maximum % of each goodcols stock which can be removed yearly, as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or vector. Same order as goodcols}
+\item{HRMSY}{Maximum percent of each goodcols stock which can be removed yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single number or vector. Same order as goodcols}
 
 \item{goodweight}{Single/vector weighting multiple(s) for goodcols array}
 
