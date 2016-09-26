@@ -229,6 +229,9 @@ if (m == 1)
       {Gaus_Best_Score <- get(paste("Gaus_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""))$self.statistics$correlation[[1]]
       Gaus_Best_Model <- paste("Gaus_BRT",".tc",j,".lr",k*100,".bf",l, sep = "")}
 
+if (alerts) beep(2) # progress printer, right aligned for visibility
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+
 ####8. Add BRT stats to report####
 Report[1:3,((m*5) - 1)] <- c(paste("tree complexity: ",j, sep = ""), paste("learning rate: ",k, sep = ""), paste("bag fraction: ",l, sep = ""))
 # don't do if ZI=FALSE
@@ -260,14 +263,14 @@ if (ZI) {colnames(Report)[((m*5) - 1):((m*5) + 3)] <- c(paste("Parameter Combo "
                                                        paste("Gaussian BRT ",m," name", sep = ""))
 }
 
-if (alerts) beep(2) # progress printer, right aligned for visibility
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ",2*length(i)*length(tc)*length(lr)*length(bf),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 n <- n + 1 # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}} # close loops, making all BRT objects & continuing through model selection
 
 ####9. Test simplification benefit, do so if better####
+print("L271")
 samples <<- samples # global assign: bad practice but fixes problem where code
+print("L273")
 # runs manually but crashes in loop: "unable to access samples".
 # if simp TRUE & ZI=TRUE, run simplification test on best bin model
 if (simp) { if (ZI) {Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
