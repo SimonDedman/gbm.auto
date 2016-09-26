@@ -57,17 +57,17 @@ plotthis = c("both","close")
 
 
 ####Load scripts & data####
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.basemap.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.map.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.basemap.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.rsb.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.auto.R')
+source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.valuemap.R')
 
 ####run gbm.auto with E####
 # Load linux
-mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names = NULL)
-mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
+#mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names = NULL)
+#mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
 # Load linux no grain
 mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E_NoGrain.csv", header = TRUE, row.names = NULL)
 mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE_NoGrain.csv", header = TRUE)

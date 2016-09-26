@@ -12,7 +12,8 @@
 #' @param samples Explanatory & response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset. Default is mysamples
 #' @param expvar List of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default
 #' @param resvar Column number of response variable (e.g. CPUE) in samples. Expected, e.g. 12. No default. Column name should be species name. tc = c(2,5),         # list of permutations of tree complexity allowed, defaults to c(2,length(expvar)) @L55
-#' @param lr List of permutations of learning rate allowed
+#' @param tc List of permutations of tree complexity allowed, can be vector with largest size = number of explanatory variables: c(2,7)
+#' @param lr List of permutations of learning rate allowed, can be vector: c(0.01,0.005)
 #' @param bf Bag fraction permutations, can be vector: c(0.5,0.7)
 #' @param ZI are data zero-inflated? TRUE/FALSE/"CHECK". TRUE: delta BRT, log-normalised Gaus, reverse log-norm & bias corrected. FALSE: do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
 #' @param simp Try simplfying best BRTs?
@@ -28,7 +29,7 @@
 #' @param BnW Repeat maps in black & white e.g. for print journals
 #' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param ... Optional arguments for tc(defaults to c(2,length(expvar)) but you can set this), gbm.map & gbm.step
+#' @param ... Optional arguments for gbm.map & gbm.step
 #'
 #' @return Line, dot & bar plots, a report of all variables used, statistics for
 #' tests, variable interactions, predictors used & dropped, etc. If selected,
@@ -70,8 +71,8 @@ gbm.auto <- function(
 # 'samples', expected e.g. c(1,35,67,etc.). No default
   resvar,               # column number of response variable (e.g. CPUE) in
 # samples. Expected, e.g. 12. No default. Column name should be species name.
-  #tc = c(2,5),         # list of permutations of tree complexity allowed,
-# defaults to c(2,length(expvar)) @L55. You can set this.
+  tc = c(2),         # list of permutations of tree complexity allowed, can be
+# vector with largest size = number of explanatory variables: c(2,7)
   lr = c(0.01,0.005),   # list of permutations of learning rate allowed
   bf = 0.5,             # bag fraction permutations, can be vector: c(0.5,0.7)
   ZI = "CHECK",         # are data zero-inflated? TRUE/FALSE/"CHECK".
@@ -93,7 +94,7 @@ gbm.auto <- function(
   BnW = TRUE,           # repeat maps in black & white e.g. for print journals
   alerts = TRUE,        # play sounds to mark progress steps
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
-  ...)                  # optional arguments for tc (defaults to c(2,length(expvar)) but you can set this), gbm.map & gbm.step
+  ...)                  # optional arguments for gbm.map & gbm.step
 {
 # Generalised Boosting Model / Boosted Regression Tree process chain automater.
 # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
@@ -142,8 +143,8 @@ if (alerts) options(error = function() {beep(9)})  # give warning noise if it fa
 
 expvarnames <- names(samples[expvar]) # list of explanatory variable names
 expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
-dots <- list(...)  # if tc not set by user, default to 2,length(expvar)
-ifelse("tc" %in% names(dots), tc <- dots$tc, tc <- c(2,length(expvar)))
+# dots <- list(...)  # if tc not set by user, default to 2,length(expvar)
+# ifelse("tc" %in% names(dots), tc <- dots$tc, tc <- c(2,length(expvar))) #now defunct
 
 for (i in resvar) {
 m = 1 # jkl combo loop counter to allow best bin/gaus BRT choice

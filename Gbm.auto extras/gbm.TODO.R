@@ -37,7 +37,16 @@ as.vector(lr)
 for (k in lr) {
   }
 gbm.step(data = samples, gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...)
-
+# possibly: e.g. lr = 0.001 or lr = c(0.001, 0.00001)
+# bin: use first or only (how to code?)
+# gaus: if length(lr)>1 use lr[[2]]
+# bin could just say lr[[1]]
+lrtest1 <- 0.01
+lrtest2 <- c(0.01,0.0015)
+lrtest1[[1]] #works
+lrtest2[[1]] #works, can use this for bin
+if (length(lrtest2)>1) lrtest2[[2]] else lrtest2[[1]] #works. use for gaus
+#NO! Already allows vectors because it loops through them!
 
 # Process & map bin only? nightmarish. requires reordering of all bin/gaus/bin/gaus to bin/bin/bin
  # gaus = TRUE
