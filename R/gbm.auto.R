@@ -28,7 +28,7 @@
 #' @param BnW Repeat maps in black & white e.g. for print journals
 #' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param ... Optional arguments for tc, gbm.map & gbm.step
+#' @param ... Optional arguments for tc(defaults to c(2,length(expvar)) but you can set this), gbm.map & gbm.step
 #'
 #' @return Line, dot & bar plots, a report of all variables used, statistics for
 #' tests, variable interactions, predictors used & dropped, etc. If selected,
@@ -71,7 +71,7 @@ gbm.auto <- function(
   resvar,               # column number of response variable (e.g. CPUE) in
 # samples. Expected, e.g. 12. No default. Column name should be species name.
   #tc = c(2,5),         # list of permutations of tree complexity allowed,
-# defaults to c(2,length(expvar)) @L55
+# defaults to c(2,length(expvar)) @L55. You can set this.
   lr = c(0.01,0.005),   # list of permutations of learning rate allowed
   bf = 0.5,             # bag fraction permutations, can be vector: c(0.5,0.7)
   ZI = "CHECK",         # are data zero-inflated? TRUE/FALSE/"CHECK".
@@ -93,7 +93,7 @@ gbm.auto <- function(
   BnW = TRUE,           # repeat maps in black & white e.g. for print journals
   alerts = TRUE,        # play sounds to mark progress steps
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
-  ...)                  # optional arguments for tc, gbm.map & gbm.step
+  ...)                  # optional arguments for tc (defaults to c(2,length(expvar)) but you can set this), gbm.map & gbm.step
 {
 # Generalised Boosting Model / Boosted Regression Tree process chain automater.
 # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto

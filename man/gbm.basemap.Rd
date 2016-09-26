@@ -19,7 +19,9 @@ gbm.basemap(bounds, getzip = TRUE, zipvers = "2.3.5-1",
 \item{res}{resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds}
 }
 \value{
-basemap coastline file for gbm.map in gbm.auto
+basemap coastline file for gbm.map in gbm.auto. "cropshp"
+SpatialPolygonsDataFramein in local environment & user-named files in
+"CroppedMap" folder.
 }
 \description{
 Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set
@@ -28,6 +30,15 @@ box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
 Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 }
 \examples{
+range(sharks[,3])
+[1] 34.91669 35.81833
+range(sharks[,4])
+[1] -77.04972 -75.46672
+mybounds <- c(range(sharks[,4]),range(sharks[,3]))
+gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename = "My_Crop_Map", res = "f")
+Note I already downloaded the GSHHS folder to the working directory hence I
+pointed getzip at that rather than having it download the zip again.
+This returns
 
 }
 \author{
