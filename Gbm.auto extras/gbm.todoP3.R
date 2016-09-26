@@ -80,7 +80,7 @@ data(coast)
 shape = coast
 
 # run gbm.autos, NoGrain; cuckoo
-gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, lr = c(0.005), ZI = TRUE, savegbm = FALSE, mapshape = coast)
 #thornback
 gbm.auto(expvar = c(4:7, 9, 11), resvar = 13, grids = mygrids, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
 #blonde

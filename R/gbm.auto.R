@@ -262,11 +262,11 @@ if (ZI) {colnames(Report)[((m*5) - 1):((m*5) + 3)] <- c(paste("Parameter Combo "
                                                        paste("Gaussian BRT ",m," stats", sep = ""),
                                                        paste("Gaussian BRT ",m," name", sep = ""))
 }
-
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed Report     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 n <- n + 1 # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}} # close loops, making all BRT objects & continuing through model selection
-
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Closed Loops     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 ####9. Test simplification benefit, do so if better####
 print("L271")
 samples <<- samples # global assign: bad practice but fixes problem where code
