@@ -14,14 +14,15 @@ gbm.basemap(bounds, getzip = TRUE, zipvers = "2.3.5-1",
 
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD) if this is incorrect}
 
-\item{savename}{Shapefile savename, no extension}
+\item{savename}{Shapefile savename, no extension, default is "Crop_Map"}
 
 \item{res}{resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds}
 }
 \value{
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
 SpatialPolygonsDataFramein in local environment & user-named files in
-"CroppedMap" folder.
+"CroppedMap" folder. Load later with maptools function:
+MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 }
 \description{
 Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set

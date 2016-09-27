@@ -8,12 +8,13 @@
 #' @param bounds Region to crop to: c(xmin,xmax,ymin,ymax)
 #' @param getzip Download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD) if this is incorrect
-#' @param savename Shapefile savename, no extension
+#' @param savename Shapefile savename, no extension, default is "Crop_Map"
 #' @param res resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
 #'
 #' @return basemap coastline file for gbm.map in gbm.auto. "cropshp"
 #' SpatialPolygonsDataFramein in local environment & user-named files in
-#' "CroppedMap" folder.
+#' "CroppedMap" folder. Load later with maptools function:
+#' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 #'
 #' @export
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
