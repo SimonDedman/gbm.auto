@@ -331,7 +331,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
               breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-              basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude (°W)", ylab = "Latitude (°N)")
+              basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
 ####remove xlab & ylab above for general code####
               draw.grid(grd, breaks, col = heatcol)
 

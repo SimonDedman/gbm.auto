@@ -19,5 +19,6 @@ Imports:
     mapplots (>= 1.5),
     rgdal (>= 1.1-10),
     rgeos (>= 0.3-19),
-    raster (>= 2.5-8)
+    raster (>= 2.5-8),
+    stats (>= 3.3.1)
 RoxygenNote: 5.0.1

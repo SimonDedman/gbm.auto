@@ -69,7 +69,8 @@ representativeness surfaces from the output of gbm.rsb
 Suggested code for outputting to e.g. png:
 png(...)
 par(...)
-gbm.map(x = grids[,gridslon], y = grids[,gridslat], z = grids[,predabund], species = names(samples[i]), legendtitle = mainlegendtitle)
+gbm.map(x = grids[,gridslon], y = grids[,gridslat], z = grids[,predabund],
+species = names(samples[i]), legendtitle = mainlegendtitle)
 dev.off()
 
 Suggested parameter values for use with gbm.rsb:

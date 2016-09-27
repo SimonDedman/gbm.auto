@@ -58,6 +58,7 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
 #' @export
+#' @import dismo beepr gbm grDevices graphics utils stats mapplots
 #'
 #' @examples
 #'
