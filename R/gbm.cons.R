@@ -26,6 +26,7 @@
 #' @param savegbms Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param varints Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param maps Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param RSBs Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param BnWs Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param zeroes Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param pngtype Filetype for png files, alternatively try "quartz"

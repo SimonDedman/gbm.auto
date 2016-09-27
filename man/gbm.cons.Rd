@@ -57,6 +57,8 @@ gbm.cons(mygrids, subsets, conssamples, alerts = TRUE, map = TRUE,
 
 \item{maps}{Gbm.auto paramaters, autocalculated below if not provided by user}
 
+\item{RSBs}{Gbm.auto paramaters, autocalculated below if not provided by user}
+
 \item{BnWs}{Gbm.auto paramaters, autocalculated below if not provided by user}
 
 \item{zeroes}{Gbm.auto paramaters, autocalculated below if not provided by user}

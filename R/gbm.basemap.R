@@ -17,18 +17,13 @@
 #' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 #'
 #' @export
-#' @import rgdal utils rgeos raster maptools
+#' @import rgdal utils rgeos raster
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
-#' range(sharks[,3])
-#' [1] 34.91669 35.81833
-#' range(sharks[,4])
-#' [1] -77.04972 -75.46672
 #' mybounds <- c(range(sharks[,4]),range(sharks[,3]))
 #' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename = "My_Crop_Map", res = "f")
-#' Note I already downloaded the GSHHS folder to the working directory hence I
-#' pointed getzip at that rather than having it download the zip again.
-#' This returns
+#' In this example GSHHS folder already downloaded to the working directory
+#' hence I pointed getzip at that rather than having it download the zip again.
 #'
 gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
                         getzip = TRUE, # download & unpack GSHHS data to WD?
