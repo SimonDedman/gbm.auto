@@ -13,7 +13,7 @@ gbm.auto(grids = NULL, samples = mysamples, expvar, resvar, lr = c(0.01,
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and specify object name. Defaults to NULL (won't predict to grids)}
 
-\item{samples}{Explanatory and response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset. Default is mysamples}
+\item{samples}{Explanatory and response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset}
 
 \item{expvar}{List of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default}
 
