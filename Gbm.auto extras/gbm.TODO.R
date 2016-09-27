@@ -163,6 +163,9 @@ ptm$elapsed # is the time taken in seconds
 
 
 ####DONE####
+# dots <- list(...)  # if tc not set by user, default to 2,length(expvar)
+# ifelse("tc" %in% names(dots), tc <- dots$tc, tc <- c(2,length(expvar))) # removed from after expvarcols
+
 # remove log1p since grv_yes subset now has no zeroes L104 & 8
 
 # incorporate gbm.basemap as a gbm.auto default

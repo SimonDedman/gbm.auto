@@ -143,8 +143,6 @@ if (alerts) options(error = function() {beep(9)})  # give warning noise if it fa
 
 expvarnames <- names(samples[expvar]) # list of explanatory variable names
 expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
-# dots <- list(...)  # if tc not set by user, default to 2,length(expvar)
-# ifelse("tc" %in% names(dots), tc <- dots$tc, tc <- c(2,length(expvar))) #now defunct
 
 for (i in resvar) {
 m = 1 # jkl combo loop counter to allow best bin/gaus BRT choice
