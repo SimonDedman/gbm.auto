@@ -33,11 +33,11 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{colournumber}{number of colours to spread heatcol over, default:8}
 
-\item{shape}{Number of colours to spread heatcol over, default:8}
+\item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults: 'coast': UK & Ire}
 
 \item{landcol}{Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey}
 
-\item{mapback}{Basemap background colour}
+\item{mapback}{Basemap background colour, defaults to lightblue}
 
 \item{legendloc}{Location on map of legend box, from legend.grid in mapplots}
 

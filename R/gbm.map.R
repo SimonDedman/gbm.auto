@@ -14,9 +14,9 @@
 #' @param species Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
 #' @param heatcolours Abundance colour scale, defaults to the heatcol from legend.grid & draw.grid in mapplots.
 #' @param colournumber number of colours to spread heatcol over, default:8
-#' @param shape Number of colours to spread heatcol over, default:8
+#' @param shape Basemap shape to draw, from draw.shape in mapplots. Defaults: 'coast': UK & Ire
 #' @param landcol Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey
-#' @param mapback Basemap background colour
+#' @param mapback Basemap background colour, defaults to lightblue
 #' @param legendloc Location on map of legend box, from legend.grid in mapplots
 #' @param legendtitle The metric of abundance, e.g. CPUE for fisheries, from legend.grid in mapplots
 #' @param lejback Background colour of legend, from legend.grid in mapplots

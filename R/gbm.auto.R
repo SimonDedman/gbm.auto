@@ -11,7 +11,7 @@
 #' @param grids Explantory data to predict to. Import with (e.g.) read.csv & specify object name. Defaults to NULL (won't predict to grids)
 #' @param samples Explanatory & response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset. Default is mysamples
 #' @param expvar List of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default
-#' @param resvar Column number of response variable (e.g. CPUE) in samples. Expected, e.g. 12. No default. Column name should be species name. tc = c(2,5),         # list of permutations of tree complexity allowed, defaults to c(2,length(expvar)) @L55
+#' @param resvar Column number of response variable (e.g. CPUE) in samples. Expected, e.g. 12. No default. Column name should be species name.
 #' @param tc List of permutations of tree complexity allowed, can be vector with largest size = number of explanatory variables: c(2,7)
 #' @param lr List of permutations of learning rate allowed, can be vector: c(0.01,0.005)
 #' @param bf Bag fraction permutations, can be vector: c(0.5,0.7)
@@ -52,7 +52,8 @@
 #' have you already filtered them out?
 #'
 #' @examples gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids,
-#' lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+#' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
+#' mapshape = coast)
 #'
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'

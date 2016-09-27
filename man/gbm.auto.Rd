@@ -17,7 +17,7 @@ gbm.auto(grids = NULL, samples = mysamples, expvar, resvar, lr = c(0.01,
 
 \item{expvar}{List of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default}
 
-\item{resvar}{Column number of response variable (e.g. CPUE) in samples. Expected, e.g. 12. No default. Column name should be species name. tc = c(2,5),         # list of permutations of tree complexity allowed, defaults to c(2,length(expvar)) @L55}
+\item{resvar}{Column number of response variable (e.g. CPUE) in samples. Expected, e.g. 12. No default. Column name should be species name.}
 
 \item{lr}{List of permutations of learning rate allowed, can be vector: c(0.01,0.005)}
 
@@ -88,7 +88,8 @@ have you already filtered them out?
 }
 \examples{
 gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids,
-lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
+mapshape = coast)
 
 }
 \author{
