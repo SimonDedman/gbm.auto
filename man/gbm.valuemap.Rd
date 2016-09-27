@@ -55,11 +55,11 @@ species and sort type, in b&w if set. CSVs of all maps if set.
 \description{
 Scales response variable data, maps a user-defined explanatory variable to be
 avoided, e.g. fishing effort, combines them into a map showing areas to
-preferentially close. Bpa – the precautionary biomass required to protect the
-spawning stock – is used to calculate MPA size. MPA is then grown to add
+preferentially close. Bpa, the precautionary biomass required to protect the
+spawning stock, is used to calculate MPA size. MPA is then grown to add
 subsequent species starting from the most conservationally at-risk species,
 resulting in one MPA map per species, and a multicolour MPA map of all.
-All maps list the percentage of the avoid-variable’s total that is overlapped
+All maps list the percentage of the avoidvariables total that is overlapped
 by the MPA in the map legend.
 }
 \examples{

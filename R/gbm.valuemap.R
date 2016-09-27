@@ -2,11 +2,11 @@
 #'
 #' Scales response variable data, maps a user-defined explanatory variable to be
 #' avoided, e.g. fishing effort, combines them into a map showing areas to
-#' preferentially close. Bpa – the precautionary biomass required to protect the
-#' spawning stock – is used to calculate MPA size. MPA is then grown to add
+#' preferentially close. Bpa, the precautionary biomass required to protect the
+#' spawning stock, is used to calculate MPA size. MPA is then grown to add
 #' subsequent species starting from the most conservationally at-risk species,
 #' resulting in one MPA map per species, and a multicolour MPA map of all.
-#' All maps list the percentage of the avoid-variable’s total that is overlapped
+#' All maps list the percentage of the avoidvariables total that is overlapped
 #' by the MPA in the map legend.
 #'
 #' @param dbase data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
@@ -272,7 +272,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
               breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-              basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude (°W)", ylab = "Latitude (°N)")
+              basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
 ####remove xlab & ylab above for general code####
               draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
 
