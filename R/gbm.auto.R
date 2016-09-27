@@ -267,7 +267,7 @@ m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selec
 print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Closed Loops     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 ####9. Test simplification benefit, do so if better####
 print("L271")
-# samples <<- samples # global assign: bad practice but fixes problem where code
+# samples <- samples # global assign: bad practice but fixes problem where code
 print("L273")
 # runs manually but crashes in loop: "unable to access samples".
 # if simp TRUE & ZI=TRUE, run simplification test on best bin model
