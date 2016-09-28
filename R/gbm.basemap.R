@@ -49,7 +49,7 @@ library(raster) # for crop
 if (!require(maptools)) install.packages("maptools")
 library(maptools) # for WriteSpatialShape
 if (!require(maptools)) install.packages("shapefiles")
-library(shapefils) # for read.shapefile
+library(shapefiles) # for read.shapefile
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
 
