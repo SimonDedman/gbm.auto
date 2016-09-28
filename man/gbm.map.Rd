@@ -53,7 +53,7 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{breaks}{Vector of breakpoints for colour scales; default blank, generated automatically}
 
-\item{...}{Additional parameters for mapplots functions, especially legend.grid}
+\item{...}{Additional arguments for legend.grid's ... which passes to legend}
 }
 \value{
 Species abundance maps using data provided by gbm.auto, and

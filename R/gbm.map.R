@@ -24,7 +24,7 @@
 #' @param quantile Set max breakpoint; lower this to cutoff outliers
 #' @param byxout Export byx to use elsewhere? Default:FALSE
 #' @param breaks Vector of breakpoints for colour scales; default blank, generated automatically
-#' @param ... Additional parameters for mapplots functions, especially legend.grid
+#' @param ... Additional arguments for legend.grid's ... which passes to legend
 #'
 #' @return Species abundance maps using data provided by gbm.auto, and
 #' Representativeness Surface Builder maps using data provided by gbm.rsb, to be
@@ -63,7 +63,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     quantile = 1, # set max breakpoint; lower this to cutoff outliers
                     byxout = FALSE, # export byx to use elsewhere? Default:FALSE
                     breaks = NULL, # vector of breakpoints for colour scales; default blank, generated automatically
-                    ...) # additional parameters for mapplots functions, especially legend.grid
+                    ...) # additional arguments for legend.grid's ... which passes to legend
 
 # Generalised Boosting Models, automated map generator. Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
 
@@ -102,5 +102,11 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   basemap(xlim = range(x), ylim = range(y), main = paste(mapmain, species, sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
   draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
   draw.shape(shape = shape, col = landcol) # add coastline
-  legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = legendtitle, col = heatcol, ...) #breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
+  legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = legendtitle, col = heatcol) #breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
+  # removed the '...' from legend.grid, preventing optional args from being passed to legend.
+  # Legend doesn't have a '...' so ALL args floating in the environment will be passed
+  # and expected to be used. Like max.trees and other gbm args. This kills the crab.
+  # Could potentially write out the whole of legend.grid (it's small) then call
+  # legend with R.utils::doCall("legend" x, y, legend = legend, col = col[ncol:1], pch = pch,
+  ## pt.cex = pt.cex, bg = bg, ..., .ignoreUnusedArgs=TRUE))
   }

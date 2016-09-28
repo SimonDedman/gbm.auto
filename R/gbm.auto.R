@@ -29,7 +29,7 @@
 #' @param BnW Repeat maps in black and white e.g. for print journals
 #' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param ... Optional arguments for gbm.map and gbm.step; mainlegendtitle sets map legend title, the metric of abundance
+#' @param ... Optional arguments for legend in legend.grid in gbm.map, and gbm.step; mainlegendtitle sets map legend title, the metric of abundance
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics for
 #' tests, variable interactions, predictors used and dropped, etc. If selected,
@@ -262,7 +262,6 @@ if (ZI) {colnames(Report)[((m*5) - 1):((m*5) + 3)] <- c(paste("Parameter Combo "
                                                        paste("Gaussian BRT ",m," stats", sep = ""),
                                                        paste("Gaussian BRT ",m," name", sep = ""))
 }
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Completed Report       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 n <- n + 1 # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}} # close loops, making all BRT objects & continuing through model selection
