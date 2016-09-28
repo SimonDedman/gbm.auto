@@ -3,7 +3,7 @@
 \docType{data}
 \name{AllScaledData}
 \alias{AllScaledData}
-\title{Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons}
+\title{Data: Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons}
 \format{A data frame with 378570 rows and 3 variables}
 \usage{
 data(AllScaledData)
@@ -20,6 +20,9 @@ blonde, thornback and spotted rays.
   \item allscaled. Relative abundance. Each juvenile and adult female
   cuckoo, blonde, thornback and spotted ray scaled to 1 and added together.
 }
+}
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
 }
 \keyword{datasets}
 

@@ -3,7 +3,7 @@
 \docType{data}
 \name{Juveniles}
 \alias{Juveniles}
-\title{Explanatory and response variables for 4 juvenile rays in the Irish Sea}
+\title{Data: Explanatory and response variables for 4 juvenile rays in the Irish Sea}
 \format{A data frame with 2136 rows and 46 variables}
 \usage{
 data(Juveniles)
@@ -24,12 +24,15 @@ abundance CPUEs of cuckoo, thornback, blonde and spotted rays.
   \item Current_Speed. Metres per second at the seabed.
   \item Distance_to_Shore. Metres, decimal.
   \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-  \item Scallop.
-  \item MI_Av_E_Hr.
-  \item MI_Av_LPUE.
-  \item MI_Sum_Liv.
-  \item Whelk.
-  \item MmoAvScKwh.
+  \item Scallop. Average KwH Scallop effort from logbooks, Marine Institute and MMO combined
+  \item MI_Av_E_Hr. Average effort hours, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14
+  \item MI_Av_LPUE. Average scallop CPUE, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14
+  \item MI_Sum_Liv. Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14
+  \item Whelk. MMO Whelk LPUE 2009-12, pivot, polygons to points
+  \item MmoAvScKwh. MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles.
   \item Cod_C. ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays.
   \item Cod_T. As Cod_C for yr1 thornback rays.
   \item Cod_B. As Cod_C for yr1 blonde rays.
@@ -62,6 +65,9 @@ abundance CPUEs of cuckoo, thornback, blonde and spotted rays.
   \item Blonde. Numbers of juvenile blonde rays caught, standardised to 1 hour
   \item Spotted. Numbers of juvenile spotted rays caught, standardised to 1 hour
 }
+}
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
 }
 \keyword{datasets}
 

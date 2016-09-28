@@ -3,7 +3,7 @@
 \docType{data}
 \name{grids}
 \alias{grids}
-\title{Explanatory variables for rays in the Irish Sea}
+\title{Data: Explanatory variables for rays in the Irish Sea}
 \format{A data frame with 378570 rows and 43 variables}
 \usage{
 data(grids)
@@ -22,13 +22,16 @@ predators of rays including juveniles in the Irish Sea.
   \item Current_Speed. Metres per second at the seabed.
   \item Distance_to_Shore. Metres, decimal.
   \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-  \item Scallop.
-  \item MI_Av_E_Hr.
-  \item MI_Av_LPUE.
-  \item MI_Sum_Liv.
-  \item Whelk.
-  \item MmoAvScKwh.
-  \item HubDist. Distance from nearest Voronoi polygon centroid
+  \item Scallop. Average KwH Scallop effort from logbooks, Marine Institute and MMO combined
+  \item MI_Av_E_Hr. Average effort hours, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14
+  \item MI_Av_LPUE. Average scallop CPUE, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14
+  \item MI_Sum_Liv. Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14
+  \item Whelk. MMO Whelk LPUE 2009-12, pivot, polygons to points
+  \item MmoAvScKwh. MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles.
+  \item HubDist. map calc, distance of grid point to nearest datras point representing it (for preds)
   \item Cod_C. ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays.
   \item Cod_T. As Cod_C for yr1 thornback rays.
   \item Cod_B. As Cod_C for yr1 blonde rays.
@@ -56,8 +59,14 @@ predators of rays including juveniles in the Irish Sea.
   \item T_Preds. All predator CPUEs combined for thornback rays.
   \item B_Preds. All predator CPUEs combined for blonde rays.
   \item S_Preds. All predator CPUEs combined for spotted rays.
-  \item Effort.
+  \item Effort.  Irish commercial beam trawler effort 2012
 }
+}
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
+\references{
+\url{http://oar.marine.ie/handle/10793/958}
 }
 \keyword{datasets}
 

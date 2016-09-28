@@ -1,4 +1,4 @@
-#' Numbers of 4 adult female rays caught in 2137 Irish Sea trawls, 1994 to 2014
+#' Data: Numbers of 4 adult female rays caught in 2137 Irish Sea trawls, 1994 to 2014
 #'
 #' 2137 capture events of adult female cuckoo, thornback, spotted and blonde
 #' rays in the Irish Sea from 1994 to 2014 by the ICES IBTS, including
@@ -28,10 +28,10 @@
 #' @usage data(Adult_Females)
 #' @format A data frame with 2137 rows and 13 variables
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @references \url{datras.ices.dk}
+#' @references \url{http://datras.ices.dk}
 "Adult_Females"
 
-#' Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons
+#' Data: Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons
 #'
 #' A dataset containing the output of the gbm.cons example run, conservation
 #' priority areas within the Irish Sea for juvenile and adult female cuckoo,
@@ -48,10 +48,11 @@
 #' @keywords datasets
 #' @name AllScaledData
 #' @usage data(AllScaledData)
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @format A data frame with 378570 rows and 3 variables
 "AllScaledData"
 
-#' Explanatory and response variables for 4 juvenile rays in the Irish Sea
+#' Data: Explanatory and response variables for 4 juvenile rays in the Irish Sea
 #'
 #' A dataset containing explanatory variables for environment, fishery and
 #' predators of juvenile rays in the Irish Sea, and the response variables,
@@ -67,12 +68,15 @@
 #'   \item Current_Speed. Metres per second at the seabed.
 #'   \item Distance_to_Shore. Metres, decimal.
 #'   \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-#'   \item Scallop.
-#'   \item MI_Av_E_Hr.
-#'   \item MI_Av_LPUE.
-#'   \item MI_Sum_Liv.
-#'   \item Whelk.
-#'   \item MmoAvScKwh.
+#'   \item Scallop. Average KwH Scallop effort from logbooks, Marine Institute and MMO combined
+#'   \item MI_Av_E_Hr. Average effort hours, Marine Institute Scallop VMS,
+#'   0.03*0.02 rectangles, all Irish Sea, 2006-14
+#'   \item MI_Av_LPUE. Average scallop CPUE, Marine Institute Scallop VMS,
+#'   0.03*0.02 rectangles, all Irish Sea, 2006-14
+#'   \item MI_Sum_Liv. Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
+#'   0.03*0.02 rectangles, all Irish Sea, 2006-14
+#'   \item Whelk. MMO Whelk LPUE 2009-12, pivot, polygons to points
+#'   \item MmoAvScKwh. MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles.
 #'   \item Cod_C. ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays.
 #'   \item Cod_T. As Cod_C for yr1 thornback rays.
 #'   \item Cod_B. As Cod_C for yr1 blonde rays.
@@ -111,9 +115,10 @@
 #' @name Juveniles
 #' @usage data(Juveniles)
 #' @format A data frame with 2136 rows and 46 variables
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
 "Juveniles"
 
-#' Explanatory variables for rays in the Irish Sea
+#' Data: Explanatory variables for rays in the Irish Sea
 #'
 #' A dataset containing explanatory variables for environment, fishery and
 #' predators of rays including juveniles in the Irish Sea.
@@ -127,13 +132,16 @@
 #'   \item Current_Speed. Metres per second at the seabed.
 #'   \item Distance_to_Shore. Metres, decimal.
 #'   \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-#'   \item Scallop.
-#'   \item MI_Av_E_Hr.
-#'   \item MI_Av_LPUE.
-#'   \item MI_Sum_Liv.
-#'   \item Whelk.
-#'   \item MmoAvScKwh.
-#'   \item HubDist. Distance from nearest Voronoi polygon centroid
+#'   \item Scallop. Average KwH Scallop effort from logbooks, Marine Institute and MMO combined
+#'   \item MI_Av_E_Hr. Average effort hours, Marine Institute Scallop VMS,
+#'   0.03*0.02 rectangles, all Irish Sea, 2006-14
+#'   \item MI_Av_LPUE. Average scallop CPUE, Marine Institute Scallop VMS,
+#'   0.03*0.02 rectangles, all Irish Sea, 2006-14
+#'   \item MI_Sum_Liv. Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
+#'   0.03*0.02 rectangles, all Irish Sea, 2006-14
+#'   \item Whelk. MMO Whelk LPUE 2009-12, pivot, polygons to points
+#'   \item MmoAvScKwh. MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles.
+#'   \item HubDist. map calc, distance of grid point to nearest datras point representing it (for preds)
 #'   \item Cod_C. ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays.
 #'   \item Cod_T. As Cod_C for yr1 thornback rays.
 #'   \item Cod_B. As Cod_C for yr1 blonde rays.
@@ -161,7 +169,7 @@
 #'   \item T_Preds. All predator CPUEs combined for thornback rays.
 #'   \item B_Preds. All predator CPUEs combined for blonde rays.
 #'   \item S_Preds. All predator CPUEs combined for spotted rays.
-#'   \item Effort.
+#'   \item Effort.  Irish commercial beam trawler effort 2012
 #' }
 #'
 #' @docType data
@@ -169,9 +177,11 @@
 #' @name grids
 #' @usage data(grids)
 #' @format A data frame with 378570 rows and 43 variables
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
+#' @references \url{http://oar.marine.ie/handle/10793/958}
 "grids"
 
-#' Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014
+#' Data: Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014
 #'
 #' 2244 capture events of cuckoo, thornback, spotted and blonde rays in the Irish
 #' Sea from 1994 to 2014 by the ICES IBTS, including explanatory variables:
@@ -189,7 +199,7 @@
 #'   \item Current_Speed. Metres per second at the seabed.
 #'   \item Distance_to_Shore. Metres, decimal.
 #'   \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-#'   \item Effort.
+#'   \item Effort. Irish commercial beam trawler effort 2012
 #'   \item Cuckoo. Numbers of juvenile cuckoo rays caught, standardised to 1 hour
 #'   \item Thornback. Numbers of juvenile thornback rays caught, standardised to 1 hour
 #'   \item Blonde. Numbers of juvenile blonde rays caught, standardised to 1 hour
@@ -201,4 +211,6 @@
 #' @name samples
 #' @usage data(samples)
 #' @format A data frame with 2244 rows and 14 variables
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
+#' @references \url{http://oar.marine.ie/handle/10793/958}
 "samples"

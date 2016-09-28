@@ -3,7 +3,7 @@
 \docType{data}
 \name{samples}
 \alias{samples}
-\title{Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014}
+\title{Data: Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014}
 \format{A data frame with 2244 rows and 14 variables}
 \usage{
 data(samples)
@@ -26,12 +26,18 @@ bottom. Note column 8 between Distance_to_shore and Current_Speed is blank.
   \item Current_Speed. Metres per second at the seabed.
   \item Distance_to_Shore. Metres, decimal.
   \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-  \item Effort.
+  \item Effort. Irish commercial beam trawler effort 2012
   \item Cuckoo. Numbers of juvenile cuckoo rays caught, standardised to 1 hour
   \item Thornback. Numbers of juvenile thornback rays caught, standardised to 1 hour
   \item Blonde. Numbers of juvenile blonde rays caught, standardised to 1 hour
   \item Spotted. Numbers of juvenile spotted rays caught, standardised to 1 hour
 }
+}
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
+\references{
+\url{http://oar.marine.ie/handle/10793/958}
 }
 \keyword{datasets}
 

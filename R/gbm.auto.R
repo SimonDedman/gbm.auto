@@ -262,16 +262,12 @@ if (ZI) {colnames(Report)[((m*5) - 1):((m*5) + 3)] <- c(paste("Parameter Combo "
                                                        paste("Gaussian BRT ",m," stats", sep = ""),
                                                        paste("Gaussian BRT ",m," name", sep = ""))
 }
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed Report     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Completed Report       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 n <- n + 1 # Add to print counter: 2 per loop, 1 bin 1 gaus BRT
 m <- m + 1 # Add to loop counter: 1 per loop, used for bin/gaus_best model selection
 }}} # close loops, making all BRT objects & continuing through model selection
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Closed Loops     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX        Closed Loops         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 ####9. Test simplification benefit, do so if better####
-print("L271")
-# samples <- samples # global assign: bad practice but fixes problem where code
-print("L273")
-# runs manually but crashes in loop: "unable to access samples".
 # if simp TRUE & ZI=TRUE, run simplification test on best bin model
 if (simp) { if (ZI) {Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
 
@@ -697,7 +693,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXX
     } # close RSB mapper
    } # close Map Maker
   } #close grids option from above section 22
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
  } # close response variable (resvar) loop
 if (alerts) beep(8)} # final user notification, then close the function
 ####END####
