@@ -140,7 +140,7 @@ if (!is.null(grids)) { # create basemap if not provided
                                       min(grids[,gridslat]),
                                       max(grids[,gridslat])))
     } else {shape <- mapshape}}
-
+showshape <<- shape
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 
 expvarnames <- names(samples[expvar]) # list of explanatory variable names
@@ -551,6 +551,7 @@ if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
   print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
 ####22. Map maker####
+  showshape2 <<- shape
 if (!exists("mainlegendtitle")) mainlegendtitle = "CPUE" # create if absent else error
 if (map == TRUE) {   # generate output image & set parameters
   png(filename = paste("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png", sep = ""),
