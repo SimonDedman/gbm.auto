@@ -75,7 +75,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   require(mapplots)
   library(mapplots)
   # get Britain & Ireland coast data. I'm looking to make this global but am having a problem w/ the maps packge
-  data(coast, package = "mapplots")
+  if (is.null(shape)) {data(coast, package = "mapplots")}
   # if users hasn't entered byx or byy values, generate them from the data
   if (is.null(byx)) {
     # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
