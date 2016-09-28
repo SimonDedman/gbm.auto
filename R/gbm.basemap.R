@@ -17,7 +17,7 @@
 #' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 #'
 #' @export
-#' @import rgdal utils rgeos raster
+#' @import rgdal utils rgeos raster shapefiles
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' mybounds <- c(range(sharks[,4]),range(sharks[,3]))
@@ -48,6 +48,8 @@ if (!require(raster)) install.packages("raster")
 library(raster) # for crop
 if (!require(maptools)) install.packages("maptools")
 library(maptools) # for WriteSpatialShape
+if (!require(maptools)) install.packages("shapefiles")
+library(shapefils) # for read.shapefile
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
 
@@ -76,10 +78,12 @@ setwd(paste("./", res, sep = "")) #setwd to res subfolder
 # read in worldmap
 world <- readOGR(dsn = paste("GSHHS_", res, "_L1.shp", sep = ""), layer = paste("GSHHS_", res, "_L1", sep = ""))
 cropshp <<- crop(world, bounds) # crop to extents
+####shouldn't be global?####
 setwd(startdir)
 dir.create("CroppedMap") # create conservation maps directory
 setwd("CroppedMap")
 writeSpatialShape(cropshp, savename)
 print(paste("World map cropped and saved successfully"))
+cropshp <- read.shapefile(savename) #reads back into env in correct format
 setwd("../")
 return(cropshp)}

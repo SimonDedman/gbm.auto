@@ -133,8 +133,8 @@ if (alerts) require(beepr)
 require(labeling)
 
 if (!is.null(grids)) { # create basemap if not provided
-    if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
     if (is.null(mapshape)) {
+      if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
       shape <- gbm.basemap(bounds = c(min(grids[,gridslon]),
                                       max(grids[,gridslon]),
                                       min(grids[,gridslat]),
