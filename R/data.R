@@ -214,3 +214,26 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @references \url{http://oar.marine.ie/handle/10793/958}
 "samples"
+
+#' Data: Predicted abundances of 4 ray species generated using gbm.auto
+#'
+#' Predicted abundances of 4 ray species generated using gbm.auto, and
+#' Irish commercial beam trawler effort 2012.
+#'
+#' \itemize{
+#'   \item Latitude. Decimal latitudes in the Irish Sea
+#'   \item Longitude. Decimal longitudes in the Irish Sea
+#'   \item Cuckoo. Predicted abundances of cuckoo rays in the Irish Sea, generated using gbm.auto
+#'   \item Thornback. Predicted abundances of thornback rays in the Irish Sea, generated using gbm.auto
+#'   \item Blonde. Predicted abundances of blonde rays in the Irish Sea, generated using gbm.auto
+#'   \item Spotted. Predicted abundances of spotted rays in the Irish Sea, generated using gbm.auto
+#'   \item Effort. Irish commercial beam trawler effort 2012
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name AllPreds_E
+#' @usage data(AllPreds_E)
+#' @format A data frame with 378570 rows and 7 variables
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
+"AllPreds_E"
