@@ -53,7 +53,7 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
-\item{...}{Optional arguments for legend in legend.grid in gbm.map, and gbm.step; mainlegendtitle sets map legend title, the metric of abundance}
+\item{...}{Optional arguments for legend in legend.grid in gbm.map, and gbm.step}
 }
 \value{
 Line, dot and bar plots, a report of all variables used, statistics for
