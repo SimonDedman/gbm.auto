@@ -87,7 +87,7 @@ Errors and their origins:
 have you already filtered them out?
 }
 \examples{
-gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids,
+gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
 mapshape = coast)
 

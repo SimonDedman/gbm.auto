@@ -34,6 +34,7 @@ their individual / collective representativeness.
 }
 \examples{
 None
+
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

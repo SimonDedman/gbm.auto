@@ -4,7 +4,7 @@
 #' rays in the Irish Sea from 1994 to 2014 by the ICES IBTS, including
 #' explanatory variables: Length Per Unit Effort in that area by the commercial
 #' fishery, depth, temperature, distance to shore, and current speed at the
-#' bottom. Note column 9 between Distance_to_shore and Current_Speed is blank.
+#' bottom.
 #'
 #' \itemize{
 #'   \item Longitude. Decimal longitudes in the Irish Sea
@@ -187,7 +187,7 @@
 #' Sea from 1994 to 2014 by the ICES IBTS, including explanatory variables:
 #' Length Per Unit Effort in that area by the commercial fishery, fishing effort
 #' by same, depth, temperature, distance to shore, and current speed at the
-#' bottom. Note column 8 between Distance_to_shore and Current_Speed is blank.
+#' bottom.
 #'
 #' \itemize{
 #'   \item Survey_StNo_HaulNo_Year.

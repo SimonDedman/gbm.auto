@@ -31,7 +31,7 @@ box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
 Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 }
 \examples{
-mybounds <- c(range(sharks[,4]),range(sharks[,3]))
+mybounds <- c(range(samples[,3]),range(samples[,2]))
 gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename = "My_Crop_Map", res = "f")
 In this example GSHHS folder already downloaded to the working directory
 hence I pointed getzip at that rather than having it download the zip again.
