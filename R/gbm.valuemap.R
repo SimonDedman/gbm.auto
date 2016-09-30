@@ -32,6 +32,8 @@
 #' species and sort type, in b&w if set. CSVs of all maps if set.
 #'
 #' @export
+#' @import mapplots
+#' @importFrom beepr beep
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
 gbm.valuemap <- function(
@@ -69,12 +71,16 @@ if (alerts) options(error = function() {beep(9)})  # warn for fails
 
 if (is.null(mapshape)) {
   if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
-  mapshape <- gbm.basemap(bounds = c(min(dbase[,loncolno]),
-                                     max(dbase[,loncolno]),
-                                     min(dbase[,latcolno]),
-                                     max(dbase[,latcolno])))
-  #data(coast,package = "mapplots")
-  #mapshape <- coast
+    bounds = c(range(dbase[,loncolno]),range(dbase[,latcolno]))
+    #create standard bounds from data, and extra bounds for map aesthetic
+    xmid <- mean(bounds[1:2])
+    ymid <- mean(bounds[3:4])
+    xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+    xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+    yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+    yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+    extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+    mapshape <- gbm.basemap(bounds = extrabounds)
   }
 
 goodname = colnames(dbase)[goodcols] #the response varible(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.

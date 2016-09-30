@@ -33,6 +33,7 @@
 #'
 #' @return  Maps via gbm.map & saved data as csv file
 #' @export
+#' @importFrom beepr beep
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #'

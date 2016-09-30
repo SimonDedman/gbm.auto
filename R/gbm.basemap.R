@@ -17,7 +17,11 @@
 #' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 #'
 #' @export
-#' @import rgdal utils rgeos raster shapefiles
+#' @import rgeos
+#' @importFrom rgdal readOGR
+#' @importFrom maptools writeSpatialShape
+#' @importFrom raster crop
+#' @importFrom shapefiles read.shapefile
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' mybounds <- c(range(samples[,3]),range(samples[,2]))

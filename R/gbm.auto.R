@@ -58,9 +58,15 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
 #' @export
-#' @import dismo beepr gbm grDevices graphics utils stats mapplots
-#'
-#' @examples
+#' @import mapplots
+#' @importFrom beepr beep
+#' @importFrom labeling extended
+#' @importFrom dismo gbm.interactions
+#' @importFrom dismo gbm.plot.fits
+#' @importFrom dismo gbm.plot
+#' @importFrom dismo gbm.simplify
+#' @importFrom dismo gbm.step
+#' @importFrom gbm plot.gbm
 #'
 gbm.auto <- function(
   grids = NULL,         # explantory data to predict to. Import with (e.g.)
@@ -135,10 +141,16 @@ require(labeling)
 if (!is.null(grids)) { # create basemap if not provided
     if (is.null(mapshape)) {
       if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
-      shape <- gbm.basemap(bounds = c(min(grids[,gridslon]),
-                                      max(grids[,gridslon]),
-                                      min(grids[,gridslat]),
-                                      max(grids[,gridslat])))
+      bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
+      #create standard bounds from data, and extra bounds for map aesthetic
+      xmid <- mean(bounds[1:2])
+      ymid <- mean(bounds[3:4])
+      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+      shape <- gbm.basemap(bounds = extrabounds)
     } else {shape <- mapshape}}
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 
@@ -358,8 +370,8 @@ par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mg
     # bg=expvarcols[match(get(Bin_Best_Model)$contributions$var[o],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
 plotgrid <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
 if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Bin_Best_line_", as.character(get(Bin_Best_Model)$contributions$var[o]), ".csv", sep = ""))
-xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE) # sets range & ticks
-yy <- labeling::extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE) # sets range & ticks
+xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE) # sets range & ticks
+yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE) # sets range & ticks
 plot(range(xx), range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
 lines(plotgrid, type = "l")
 axis(1, lwd.ticks = 8, lwd = 8, at = xx) # is providing only the thick line & downticks
@@ -373,16 +385,16 @@ for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
     width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
 plotgrid <- plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
-plotgridbin <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
-# x axis doesn't encompass all points for gaus but does for bin. Points are the same.
 if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$contributions$var[p]), ".csv", sep = ""))
-xx <- labeling::extended(min(plotgridbin[1]), max(plotgridbin[1]),7, only.loose = TRUE)
-yy <- labeling::extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE)
+xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE)
+yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE)
 plot(range(xx),range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
 lines(plotgrid, type = "l")
 axis(1, lwd.ticks = 8, lwd = 8, at = xx)
 axis(2, lwd.ticks = 8, lwd = 8, at = yy)
-rug(samples[as.character(get(Gaus_Best_Model)$contributions$var[p])][,1], side = 1, lwd = 5, ticksize = 0.03)
+rug(samples[as.character(get(Gaus_Best_Model)$contributions$var[p])][,1], side = 1, lwd = 5, ticksize = 0.03, quiet = TRUE)
+# quiet=TRUE because x axis is incorrect relative to points. Have tried only.loose=FALSE in xx line
+# also plotgridbin from bin to use bin's x axis but didn't work. Tried matching gaus & bin no joy.
 dev.off() }
 
 if (alerts) beep(2) # progress printer, right aligned for visibility

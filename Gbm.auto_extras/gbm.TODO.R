@@ -1,6 +1,8 @@
 ####TO DO####
-# Man pages for each of the data files. How?
 # Examples for all functions man pages
+
+# L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
+# rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix
 
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables

@@ -95,14 +95,21 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
     byy <- byx
     if (byxout) byxport <<- byx
   }
-  grd <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = grdfun) #create gridded data. fun defaults to sum which is bad
-  heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
-  if (is.null(breaks)) breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it's used later in draw.grid). Else generate it.
-  if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero = TRUE add alpha as 1st colour (1st 2 breakpoints)
+  grd <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = grdfun)
+  # create gridded data. fun defaults to sum which is bad since accidentally
+  # overlapping points will look anomalous
+  heatcol = colorRampPalette(heatcolours)(colournumber)
+  # create heatcol from component parts
+  if (is.null(breaks)) breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))
+  # if breaks specified, do nothing (used later in draw.grid) else generate them
+  if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))}
+  # if zero = TRUE add alpha as 1st colour (1st 2 breakpoints)
   basemap(xlim = range(x), ylim = range(y), main = paste(mapmain, species, sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
-  draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
+  draw.grid(grd, breaks, col = heatcol)
+  # plot grd data w/ breaks for colour breakpoints
   draw.shape(shape = shape, col = landcol) # add coastline
-  legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = legendtitle, col = heatcol) #breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
+  legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = legendtitle, col = heatcol)
+  # breaks=breaks/1000 was causing odd legend? From make.grid help, Hans using to convert kg to t?
   # removed the '...' from legend.grid, preventing optional args from being passed to legend.
   # Legend doesn't have a '...' so ALL args floating in the environment will be passed
   # and expected to be used. Like max.trees and other gbm args. This kills the crab.
