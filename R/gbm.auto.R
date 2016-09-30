@@ -373,8 +373,10 @@ for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
     width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
 plotgrid <- plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
+plotgridbin <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
+# x axis doesn't encompass all points for gaus but does for bin. Points are the same.
 if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$contributions$var[p]), ".csv", sep = ""))
-xx <- labeling::extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE)
+xx <- labeling::extended(min(plotgridbin[1]), max(plotgridbin[1]),7, only.loose = TRUE)
 yy <- labeling::extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE)
 plot(range(xx),range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
 lines(plotgrid, type = "l")
