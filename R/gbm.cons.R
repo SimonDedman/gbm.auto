@@ -39,7 +39,7 @@
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
-                     conssamples,   # single/vector of samples csv names &
+                     conssamples,   # single/vector of samples csv names and
                      # locations corresponding to subsets
                      alerts = TRUE, # play sounds to mark progress steps
                      map = TRUE,    # produce maps
@@ -70,37 +70,11 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
   # Have to have subset folders & species folder names correct.
   # test this. Changes default requirement of grids. And samples? And loads of stuff.
 
-  ## gbm.todo.P2
-  # working script for paper 2; 1/6/2015
-
-  # Generalised Boosting Model / Boosted Regression Tree process chain automater.
-  # Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
-
-  # Function to automate the many steps required to use boosted regression trees to predict abundances in a delta process,
-  # i.e. binary (0/1) proportion prediction coupled with presence-only abundance prediction to give total prediction.
-  # Loops through all permutations of parameters provided (learning rate, tree complexity, bag fraction), chooses the best,
-  # then tries to simplify that. Generates line, dot & bar plots, and outputs these and the predictions and a report of all
-  # variables used, statistics for tests, variable interactions, predictors used & dropped, etc.. If selected, generates
-  # predicted abundance maps, and Unrepresentativeness surfaces.
-  #
-  # Underlying functions are from packages gbm and dismo, functions from Elith et al. 2008 (bundled as gbm.utils.R), mapplots,
-  # and my own functions gbm.map, gbm.rsb, gbm.valuemap
-
-
 ####Load functions & data####
-# load gmb.utils, containing Elith's packages not in dismo, & SD's gbm functions
-#### require check these, have user load em####
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R") # loads beepr (but needed earlier), gbm.map gbm.rsb, gbm.utils
-# maybe just try gbm.auto check and that will then launch the other package checks when it gets there? except beepr.
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
-
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
 if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) library(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
-
 if (gbmautos) {if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length
 for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
 
@@ -110,7 +84,7 @@ for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
 
 # create a list of response variables for name ranges
 GS <- length(resvars)/length(subsets) # calculate group size, e.g. 8/2
-resvarrange = list() # create blank list
+resvarrange = list() # create blank list to populate with subset values
 for (h in 1:length(subsets)) {  #e.g. 1:2
   resvarrange[[h]] <- (1 + (GS * (h - 1))):(GS * h)} # e.g. 1:4, 5:8
 
@@ -120,9 +94,9 @@ for (i in 1:length(subsets)) {  #currently 2
 
 # name samples by subset name & load
 assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
+  #this just achieves the same as reading in those datasets and having subsets list em by name.
 
 if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
-  ## change to name(conssamples[i])?
 setwd(paste("./", subsets[i], sep = ""))  # go there
 
 for (j in 1:GS) {  #loop through all species in group e.g. 4

@@ -10,18 +10,10 @@
 # set & test working directory
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles")
 getwd()
-
-# load gmb.utils, which contains various of Elith's packages not contained in dismo
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R")
-
-# load gbm functions
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R")
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R")
-source("/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.auto.R")
-library(beepr)
+install_github("SimonDedman/gbm.auto")
 
 # load grids
-mygrids <- read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
+mygrids <- gbm.auto::grids
 
 # load saved models if re-running aspects from a previous run
 # load("Bin_Best_Model")
@@ -29,21 +21,7 @@ mygrids <- read.csv("grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOSc
 
 ####model:juve individual preds####
 # load samples
-mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays.csv", header = TRUE, row.names = NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays_93-08only.csv", header = TRUE, row.names=NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly.csv", header = TRUE, row.names=NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_oldbkup.csv", header = TRUE, row.names=NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_oldbkup_formattest.csv", header = TRUE, row.names=NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_oldbkup_formattest_93-08only.csv", header = TRUE, row.names=NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_Reorder.csv", header = TRUE, row.names=NULL)
-# mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_SortYr.csv", header = TRUE, row.names=NULL)
-
-# Ok so it's not the:
-# - row order (used new data in oldbkup order)
-# - new enviro order (bound new data to old enviros which should be the same anyway)
-# - presence of big gaps in fish data (removed dead spots (93-08only) works for old data not new)
-# Both old & new data have same mean deviance
-# old & new have same ray data BUT IN DIFFERENT ORDER. Find out which is right. Simply use old's? Yes
+samples <- gbm.auto::Juveniles
 
 # Samples Response variables (CTBS) columns 44-47 inc.
 # colnames(mysamples), I need 4:9 (enviros), 10 (hans lpue), 11 (combined scallop icesrects), 15 (whelk CPUE icesrects)
@@ -65,12 +43,12 @@ mysamples <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Individual Predators")
 
 #cuckoo original without ComSkt_C since it's empty
-names(mysamples)[33]
-gbm.auto(expvar = c(4:11,15,17,21,25,29,37),
-         resvar = c(44),
+names(mysamples)[32]
+gbm.auto(expvar = c(4:10,14,16,20,24,28,36),
+         resvar = c(43),
          grids = mygrids,
          samples = mysamples,
-         tc = c(2,14),
+         tc = c(2,13),
          lr = c(0.005, 0.001),
          bf = c(0.5),
          gridslat = 2,
@@ -82,12 +60,12 @@ gbm.auto(expvar = c(4:11,15,17,21,25,29,37),
          zero = FALSE)
 
 #thornback
-max((mysamples)[34]) # ComSkt_T max = 0, remove it
-gbm.auto(expvar = c(4:11,15,18,22,26,30,38),
-         resvar = c(45),
+max((mysamples)[33]) # ComSkt_T max = 0, remove it
+gbm.auto(expvar = c(4:10,14,17,21,25,29,37),
+         resvar = c(44),
          grids = mygrids,
          samples = mysamples,
-         tc = c(2,14),
+         tc = c(2,13),
          lr = c(0.01, 0.005),
          bf = c(0.5),
          gridslat = 2,
@@ -100,11 +78,11 @@ gbm.auto(expvar = c(4:11,15,18,22,26,30,38),
 # 27/2/16 worked
 
 # Blonde
-gbm.auto(expvar = c(4:11,15,19,23,27,31),
-         resvar = c(46),
+gbm.auto(expvar = c(4:10,14,18,22,26,30),
+         resvar = c(45),
          grids = mygrids,
          samples = mysamples,
-         tc = c(13),
+         tc = c(12),
          lr = c(0.005),
          bf = c(0.5),
          gridslat = 2,
@@ -124,12 +102,12 @@ gbm.auto(expvar = c(4:11,15,19,23,27,31),
 # also 413-416, which includes the results in the report
 
 #spotted
-max((mysamples)[36]) # ComSkt_B max = 0, remove it
-gbm.auto(expvar = c(4:11,15,20,24,28,32,39),
-         resvar = c(47),
+max((mysamples)[35]) # ComSkt_B max = 0, remove it
+gbm.auto(expvar = c(4:10,14,19,23,27,31,38),
+         resvar = c(46),
          grids = mygrids,
          samples = mysamples,
-         tc = c(2,14),
+         tc = c(2,13),
          lr = c(0.01, 0.005),
          bf = c(0.5),
          gridslat = 2,
@@ -141,126 +119,36 @@ gbm.auto(expvar = c(4:11,15,20,24,28,32,39),
          zero = FALSE)
 # FAIL: contrasts can be applied only to factors with 2 or more levels
 
-####model:juve combined preds DON'T####
-# Set WD so I can run all these at once
-setwd("C:/Users/Simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Combined Predators")
-setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/Combined Predators")
-#cuckoo
-gbm.auto(expvar=c(4:11,15,40),
-         resvar=c(44),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5,10),
-         lr=c(0.01, 0.005),
-         bf=c(0.5),
-         gridslat = 2,
-         gridslon = 1,
-         ZI = TRUE,
-         map = TRUE,
-         RSB= TRUE,
-         legendtitle = "CPUE",
-         varint = FALSE,
-         zero = FALSE)
-
-#thornback
-gbm.auto(expvar=c(4:11,15,41),
-         resvar=c(45),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5,10),
-         lr=c(0.01, 0.005),
-         bf=c(0.5),
-         gridslat = 2,
-         gridslon = 1,
-         ZI = TRUE,
-         map = TRUE,
-         RSB= TRUE,
-         legendtitle = "CPUE",
-         varint = FALSE,
-         zero = FALSE)
-
-#blonde without 10 interactions
-gbm.auto(expvar=c(4:11,15,42),
-         resvar=c(46),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5),
-         lr=c(0.01, 0.005),
-         bf=c(0.5),
-         gridslat = 2,
-         gridslon = 1,
-         ZI = TRUE,
-         map = TRUE,
-         RSB= TRUE,
-         legendtitle = "CPUE",
-         zero = FALSE)
-
-#re run blonde w/ smaller LR for 10 interactions (1 combo), then test against scores for 2 & 5 interactions
-gbm.auto(expvar=c(4:11,15,42),
-         resvar=c(46),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(10),
-         lr=c(0.005),
-         bf=c(0.5),
-         gridslat = 2,
-         gridslon = 1,
-         ZI = TRUE,
-         map = TRUE,
-         RSB= TRUE,
-         legendtitle = "CPUE",
-         varint = FALSE,
-         zero = FALSE)
-
-#spotted
-gbm.auto(expvar=c(4:11,15,43),
-         resvar=c(47),
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,5,10),
-         lr=c(0.01, 0.005),
-         bf=c(0.5),
-         gridslat = 2,
-         gridslon = 1,
-         ZI = TRUE,
-         map = TRUE,
-         RSB= TRUE,
-         legendtitle = "CPUE",
-         varint = FALSE,
-         zero = FALSE)
-
-# individual - blonde: no predicted abundance & rsb figures, why? Not enough data? Worked before?
-
 ####model: mat F####
 # set wd for mature female samples sheets
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F")
 # load samples
-mysamples<-read.csv("F_Mat_plus_LPUE_plus_Enviro_IS_AllSp.csv", header = TRUE, row.names=NULL)
+mysamples <- gbm.auto::Adult_Females
 
 # run models: cuckoo
-gbm.auto(expvar=4:10,
-         resvar=11,
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,6),
-         lr=c(0.005),
-         bf=c(0.5),
+gbm.auto(expvar = 4:9,
+         resvar = 10,
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,6),
+         lr = c(0.005),
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
+         RSB = TRUE,
          varint = FALSE,
          zero = FALSE)
 
 #thornback: fails @lr=0.01
-gbm.auto(expvar=4:10,
-         resvar=12,
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(2,6),
-         lr=c(0.005),
-         bf=c(0.5),
+gbm.auto(expvar = 4:9,
+         resvar = 11,
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(2,6),
+         lr = c(0.005),
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
@@ -270,18 +158,18 @@ gbm.auto(expvar=4:10,
          zero = FALSE)
 
 #blonde
-gbm.auto(expvar=4:10,
-         resvar=13,
-         grids=mygrids,
-         samples=mysamples,
-         tc=c(6), #2, #report shows 6 is best
-         lr=c(0.001), #0.01, 0.005
-         bf=c(0.5),
+gbm.auto(expvar = 4:9,
+         resvar = 12,
+         grids = mygrids,
+         samples = mysamples,
+         tc = c(6), #2, #report shows 6 is best
+         lr = c(0.001), #0.01, 0.005
+         bf = c(0.5),
          gridslat = 2,
          gridslon = 1,
          ZI = TRUE,
          map = TRUE,
-         RSB= TRUE,
+         RSB = TRUE,
          varint = FALSE,
          zero = FALSE)
 
@@ -291,7 +179,6 @@ gbm.auto(expvar=4:10,
 3: glm.fit: fitted probabilities numerically 0 or 1 occurred
 4: glm.fit: fitted probabilities numerically 0 or 1 occurred
 # seems to have worked though?
-
 
 # restart model with a smaller learning rate or smaller step size...
 # Error in if (get(paste("Bin_BRT", ".tc", j, ".lr", k * 100, ".bf", l, :argument is of length zero
@@ -351,8 +238,8 @@ cor(y_i3, u_i3) # In cor(y_i3, u_i3) : the standard deviation is zero
 # but not when run as part of the full model.
 
 #spotted #failed @lr=0.01
-gbm.auto(expvar = 4:10,
-         resvar = 14,
+gbm.auto(expvar = 4:9,
+         resvar = 13,
          grids = mygrids,
          tc = c(2,6),
          lr = c(0.005),

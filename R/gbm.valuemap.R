@@ -113,7 +113,7 @@ if ("bad" %in% plotthis) {
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno],  # run gbm.map function with generated parameters
           y = dbase[,latcolno], z = baddata, mapmain = "Fishing Effort",
-          species = "", legendtitle = "Effort Level")
+          species = "", legendtitle = "Effort Level", shape = mapshape)
   dev.off()
 
   if (BnW) {
@@ -124,6 +124,7 @@ if ("bad" %in% plotthis) {
             y = dbase[,latcolno], z = baddata,
             mapmain = "Fishing Effort", species = "",
             legendtitle = "Effort Level",
+            shape = mapshape,
             landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
             mapback = "white", heatcolours = grey.colors(8, start = 1, end = 0))
     dev.off()
@@ -151,7 +152,7 @@ png(filename = paste("./", goodname[j], "_Map.png", sep = ""),
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
-        species = goodname[j])
+        species = goodname[j], shape = mapshape)
 dev.off()
 
 if (BnW) {
@@ -162,7 +163,8 @@ if (BnW) {
           species = goodname[j],
           landcol = grey.colors(1, start = 0.8, end = 0.8),
           mapback = "white",
-          heatcolours = grey.colors(8, start = 1, end = 0))
+          heatcolours = grey.colors(8, start = 1, end = 0),
+          shape = mapshape)
   dev.off()
   if (alerts) beep(2) # alert user of success
 }} # close goodplot & BnW
@@ -179,7 +181,8 @@ if ("both" %in% plotthis) {
           mapmain = "Predicted Abundance + Fishing Effort: ",
           species = goodname[j],
           heatcolours = c("red", "lightyellow","blue"),
-          legendtitle = "0 - 2", byxout = TRUE)
+          legendtitle = "0 - 2", byxout = TRUE,
+          shape = mapshape)
   dev.off()
   byx <- byxport
   byy <- byx
@@ -195,7 +198,8 @@ if ("both" %in% plotthis) {
             byxout = TRUE,
             landcol = grey.colors(1, start = 0.8, end = 0.8),
             mapback = "white",
-            heatcolours = grey.colors(3, start = 1, end = 0))
+            heatcolours = grey.colors(3, start = 1, end = 0),
+            shape = mapshape)
     dev.off()} # close BnW
   if (alerts) beep(2) } # alert user, close bothplot
   } # close species loop 1
@@ -293,7 +297,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               breaks2 <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol2 = c("#00000000", colorRampPalette(heatcol2)(length(heatcol2) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
               draw.grid(grd2, breaks2, col = heatcol2) # plot grd data w/ breaks for colour breakpoints
-              draw.shape(shape = shape, col = landcol) # add coastline
+              draw.shape(shape = mapshape, col = landcol) # add coastline
               legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
             dev.off()
 
@@ -352,7 +356,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               breaks2 <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))
               if (zero) {heatcol2 = c("#00000000",colorRampPalette(heatcol2)(length(heatcol2) - 1))}
               draw.grid(grd2, breaks2, col = heatcol2)
-              draw.shape(shape = shape, col = landcol)
+              draw.shape(shape = mapshape, col = landcol)
               legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
               dev.off()
             } # close BnW
