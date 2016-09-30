@@ -226,28 +226,19 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
   # min area for HRMSY, starting with best fish cells
   # Sort by bothdata descending then map that then overlay 15% biomass by highest bothdata
   CPUEMSY <- (sum(dbase[,goodcols[j]]) * HRMSY[j]) # HRMSY% * total biomass for J'th species = biomass to protect i.e. 'sum-to threshold'
-  # CPUEMSY won't exist if you don't run
   dbase <- eval(parse(text = maploopcodes[o])) #sort according to O'th maploopcode
-   for (k in 1:nrow(dbase)) { # run the loop for every row, if required
-      print(paste("Run ",((o - 1) * length(maploopcodes)) + j," of ", length(goodcols) * length(maploopcodes),"; ",n,", ",round((sum(dbase[n:nrow(dbase),goodcols[j]])/CPUEMSY) * 100, 3),"%",sep = ""))  # progress printer
-          #if (sum(dbase[n:nrow(dbase),goodcols[j]]) < CPUEMSY) {n = n - 1} else {#if sum of rows from end to this point < CPUEMSY aka HRMSY% move 1 row up & resum, ELSE:
             n <- which.min((cumsum(dbase[nrow(dbase):1,goodcols[j]]) - CPUEMSY) ^ 2)
-            # coilins <- which.min((cumsum(dbase[nrow(dbase):1,"CPUE"]) - CPUEMSY) ^ 2)
-            print(n)
             # cumsum from end (n) upwards towards 1 of CPUE until the row X
             # where end:X = CPUEMSY i.e. 'open' cells; close rest i.e. n-X
             assign(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""),rep(0,nrow(dbase))) # create a vector of zeroes called sort[j name]
             dbase <- cbind(dbase,get(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""))) # bind it to dbase
             colnames(dbase)[ncol(dbase)] <- paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = "") # reinstate its name (lost because bound with get())
             dbase[1:n + 1,ncol(dbase)] <- rep(1,n) # populate first n+1 rows with 1 [k:n]
-            #dbase[1:n, ncol(dbase)] <- rep(1,n) # populate first n+1 rows with 1 [k:n]
             badcut <- sum(dbase[1:n + 1,badcols]) # sum badcols values (i.e. total badcol value in closed area)
-            #badcut <- sum(dbase[1:n, badcols]) # sum badcols values (i.e. total badcol value in closed area)
             badall <- sum(dbase[,badcols])    # total badcols values
             badpct <- round((badcut/badall)*100,1) # percent of badcols values in closed area
             # this counts UP from the WORST row (last) until reaching HRMSY% (e.g. 8%) then closes the inverse
             # This is massively quicker than counting DOWN from the best row to 1-HRMSY, e.g. counting through 92% of the data
-
             # INDIVIDUAL MAPS: Map bothdata. Then Overlay map onto bothdata map: ncol=1 zeroes=TRUE. Heatcol="black".
             png(filename = paste("./ClosedValueMap_",maploopnames[o],"_",goodname[j],".png",sep = ""), # map species j's bothdata with black closed areas overlaid
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
@@ -283,7 +274,6 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
               basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
-####remove xlab & ylab above for general code####
               draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
 
               # Plot second map: closed area overlay only
@@ -312,8 +302,6 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               png(filename = paste("./ClosedValueMap_",maploopnames[o],"_",goodname[j],"_BnW.png",sep = ""),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-
-              # run gbm.map function's internal code. Set parameters
               x = dbase[,loncolno]
               y = dbase[,latcolno]
               z = dbase[,bothdatarange[j]] # scaled & weighted (bothdata) *m
@@ -342,10 +330,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
               basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
-####remove xlab & ylab above for general code####
               draw.grid(grd, breaks, col = heatcol)
-
-              # Plot second map: closed area overlay only
               x = dbase[,loncolno]
               y = dbase[,latcolno]
               z = dbase[,ncol(dbase)]
@@ -360,9 +345,6 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
               dev.off()
             } # close BnW
-
-         #break} # end of ELSE section
-          } # end of FOR loop k (data rows)
   if (alerts) beep(2)} # alert user & end of 2nd FOR loop j (species)
 
 ####Build closed areas####
