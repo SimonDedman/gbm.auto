@@ -29,6 +29,11 @@
 #' @return Species abundance maps using data provided by gbm.auto, and
 #' Representativeness Surface Builder maps using data provided by gbm.rsb, to be
 #' run in a png/par/gbm.map/dev.off sequence.
+#'
+#' @details Errors and their origins:
+#' Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
+#' Check that your lat & long columns are the right way around. Ensure grids
+#' data are gridded.
 #' @export
 #' @import mapplots
 #' @author Simon Dedman, \email{simondedman@@gmail.com}

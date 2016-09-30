@@ -65,6 +65,12 @@ Generates maps from the outputs of gbm.step then gbm.predict.grids, handled
 automatically within gbm.auto but can be run alone, and generates
 representativeness surfaces from the output of gbm.rsb
 }
+\details{
+Errors and their origins:
+Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
+Check that your lat & long columns are the right way around. Ensure grids
+data are gridded.
+}
 \examples{
 Suggested code for outputting to e.g. png:
 png(...)

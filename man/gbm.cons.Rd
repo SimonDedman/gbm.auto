@@ -4,24 +4,21 @@
 \alias{gbm.cons}
 \title{Conservation Area Mapping}
 \usage{
-gbm.cons(mygrids, subsets, conssamples, alerts = TRUE, map = TRUE,
-  BnW = TRUE, resvars, gbmautos = TRUE, expvars, tcs = NULL,
-  lrs = rep(list(c(0.01, 0.005)), length(resvars)), bfs = rep(0.5,
-  length(resvars)), ZIs = rep("CHECK", length(resvars)), gridslats = rep(2,
-  length(resvars)), gridslons = rep(1, length(resvars)),
-  colss = rep(list(grey.colors(1, 1, 1)), length(resvars)),
+gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
+  gbmautos = TRUE, expvars, tcs = NULL, lrs = rep(list(c(0.01, 0.005)),
+  length(resvars)), bfs = rep(0.5, length(resvars)), ZIs = rep("CHECK",
+  length(resvars)), gridslats = rep(2, length(resvars)), gridslons = rep(1,
+  length(resvars)), colss = rep(list(grey.colors(1, 1, 1)), length(resvars)),
   linesfiless = rep(FALSE, length(resvars)), savegbms = rep(TRUE,
   length(resvars)), varints = rep(TRUE, length(resvars)), maps = rep(TRUE,
   length(resvars)), RSBs = rep(TRUE, length(resvars)), BnWs = rep(TRUE,
-  length(resvars)), zeroes = rep(TRUE, length(resvars)),
+  length(resvars)), zeroes = rep(TRUE, length(resvars)), mapshape = NULL,
   pngtype = "cairo-png")
 }
 \arguments{
 \item{mygrids}{Gridded lat+long+data object to predict to}
 
 \item{subsets}{Subset name(s): character; single or vector}
-
-\item{conssamples}{Single/vector of samples csv names & locations corresponding to subsets}
 
 \item{alerts}{Play sounds to mark progress steps}
 
@@ -63,7 +60,11 @@ gbm.cons(mygrids, subsets, conssamples, alerts = TRUE, map = TRUE,
 
 \item{zeroes}{Gbm.auto paramaters, autocalculated below if not provided by user}
 
+\item{mapshape}{Coastline file for gbm.map}
+
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
+
+\item{conssamples}{Single/vector of samples csv names & locations corresponding to subsets}
 }
 \value{
 Maps via gbm.map & saved data as csv file

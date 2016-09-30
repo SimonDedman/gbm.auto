@@ -29,6 +29,7 @@
 #' @param RSBs Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param BnWs Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param zeroes Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param mapshape Coastline file for gbm.map
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #'
 #' @return  Maps via gbm.map & saved data as csv file
@@ -39,7 +40,7 @@
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
-                     conssamples,   # single/vector of samples csv names and
+                     #conssamples,   # single/vector of samples csv names and
                      # locations corresponding to subsets
                      alerts = TRUE, # play sounds to mark progress steps
                      map = TRUE,    # produce maps
@@ -63,6 +64,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      RSBs = rep(TRUE, length(resvars)),
                      BnWs = rep(TRUE, length(resvars)),
                      zeroes = rep(TRUE, length(resvars)),
+                     mapshape = NULL, # coastline file for gbm.map
                      pngtype = "cairo-png") # filetype for png files, alternatively try "quartz"
 {
   ####todo: make running gbm.auto optional####
@@ -93,7 +95,7 @@ for (h in 1:length(subsets)) {  #e.g. 1:2
 for (i in 1:length(subsets)) {  #currently 2
 
 # name samples by subset name & load
-assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
+#assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
   #this just achieves the same as reading in those datasets and having subsets list em by name.
 
 if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
@@ -105,7 +107,7 @@ for (j in 1:GS) {  #loop through all species in group e.g. 4
 # e.g. CTBS,CTBS = 1:8. Allows (e.g.) length=8 lists to be entered by user in
 # function terms & used by gbm.auto calls across subset loops
 
-mysamples <<- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
+mysamples <- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
 # gbm.auto pulls relevant group-ignoring variable from user entries or defaults
 if (gbmautos) {gbm.auto(grids = mygrids,
                         expvar = expvars[[((i - 1) * GS) + j]],
@@ -123,7 +125,8 @@ if (gbmautos) {gbm.auto(grids = mygrids,
                         map = maps[[((i - 1) * GS) + j]],
                         RSB = RSBs[[((i - 1) * GS) + j]],
                         BnW = BnWs[[((i - 1) * GS) + j]],
-                        zero = zeroes[[((i - 1) * GS) + j]])
+                        zero = zeroes[[((i - 1) * GS) + j]],
+                        mapshape = mapshape)
 if (alerts) beep(2)} # ping for each completion
 
 # create object for resulting abundance preds csv, e.g. Juveniles_Cuckoo
