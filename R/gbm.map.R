@@ -78,7 +78,6 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
 # png(...); par(...); gbm.map(...); dev.off()
 {
   require(mapplots)
-  library(mapplots)
   # get Britain & Ireland coast data. I'm looking to make this global but am having a problem w/ the maps packge
   if (is.null(shape)) {data(coast, package = "mapplots")}
   # if users hasn't entered byx or byy values, generate them from the data

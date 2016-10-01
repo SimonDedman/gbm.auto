@@ -75,7 +75,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
 ####Load functions & data####
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
 if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  if (alerts) library(beepr)
+  if (alerts) require(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 if (gbmautos) {if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length
 for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
@@ -110,6 +110,7 @@ for (j in 1:GS) {  #loop through all species in group e.g. 4
 mysamples <- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
 # gbm.auto pulls relevant group-ignoring variable from user entries or defaults
 if (gbmautos) {gbm.auto(grids = mygrids,
+                        samples = mysamples,
                         expvar = expvars[[((i - 1) * GS) + j]],
                         resvar = resvars[[((i - 1) * GS) + j]],
                         tc = tcs[[((i - 1) * GS) + j]],
