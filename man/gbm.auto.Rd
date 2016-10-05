@@ -11,21 +11,37 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
   RSB = TRUE, BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", ...)
 }
 \arguments{
-\item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and specify object name. Defaults to NULL (won't predict to grids)}
+\item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
+specify object name. Defaults to NULL (won't predict to grids)}
 
-\item{samples}{Explanatory and response variables to predict from. Keep col names short, no odd characters, starting numerals or terminal periods. Spaces may be converted to periods in directory names, underscores won't. Can be a subset}
+\item{samples}{Explanatory and response variables to predict from. Keep col
+names short, no odd characters, starting numerals or terminal periods. Spaces
+ may be converted to periods in directory names, underscores won't. Can be a
+ subset}
 
-\item{expvar}{List of column numbers of explanatory variables in 'samples', expected e.g. c(1,35,67,etc.). No default}
+\item{expvar}{List of column numbers of explanatory variables in 'samples',
+expected e.g. c(1,35,67,etc.). No default}
 
-\item{resvar}{Column number of response variable (e.g. CPUE) in samples. Expected, e.g. 12. No default. Column name should be species name}
+\item{resvar}{Column number of response variable (e.g. CPUE) in samples.
+Expected, e.g. 12. No default. Column name should be species name}
 
-\item{tc}{List of permutations of tree complexity allowed, can be vector with largest size = number of explanatory variables: c(2,7)}
+\item{tc}{Permutations of tree complexity allowed, can be vector with
+the largest sized number no larger than the number of explanatory variables
+e.g. c(2,7), or a list of 2 single numbers or vectors, the first to be passed
+to the binary BRT, the second to the Gaussian, e.g. tc = list(c(2,6), 2) or
+list(6, c(2,6))}
 
-\item{lr}{List of permutations of learning rate allowed, can be vector: c(0.01,0.005)}
+\item{lr}{Permutations of learning rate allowed. Can be a vector or a list of
+2 single numbers or vectors, the first to be passed to the binary BRT, the
+second to the Gaussian, e.g. lr = list(c(0.01,0.02),0.0001) or
+list(0.01,c(0.001, 0.0005))}
 
-\item{bf}{Bag fraction permutations, can be vector: c(0.5,0.7)}
+\item{bf}{Permutations of bag fraction allowed, can be single number, vector
+or list, per tc and lr}
 
-\item{ZI}{are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.}
+\item{ZI}{are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
+log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
+only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.}
 
 \item{simp}{Try simplfying best BRTs?}
 
@@ -33,13 +49,16 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
 
 \item{gridslon}{Column number for longitude in 'grids'}
 
-\item{cols}{Barplot colour vector. Assignment in order of explanatory variables. Default 1*white: white bars black borders. '1*' repeats}
+\item{cols}{Barplot colour vector. Assignment in order of explanatory
+variables. Default 1*white: white bars black borders. '1*' repeats}
 
 \item{linesfiles}{Save individual line plots' data as csv's?}
 
-\item{savegbm}{Save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")}
+\item{savegbm}{Save gbm objects and make available in environment after
+running? Open with load("Bin_Best_Model")}
 
-\item{varint}{Calculate variable interactions? Default:TRUE, FALSE for error "contrasts can be applied only to factors with 2 or more levels"}
+\item{varint}{Calculate variable interactions? Default:TRUE, FALSE for error
+"contrasts can be applied only to factors with 2 or more levels"}
 
 \item{map}{Save abundance map png files?}
 
@@ -53,12 +72,13 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
-\item{...}{Optional arguments for legend in legend.grid in gbm.map, and gbm.step (dismo)}
+\item{...}{Optional arguments for legend in legend.grid in gbm.map, and
+gbm.step (dismo)}
 }
 \value{
-Line, dot and bar plots, a report of all variables used, statistics for
-tests, variable interactions, predictors used and dropped, etc. If selected,
-generates predicted abundance maps, and Unrepresentativeness surface
+Line, dot and bar plots, a report of all variables used, statistics
+for tests, variable interactions, predictors used and dropped, etc. If
+selected generates predicted abundance maps, and Unrepresentativeness surface
 }
 \description{
 Automates delta log normal boosted regression trees abundance prediction.
