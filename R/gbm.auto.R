@@ -29,7 +29,7 @@
 #' @param BnW Repeat maps in black and white e.g. for print journals
 #' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param ... Optional arguments for legend in legend.grid in gbm.map, and gbm.step
+#' @param ... Optional arguments for legend in legend.grid in gbm.map, and gbm.step (dismo)
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics for
 #' tests, variable interactions, predictors used and dropped, etc. If selected,
@@ -50,6 +50,25 @@
 #'  missing value where TRUE/FALSE needed
 #' > Data are expected to contain zeroes (lots of them in zero-inflated cases),
 #' have you already filtered them out?
+#'
+#' 5. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric
+#' argument to mathematical function
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#'
+#' 6. Error in if (n.trees > x$n.trees) { : argument is of length zero}
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#'
+#' 7. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w)
+#' The dataset size is too small or subsampling rate is too large:
+#' nTrain*bag.fraction <= n.minobsinnode
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#' It may be that you don't have enough positive samples to run BRT modelling
+#' Run gbm.bfcheck to check recommended minimum BF size
+#'
+#' 8. Warning message: In cor(y_i, u_i) : the standard deviation is zero
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#' It may be that you don't have enough positive samples to run BRT modelling
+#' Run gbm.bfcheck to check recommended minimum BF size
 #'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
@@ -201,8 +220,8 @@ for (j in tc) {   # list permutations of tree complexity allowed
 
 ####4. Binomial BRT####
 if (ZI) {  # don't do if ZI=FALSE
-(assign(paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""), gbm.step(data = samples,
-    gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...)))
+assign(paste("Bin_BRT",".tc",j,".lr",k*100,".bf",l, sep = ""), gbm.step(data = samples,
+    gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...))
 
 ####5. Select best Bin model####
 # Makes an object w/ BRT training data correlation score of the 1st variable

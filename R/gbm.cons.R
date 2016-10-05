@@ -37,6 +37,24 @@
 #' @importFrom beepr beep
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
+#' Juveniles <- gbm.auto::Juveniles # load juveniles subset
+#' Adult_Females <- gbm.auto::Adult_Females # load adult females subset
+#' gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
+#'          resvars = c(44:47,11:14),
+#'          expvars = list(c(4:11,15,17,21,25,29,37),
+#'                         c(4:11,15,18,22,26,30,38),
+#'                         c(4:11,15,19,23,27,31),
+#'                         c(4:11,15,20,24,28,32,39),
+#'                         4:10, 4:10, 4:10, 4:10),
+#'          tcs = list(c(2,14), c(2,14), 13, c(2,14), c(2,6), c(2,6), 6, c(2,6)),
+#'          lrs = list(c(0.01,0.005), c(0.01,0.005), 0.005, c(0.01,0.005),
+#'                0.005, 0.005, 0.001, 0.005),
+#'          ZIs = rep(TRUE, 8),
+#'          savegbms = rep(FALSE, 8),
+#'          varints = rep(FALSE, 8),
+#'          RSBs = rep(FALSE, 8),
+#'          BnWs = rep(FALSE, 8),
+#'          zeroes = rep(FALSE,8))
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
@@ -74,6 +92,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
 
 ####Load functions & data####
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
+if (is.null(mapshape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
 if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
@@ -94,50 +113,50 @@ for (h in 1:length(subsets)) {  #e.g. 1:2
 # Loop through subsets
 for (i in 1:length(subsets)) {  #currently 2
 
-# name samples by subset name & load
-#assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
+  # name samples by subset name & load
+  #assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
   #this just achieves the same as reading in those datasets and having subsets list em by name.
 
-if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
-setwd(paste("./", subsets[i], sep = ""))  # go there
+  if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
+  setwd(paste("./", subsets[i], sep = ""))  # go there
 
-for (j in 1:GS) {  #loop through all species in group e.g. 4
+  for (j in 1:GS) {  #loop through all species in group e.g. 4
 
-# below: ((i-1)*GS)+j is the subset-loop-disregarding number
-# e.g. CTBS,CTBS = 1:8. Allows (e.g.) length=8 lists to be entered by user in
-# function terms & used by gbm.auto calls across subset loops
+    # below: ((i-1)*GS)+j is the subset-loop-disregarding number
+    # e.g. CTBS,CTBS = 1:8. Allows (e.g.) length=8 lists to be entered by user in
+    # function terms & used by gbm.auto calls across subset loops
 
-mysamples <- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
-# gbm.auto pulls relevant group-ignoring variable from user entries or defaults
-if (gbmautos) {gbm.auto(grids = mygrids,
-                        samples = mysamples,
-                        expvar = expvars[[((i - 1) * GS) + j]],
-                        resvar = resvars[[((i - 1) * GS) + j]],
-                        tc = tcs[[((i - 1) * GS) + j]],
-                        lr = lrs[[((i - 1) * GS) + j]],
-                        bf = bfs[[((i - 1) * GS) + j]],
-                        ZI = ZIs[[((i - 1) * GS) + j]],
-                        gridslat = gridslats[[((i - 1) * GS) + j]],
-                        gridslon = gridslons[[((i - 1) * GS) + j]],
-                        cols = colss[[((i - 1) * GS) + j]],
-                        linesfiles = linesfiless[[((i - 1) * GS) + j]],
-                        savegbm = savegbms[[((i - 1) * GS) + j]],
-                        varint = varints[[((i - 1) * GS) + j]],
-                        map = maps[[((i - 1) * GS) + j]],
-                        RSB = RSBs[[((i - 1) * GS) + j]],
-                        BnW = BnWs[[((i - 1) * GS) + j]],
-                        zero = zeroes[[((i - 1) * GS) + j]],
-                        mapshape = mapshape)
-if (alerts) beep(2)} # ping for each completion
+    mysamples <- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
+    # gbm.auto pulls relevant group-ignoring variable from user entries or defaults
+    if (gbmautos) {gbm.auto(grids = mygrids,
+                            samples = mysamples,
+                            expvar = expvars[[((i - 1) * GS) + j]],
+                            resvar = resvars[[((i - 1) * GS) + j]],
+                            tc = tcs[[((i - 1) * GS) + j]],
+                            lr = lrs[[((i - 1) * GS) + j]],
+                            bf = bfs[[((i - 1) * GS) + j]],
+                            ZI = ZIs[[((i - 1) * GS) + j]],
+                            gridslat = gridslats[[((i - 1) * GS) + j]],
+                            gridslon = gridslons[[((i - 1) * GS) + j]],
+                            cols = colss[[((i - 1) * GS) + j]],
+                            linesfiles = linesfiless[[((i - 1) * GS) + j]],
+                            savegbm = savegbms[[((i - 1) * GS) + j]],
+                            varint = varints[[((i - 1) * GS) + j]],
+                            map = maps[[((i - 1) * GS) + j]],
+                            RSB = RSBs[[((i - 1) * GS) + j]],
+                            BnW = BnWs[[((i - 1) * GS) + j]],
+                            zero = zeroes[[((i - 1) * GS) + j]],
+                            mapshape = mapshape)
+      if (alerts) beep(2)} # ping for each completion
 
-# create object for resulting abundance preds csv, e.g. Juveniles_Cuckoo
-assign(paste(subsets[i], "_", names(mysamples)[(resvars)[resvarrange[[i]]]][j], sep = ""),
-       read.csv(paste("./", names(mysamples)[(resvars)[resvarrange[[i]]]][j], "/Abundance_Preds_only.csv", sep = ""), header = TRUE))
-# names(mysamples)[(resvars)[resvarrange[[i]]]][j] is the (species) name for the
-# column no. in samples, for the j'th response variable in this subsets' group
-print(paste("XXXXXXXXXXXXXXXXXXXXXX           Species ", j, " of ", GS, ", Subset ", i, " of ", length(subsets), "           XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
-} # reloop/end j loop of species
-setwd("../") # go back up to /Maps root folder for correct placement @ restart
+    # create object for resulting abundance preds csv, e.g. Juveniles_Cuckoo
+    assign(paste(subsets[i], "_", names(mysamples)[(resvars)[resvarrange[[i]]]][j], sep = ""),
+           read.csv(paste("./", names(mysamples)[(resvars)[resvarrange[[i]]]][j], "/Abundance_Preds_only.csv", sep = ""), header = TRUE))
+    # names(mysamples)[(resvars)[resvarrange[[i]]]][j] is the (species) name for the
+    # column no. in samples, for the j'th response variable in this subsets' group
+    print(paste("XXXXXXXXXXXXXXXXXXXXXX           Species ", j, " of ", GS, ", Subset ", i, " of ", length(subsets), "           XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  } # reloop/end j loop of species
+  setwd("../") # go back up to /Maps root folder for correct placement @ restart
 } # reloop/end i loop of subsets
 
 ####Conservation maps####
@@ -158,90 +177,114 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
     assign(paste("Scaled_", k, sep = ""),
            get(paste("Scaled_", k, sep = ""))
            + (get(paste(subsets[i], "_", k, sep = ""))[,3]
-           / max(get(paste(subsets[i], "_", k, sep = ""))[,3], na.rm = TRUE)))
+              / max(get(paste(subsets[i], "_", k, sep = ""))[,3], na.rm = TRUE)))
 
     xtmp <- get(paste(subsets[i], "_", k, sep = ""))[,2] # LONG for later
     ytmp <- get(paste(subsets[i], "_", k, sep = ""))[,1] # LAT for later
-    } # end/reloop i & add next subset of same species e.g. Adult Females_Cuckoo
-print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "          XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  } # end/reloop i & add next subset of same species e.g. Adult Females_Cuckoo
+
+  print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "          XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
   # create simple temp object name for e.g. All_Cuckoo
   ztmp <- get(paste("All_", k, sep = "")) # already includes the [,3]
   dir.create(paste("./ConservationMaps/", k, sep = ""))
   setwd(paste("./ConservationMaps/", k, sep = ""))
 
-####Unscaled conservation maps####
+  ####Unscaled conservation maps####
   # map all subsets' abundance for species k
   if (map) {
-  png(filename = paste("./Conservation_Map_", k, ".png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = pngtype)
-  par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-  gbm.map(x = xtmp,
-          y = ytmp,
-          z = ztmp,
-          mapmain = "Predicted CPUE (numbers per hour): ",
-          species = k,
-          zero = FALSE,
-          legendtitle = "CPUE")
-  dev.off()
+    if (is.null(mapshape)) { # create basemap if not provided
+      bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
+      #create standard bounds from data, and extra bounds for map aesthetic
+      xmid <- mean(bounds[1:2])
+      ymid <- mean(bounds[3:4])
+      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+      shape <- gbm.basemap(bounds = extrabounds)
+    } else {shape <- mapshape}
 
-  if (BnW) {  # again in B&W
-  png(filename = paste("./Conservation_Map_BnW", k, ".png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = pngtype)
-  par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-  gbm.map(x = xtmp,
-          y = ytmp,
-          z = ztmp,
-          mapmain = "Predicted CPUE (numbers per hour): ",
-          species = k,
-          zero = FALSE,
-          colournumber = 5,
-          heatcolours = grey.colors(5, start = 1, end = 0),
-          mapback = "white",
-          legendtitle = "CPUE")
-  dev.off()}} # close BnW & mapping IFs
-  if (alerts) beep(2)
-print(paste("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+    png(filename = paste("./Conservation_Map_", k, ".png", sep = ""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
+        bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+    gbm.map(x = xtmp,
+            y = ytmp,
+            z = ztmp,
+            mapmain = "Predicted CPUE (numbers per hour): ",
+            species = k,
+            zero = FALSE,
+            legendtitle = "CPUE",
+            shape = shape) # set coast shapefile, else downloaded and autogenerated
+    dev.off()
 
-####Scaled-to-1 conservation maps####
+    if (BnW) {  # again in B&W
+      png(filename = paste("./Conservation_Map_BnW_", k, ".png", sep = ""),
+          width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
+          bg = "white", res = NA, family = "", type = pngtype)
+      par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+      gbm.map(x = xtmp,
+              y = ytmp,
+              z = ztmp,
+              mapmain = "Predicted CPUE (numbers per hour): ",
+              species = k,
+              zero = FALSE,
+              colournumber = 5,
+              heatcolours = grey.colors(5, start = 1, end = 0),
+              mapback = "white",
+              legendtitle = "CPUE",
+              shape = shape)
+      dev.off()
+    } # close BnW
+    if (alerts) beep(2)
+    print(paste("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  } # close mapping IF
+
+  ####Scaled-to-1 conservation maps####
   if (map) {
-  png(filename = paste("./Scale1-1_Conservation_Map_",k,".png",sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = pngtype)
-  par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-  gbm.map(x = xtmp,
-          y = ytmp,
-          z = (get(paste("Scaled_", k, sep = ""))) * (100/length(subsets)),
-          mapmain = "Predicted CPUE (numbers per hour): ",
-          species = k,
-          zero = FALSE,
-          breaks = c(0,20,40,60,80,100),
-          colournumber = 5,
-          legendtitle = "CPUE (Scaled %)")
-  dev.off()
+    png(filename = paste("./Scale1-1_Conservation_Map_",k,".png",sep = ""),
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
+        bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+    gbm.map(x = xtmp,
+            y = ytmp,
+            z = (get(paste("Scaled_", k, sep = ""))) * (100/length(subsets)),
+            mapmain = "Predicted CPUE (numbers per hour): ",
+            species = k,
+            zero = FALSE,
+            breaks = c(0,20,40,60,80,100),
+            colournumber = 5,
+            legendtitle = "CPUE (Scaled %)",
+            shape = shape)
+    dev.off()
 
-  if (BnW) {   # again in B&W
-  png(filename = paste("./Scale1-1_Conservation_Map_BnW_",k,".png", sep = ""),
-      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-      bg = "white", res = NA, family = "", type = pngtype)
-  par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-  gbm.map(x = xtmp,
-          y = ytmp,
-          z = (get(paste("Scaled_", k, sep = ""))) * (100/length(subsets)),
-          mapmain = "Predicted CPUE (numbers per hour): ",
-          species = k,
-          zero = FALSE,
-          breaks = c(0,20,40,60,80,100),
-          colournumber = 5,
-          heatcolours = grey.colors(5, start = 1, end = 0),
-          mapback = "white",
-          legendtitle = "CPUE (Scaled %)")
-  dev.off()}} # close BnW & mapping IF
-print(paste("XXXXXXXXXXXXXXXXXXXXXX    Scaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+    if (BnW) {   # again in B&W
+      png(filename = paste("./Scale1-1_Conservation_Map_BnW_",k,".png", sep = ""),
+          width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
+          bg = "white", res = NA, family = "", type = pngtype)
+      par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+      gbm.map(x = xtmp,
+              y = ytmp,
+              z = (get(paste("Scaled_", k, sep = ""))) * (100/length(subsets)),
+              mapmain = "Predicted CPUE (numbers per hour): ",
+              species = k,
+              zero = FALSE,
+              breaks = c(0,20,40,60,80,100),
+              colournumber = 5,
+              heatcolours = grey.colors(5, start = 1, end = 0),
+              mapback = "white",
+              legendtitle = "CPUE (Scaled %)",
+              shape = shape)
+      dev.off()
+    } # close BnW
+    if (alerts) beep(2) # ping on completion
+    print(paste("XXXXXXXXXXXXXXXXXXXXXX    Scaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  } # close mapping IF
+
   setwd("../") # go back up to ConservationMaps
-  setwd("../")} # go back up to Maps & end/reloop k for next species
-if (alerts) beep(2) # ping on completion
+  setwd("../")
+} # go back up to Maps & end/reloop k for next species
 
 ####Add scaled outputs, all species####
 dir.create(paste("./ConservationMaps/Combo/", sep = ""))
@@ -256,35 +299,42 @@ allscaleddf <- data.frame(LATITUDE = ytmp, LONGITUDE = xtmp, allscaled)
 write.csv(allscaleddf, row.names = FALSE, file = paste("./AllScaledData.csv", sep = ""))
 
 if (map) {
-png(filename = "Scaled_Conservation_Map.png",
-    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-    bg = "white", res = NA, family = "", type = pngtype)
-par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-gbm.map(x = xtmp,
-        y = ytmp,
-        z = allscaled * (100/length(resvars)), # multiplier raises to 100
-        mapmain = "Predicted CPUE (numbers per hour): ",
-        species = "All Species",
-        zero = FALSE,
-        legendtitle = "CPUE (Scaled %)")
-dev.off()
+  png(filename = "Scaled_Conservation_Map.png",
+      width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
+      bg = "white", res = NA, family = "", type = pngtype)
+  par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+  gbm.map(x = xtmp,
+          y = ytmp,
+          z = allscaled * (100/length(resvars)), # multiplier raises to 100
+          mapmain = "Predicted CPUE (numbers per hour): ",
+          species = "All Species",
+          zero = FALSE,
+          legendtitle = "CPUE (Scaled %)",
+          shape = shape)
+  dev.off()
 
-if (BnW) { # again in B&W
-png(filename = "Scaled_Conservation_Map_BnW.png",
-    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
-    bg = "white", res = NA, family = "", type = pngtype)
-par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-gbm.map(x = xtmp,
-        y = ytmp,
-        z = allscaled * (100/length(resvars)),
-        mapmain = "Predicted CPUE (numbers per hour): ",
-        species = "All Species",
-        zero = FALSE,
-        heatcolours = grey.colors(5, start = 1, end = 0),
-        mapback = "white",
-        legendtitle = "CPUE (Scaled %)")
-dev.off()}} # close BnW & mapping IF
-print(paste("XXXXXXXXXXXXXXXXXXXXXX     All-scaled conservation map(s) generated      XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  if (BnW) { # again in B&W
+    png(filename = "Scaled_Conservation_Map_BnW.png",
+        width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
+        bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+    gbm.map(x = xtmp,
+            y = ytmp,
+            z = allscaled * (100/length(resvars)),
+            mapmain = "Predicted CPUE (numbers per hour): ",
+            species = "All Species",
+            zero = FALSE,
+            heatcolours = grey.colors(5, start = 1, end = 0),
+            mapback = "white",
+            legendtitle = "CPUE (Scaled %)",
+            shape = shape)
+    dev.off()
+  } # close BnW
+  if (alerts) beep(2) # ping on completion
+  print(paste("XXXXXXXXXXXXXXXXXXXXXX     All-scaled conservation map(s) generated      XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+} # close mapping IF
+
+setwd("../../") # return to original directory
 print(paste("XXXXXXXXXXXXXXXXXXXXXX                Everything complete                XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 if (alerts) beep(8) # complete sound & close function
 ####END####

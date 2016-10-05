@@ -53,7 +53,7 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
-\item{...}{Optional arguments for legend in legend.grid in gbm.map, and gbm.step}
+\item{...}{Optional arguments for legend in legend.grid in gbm.map, and gbm.step (dismo)}
 }
 \value{
 Line, dot and bar plots, a report of all variables used, statistics for
@@ -85,6 +85,25 @@ Errors and their origins:
  missing value where TRUE/FALSE needed
 > Data are expected to contain zeroes (lots of them in zero-inflated cases),
 have you already filtered them out?
+
+5. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric
+argument to mathematical function
+> LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+
+6. Error in if (n.trees > x$n.trees) { : argument is of length zero}
+> LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+
+7. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w)
+The dataset size is too small or subsampling rate is too large:
+nTrain*bag.fraction <= n.minobsinnode
+> LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+It may be that you don't have enough positive samples to run BRT modelling
+Run gbm.bfcheck to check recommended minimum BF size
+
+8. Warning message: In cor(y_i, u_i) : the standard deviation is zero
+> LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+It may be that you don't have enough positive samples to run BRT modelling
+Run gbm.bfcheck to check recommended minimum BF size
 }
 \examples{
 gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,

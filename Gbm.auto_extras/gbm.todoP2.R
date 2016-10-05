@@ -239,6 +239,7 @@ cor(y_i3, u_i3) # In cor(y_i3, u_i3) : the standard deviation is zero
 
 #spotted #failed @lr=0.01
 gbm.auto(expvar = 4:9,
+         samples = Adult_Females,
          resvar = 13,
          grids = mygrids,
          tc = c(2,6),

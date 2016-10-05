@@ -77,6 +77,24 @@ using juvenile and adult female subsets to locate candidate nursery grounds
 and spawning areas respectively.
 }
 \examples{
+Juveniles <- gbm.auto::Juveniles # load juveniles subset
+Adult_Females <- gbm.auto::Adult_Females # load adult females subset
+gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
+         resvars = c(44:47,11:14),
+         expvars = list(c(4:11,15,17,21,25,29,37),
+                        c(4:11,15,18,22,26,30,38),
+                        c(4:11,15,19,23,27,31),
+                        c(4:11,15,20,24,28,32,39),
+                        4:10, 4:10, 4:10, 4:10),
+         tcs = list(c(2,14), c(2,14), 13, c(2,14), c(2,6), c(2,6), 6, c(2,6)),
+         lrs = list(c(0.01,0.005), c(0.01,0.005), 0.005, c(0.01,0.005),
+               0.005, 0.005, 0.001, 0.005),
+         ZIs = rep(TRUE, 8),
+         savegbms = rep(FALSE, 8),
+         varints = rep(FALSE, 8),
+         RSBs = rep(FALSE, 8),
+         BnWs = rep(FALSE, 8),
+         zeroes = rep(FALSE,8))
 
 }
 \author{
