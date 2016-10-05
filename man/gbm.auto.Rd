@@ -37,7 +37,7 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
 
 \item{linesfiles}{Save individual line plots' data as csv's?}
 
-\item{savegbm}{Save gbm objects? Open with load("Bin_Best_Model")}
+\item{savegbm}{Save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")}
 
 \item{varint}{Calculate variable interactions? Default:TRUE, FALSE for error "contrasts can be applied only to factors with 2 or more levels"}
 

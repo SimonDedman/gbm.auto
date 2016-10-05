@@ -6,10 +6,16 @@
 #' Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 #'
 #' @param bounds Region to crop to: c(xmin,xmax,ymin,ymax)
-#' @param getzip Download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
-#' @param zipvers GSHHS version, in case it updates. Please email developer (SD) if this is incorrect
+#' @param getzip Download & unpack GSHHS data to WD? "TRUE" else
+#' absolute/relative reference to GSHHS_shp folder, inc that folder
+#' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
+#'  if this is incorrect
 #' @param savename Shapefile savename, no extension, default is "Crop_Map"
-#' @param res resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
+#' @param res Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
+#' intermediate, high, full) or "CALC" to calculate based on bounds
+#' @param extrabounds Grow bounds 16pct each direction to expand rectangular
+#' datasets basemaps over the entire square area created by basemap in mapplots
+
 #'
 #' @return basemap coastline file for gbm.map in gbm.auto. "cropshp"
 #' SpatialPolygonsDataFramein in local environment & user-named files in
@@ -25,7 +31,8 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' mybounds <- c(range(samples[,3]),range(samples[,2]))
-#' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename = "My_Crop_Map", res = "f")
+#' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename =
+#' "My_Crop_Map", res = "f")
 #' In this example GSHHS folder already downloaded to the working directory
 #' hence I pointed getzip at that rather than having it download the zip again.
 #'
@@ -35,8 +42,11 @@ gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
                         zipvers = "2.3.5-1", # GSHHS version, in case it updates
   # Please email developer if this is incorrect
                         savename = "Crop_Map", #shapefile savename, no extension
-                        res = "CALC") { # resolution, 1:5 (low:high) OR c,l,i,h,f
+                        res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f
 # (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
+                        extrabounds = FALSE) { # grow bounds 16pct each direction
+# to expand rectangular datasets basemaps over the entire square area created by
+# basemap in mapplots
 
 # Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set
 # box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
@@ -78,6 +88,17 @@ ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
   , setwd(getzip)) # else just setwd to there
 
 setwd(paste("./", res, sep = "")) #setwd to res subfolder
+
+if (extrabounds) { # grow bounds extents if requested
+  bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
+  xmid <- mean(bounds[1:2])
+  ymid <- mean(bounds[3:4])
+  xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+  xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+  yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+  yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+  bounds <- c(xextramin, xextramax, yextramin, yextramax)
+}
 
 # read in worldmap
 world <- readOGR(dsn = paste("GSHHS_", res, "_L1.shp", sep = ""), layer = paste("GSHHS_", res, "_L1", sep = ""))

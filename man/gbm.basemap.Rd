@@ -5,18 +5,24 @@
 \title{Creates Basemaps for Gbm.auto mapping from your data range}
 \usage{
 gbm.basemap(bounds, getzip = TRUE, zipvers = "2.3.5-1",
-  savename = "Crop_Map", res = "CALC")
+  savename = "Crop_Map", res = "CALC", extrabounds = FALSE)
 }
 \arguments{
 \item{bounds}{Region to crop to: c(xmin,xmax,ymin,ymax)}
 
-\item{getzip}{Download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder}
+\item{getzip}{Download & unpack GSHHS data to WD? "TRUE" else
+absolute/relative reference to GSHHS_shp folder, inc that folder}
 
-\item{zipvers}{GSHHS version, in case it updates. Please email developer (SD) if this is incorrect}
+\item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
+if this is incorrect}
 
 \item{savename}{Shapefile savename, no extension, default is "Crop_Map"}
 
-\item{res}{resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds}
+\item{res}{Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
+intermediate, high, full) or "CALC" to calculate based on bounds}
+
+\item{extrabounds}{Grow bounds 16pct each direction to expand rectangular
+datasets basemaps over the entire square area created by basemap in mapplots}
 }
 \value{
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
@@ -32,7 +38,8 @@ Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 }
 \examples{
 mybounds <- c(range(samples[,3]),range(samples[,2]))
-gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename = "My_Crop_Map", res = "f")
+gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename =
+"My_Crop_Map", res = "f")
 In this example GSHHS folder already downloaded to the working directory
 hence I pointed getzip at that rather than having it download the zip again.
 
