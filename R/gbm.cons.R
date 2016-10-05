@@ -7,12 +7,12 @@
 #' and spawning areas respectively.
 #'
 #' @param mygrids Gridded lat+long+data object to predict to
-#' @param subsets Subset name(s): character; single or vector
-#' @param conssamples Single/vector of samples csv names & locations corresponding to subsets
+#' @param subsets Subset name(s): character; single or vector, corresponding to
+#' matching-named dataset objects e.g. read in by read.csv()
 #' @param alerts Play sounds to mark progress steps
 #' @param map Produce maps
 #' @param BnW Also produce B&W maps?
-#' @param resvars Vector of resvars cols from conssamples for gbm.autos, length(subsets)*species, no default
+#' @param resvars Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default
 #' @param gbmautos Do gbm.auto runs for species?
 #' @param expvars List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default
 #' @param tcs Gbm.auto paramaters, autocalculated below if not provided by user
@@ -58,12 +58,11 @@
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
-                     #conssamples,   # single/vector of samples csv names and
-                     # locations corresponding to subsets
+                     # corresponding to matching-named dataset objects e.g. read in by read.csv()
                      alerts = TRUE, # play sounds to mark progress steps
                      map = TRUE,    # produce maps
                      BnW = TRUE,    # also produce B&W maps
-                     resvars,  # vector of resvars cols from conssamples for
+                     resvars,  # vector of resvars cols from dataset objects for
                      # gbm.autos, length(subsets)*species, no default
                      gbmautos = TRUE, # do gbm.auto runs for species?
                      expvars,  # list object of expvar vectors for gbm.autos,
@@ -112,11 +111,6 @@ for (h in 1:length(subsets)) {  #e.g. 1:2
 ####gbm.auto loops subsets & species####
 # Loop through subsets
 for (i in 1:length(subsets)) {  #currently 2
-
-  # name samples by subset name & load
-  #assign(subsets[i], read.csv(conssamples[i],header = TRUE, row.names = NULL))
-  #this just achieves the same as reading in those datasets and having subsets list em by name.
-
   if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
   setwd(paste("./", subsets[i], sep = ""))  # go there
 

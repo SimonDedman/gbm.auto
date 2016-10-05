@@ -18,7 +18,8 @@ gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
 \arguments{
 \item{mygrids}{Gridded lat+long+data object to predict to}
 
-\item{subsets}{Subset name(s): character; single or vector}
+\item{subsets}{Subset name(s): character; single or vector, corresponding to
+matching-named dataset objects e.g. read in by read.csv()}
 
 \item{alerts}{Play sounds to mark progress steps}
 
@@ -26,7 +27,7 @@ gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
 
 \item{BnW}{Also produce B&W maps?}
 
-\item{resvars}{Vector of resvars cols from conssamples for gbm.autos, length(subsets)*species, no default}
+\item{resvars}{Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default}
 
 \item{gbmautos}{Do gbm.auto runs for species?}
 
@@ -63,8 +64,6 @@ gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
 \item{mapshape}{Coastline file for gbm.map}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
-
-\item{conssamples}{Single/vector of samples csv names & locations corresponding to subsets}
 }
 \value{
 Maps via gbm.map & saved data as csv file
