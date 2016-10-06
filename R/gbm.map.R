@@ -14,7 +14,7 @@
 #' @param species Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
 #' @param heatcolours Abundance colour scale, defaults to the heatcol from legend.grid and draw.grid in mapplots.
 #' @param colournumber number of colours to spread heatcol over, default:8
-#' @param shape Basemap shape to draw, from draw.shape in mapplots. Defaults to 'coast' of UK and Ire from mapplots
+#' @param shape Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL then 'coast' of UK and Ire from mapplots
 #' @param landcol Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey
 #' @param mapback Basemap background colour, defaults to lightblue
 #' @param legendloc Location on map of legend box, from legend.grid in mapplots
@@ -58,7 +58,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     species = "Response Variable",  #Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
                     heatcolours = c("white", "yellow", "orange","red", "brown4"), #abundance colour scale, defaults to the heatcol from legend.grid & draw.grid in mapplots.
                     colournumber = 8,   #number of colours to spread heatcol over, default:8
-                    shape = coast,   #basemap shape to draw, from draw.shape in mapplots. Defaults: 'coast': UK & Ire
+                    shape = NULL,   #basemap shape to draw, from draw.shape in mapplots. Defaults to NULL then 'coast': UK & Ire
                     landcol = "grey80", #colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey
                     mapback = "lightblue", #basemap background colour
                     legendloc = "bottomright", #location on map of legend box, from legend.grid in mapplots

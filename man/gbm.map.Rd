@@ -7,7 +7,7 @@
 gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
   mapmain = "Predicted CPUE (numbers per hour): ",
   species = "Response Variable", heatcolours = c("white", "yellow",
-  "orange", "red", "brown4"), colournumber = 8, shape = coast,
+  "orange", "red", "brown4"), colournumber = 8, shape = NULL,
   landcol = "grey80", mapback = "lightblue", legendloc = "bottomright",
   legendtitle = "CPUE", lejback = "white", zero = TRUE, quantile = 1,
   byxout = FALSE, breaks = NULL, ...)
@@ -33,7 +33,7 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{colournumber}{number of colours to spread heatcol over, default:8}
 
-\item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults to 'coast' of UK and Ire from mapplots}
+\item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL then 'coast' of UK and Ire from mapplots}
 
 \item{landcol}{Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey}
 
