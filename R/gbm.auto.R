@@ -627,53 +627,58 @@ gbm.auto <- function(
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     ####22. Finalise & Write Report####
-    if (ZI) { # only do bin bits if ZI
+    if (ZI)
+    { # only do bin bits if ZI
       Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Model, sep = ""),
                                           paste("Model CV score: ", Bin_Best_Score, sep = ""),
                                           paste("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination, sep = ""),
                                           paste("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean, sep = ""),
                                           paste("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se, sep = ""))
-      if (simp) {Report[1:dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 12)] <- as.character(subset(Bin_Best_Simp_Check$final.drops, order > 0)$preds)
-       Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 11)] <-
+      if (simp)
+      {Report[1:dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 12)] <- as.character(subset(Bin_Best_Simp_Check$final.drops, order > 0)$preds)
+        Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 11)] <-
         as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
-      if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-      Report[1:6,(reportcolno - 10)] <- c(paste("trees: ", Bin_Best_Simp$n.trees, sep = ""),
-                                          paste("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]], sep = ""),
-                                          paste("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean, sep = ""),
-                                          paste("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se, sep = ""),
-                                          paste("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean, sep = ""),
-                                          paste("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se, sep = ""))} else {
-                                            Report[1,(reportcolno - 10)] <- paste("No simplification benefit")}} # close simp & min check
+        if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
+        {Report[1:6,(reportcolno - 10)] <- c(paste("trees: ", Bin_Best_Simp$n.trees, sep = ""),
+                                             paste("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]], sep = ""),
+                                             paste("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean, sep = ""),
+                                             paste("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se, sep = ""),
+                                             paste("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean, sep = ""),
+                                             paste("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se, sep = ""))
+        } else {Report[1,(reportcolno - 10)] <- paste("No simplification benefit")
+               } # close min else
+      } else {Report[1,(reportcolno - 12):(reportcolno - 10)] <- c(paste("simp turned off"),
+                                                                   paste("simp turned off"),
+                                                                   paste("simp turned off"))
+              } # close simp else
       Report[1:(length(Bin_Bars[,1])),(reportcolno - 9)] <- as.character(Bin_Bars$var)
       Report[1:(length(Bin_Bars[,2])),(reportcolno - 8)] <- as.character(Bin_Bars$rel.inf)
       # only do final variable interaction lines if varint=TRUE
       if (varint) Report[1:2,(reportcolno - 7)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
-                                                     paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
-    } # close ZI
+                                                      paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
+    } # close else & ZI
+
+
     Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Model, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
     if (simp) {Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
-     Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
+    Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
       as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
-    # do the same as bin (L641) here? or does this still work because gaus was the last run?
-    # Report[1:6,(reportcolno - 3)] <- c(paste("trees: ", get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$n.trees, sep = ""),
-    #                                    paste("Training Data Correlation: ",get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$self.statistics$correlation[[1]], sep = ""),
-    #                                    paste("CV Mean Deviance: ",get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$cv.statistics$deviance.mean, sep = ""),
-    #                                    paste("CV Deviance SE: ",get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$cv.statistics$deviance.se, sep = ""),
-    #                                    paste("CV Mean Correlation: ",get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$cv.statistics$correlation.mean, sep = ""),
-    #                                    paste("CV Correlation SE: ",get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$cv.statistics$correlation.se, sep = ""))
     if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
-    Report[1:6,(reportcolno - 3)] <- c(paste("trees: ", Gaus_Best_Simp$n.trees, sep = ""),
-                                       paste("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]], sep = ""),
-                                       paste("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean, sep = ""),
-                                       paste("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se, sep = ""),
-                                       paste("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean, sep = ""),
-                                       paste("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se, sep = ""))} else {
-                                         Report[1,(reportcolno - 3)] <- paste("No simplification benefit")}} # close simp & min check
+      Report[1:6,(reportcolno - 3)] <- c(paste("trees: ", Gaus_Best_Simp$n.trees, sep = ""),
+                                         paste("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]], sep = ""),
+                                         paste("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean, sep = ""),
+                                         paste("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se, sep = ""),
+                                         paste("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean, sep = ""),
+                                         paste("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se, sep = ""))} else {
+                                           Report[1,(reportcolno - 3)] <- paste("No simplification benefit")} # close min check
+    } else {Report[1,(reportcolno - 5):(reportcolno - 3)] <- c(paste("simp turned off"),
+                                                               paste("simp turned off"),
+                                                               paste("simp turned off"))} # close simp
     Report[1:(length(Gaus_Bars[,1])),(reportcolno - 2)] <- as.character(Gaus_Bars$var)
     Report[1:(length(Gaus_Bars[,2])),(reportcolno - 1)] <- as.character(Gaus_Bars$rel.inf)
     # only do final variable interaction lines if varint=TRUE
     if (varint) Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.names[1]," and ",find.int_Gaus$rank.list$var2.names[1],". Size: ",find.int_Gaus$rank.list$int.size[1], sep = ""),
-                                               paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2], sep = ""))
+                                                paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2], sep = ""))
     write.csv(Report, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Report.csv", sep = ""))
 
     if (alerts) beep(2) # progress printer, right aligned for visibility

@@ -224,3 +224,10 @@ gbm.auto(samples = mysamples, grids = mygrids, expvar = c(4:9), resvar = 11,
          bf = 0.5,
          mapshape = Crop_Map)
 # FINE
+dir.create("./4")
+setwd("./4")
+gbm.auto(samples = mysamples, grids = mygrids, expvar = c(4:9), resvar = 11,
+         tc = list(2,c(2,3)),
+         lr = list(c(0.01, 0.02), 0.005),
+         bf = 0.5,
+         mapshape = Crop_Map, simp = F)
