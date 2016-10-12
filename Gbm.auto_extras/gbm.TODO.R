@@ -4,51 +4,13 @@
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
 # rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix
 
+# bootstrapping & variance estimates: how to run gbm.auto or gbm.step in a bootstrap?
+
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
 # 3 env vars categorical. Changed to numeric.
 # If data need to be numeric I need to reflect that in the documentation AOR
 # create a converter.
-
-# separate bin & gaus parameters?
-# bin/gaus jkl loops 114:195
-# currently:
-# bin brt, best bin model, progress printer
-# gaus brt, best gaus model,
-# add stats to report,
-# progres printer
-# counters
-#
-# could be:
-# LOOP1: bin brt, best bin model, add bin stats to report, counters, progress printer
-# LOOP2: gaus brt, best gaus model, add gaus stats to report, counters, progress printer
-# fix report L434
-#
-# but then what? have lrbin & lrgaus, tcbin & tcgaus, bfbin & bfgaus?
-# lr is always lrbin but lrgaus is optional, lr used unless lrgaus supplied?
-if (isnull(lrgaus)) lr <- lrgaus
-for (k in lrgaus){}
-
-lr = c(0.01,0.005)
-lr = list(bin = c(0.01, 0.05), gaus = c(0.005, 0.0001))
-class(lr) # numeric / list
-lr
-lr$bin
-length(lr$bin)
-as.vector(lr)
-for (k in lr) {
-  }
-gbm.step(data = samples, gbm.x = expvar, gbm.y = brvcol, family = "bernoulli", tree.complexity = j, learning.rate = k, bag.fraction = l, ...)
-# possibly: e.g. lr = 0.001 or lr = c(0.001, 0.00001)
-# bin: use first or only (how to code?)
-# gaus: if length(lr)>1 use lr[[2]]
-# bin could just say lr[[1]]
-lrtest1 <- 0.01
-lrtest2 <- c(0.01,0.0015)
-lrtest1[[1]] #works
-lrtest2[[1]] #works, can use this for bin
-if (length(lrtest2)>1) lrtest2[[2]] else lrtest2[[1]] #works. use for gaus
-#NO! Already allows vectors because it loops through them!
 
 # Process & map bin only? nightmarish. requires reordering of all bin/gaus/bin/gaus to bin/bin/bin
  # gaus = TRUE
@@ -96,8 +58,7 @@ gbm.auto(expvar = c(4:9,11), resvar = 12, grids = mygrids, lr = c(0.02), ZI = TR
 # posted to stack exchange, no answer
 
 ####OPTIMISE PARAMETERS####
-# Bag fraction optimiser
-# Trial & error iterative approach to determine the optimal bag fraction for a data set? How? Stop @ whole percentages?
+# Trial & error iterative approach to determine the optimal lr for a data set? How? Stop @ whole percentages?
 # Try OPTIM function & see http://r.789695.n4.nabble.com/Optimization-in-R-similar-to-MS-Excel-Solver-td4646759.html
 # Possibly have an option to start with this in the R function.
 #
@@ -161,10 +122,13 @@ ptm$elapsed # is the time taken in seconds
 ####3D PLOT####
 # what to do? Bother with it?
 
+####DONE####
 # include eliths BRT_ALL within this code?
 
+# Bag fraction optimiser
 
-####DONE####
+# separate bin & gaus parameters
+
 # dots <- list(...)  # if tc not set by user, default to 2,length(expvar)
 # ifelse("tc" %in% names(dots), tc <- dots$tc, tc <- c(2,length(expvar))) # removed from after expvarcols
 
