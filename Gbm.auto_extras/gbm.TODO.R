@@ -5,6 +5,8 @@
 # rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix
 
 # bootstrapping & variance estimates: how to run gbm.auto or gbm.step in a bootstrap?
+# variance: just need to re-run it to different folders, so feasibly just have a loop with
+# all unecessary stuff switched off and a new folder each time?
 
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
@@ -12,7 +14,10 @@
 # If data need to be numeric I need to reflect that in the documentation AOR
 # create a converter.
 
-# Process & map bin only? nightmarish. requires reordering of all bin/gaus/bin/gaus to bin/bin/bin
+# Process & map bin only?
+# nightmarish. requires reordering of all bin/gaus/bin/gaus to bin/bin/bin
+# but already done that now...?
+# already have it possible to do gaus only...
  # gaus = TRUE
 # if (gaus)
 #Ls: 94:99,

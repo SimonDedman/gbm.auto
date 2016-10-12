@@ -184,7 +184,7 @@ gbm.auto <- function(
   if (alerts) require(beepr)
   require(labeling)
 
-  if (!is.null(grids)) { # create basemap if not provided
+  if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
     if (is.null(mapshape)) {
       if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
       bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
@@ -198,6 +198,7 @@ gbm.auto <- function(
       extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
       shape <- gbm.basemap(bounds = extrabounds)
     } else {shape <- mapshape}}
+
   if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 
   expvarnames <- names(samples[expvar]) # list of explanatory variable names
