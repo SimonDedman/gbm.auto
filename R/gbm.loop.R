@@ -1,5 +1,49 @@
+#' Calculate variance surfaces for gbm.auto predictions
+#'
+#' Processes a user-specified number of loops through the same gbm.auto
+#' parameter combinations and calculates the variance in the predicted abundance
+#' scores for each site aka cell. This can be mapped to spatially demonstrate
+#' the output variance range.
+#'
+#' @param loops The number of loops required, integer
+#' @param savecsv Save the variances in simple & extended format
+#' @param varmap Create a map of the variance outputs
+#' @param grids See gbm.auto help for all subsequent params
+#' @param samples See gbm.auto help
+#' @param expvar See gbm.auto help
+#' @param resvar See gbm.auto help
+#' @param tc See gbm.auto help
+#' @param lr See gbm.auto help
+#' @param bf See gbm.auto help
+#' @param ZI See gbm.auto help
+#' @param simp See gbm.auto help
+#' @param gridslat See gbm.auto help
+#' @param gridslon See gbm.auto help
+#' @param cols See gbm.auto help
+#' @param linesfiles See gbm.auto help
+#' @param savegbm See gbm.auto help
+#' @param varint See gbm.auto help
+#' @param map See gbm.auto help
+#' @param mapshape See gbm.auto help
+#' @param RSB See gbm.auto help
+#' @param BnW See gbm.auto help
+#' @param alerts See gbm.auto help
+#' @param pngtype See gbm.auto help
+#' @param ... Additional params for gbm.auto subfunctions inc gbm.step
+#'
+#' @return Returns a data frame of lat, long, 1 predicted abundance per loop,
+#' and a final variance score per cell.
+#'
+#' @export
+#'
+#' @examples gbmloopexample <- gbm.loop(loops = 2, samples = mysamples,
+#' grids = mygrids, expvar = c(4:10), resvar = 11, simp = F, RSB = F)
+#'
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
+#'
 gbm.loop <- function(loops = 10, # the number of loops required, integer
                      savecsv = T, # save the variances in simple & extended format
+                     varmap = F, # create a map of the variance outputs?
                      grids,         # explantory data to predict to. Import with (e.g.)
                      # read.csv and specify object name.
                      samples,  # explanatory and response variables to predict from.
@@ -42,12 +86,9 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
                      ...) {
   var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
-  # label columns colnames
   for (i in 1:loops) { # loop through all gbm.autos
     dir.create(paste("./", i, sep = ""))
     setwd(paste("./", i, sep = ""))
-    # typical gbm.auto run, w/ rsb csvs no maps.
-    # simp F for now but probably should for representativeness
     gbm.auto(grids = grids,
              samples = samples,
              expvar = expvar,
@@ -69,25 +110,52 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
              BnW = BnW,
              alerts = alerts,
              pngtype = pngtype,
-             ...) # accept other gbm.auto values than these basics. Should maybe make all values be samples = samples
-   predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
-   var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
-   # label column colnames
-    setwd("../")
+             ...) # accept other gbm.auto values than these basics
+    setwd(paste("./", colnames(samples[resvar]), sep = "")) # set wd to species named subfolder
+    predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
+    var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
+    colnames(var.df)[2 + i] <- paste("Loop_", i, sep = "") # label newly added preds column
+    setwd("../../") # move back up to root folder
   } # close i loop & go to the next one
 
-  Variances <- rep(NA, times = length(var.df[,1])) # create blank vector as long as loops
-  var.df <- cbind(var.df, Variances) # add blank vector to final column of var.df
+  var.df[,"Variances"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
+  # apply variances to a new column at the end of var.df
 
-  for (j in 1:length(var.df[,1])) { # loop through each row of var.df AKA predabunds AKA grids
-    var.df[j,Variances] <- var(var.df[j, (3:(2 + loops))]) # to that row of the Variances column,
-    # add the variance of the other rows, not inc lat & lon
-  } #close j loop
+  if (savecsv) {write.csv(var.df, file = "VarAll.csv", row.names = F)
+    write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}
 
-  if (savecsv) {write.csv(var.df, file = "VarAll.csv")
-                write.csv(var.df[,c(1,2,Variances)], file = "VarOnly.csv")}
+  if (varmap) { # if mapping requested,
+    if (is.null(mapshape)) { # and mapshape not set, check presence of basemap
+      if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
+      bounds = c(range(grids[,gridslon]),range(grids[,gridslat])) #then create bounds
+      #create standard bounds from data, and extra bounds for map aesthetic
+      xmid <- mean(bounds[1:2])
+      ymid <- mean(bounds[3:4])
+      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+      shape <- gbm.basemap(bounds = extrabounds)
+    } else {shape <- mapshape} # if mapshape not null then use it.
 
-  # add mapping option maybe with log sclae like RSB
+    png(filename = "VarMap.png", width = 4*1920, height = 4*1920, units = "px",
+        pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+    gbm.map(x = var.df[,gridslon], # add Unrepresentativeness alpha surface
+            y = var.df[,gridslat],
+            z = var.df[,"Variances"],
+            mapmain = "Variance: ",
+            species = names(samples[resvar]),
+            legendtitle = "SCALE!!",
+            ####change this####
+            shape = shape) #either autogenerated or set by user so never blank
+    #breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = FALSE))/2000)
+    dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
+    # res there, but high values captures in the last few bins.
+  } # close map optional
 
   return(var.df) #return output
+
+#### add a final alert####
 } # close function

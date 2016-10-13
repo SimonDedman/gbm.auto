@@ -6,12 +6,12 @@ library("gbm.auto")
 mygrids <- gbm.auto::grids # load grids
 mysamples <- gbm.auto::samples # load samples
 setwd("/home/simon/Desktop/gbm temp/variance/")
-#source('~/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
-library("shapefiles")
-Crop_Map <- read.shapefile("/home/simon/Desktop/gbm temp/CroppedMap/Crop_Map")
+source('~/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
+# library("shapefiles")
+# Crop_Map <- read.shapefile("/home/simon/Desktop/gbm temp/CroppedMap/Crop_Map")
 #source('~/Dropbox/Galway/Analysis/R/gbm.auto/Gbm.auto_extras/gbm.auto.binGausSepParams.R')
 
-gbm.loop(loops = 3,
+gbmlooptest <- gbm.loop(loops = 2,
          savecsv = T, #unnecessary
          samples = mysamples,
          grids = mygrids,
@@ -19,5 +19,3 @@ gbm.loop(loops = 3,
          resvar = 11,
          simp = FALSE,
          RSB = F)
-
-# if Map is false it still downloads noaa
