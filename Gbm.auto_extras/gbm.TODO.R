@@ -1,6 +1,4 @@
 ####TO DO####
-# report varint turned off, get that to work like simp does.
-
 # Examples for all functions man pages
 
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
@@ -130,6 +128,10 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# report varint turned off, get that to work like simp does.
+
+# gbm.map generates basemap as well now. mapshape is now just shape.
+
 # trying to click to load gbm.auto after upgrading to yakkedy:
 # Error in dyn.load(file, DLLpath = DLLpath, ...) :
 #   unable to load shared object '/home/simon/R/x86_64-pc-linux-gnu-library/3.3/stringi/libs/stringi.so':

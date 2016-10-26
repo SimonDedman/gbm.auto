@@ -406,13 +406,15 @@ gbm.auto <- function(
     # number of drops has the minimum mean (lowest point on the line) & that calls
     # up the list of predictor variables with those removed, from $pred.list
       if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-      assign("Bin_Best_Simp", gbm.step(data = samples,
-                                       gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
-                                       gbm.y = get(Bin_Best_Model)$gbm.call$gbm.y,
-                                       tree.complexity = get(Bin_Best_Model)$gbm.call$tree.complexity,
-                                       learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
-                                       family = get(Bin_Best_Model)$gbm.call$family,
-                                       bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction))}
+      #assign("Bin_Best_Simp",
+        assign(paste(Bin_Best_Model, "_Simp", sep = ""),
+               gbm.step(data = samples,
+                        gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
+                        gbm.y = get(Bin_Best_Model)$gbm.call$gbm.y,
+                        tree.complexity = get(Bin_Best_Model)$gbm.call$tree.complexity,
+                        learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
+                        family = get(Bin_Best_Model)$gbm.call$family,
+                        bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction))}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Bin model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
@@ -421,13 +423,15 @@ gbm.auto <- function(
       # Same for Gaus
       Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
       if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
-        assign("Gaus_Best_Simp", gbm.step(data = grv_yes,
-                                          gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
-                                          gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
-                                          tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
-                                          learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
-                                          family = get(Gaus_Best_Model)$gbm.call$family,
-                                          bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction))
+        #assign("Gaus_Best_Simp",
+        assign(paste(Gaus_Best_Model, "_Simp", sep = ""),
+               gbm.step(data = grv_yes,
+                        gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
+                        gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
+                        tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
+                        learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
+                        family = get(Gaus_Best_Model)$gbm.call$family,
+                        bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction))
 
       if (alerts) beep(2)
       print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
