@@ -1,4 +1,6 @@
 ####TO DO####
+# report varint turned off, get that to work like simp does.
+
 # Examples for all functions man pages
 
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means

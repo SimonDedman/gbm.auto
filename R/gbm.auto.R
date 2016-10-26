@@ -185,26 +185,21 @@ gbm.auto <- function(
   if (alerts) require(beepr)
   require(labeling)
 
-  # DON'T NEED THIS ANY MORE
-  # Changed mapshape to shape, defaults to null, if unedited then gbmauto shape null
-  # overrides gbmmap shape null but is the same and gbmmap calls gbmbasemap to
-  # create the basemap. If user sets shape in auto then it displaces null in auto
-  # and is passed to map where it displaces null, and avoids basemap being called
-  #
-  # if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
-  #   if (is.null(shape)) {
-  #     if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
-  #     bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
-  #     #create standard bounds from data, and extra bounds for map aesthetic
-  #     xmid <- mean(bounds[1:2])
-  #     ymid <- mean(bounds[3:4])
-  #     xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-  #     xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-  #     yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-  #     yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-  #     extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-  #     shape <- gbm.basemap(bounds = extrabounds)
-  #   } else {shape <- shape}}
+  # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
+  if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
+    if (is.null(shape)) {
+      if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
+      bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
+      #create standard bounds from data, and extra bounds for map aesthetic
+      xmid <- mean(bounds[1:2])
+      ymid <- mean(bounds[3:4])
+      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+      shape <- gbm.basemap(bounds = extrabounds)
+    }}
 
   if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 
@@ -321,6 +316,8 @@ gbm.auto <- function(
                             ...)
             )
 
+            print(paste("Done Bin_BRT",".tc",j,".lr",k,".bf",l, sep = ""))
+
             ####5. Select best bin model####
             if (n == 1)
             {Bin_Best_Score <- get(paste("Bin_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$self.statistics$correlation[[1]]
@@ -367,7 +364,7 @@ gbm.auto <- function(
                           bag.fraction = l,
                           ...)
           )
-
+          print(paste("Done Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))
           ####9. Select best Gaus model####
           if (m == 1)
             # problem. m won't equal 1 for gaus. WAIT. M will, N won't. Use N for everything except this one line?
@@ -665,7 +662,6 @@ gbm.auto <- function(
       if (varint) Report[1:2,(reportcolno - 7)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
                                                       paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
     } # close else & ZI
-
 
     Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Model, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
     if (simp) {Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
