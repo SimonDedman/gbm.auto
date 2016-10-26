@@ -659,8 +659,10 @@ gbm.auto <- function(
       Report[1:(length(Bin_Bars[,1])),(reportcolno - 9)] <- as.character(Bin_Bars$var)
       Report[1:(length(Bin_Bars[,2])),(reportcolno - 8)] <- as.character(Bin_Bars$rel.inf)
       # only do final variable interaction lines if varint=TRUE
-      if (varint) Report[1:2,(reportcolno - 7)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
+      if (varint)
+        {Report[1:2,(reportcolno - 7)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
                                                       paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
+      } else {Report[1,(reportcolno - 7)] <- paste("varint turned off")}
     } # close else & ZI
 
     Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Model, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
@@ -681,8 +683,10 @@ gbm.auto <- function(
     Report[1:(length(Gaus_Bars[,1])),(reportcolno - 2)] <- as.character(Gaus_Bars$var)
     Report[1:(length(Gaus_Bars[,2])),(reportcolno - 1)] <- as.character(Gaus_Bars$rel.inf)
     # only do final variable interaction lines if varint=TRUE
-    if (varint) Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.names[1]," and ",find.int_Gaus$rank.list$var2.names[1],". Size: ",find.int_Gaus$rank.list$int.size[1], sep = ""),
+    if (varint)
+      {Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.names[1]," and ",find.int_Gaus$rank.list$var2.names[1],". Size: ",find.int_Gaus$rank.list$int.size[1], sep = ""),
                                                 paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2], sep = ""))
+    } else {Report[1,(reportcolno)] <- paste("varint turned off")}
     write.csv(Report, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Report.csv", sep = ""))
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
