@@ -14,7 +14,7 @@
 #' @param species Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
 #' @param heatcolours Abundance colour scale, defaults to the heatcol from legend.grid and draw.grid in mapplots.
 #' @param colournumber number of colours to spread heatcol over, default:8
-#' @param shape Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL then 'coast' of UK and Ire from mapplots
+#' @param shape Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL which calls gbm.basemap to generate it for you
 #' @param landcol Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey
 #' @param mapback Basemap background colour, defaults to lightblue
 #' @param legendloc Location on map of legend box, from legend.grid in mapplots
@@ -58,7 +58,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     species = "Response Variable",  #Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"
                     heatcolours = c("white", "yellow", "orange","red", "brown4"), #abundance colour scale, defaults to the heatcol from legend.grid & draw.grid in mapplots.
                     colournumber = 8,   #number of colours to spread heatcol over, default:8
-                    shape = NULL,   #basemap shape to draw, from draw.shape in mapplots. Defaults to NULL then 'coast': UK & Ire
+                    shape = NULL,   #basemap shape to draw, from draw.shape in mapplots. Defaults to NULL which calls gbm.basemap to generate it for you
                     landcol = "grey80", #colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey
                     mapback = "lightblue", #basemap background colour
                     legendloc = "bottomright", #location on map of legend box, from legend.grid in mapplots
@@ -70,7 +70,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     breaks = NULL, # vector of breakpoints for colour scales; default blank, generated automatically
                     ...) # additional arguments for legend.grid's ... which passes to legend
 
-# Generalised Boosting Models, automated map generator. Simon Dedman, 2014, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
+# Generalised Boosting Models, automated map generator. Simon Dedman, 2014-2016, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
 
 # Generates maps from the outputs of gbm.step then gbm.predict.grids, handled automatically within gbm.auto but can be run alone, and
 # generates representativeness surfaces from the output of gbm.rsb (suggest: z = rsbdf[,"Unrepresentativeness"],
@@ -78,9 +78,20 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
 # png(...); par(...); gbm.map(...); dev.off()
 {
   require(mapplots)
-  # get Britain & Ireland coast data. I'm looking to make this global but am having a problem w/ the maps packge
-  if (is.null(shape)) {data(coast, package = "mapplots")}
-  # if users hasn't entered byx or byy values, generate them from the data
+  if (is.null(shape)) { # if no map shape entered, generate bounds and call gbm.basemap
+    bounds = c(range(x),range(y))
+    #create standard bounds from data, and extra bounds for map aesthetic
+    xmid <- mean(bounds[1:2])
+    ymid <- mean(bounds[3:4])
+    xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+    xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+    yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+    yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+    extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+    shape <- gbm.basemap(bounds = extrabounds)
+  }
+
+  # if user hasn't entered byx or byy values, generate them from the data
   if (is.null(byx)) {
     # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
     bydist <- rep(NA, length(x))

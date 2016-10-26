@@ -33,7 +33,7 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{colournumber}{number of colours to spread heatcol over, default:8}
 
-\item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL then 'coast' of UK and Ire from mapplots}
+\item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL which calls gbm.basemap to generate it for you}
 
 \item{landcol}{Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey}
 

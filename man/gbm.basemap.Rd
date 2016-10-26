@@ -36,6 +36,18 @@ box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
 "Use secure download method for HTTP" in Tools > Global Options > Packages.
 Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 }
+\details{
+errors and their origins:
+
+1. Error in setwd(getzip) : cannot change working directory
+If youve specified the location of the local GSHHS_shp folder, ensure youre
+in the correct directory relative to it. This error means it looked for the
+folder and couldnt find it.
+
+2. Error in writeSpatialShape(cropshp, savename) x is aNULLobject, not a
+compatible Spatial*DataFrame.
+Ensure that your lats and longs are the the right way around
+}
 \examples{
 mybounds <- c(range(samples[,3]),range(samples[,2]))
 gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename =

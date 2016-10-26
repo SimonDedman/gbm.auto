@@ -36,6 +36,17 @@
 #' In this example GSHHS folder already downloaded to the working directory
 #' hence I pointed getzip at that rather than having it download the zip again.
 #'
+#' @details errors and their origins:
+#'
+#' 1. Error in setwd(getzip) : cannot change working directory
+#' If youve specified the location of the local GSHHS_shp folder, ensure youre
+#' in the correct directory relative to it. This error means it looked for the
+#' folder and couldnt find it.
+#'
+#' 2. Error in writeSpatialShape(cropshp, savename) x is aNULLobject, not a
+#' compatible Spatial*DataFrame.
+#' Ensure that your lats and longs are the the right way around
+#'
 gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
                         getzip = TRUE, # download & unpack GSHHS data to WD?
   # "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder

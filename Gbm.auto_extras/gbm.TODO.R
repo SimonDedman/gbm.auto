@@ -128,6 +128,28 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# trying to click to load gbm.auto after upgrading to yakkedy:
+# Error in dyn.load(file, DLLpath = DLLpath, ...) :
+#   unable to load shared object '/home/simon/R/x86_64-pc-linux-gnu-library/3.3/stringi/libs/stringi.so':
+#   libicui18n.so.55: cannot open shared object file: No such file or directory
+# https://stackoverflow.com/questions/33588083/r-error-installing-packages-ubuntu-error-in-dyn-loadfile-dllpath-dllpath
+# update all packages inc stringi, then: sudo apt-get install r-cran-ggplot2
+# But then:
+# Error in dyn.load(file, DLLpath = DLLpath, ...) :
+#   unable to load shared object '/home/simon/R/x86_64-pc-linux-gnu-library/3.3/rgdal/libs/rgdal.so':
+#   libgdal.so.1: cannot open shared object file: No such file or directory
+# reinstalled rgdal in rstudio, clicked to load:
+# Loading required package: sp
+# Error in runHook(".onLoad", env, package.lib, package) :
+#   lazy-load database '/home/simon/R/x86_64-pc-linux-gnu-library/3.3/rgdal/R/?remove.packages()
+# In addition: Warning message:
+#   In runHook(".onLoad", env, package.lib, package) :
+#   internal error -3 in R_decompress1
+# Error: package or namespace load failed for ‘rgdal’
+# so:
+# remove.packages("rgdal")
+# quit & restart rstudio, install rgdal fresh
+
 # include eliths BRT_ALL within this code?
 
 # Bag fraction optimiser
