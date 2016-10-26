@@ -29,7 +29,7 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{species}{Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"}
 
-\item{heatcolours}{Abundance colour scale, defaults to the heatcol from legend.grid and draw.grid in mapplots.}
+\item{heatcolours}{Abundance colour scale, defaults to the heatcol from legend.grid and draw.grid in mapplots which is c("white", "yellow", "orange","red", "brown4").}
 
 \item{colournumber}{number of colours to spread heatcol over, default:8}
 
