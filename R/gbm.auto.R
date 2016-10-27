@@ -327,10 +327,6 @@ gbm.auto <- function(
             Bin_Best_Model <- paste("Bin_BRT",".tc",j,".lr",k,".bf",l, sep = "")}
 
             ####6. Add BRT bin stats to report####
-            #### Don't do Parameter Combo n stats
-            # Report[1:3,((m*5) - 1)] <- c(paste("tree complexity: ",j, sep = ""),
-            #                              paste("learning rate: ",k, sep = ""),
-            #                              paste("bag fraction: ",l, sep = ""))
             # don't do if ZI=FALSE. bin BRT stats
             if (ZI) {Report[1:6,(3 + n)] <- c(paste("trees: ",get(paste("Bin_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$n.trees, sep = ""),
                                               paste("Training Data Correlation: ",get(paste("Bin_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$self.statistics$correlation[[1]], sep = ""),
@@ -367,7 +363,6 @@ gbm.auto <- function(
           print(paste("Done Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))
           ####9. Select best Gaus model####
           if (m == 1)
-            # problem. m won't equal 1 for gaus. WAIT. M will, N won't. Use N for everything except this one line?
           {Gaus_Best_Score <- get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$self.statistics$correlation[[1]]
           Gaus_Best_Model <- paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = "")
           } else if (get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$self.statistics$correlation[[1]] > Gaus_Best_Score)
@@ -406,8 +401,7 @@ gbm.auto <- function(
     # number of drops has the minimum mean (lowest point on the line) & that calls
     # up the list of predictor variables with those removed, from $pred.list
       if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-      #assign("Bin_Best_Simp",
-        assign(paste(Bin_Best_Model, "_Simp", sep = ""),
+      assign("Bin_Best_Simp",
                gbm.step(data = samples,
                         gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
                         gbm.y = get(Bin_Best_Model)$gbm.call$gbm.y,
@@ -423,8 +417,7 @@ gbm.auto <- function(
       # Same for Gaus
       Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
       if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
-        #assign("Gaus_Best_Simp",
-        assign(paste(Gaus_Best_Model, "_Simp", sep = ""),
+        assign("Gaus_Best_Simp",
                gbm.step(data = grv_yes,
                         gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
                         gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
@@ -436,6 +429,10 @@ gbm.auto <- function(
       if (alerts) beep(2)
       print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
+      # copy Bin/Gaus_Best_Model to Name in case not created by Simp
+      Bin_Best_Name <- Bin_Best_Model
+      Gaus_Best_Name <- Gaus_Best_Model
+
       ## Select final best models
       if (ZI) {  # don't do if ZI=FALSE. If Bin_Best has a simplified model:
         if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
@@ -443,13 +440,15 @@ gbm.auto <- function(
           if (Bin_Best_Simp$self.statistics$correlation > Bin_Best_Score[1])
             # then replace Bin_Best score/model values with those from the simplified model
           {Bin_Best_Score <- Bin_Best_Simp$self.statistics$correlation
-          Bin_Best_Model <- "Bin_Best_Simp"}} # close ZI
+          Bin_Best_Model <- "Bin_Best_Simp"
+          Bin_Best_Name <- paste(Bin_Best_Model, "_Simp", sep = "")}} # close ZI
 
       # Same for Gaus:
       if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
         if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1])
         {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
-        Gaus_Best_Model <- "Gaus_Best_Simp"}
+        Gaus_Best_Model <- "Gaus_Best_Simp"
+        Gaus_Best_Name <- paste(Gaus_Best_Model, "_Simp", sep = "")}
     } # close simp optional
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -638,7 +637,7 @@ gbm.auto <- function(
     ####22. Finalise & Write Report####
     if (ZI)
     { # only do bin bits if ZI
-      Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Model, sep = ""),
+      Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Name, sep = ""),
                                           paste("Model CV score: ", Bin_Best_Score, sep = ""),
                                           paste("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination, sep = ""),
                                           paste("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean, sep = ""),
@@ -669,7 +668,7 @@ gbm.auto <- function(
       } else {Report[1,(reportcolno - 7)] <- paste("varint turned off")}
     } # close else & ZI
 
-    Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Model, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
+    Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Name, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
     if (simp) {Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
     Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
       as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
