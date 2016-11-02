@@ -6,6 +6,9 @@
 # have per-species cons maps underpin the Conservation Sort in p3, rather than
 # all 4 species underpinned by the 4-sp gbm.cons map.
 
+# edit: removed from gbm.cons, saved here as safety, in @examples
+#' Juveniles <- gbm.auto[doublecolon]Juveniles # load juveniles subset
+#' Adult_Females <- gbm.auto[doublecolon]Adult_Females # load adult females subset
 ####prep####
 # set & test working directory
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles")
@@ -123,7 +126,9 @@ gbm.auto(expvar = c(4:10,14,19,23,27,31,38),
 # set wd for mature female samples sheets
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Mature Females plus Hans' F")
 # load samples
-mysamples <- gbm.auto::Adult_Females
+#mysamples <- gbm.auto[doublecolon]Adult_Females #removed doublecolon else
+# Error: 'Adult_Females' is not an exported object from 'namespace:gbm.auto'
+mysamples <- Adult_Females
 
 # run models: cuckoo
 gbm.auto(expvar = 4:9,

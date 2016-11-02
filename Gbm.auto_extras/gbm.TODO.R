@@ -14,14 +14,6 @@
 # If data need to be numeric I need to reflect that in the documentation AOR
 # create a converter.
 
-# Process & map bin only?
-# nightmarish. requires reordering of all bin/gaus/bin/gaus to bin/bin/bin
-# but already done that now...?
-# already have it possible to do gaus only...
- # gaus = TRUE
-# if (gaus)
-#Ls: 94:99,
-
 # improve how functions are checked/loaded.
 # see this from gbm:
 if (!requireNamespace("gbm")) {
@@ -128,6 +120,9 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# Process & map bin only
+# gaus = TRUE
+
 # report varint turned off, get that to work like simp does.
 
 # gbm.map generates basemap as well now. mapshape is now just shape.

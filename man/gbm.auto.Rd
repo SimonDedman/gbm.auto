@@ -8,7 +8,7 @@ gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
   0.005), bf = 0.5, ZI = "CHECK", simp = TRUE, gridslat = 2,
   gridslon = 1, cols = grey.colors(1, 1, 1), linesfiles = FALSE,
   savegbm = TRUE, varint = TRUE, map = TRUE, shape = NULL, RSB = TRUE,
-  BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", ...)
+  BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
 }
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
@@ -72,6 +72,8 @@ then calls gbm.basemap to download and autogenerate the base map.}
 \item{alerts}{Play sounds to mark progress steps}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
+
+\item{gaus}{Do Gaussian runs as well as Bin? Default TRUE.}
 
 \item{...}{Optional arguments for legend in legend.grid in gbm.map, and
 gbm.step (dismo)}

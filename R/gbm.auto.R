@@ -49,6 +49,7 @@
 #' @param BnW Repeat maps in black and white e.g. for print journals
 #' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
+#' @param gaus Do Gaussian runs as well as Bin? Default TRUE.
 #' @param ... Optional arguments for legend in legend.grid in gbm.map, and
 #' gbm.step (dismo)
 #'
@@ -149,6 +150,7 @@ gbm.auto <- function(
   BnW = TRUE,           # repeat maps in black and white e.g. for print journals
   alerts = TRUE,        # play sounds to mark progress steps
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
+  gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
   ...)                  # optional arguments for gbm.map and gbm.step
 {
   # Generalised Boosting Model / Boosted Regression Tree process chain automater.
@@ -224,7 +226,7 @@ gbm.auto <- function(
     bf <- bf[[1]]
   } else {bfgaus <- bf}
 
-  for (i in resvar) {
+  for (i in resvar) { # loop everything for each response variable (e.g. species)
     m = 1 # Gaus only loop counter to allow best gaus BRT choice
     n = 1   # Print counter for all loops of BRT combos & best bin BRT choice
     if (!is.null(grids)) if (!all(expvarnames %in% names(grids))) {stop("Not all expvar column names found as column names in grids")}
@@ -240,7 +242,7 @@ gbm.auto <- function(
     samples$brv <- ifelse(samples[i] > 0, 1, 0)
     brvcol <- which(colnames(samples) == "brv") # brv column number for BRT
 
-    # create logged response variable, for gaussian BRTs when data is zero-inflated (otherwise just use resvar directly)
+    # create logged response variable, for gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
     logem <- log(samples[,i])
     dont  <- samples[,i]
     if (ZI) {samples$grv <- logem} else {samples$grv <- dont}
@@ -255,7 +257,7 @@ gbm.auto <- function(
     } else {
       reportcolno = 3 + (length(tcgaus)*length(lrgaus)*length(bfgaus)) + 7
     }
-
+    if (!gaus) reportcolno = 3 + (length(tc)*length(lr)*length(bf)) + 7
     # calculate number of columns for report:
       # 3: expvar names, resvar name, ZI state
       # 14: best bin brt, best gaus brt,
@@ -268,13 +270,18 @@ gbm.auto <- function(
       # + 5 elements for each loop: parameter combo n (tc lr & bf values),
       # Bin BRT n stats, Bin BRT n name
       # Gaus BRT n stats, Gaus BRT n name
-    ####Change per bin+gaus loop to 1 per bin or gaus loop: BRT name & stats.
-    # remove "Parameter Combo n"
     Report <- data.frame(matrix(NA, nrow = (max(6,length(expvar))), ncol = (reportcolno)))
     # build blank df, rows=biggest of 6 (max static row number of stats) or n of exp. vars
     colnames(Report) <- c("Explanatory Variables","Response Variables","Zero Inflated?") # populate static colnames 1:3
     # name bin columns if ZI
-    if (ZI) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
+    if (!gaus) {colnames(Report)[(reportcolno - 6):reportcolno] <- c("Best Binary BRT",
+                                                                  "Bin_BRT_simp predictors kept (ordered)",
+                                                                  "Bin_BRT_simp predictors dropped",
+                                                                  "Simplified Binary BRT stats",
+                                                                  "Best Binary BRT variables",
+                                                                  "Relative Influence (Bin)",
+                                                                  "Biggest Interactions (Bin)")
+    } else {if (ZI) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
                                                                 "Bin_BRT_simp predictors kept (ordered)",
                                                                 "Bin_BRT_simp predictors dropped",
                                                                 "Simplified Binary BRT stats",
@@ -287,7 +294,7 @@ gbm.auto <- function(
                                                          "Simplified Gaussian BRT stats",
                                                          "Best Gaussian BRT variables",
                                                          "Relative Influence (Gaus)",
-                                                         "Biggest Interactions (Gaus)")
+                                                         "Biggest Interactions (Gaus)")}
     # populate the final 14 column names
     Report[1:length(expvar),1] <- names(samples[expvar]) # put expvar names in first column
     Report[1,2] <- names(samples[i]) # put resvar in col 2
@@ -338,7 +345,8 @@ gbm.auto <- function(
             colnames(Report)[3 + n] <- paste("Bin_BRT",".tc",j,".lr",k,".bf",l, sep = "")}
 
             if (alerts) beep(2) # progress printer, right aligned
-            print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)), "     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+            if (gaus) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)), "     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+            } else {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)), "     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
             n <- n + 1   # Add to print counter
           } # close bf
         } # close lr
@@ -346,7 +354,7 @@ gbm.auto <- function(
     } # close ZI option, making all bin BRT objects & continuing through model selection
 
     # Begin Gaus loops
-    for (j in tcgaus) {   # list permutations of tree complexity allowed
+    if (gaus) for (j in tcgaus) {   # list permutations of tree complexity allowed
       for (k in lrgaus) {   # list permutations of learning rate allowed
         for (l in bfgaus) {   # list permutations of bag fraction allowed
           ####7. Gaussian BRT####
@@ -392,9 +400,12 @@ gbm.auto <- function(
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX        Closed Loops         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     ####11. Test simplification benefit, do so if better####
+    # copy Bin/Gaus_Best_Model to Name in case not created by Simp
+    Bin_Best_Name <- Bin_Best_Model
+    if (gaus) Gaus_Best_Name <- Gaus_Best_Model
+
     # if simp TRUE & ZI=TRUE, run simplification test on best bin model
     if (simp) {if (ZI) {Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
-
     # if best number of variables to remove isn't 0 (i.e. it's worth simplifying),
     # re-run best model (Bin_Best_Model, using gbm.call to get its values) with
     # just-calculated best number of variables to remove, removed. gbm.x asks which
@@ -415,7 +426,7 @@ gbm.auto <- function(
     } # close ZI
 
       # Same for Gaus
-      Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
+      if (gaus) {Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
       if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
         assign("Gaus_Best_Simp",
                gbm.step(data = grv_yes,
@@ -427,11 +438,7 @@ gbm.auto <- function(
                         bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction))
 
       if (alerts) beep(2)
-      print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
-
-      # copy Bin/Gaus_Best_Model to Name in case not created by Simp
-      Bin_Best_Name <- Bin_Best_Model
-      Gaus_Best_Name <- Gaus_Best_Model
+      print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
       ## Select final best models
       if (ZI) {  # don't do if ZI=FALSE. If Bin_Best has a simplified model:
@@ -444,11 +451,11 @@ gbm.auto <- function(
           Bin_Best_Name <- paste(Bin_Best_Model, "_Simp", sep = "")}} # close ZI
 
       # Same for Gaus:
-      if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
+      if (gaus) {if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
         if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1])
         {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
         Gaus_Best_Model <- "Gaus_Best_Simp"
-        Gaus_Best_Name <- paste(Gaus_Best_Model, "_Simp", sep = "")}
+        Gaus_Best_Name <- paste(Gaus_Best_Model, "_Simp", sep = "")}}
     } # close simp optional
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -471,7 +478,7 @@ gbm.auto <- function(
                                       floor(sqrt(length(get(Bin_Best_Model)$contributions$var))) + 1)))
       dev.off()} # close ZI
 
-    png(filename = paste("./",names(samples[i]),"/Gaus_Best_line.png", sep = ""),
+    if (gaus) {png(filename = paste("./",names(samples[i]),"/Gaus_Best_line.png", sep = ""),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
     gbm.plot(get(Gaus_Best_Model),
              n.plots = length(get(Gaus_Best_Model)$contributions$var),
@@ -481,7 +488,7 @@ gbm.auto <- function(
                                     - floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))) < 0.5,
                                     floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))),
                                     floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))) + 1)))
-    dev.off()
+    dev.off()}
 
     # All plots individually, named by explanatory variable, bin & gaus
     if (ZI) {  # don't do if ZI=FALSE
@@ -502,7 +509,7 @@ gbm.auto <- function(
         rug(samples[as.character(get(Bin_Best_Model)$contributions$var[o])][,1], side = 1, lwd = 5, ticksize = 0.03) # all points rug
         dev.off() }} # close ZI option
 
-    for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
+    if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
       png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".png", sep = ""),
           width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
       par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
@@ -517,7 +524,7 @@ gbm.auto <- function(
       rug(samples[as.character(get(Gaus_Best_Model)$contributions$var[p])][,1], side = 1, lwd = 5, ticksize = 0.03, quiet = TRUE)
       # quiet=TRUE because x axis is incorrect relative to points. Have tried only.loose=FALSE in xx line
       # also plotgridbin from bin to use bin's x axis but didn't work. Tried matching gaus & bin no joy.
-      dev.off() }
+      dev.off() }}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
@@ -529,10 +536,10 @@ gbm.auto <- function(
       gbm.plot.fits(get(Bin_Best_Model))
       dev.off()} # close ZI
 
-    png(filename = paste("./",names(samples[i]),"/Gaus_Best_dot.png", sep = ""),
+    if (gaus) {png(filename = paste("./",names(samples[i]),"/Gaus_Best_dot.png", sep = ""),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
     gbm.plot.fits(get(Gaus_Best_Model))
-    dev.off()
+    dev.off()}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Dot plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
@@ -549,11 +556,11 @@ gbm.auto <- function(
                           plotit = FALSE, order = TRUE, normalize = TRUE, las = 1, main = NULL)
       write.csv(Bin_Bars, file = paste("./", names(samples[i]), "/Binary BRT Variable contributions.csv", sep = ""), row.names = FALSE)} # close ZI
 
-    Gaus_Bars <- summary(get(Gaus_Best_Model),
+    if (gaus) {Gaus_Bars <- summary(get(Gaus_Best_Model),
                          cBars = length(get(Gaus_Best_Model)$var.names),
                          n.trees = get(Gaus_Best_Model)$n.trees,
                          plotit = FALSE, order = TRUE, normalize = TRUE, las = 1, main = NULL)
-    write.csv(Gaus_Bars, file = paste("./", names(samples[i]), "/Gaussian BRT Variable contributions.csv", sep = ""), row.names = FALSE)
+    write.csv(Gaus_Bars, file = paste("./", names(samples[i]), "/Gaussian BRT Variable contributions.csv", sep = ""), row.names = FALSE)}
 
     if (alerts) beep(2)# progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Bar plot csvs created    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
@@ -568,14 +575,14 @@ gbm.auto <- function(
       axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
       dev.off()} # close ZI
 
-    png(filename = paste("./",names(samples[i]),"/Gaus_Bars.png", sep = ""),
+    if (gaus) {png(filename = paste("./",names(samples[i]),"/Gaus_Bars.png", sep = ""),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
         type = pngtype)
     par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.8,mgp = c(1.5,0.5,0), cex = 1.3)
     midpoints <- barplot(rev(Gaus_Bars[,2]), cex.lab = 1.2, las = 1, horiz = TRUE, cex.names = 0.8, xlab = "Influence %", col = rev(expvarcols[match(Gaus_Bars[,1],expvarcols[,2]),1]), xlim = c(0,2.5 + ceiling(max(Gaus_Bars[,2]))))
     text(0.1, midpoints, labels = rev(Gaus_Bars[,1]), adj = 0, cex = 1.5)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
-    dev.off()
+    dev.off()}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
@@ -583,14 +590,14 @@ gbm.auto <- function(
     ####16. Variable interactions####
     # only do them if varint=TRUE, the default. Only do bin if ZI=TRUE
     if (ZI) if (varint) find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
-    if (varint) find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
+    if (gaus) if (varint) find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
     if (alerts) beep(2) # progress printer, right aligned for visibility
     if (varint) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Variable interactions done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
     #avoid sections 16-20 if not predicting to grids
     if (!is.null(grids)) {
 
-      ####17. Binomial predictions####
+    ####17. Binomial predictions####
       if (ZI) {  # don't do if ZI=FALSE
         gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
         grids$Bin_Preds <- Bin_Preds} # close ZI
@@ -598,24 +605,25 @@ gbm.auto <- function(
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-      ####18. Gaussian predictions####
-      gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
-      if (ZI) {grids$Gaus_Preds <- Gaus_Preds
+    ####18. Gaussian predictions####
+      if (gaus) gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
+      if (gaus) {if (ZI) {grids$Gaus_Preds <- Gaus_Preds
 
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-      ####19. Backtransform logged Gaus to unlogged####
-      grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
+    ####19. Backtransform logged Gaus to unlogged####
+      if (gaus) grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
 
-      ####20. BIN*positive abundance = final abundance####
+    ####20. BIN*positive abundance = final abundance####
       grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
+      } else grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
       predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
 
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-      ####21. Final saves####
+    ####21. Final saves####
       # CSV of Predicted values at each site inc predictor variables' values.
       write.csv(grids, row.names = FALSE, file = paste("./", names(samples[i]), "/Abundance_Preds_All.csv", sep = ""))
       # CSV of Predicted values at each site without predictor variables' values.
@@ -625,10 +633,9 @@ gbm.auto <- function(
     if (savegbm) { # Save model objects if switched on
       Bin_Best_Model_Object <- get(Bin_Best_Model)
       Bin_Best_Model <<- Bin_Best_Model_Object
-      Gaus_Best_Model_Object <- get(Gaus_Best_Model)
+      if (gaus) {Gaus_Best_Model_Object <- get(Gaus_Best_Model)
       Gaus_Best_Model <<- Gaus_Best_Model_Object
-
-      save(Gaus_Best_Model_Object,file = paste("./",names(samples[i]),"/Gaus_Best_Model", sep = ""))
+      save(Gaus_Best_Model_Object,file = paste("./",names(samples[i]),"/Gaus_Best_Model", sep = ""))}
       if (ZI) {save(Bin_Best_Model_Object,file = paste("./",names(samples[i]),"/Bin_Best_Model", sep = ""))}} #only save bin if ZI=TRUE
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -636,12 +643,17 @@ gbm.auto <- function(
 
     ####22. Finalise & Write Report####
     if (ZI)
-    { # only do bin bits if ZI
-      Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Name, sep = ""),
+    { # only do bin bits if ZI; move 7 cols left if no gaus run
+      if (gaus) {Report[1:5,(reportcolno - 13)] <- c(paste("Model combo: ", Bin_Best_Name, sep = ""),
                                           paste("Model CV score: ", Bin_Best_Score, sep = ""),
                                           paste("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination, sep = ""),
                                           paste("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean, sep = ""),
                                           paste("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se, sep = ""))
+      } else {Report[1:5,(reportcolno - 6)] <- c(paste("Model combo: ", Bin_Best_Name, sep = ""),
+                                                  paste("Model CV score: ", Bin_Best_Score, sep = ""),
+                                                  paste("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination, sep = ""),
+                                                  paste("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean, sep = ""),
+                                                  paste("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se, sep = ""))}
       if (simp)
       {Report[1:dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 12)] <- as.character(subset(Bin_Best_Simp_Check$final.drops, order > 0)$preds)
         Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 11)] <-
@@ -655,20 +667,34 @@ gbm.auto <- function(
                                              paste("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se, sep = ""))
         } else {Report[1,(reportcolno - 10)] <- paste("No simplification benefit")
                } # close min else
-      } else {Report[1,(reportcolno - 12):(reportcolno - 10)] <- c(paste("simp turned off"),
+      } else if (gaus) {Report[1,(reportcolno - 12):(reportcolno - 10)] <- c(paste("simp turned off"),
                                                                    paste("simp turned off"),
                                                                    paste("simp turned off"))
+              } else {# if not running gaus, report cols are changed so needs adjustment
+                Report[1,(reportcolno - 5):(reportcolno - 3)] <- c(paste("simp turned off"),
+                                                                     paste("simp turned off"),
+                                                                     paste("simp turned off"))
               } # close simp else
-      Report[1:(length(Bin_Bars[,1])),(reportcolno - 9)] <- as.character(Bin_Bars$var)
-      Report[1:(length(Bin_Bars[,2])),(reportcolno - 8)] <- as.character(Bin_Bars$rel.inf)
-      # only do final variable interaction lines if varint=TRUE
-      if (varint)
-        {Report[1:2,(reportcolno - 7)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
-                                                      paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
-      } else {Report[1,(reportcolno - 7)] <- paste("varint turned off")}
-    } # close else & ZI
 
-    Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Name, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
+      if (gaus) {Report[1:(length(Bin_Bars[,1])),(reportcolno - 9)] <- as.character(Bin_Bars$var)
+      } else {Report[1:(length(Bin_Bars[,1])),(reportcolno - 2)] <- as.character(Bin_Bars$var)}
+
+      if (gaus) {Report[1:(length(Bin_Bars[,2])),(reportcolno - 8)] <- as.character(Bin_Bars$rel.inf)
+      } else {Report[1:(length(Bin_Bars[,2])),(reportcolno - 1)] <- as.character(Bin_Bars$rel.inf)}
+      # only do final variable interaction lines if varint=TRUE
+      if (varint) {
+        if (gaus) {Report[1:2,(reportcolno - 7)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
+                                                       paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
+                  } else {Report[1:2,(reportcolno)] <- c(paste(find.int_Bin$rank.list$var1.names[1]," and ",find.int_Bin$rank.list$var2.names[1],". Size: ",find.int_Bin$rank.list$int.size[1], sep = ""),
+                                                           paste(find.int_Bin$rank.list$var1.names[2]," and ",find.int_Bin$rank.list$var2.names[2],". Size: ",find.int_Bin$rank.list$int.size[2], sep = ""))
+                          } # close varint not gaus
+                   } else {if (gaus) {Report[1,(reportcolno - 7)] <- paste("varint turned off")
+                                     } else {Report[1,(reportcolno)] <- paste("varint turned off")
+                                            } # close not varint not gaus
+                          } # close not varint
+    } # close ZI
+
+    if (gaus) {Report[1:2,(reportcolno - 6)] <- c(paste("Model combo: ", Gaus_Best_Name, sep = ""), paste("Model CV score: ", Gaus_Best_Score, sep = ""))
     if (simp) {Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
     Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
       as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
@@ -689,7 +715,7 @@ gbm.auto <- function(
     if (varint)
       {Report[1:2,(reportcolno)] <- c(paste(find.int_Gaus$rank.list$var1.names[1]," and ",find.int_Gaus$rank.list$var2.names[1],". Size: ",find.int_Gaus$rank.list$int.size[1], sep = ""),
                                                 paste(find.int_Gaus$rank.list$var1.names[2]," and ",find.int_Gaus$rank.list$var2.names[2],". Size: ",find.int_Gaus$rank.list$int.size[2], sep = ""))
-    } else {Report[1,(reportcolno)] <- paste("varint turned off")}
+    } else {Report[1,(reportcolno)] <- paste("varint turned off")}}
     write.csv(Report, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Report.csv", sep = ""))
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -702,9 +728,10 @@ gbm.auto <- function(
       if (RSB) {
         rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
         pos_samples <- subset(samples, brv > 0)
-        rsbdf_gaus <- gbm.rsb(pos_samples, grids, expvarnames, gridslat, gridslon)
+        if (gaus) {rsbdf_gaus <- gbm.rsb(pos_samples, grids, expvarnames, gridslat, gridslon)
         rsbdf_both <- data.frame(rsbdf_bin, "Unrep_Gaus" = rsbdf_gaus[,"Unrepresentativeness"], "Unrep_Both" = (rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"]))
         write.csv(rsbdf_both, row.names = FALSE, file = paste("./", names(samples[i]), "/RSB.csv", sep = ""))
+        } else write.csv(rsbdf_bin, row.names = FALSE, file = paste("./", names(samples[i]), "/RSB.csv", sep = ""))
         print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
       ####24. Map maker####
@@ -761,7 +788,7 @@ gbm.auto <- function(
           if (alerts) beep(2) # progress printer, right aligned for visibility
           print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-          png(filename = paste("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png", sep = ""),
+          if (gaus) {png(filename = paste("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png", sep = ""),
               width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
           par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
           gbm.map(x = grids[,gridslon],
@@ -791,7 +818,7 @@ gbm.auto <- function(
           dev.off()
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
-          print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+          print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
           if (BnW) {     # if BnW=TRUE, do again for b&w
             png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png", sep = ""),
@@ -814,7 +841,7 @@ gbm.auto <- function(
             if (alerts) beep(2) # progress printer, right aligned for visibility
             print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     B&W RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
-            png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png", sep = ""),
+            if (gaus) {png(filename = paste("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png", sep = ""),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
             gbm.map(x = grids[,gridslon],
@@ -849,7 +876,7 @@ gbm.auto <- function(
                     breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = FALSE))/1000)
             dev.off()
             if (alerts) beep(2) # progress printer, right aligned for visibility
-            print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+            print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
           } # close BnW RSBs
         } # close RSB mapper
       } # close Map Maker

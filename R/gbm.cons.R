@@ -37,8 +37,6 @@
 #' @importFrom beepr beep
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
-#' Juveniles <- gbm.auto::Juveniles # load juveniles subset
-#' Adult_Females <- gbm.auto::Adult_Females # load adult females subset
 #' gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
 #'          resvars = c(44:47,11:14),
 #'          expvars = list(c(4:11,15,17,21,25,29,37),
