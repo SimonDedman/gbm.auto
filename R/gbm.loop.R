@@ -172,5 +172,5 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   } # close map optional
 
   return(var.df) #return output
-  if (alerts) beep(8)
+  if (alerts) beep(3)
 } # close function

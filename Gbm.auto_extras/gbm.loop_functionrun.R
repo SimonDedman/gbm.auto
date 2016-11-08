@@ -31,10 +31,9 @@ library("gbm.auto")
 mygrids <- gbm.auto::grids # load grids
 mysamples <- gbm.auto::samples # load samples
 setwd("/home/simon/Desktop/gbm temp/variance/")
-source('~/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
-# library("shapefiles")
-# Crop_Map <- read.shapefile("/home/simon/Desktop/gbm temp/CroppedMap/Crop_Map")
-#source('~/Dropbox/Galway/Analysis/R/gbm.auto/Gbm.auto_extras/gbm.auto.binGausSepParams.R')
+# source('~/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
+library("shapefiles")
+Crop_Map <- read.shapefile("/home/simon/Desktop/gbm temp/CroppedMap/Crop_Map")
 
 gbmlooptest <- gbm.loop(loops = 2,
          savecsv = T, #unnecessary
@@ -48,6 +47,8 @@ gbmlooptest <- gbm.loop(loops = 2,
 gbmlooptest <- gbm.loop(loops = 10, # the number of loops required, integer
                         savecsv = T, # save the variances in simple & extended format
                         varmap = T, # create a map of the variance outputs?
+                        measure = "CPUE", # map legend, variance of what? Default CPUE
+                        cleanup = T, # remove gbm.auto-generated directory each loop?
                         grids = mygrids,         # explantory data to predict to. Import with (e.g.)
                         # read.csv and specify object name.
                         samples = mysamples,  # explanatory and response variables to predict from.
