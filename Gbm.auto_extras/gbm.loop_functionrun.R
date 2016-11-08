@@ -45,7 +45,7 @@ gbmlooptest <- gbm.loop(loops = 2,
          RSB = F)
 
 gbmlooptest <- gbm.loop(loops = 10, # the number of loops required, integer
-                        savecsv = T, # save the variances in simple & extended format
+                        savecsv = F, # save the variances in simple & extended format
                         varmap = T, # create a map of the variance outputs?
                         measure = "CPUE", # map legend, variance of what? Default CPUE
                         cleanup = T, # remove gbm.auto-generated directory each loop?

@@ -134,7 +134,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     if (cleanup) unlink(i, recursive = T)
   } # close i loop & go to the next i
 
-  var.df[,"Variances"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
+  var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
   # apply variances to a new column at the end of var.df
 
   if (savecsv) {write.csv(var.df, file = "VarAll.csv", row.names = F)
