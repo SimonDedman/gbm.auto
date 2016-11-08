@@ -7,6 +7,27 @@
 # bootstrapping & variance estimates: how to run gbm.auto or gbm.step in a bootstrap?
 # variance: just need to re-run it to different folders, so feasibly just have a loop with
 # all unecessary stuff switched off and a new folder each time?
+#
+# It does seem that the Gaussian models stop working reliably (I got individual
+# runs to work for bull and sandbar sharks, but could never get the same
+# parameters to work more than once) somewhere between 44 and 33 “positive”
+# sets.  I wonder if it might be worth a separate paper doing some kind of
+# sensitivity analysis to figure out where that line actually is?
+#
+# A looping function which repeats the same param combo a ton of times and
+# takes the variance of the predicted abundance at each site, for each loop. This
+# will hopefully end up with a variance surface and/or variance score, since
+# variance is kinda a missing metric in these analyses.
+#
+# A bootstrapping function. Essentially looping the same params, but removing
+# random single/multiple rows/columns of data to test for e.g. time series effect
+# even if single year splits aren't powerful enough to run a BRT on their own
+# because of insufficient data.
+#
+# So maybe this kind of analysis could fit into the coding for one of these? Or
+# all 3 together. They're all clearly related. Repeating, sometimes taking stuff
+# out, and collating answers at the end.
+
 
 # Diya:
 # Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
