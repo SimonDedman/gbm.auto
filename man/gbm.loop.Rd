@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.loop.R
 \name{gbm.loop}
 \alias{gbm.loop}
-\title{Calculate variance surfaces for gbm.auto predictions}
+\title{Calculate Coefficient Of Variation surfaces for gbm.auto predictions}
 \usage{
 gbm.loop(loops = 10, savecsv = T, varmap = T, measure = "CPUE",
   cleanup = FALSE, grids, samples, expvar, resvar, tc = c(2),
@@ -14,11 +14,11 @@ gbm.loop(loops = 10, savecsv = T, varmap = T, measure = "CPUE",
 \arguments{
 \item{loops}{The number of loops required, integer}
 
-\item{savecsv}{Save the variances in simple & extended format}
+\item{savecsv}{Save the coefficients of variation in simple & extended format}
 
-\item{varmap}{Create a map of the variance outputs?}
+\item{varmap}{Create a map of the coefficients of variation outputs?}
 
-\item{measure}{Map legend, variance of what? Default CPUE}
+\item{measure}{Map legend, coefficients of variation of what? Default CPUE}
 
 \item{cleanup}{Remove gbm.auto-generated directory each loop? Default FALSE}
 
@@ -72,9 +72,9 @@ and a final variance score per cell.
 }
 \description{
 Processes a user-specified number of loops through the same gbm.auto
-parameter combinations and calculates the variance in the predicted abundance
-scores for each site aka cell. This can be mapped to spatially demonstrate
-the output variance range.
+parameter combinations and calculates the Coefficient Of Variation in the
+predicted abundance scores for each site aka cell. This can be mapped to
+spatially demonstrate the output variance range.
 }
 \examples{
 library("gbm.auto")
