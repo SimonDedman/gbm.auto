@@ -14,7 +14,7 @@
 #' @param latcolno Column number in dbase which has latitudes
 #' @param goodcols Which column numbers are abundances (where higher = better)? List them in order of highest conservation importance first e.g. c(3,1,2,4)
 #' @param badcols Which col no.s are 'negative' e.g. fishing (where higher = worse)?
-#' @param conservecol Conservation column, from gbm.conserve
+#' @param conservecol Conservation column, from gbm.cons
 #' @param plotthis To plot? delete any,or all w/ NULL
 #' @param maploops Sort loops to run
 #' @param savethis Export all data as csv?
@@ -45,7 +45,7 @@ gbm.valuemap <- function(
   goodcols,  # which column numbers are abundances (where higher = better)? List
 # them in order of highest conservation importance first e.g. c(3,1,2,4)
   badcols,  # which col no.s are 'negative' e.g. fishing (where higher = worse)?
-  conservecol = NULL, # conservation column, from gbm.conserve
+  conservecol = NULL, # conservation column, from gbm.cons
   plotthis = c("good","bad","both","close"), #to plot? delete any,or all w/ NULL
   maploops = c("Combo","Biomass","Effort","Conservation"), # sort loops to run
   savethis = TRUE, # export all data as csv?

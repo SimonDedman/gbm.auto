@@ -27,6 +27,20 @@
 # So maybe this kind of analysis could fit into the coding for one of these? Or
 # all 3 together. They're all clearly related. Repeating, sometimes taking stuff
 # out, and collating answers at the end.
+#
+# SD: I'm just bouncing an idea around my head whereby the code could:
+# 1. run lower and lower (individual bin & gaus) lr/bf combos until it they failed
+# 2. repeat the last working one a few times to test for resilience
+# 3. Creep down a LITTLE bit to see if it can go a bit lower reliably (settable aggression parameter)
+# 4. Essentially iterate until its got it's lowest reliable number
+# 5. Describe the curve of lr/bf combo and (reliable) success rate, noting run time.
+# 6. Do this for a number of species
+# 7. Bootstrap to make the data poorer and poorer
+# (manual after this point?)
+# 8. Throw all the results together to see if we have something that looks to reveal an underlying relationship,
+#    i.e. data strength vs gbm success & processing time
+# 9. Describe that relationship for various species.
+# 10. Are there commonalities?
 
 
 # Diya:

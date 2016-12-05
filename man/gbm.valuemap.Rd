@@ -22,7 +22,7 @@ gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
 
 \item{badcols}{Which col no.s are 'negative' e.g. fishing (where higher = worse)?}
 
-\item{conservecol}{Conservation column, from gbm.conserve}
+\item{conservecol}{Conservation column, from gbm.cons}
 
 \item{plotthis}{To plot? delete any,or all w/ NULL}
 
