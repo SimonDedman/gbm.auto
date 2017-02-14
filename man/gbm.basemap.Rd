@@ -4,7 +4,7 @@
 \alias{gbm.basemap}
 \title{Creates Basemaps for Gbm.auto mapping from your data range}
 \usage{
-gbm.basemap(bounds, getzip = TRUE, zipvers = "2.3.5-1",
+gbm.basemap(bounds, getzip = TRUE, zipvers = "2.3.6",
   savename = "Crop_Map", res = "CALC", extrabounds = FALSE)
 }
 \arguments{

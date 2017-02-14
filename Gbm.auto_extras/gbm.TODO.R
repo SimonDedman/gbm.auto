@@ -4,20 +4,11 @@
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
 # rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix
 
-# bootstrapping & variance estimates: how to run gbm.auto or gbm.step in a bootstrap?
-# variance: just need to re-run it to different folders, so feasibly just have a loop with
-# all unecessary stuff switched off and a new folder each time?
-#
 # It does seem that the Gaussian models stop working reliably (I got individual
 # runs to work for bull and sandbar sharks, but could never get the same
 # parameters to work more than once) somewhere between 44 and 33 “positive”
 # sets.  I wonder if it might be worth a separate paper doing some kind of
-# sensitivity analysis to figure out where that line actually is?
-#
-# A looping function which repeats the same param combo a ton of times and
-# takes the variance of the predicted abundance at each site, for each loop. This
-# will hopefully end up with a variance surface and/or variance score, since
-# variance is kinda a missing metric in these analyses.
+# sensitivity analysis to figure out where that line actually is? [chuck]
 #
 # A bootstrapping function. Essentially looping the same params, but removing
 # random single/multiple rows/columns of data to test for e.g. time series effect
@@ -155,6 +146,8 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# variance estimates: gbm.loop
+
 # Process & map bin only
 # gaus = TRUE
 

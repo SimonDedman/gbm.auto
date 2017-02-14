@@ -56,6 +56,8 @@ plotthis = c("both","close")
  # dispersion factor / standard deviation / clustering /contagious-uniform distribution. Number of closed areas created. Don’t need all that right now.
 
 
+
+
 ####Load scripts & data####
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.map.R')
