@@ -1,5 +1,16 @@
 ####TO DO####
+
+# RSB log/ unlog cleverness is in gbm.auto map plottting section but nowhere else.
+
+# L246 250 618: optionally change hurdle/delta model to include zeroes in the gaussian part
+
+# L579 increase bar thickness with lwd
+
 # Examples for all functions man pages
+
+# gbm.loop: C of V map: C of V map: 20% CV is a concerningly high figure.
+# Ideally have a colour scheme which clearly illustrates when 20% is
+# reached/passed (Cóilín). C of V is really important bit of thesis.
 
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
 # rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix

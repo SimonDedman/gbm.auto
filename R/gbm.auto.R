@@ -243,12 +243,14 @@ gbm.auto <- function(
     brvcol <- which(colnames(samples) == "brv") # brv column number for BRT
 
     # create logged response variable, for gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
-    logem <- log(samples[,i])
+    logem <- log(samples[,i]) # logs resvar i.e. containing zeroes
     dont  <- samples[,i]
     if (ZI) {samples$grv <- logem} else {samples$grv <- dont}
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
     grv_yes <- subset(samples, grv >= 0) # nonzero subset for gaussian BRTs
     # actually not nonzero but 'not -Inf' since zeroes logged to "-Inf"
+    # Change this to grv_yes <- samples if using a hurdle model including zeroes
+    # need to keep it as log1p in that case?
 
     ####3. Begin Report####
     #reportcolno = (3 + (5*(length(tc)*length(lr)*length(bf))) + 14)
@@ -570,7 +572,12 @@ gbm.auto <- function(
           width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
           type = pngtype)
       par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.8,mgp = c(1.5,0.5,0), cex = 1.3)
-      midpoints <- barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1, horiz = TRUE, cex.names = 0.8, xlab = "Influence %", col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]), xlim = c(0,2.5 + ceiling(max(Bin_Bars[,2]))))
+      midpoints <- barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1,
+                           horiz = TRUE, cex.names = 0.8, xlab = "Influence %",
+                           col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]),
+                           xlim = c(0,2.5 + ceiling(max(Bin_Bars[,2]))),
+                           lwd = 4)
+      # add lwd = 4 to barplot to increase line thickness
       text(0.1, midpoints, labels = rev(Bin_Bars[,1]), adj = 0, cex = 1.5)
       axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
       dev.off()} # close ZI
