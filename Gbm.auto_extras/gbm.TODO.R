@@ -1,5 +1,7 @@
 ####TO DO####
 
+# paste0() = paste(..., sep = "")
+
 # RSB log/ unlog cleverness is in gbm.auto map plottting section but nowhere else.
 
 # L246 250 618: optionally change hurdle/delta model to include zeroes in the gaussian part

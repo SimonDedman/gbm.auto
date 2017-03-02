@@ -3,6 +3,7 @@
 # 1/6/2015
 ##
 ####TODO####
+# L173 could normalise another way, L173
 # have per-species cons maps underpin the Conservation Sort in p3, rather than
 # all 4 species underpinned by the 4-sp gbm.cons map.
 

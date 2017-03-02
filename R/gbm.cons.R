@@ -170,6 +170,7 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
            get(paste("Scaled_", k, sep = ""))
            + (get(paste(subsets[i], "_", k, sep = ""))[,3]
               / max(get(paste(subsets[i], "_", k, sep = ""))[,3], na.rm = TRUE)))
+    ###could have option here to normalise another way than scaling to 1
 
     xtmp <- get(paste(subsets[i], "_", k, sep = ""))[,2] # LONG for later
     ytmp <- get(paste(subsets[i], "_", k, sep = ""))[,1] # LAT for later
