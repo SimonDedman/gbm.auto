@@ -32,11 +32,10 @@ bottom.
   \item Spotted. Numbers of spotted rays caught, standardised to 1 hour
 }
 }
-\author{
-Simon Dedman, \email{simondedman@gmail.com}
-}
 \references{
 \url{http://datras.ices.dk}
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 \keyword{datasets}
-

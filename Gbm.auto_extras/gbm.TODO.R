@@ -15,6 +15,7 @@
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
 # rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix
 
+# Chuck stuff:
 # It does seem that the Gaussian models stop working reliably (I got individual
 # runs to work for bull and sandbar sharks, but could never get the same
 # parameters to work more than once) somewhere between 44 and 33 “positive”
@@ -25,6 +26,9 @@
 # random single/multiple rows/columns of data to test for e.g. time series effect
 # even if single year splits aren't powerful enough to run a BRT on their own
 # because of insufficient data.
+# library(boot)
+# boot()
+# see https://www.r-bloggers.com/the-wonders-of-foreach/
 #
 # So maybe this kind of analysis could fit into the coding for one of these? Or
 # all 3 together. They're all clearly related. Repeating, sometimes taking stuff
@@ -62,6 +66,13 @@ if (!requireNamespace("gbm")) {
 # See gbm.auto L578
 
 ####Multicore Processing####
+# See https://stackoverflow.com/questions/29873577/r-dismogbm-step-parameter-selection-function-in-parallel
+  # detectCores, foreach cores<-detectCores(all.tests = FALSE, logical = FALSE)
+  # https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf
+  # https://www.r-bloggers.com/the-wonders-of-foreach/
+# Also pacman::p_load for better package loading e.g.
+  require(pacman)
+  p_load(gbm, dismo, TeachingDemos, foreach, doParallel, data.table)
 # already supposedly incorporated; doesnt work
 # Re-investigate multicore R
 # https://stackoverflow.com/questions/4775098/r-with-a-multi-core-processor
@@ -114,6 +125,7 @@ gbm.auto(expvar = c(4:9,11), resvar = 12, grids = mygrids, lr = c(0.02), ZI = TR
 
 
 ####Processing time estimate####
+# See https://cran.r-project.org/web/packages/doParallel/vignettes/gettingstartedParallel.pdf p3 system.time({code to run})[3]
 #  option to have R poll the computer and, when you say go, popup a box saying
 # "Based on the parameters you've selected to try, this will run X models on a Y-item-sized dataset (Y = variables * count)
 # which may take about Z minutes based on your processor. You have a multicore processor so it will take Z/#processors (time)

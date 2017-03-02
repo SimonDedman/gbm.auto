@@ -56,7 +56,7 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
     assign(paste("hist_grids_", expvarnames[q], sep = ""), hist(grids[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
     # calculate difference between frequencies, assign to object
     assign(paste("hist_diff_", expvarnames[q], sep = ""), (get(paste("hist_samples_", expvarnames[q], sep = ""))$density*bin - get(paste("hist_grids_",expvarnames[q], sep = ""))$density * bin))
-    # calculate modulus of that
+    # calculate modulus of that #could use abs() to do this
     assign(paste("hist_diff_mod_",expvarnames[q], sep = ""),sqrt(get(paste("hist_diff_", expvarnames[q], sep = "")) ^ 2))
     # create a vector for the diff lookup results: from that expvar's dataframe, get the diff value (col4) for the bin range number corresponding to the expvar value in grids
     assign(paste(expvarnames[q],"_hist_diff", sep = ""),get(paste("hist_diff_", expvarnames[q], sep = ""))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])

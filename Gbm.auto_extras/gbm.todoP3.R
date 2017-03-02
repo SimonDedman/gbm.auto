@@ -59,20 +59,25 @@ plotthis = c("both","close")
 
 
 ####Load scripts & data####
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.map.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.basemap.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.rsb.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.auto.R')
-source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.valuemap.R')
+library("devtools")
+install_github("SimonDedman/gbm.auto") # update gbm.auto to latest
+library("gbm.auto")
+# source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.utils.R')
+# source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.map.R')
+# source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.basemap.R')
+# source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.rsb.R')
+# source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.auto.R')
+# source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/R/gbm.valuemap.R')
 
 ####run gbm.auto with E####
 # Load linux
 #mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E.csv", header = TRUE, row.names = NULL)
 #mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", header = TRUE)
 # Load linux no grain
-mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E_NoGrain.csv", header = TRUE, row.names = NULL)
-mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE_NoGrain.csv", header = TRUE)
+mysamples <- gbm.auto::samples
+# mysamples <- read.csv("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Data/Samples_allRays_Env_F_E_NoGrain.csv", header = TRUE, row.names = NULL)
+mygrids <- gbm.auto::grids
+# mygrids <- read.csv("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Juveniles/grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE_NoGrain.csv", header = TRUE)
 # set directory, with fishing E as an expvar
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E")
 
@@ -82,21 +87,31 @@ data(coast)
 shape = coast
 
 # run gbm.autos, NoGrain; cuckoo
-gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids, samples = mysamples, lr = c(0.005), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+gbm.auto(expvar = c(4:10), resvar = 11, grids = mygrids,
+         samples = mysamples, lr = c(0.005), ZI = TRUE, savegbm = FALSE,
+         shape = coast)
 #thornback
-gbm.auto(expvar = c(4:7, 9, 11), resvar = 13, grids = mygrids, samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 12, grids = mygrids,
+         samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
+         shape = coast)
 #blonde
-gbm.auto(expvar = c(4:7, 9, 11), resvar = 14, grids = mygrids, samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 13, grids = mygrids,
+         samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
+         shape = coast)
 #spotted
-gbm.auto(expvar = c(4:7, 9, 11), resvar = 15, grids = mygrids, samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+gbm.auto(expvar = c(4:7, 9, 11), resvar = 14, grids = mygrids,
+         samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
+         shape = coast)
 #all at once
-gbm.auto(expvar = c(4:7, 9, 11), resvar = c(12:15), grids = mygrids, samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE, mapshape = coast)
+gbm.auto(expvar = c(4:7, 9, 11), resvar = c(11:14), grids = mygrids,
+         samples = mysamples, lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE,
+         shape = coast)
 
 ####From here to run all automatically####
 #(this is an overnight job!)
 # Load data & set WD
-conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
-mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
+conserve <- gbm.auto::AllScaledData
+mydata <- gbm.auto::AllPreds_E
 mydata <- cbind(mydata, conserve = conserve[,3]) #add conservation data as a column to mydata
 setwd("/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/ValueMaps")
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.valuemap.R')
@@ -119,13 +134,13 @@ gbm.valuemap(dbase = mydata,  # data.frame to load. Expects Lon, Lat & data colu
              badcols = 7,  # which column numbers are 'negative' elements e.g. fishing (where higher = worse)?
              conservecol = 8, #conservation column
              HRMSY = c(0.14,0.08,0.08,0.15),
-             mapshape = coast)
+             shape = coast)
 
 # run with effort weight as 10 "badweight"
 rm(list = ls()) # remove everything to clear workspace, free memory & reload
-conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
-mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
-mydata <- cbind(mydata, conserve = conserve[,3])
+conserve <- gbm.auto::AllScaledData
+mydata <- gbm.auto::AllPreds_E
+mydata <- cbind(mydata, conserve = conserve[,3]) #add conservation data as a column to mydata
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
@@ -143,9 +158,9 @@ gbm.valuemap(dbase = mydata,
 
 # run with species weights all as 10 "goodweight"
 rm(list = ls())
-conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
-mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
-mydata <- cbind(mydata, conserve = conserve[,3])
+conserve <- gbm.auto::AllScaledData
+mydata <- gbm.auto::AllPreds_E
+mydata <- cbind(mydata, conserve = conserve[,3]) #add conservation data as a column to mydata
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')
@@ -163,9 +178,9 @@ gbm.valuemap(dbase = mydata,
 
 # run with species weights set individually "Goodweight 4 3.5 1.5 1"
 rm(list = ls())
-conserve <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/ConservationMaps/Combo/AllScaledData.csv", header = TRUE, row.names = NULL)
-mydata <- read.csv(file = "/home/simon/Dropbox/Galway/Project Sections/3b. BRT plus Bpa Sam & Dave/Analysis/Model Outputs/With E/AllPreds_E.csv", header = TRUE, row.names = NULL)
-mydata <- cbind(mydata, conserve = conserve[,3])
+conserve <- gbm.auto::AllScaledData
+mydata <- gbm.auto::AllPreds_E
+mydata <- cbind(mydata, conserve = conserve[,3]) #add conservation data as a column to mydata
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.utils.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.map.R')
 source('/home/simon/Dropbox/Galway/Analysis/R/gbm.auto/gbm.rsb.R')

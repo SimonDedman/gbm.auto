@@ -87,4 +87,3 @@ grids = mygrids, expvar = c(4:10), resvar = 11, simp = F)
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 }
-

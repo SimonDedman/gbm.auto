@@ -97,4 +97,3 @@ gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 }
-

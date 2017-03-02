@@ -70,4 +70,3 @@ abundance CPUEs of cuckoo, thornback, blonde and spotted rays.
 Simon Dedman, \email{simondedman@gmail.com}
 }
 \keyword{datasets}
-

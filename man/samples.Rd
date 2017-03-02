@@ -33,11 +33,10 @@ bottom.
   \item Spotted. Numbers of juvenile spotted rays caught, standardised to 1 hour
 }
 }
-\author{
-Simon Dedman, \email{simondedman@gmail.com}
-}
 \references{
 \url{http://oar.marine.ie/handle/10793/958}
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 \keyword{datasets}
-

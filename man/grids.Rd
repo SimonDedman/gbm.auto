@@ -62,11 +62,10 @@ predators of rays including juveniles in the Irish Sea.
   \item Effort.  Irish commercial beam trawler effort 2012
 }
 }
-\author{
-Simon Dedman, \email{simondedman@gmail.com}
-}
 \references{
 \url{http://oar.marine.ie/handle/10793/958}
 }
+\author{
+Simon Dedman, \email{simondedman@gmail.com}
+}
 \keyword{datasets}
-

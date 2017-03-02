@@ -25,4 +25,3 @@ blonde, thornback and spotted rays.
 Simon Dedman, \email{simondedman@gmail.com}
 }
 \keyword{datasets}
-

@@ -59,4 +59,3 @@ hence I pointed getzip at that rather than having it download the zip again.
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 }
-

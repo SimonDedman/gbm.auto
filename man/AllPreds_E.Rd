@@ -27,4 +27,3 @@ Irish commercial beam trawler effort 2012.
 Simon Dedman, \email{simondedman@gmail.com}
 }
 \keyword{datasets}
-

@@ -27,4 +27,3 @@ None
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 }
-
