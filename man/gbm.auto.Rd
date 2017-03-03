@@ -6,7 +6,7 @@
 \usage{
 gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
   0.005), bf = 0.5, ZI = "CHECK", simp = TRUE, gridslat = 2,
-  gridslon = 1, cols = grey.colors(1, 1, 1), linesfiles = FALSE,
+  gridslon = 1, cols = grey.colors(1, 1, 1), linesfiles = TRUE,
   savegbm = TRUE, varint = TRUE, map = TRUE, shape = NULL, RSB = TRUE,
   BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
 }
@@ -127,6 +127,10 @@ Run gbm.bfcheck to check recommended minimum BF size
 > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
 It may be that you don't have enough positive samples to run BRT modelling
 Run gbm.bfcheck to check recommended minimum BF size
+
+9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
+32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
+in the tiny bit at the right. Clean your data well beforehand.
 }
 \examples{
 gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,

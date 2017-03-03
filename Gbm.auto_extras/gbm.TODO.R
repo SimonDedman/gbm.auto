@@ -1,5 +1,14 @@
 ####TO DO####
 
+# option either in gbm.auto or separate function to take line plots (feasibly as
+# linesfiles csvs) and overlay multiple lins on the same plot to save space and
+# allow comparisons. Bin & gaus obviously, but potentially subsets as well.
+# Lines options either colours or dash variants.
+# Related: Possibly a function to plot bars (bin, gaus) and lines (as above) as
+# a panel/matrix of plots, to avoid having to postprocess in GIMP.
+# Conceptualy would have to order the line plots by rank of bin+gaus importance
+# from "Binary/Gaussian BRT Variable contributions.csv" auto output
+
 # paste0() = paste(..., sep = "")
 
 # RSB log/ unlog cleverness is in gbm.auto map plottting section but nowhere else.

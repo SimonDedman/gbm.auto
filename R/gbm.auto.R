@@ -92,6 +92,10 @@
 #' It may be that you don't have enough positive samples to run BRT modelling
 #' Run gbm.bfcheck to check recommended minimum BF size
 #'
+#' 9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
+#' 32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
+#' in the tiny bit at the right. Clean your data well beforehand.
+#'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 #'
@@ -139,7 +143,7 @@ gbm.auto <- function(
   gridslon = 1,         # column number for longitude in 'grids'
   cols = grey.colors(1,1,1), # barplot colour vector. Assignment in order of
   # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
-  linesfiles = FALSE,   # save individual line plots' data as csv's?
+  linesfiles = TRUE,   # save individual line plots' data as csv's?
   savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
   varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
   # for error "contrasts can be applied only to factors with 2 or more levels"
@@ -464,6 +468,10 @@ gbm.auto <- function(
     print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Best models selected     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
 
     ####12. Line plots####
+    # Note that anomalous values can obfuscate clarity e.g. salinity range
+    # 32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
+    # in the tiny bit at the right. Clean your data well.
+
     dir.create(names(samples[i])) # create resvar-named directory for outputs
 
     # All plots on one image for Bin & Gaus
