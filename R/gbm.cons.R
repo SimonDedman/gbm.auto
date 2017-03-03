@@ -29,7 +29,7 @@
 #' @param RSBs Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param BnWs Gbm.auto paramaters, autocalculated below if not provided by user
 #' @param zeroes Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param mapshape Coastline file for gbm.map
+#' @param shape Coastline file for gbm.map
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #'
 #' @return  Maps via gbm.map & saved data as csv file
@@ -79,7 +79,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      RSBs = rep(TRUE, length(resvars)),
                      BnWs = rep(TRUE, length(resvars)),
                      zeroes = rep(TRUE, length(resvars)),
-                     mapshape = NULL, # coastline file for gbm.map
+                     shape = NULL, # coastline file for gbm.map
                      pngtype = "cairo-png") # filetype for png files, alternatively try "quartz"
 {
   ####todo: make running gbm.auto optional####
@@ -89,7 +89,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
 
 ####Load functions & data####
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-if (is.null(mapshape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
+if (is.null(shape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
 if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
@@ -138,7 +138,7 @@ for (i in 1:length(subsets)) {  #currently 2
                             RSB = RSBs[[((i - 1) * GS) + j]],
                             BnW = BnWs[[((i - 1) * GS) + j]],
                             zero = zeroes[[((i - 1) * GS) + j]],
-                            mapshape = mapshape)
+                            shape = shape)
       if (alerts) beep(2)} # ping for each completion
 
     # create object for resulting abundance preds csv, e.g. Juveniles_Cuckoo
@@ -185,7 +185,7 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
   ####Unscaled conservation maps####
   # map all subsets' abundance for species k
   if (map) {
-    if (is.null(mapshape)) { # create basemap if not provided
+    if (is.null(shape)) { # create basemap if not provided
       bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
       #create standard bounds from data, and extra bounds for map aesthetic
       xmid <- mean(bounds[1:2])
@@ -196,7 +196,7 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
       yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
       extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
       shape <- gbm.basemap(bounds = extrabounds)
-    } else {shape <- mapshape}
+    } else {shape <- shape}
 
     png(filename = paste("./Conservation_Map_", k, ".png", sep = ""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,

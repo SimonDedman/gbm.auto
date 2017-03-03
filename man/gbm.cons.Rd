@@ -12,7 +12,7 @@ gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
   linesfiless = rep(FALSE, length(resvars)), savegbms = rep(TRUE,
   length(resvars)), varints = rep(TRUE, length(resvars)), maps = rep(TRUE,
   length(resvars)), RSBs = rep(TRUE, length(resvars)), BnWs = rep(TRUE,
-  length(resvars)), zeroes = rep(TRUE, length(resvars)), mapshape = NULL,
+  length(resvars)), zeroes = rep(TRUE, length(resvars)), shape = NULL,
   pngtype = "cairo-png")
 }
 \arguments{
@@ -61,7 +61,7 @@ matching-named dataset objects e.g. read in by read.csv()}
 
 \item{zeroes}{Gbm.auto paramaters, autocalculated below if not provided by user}
 
-\item{mapshape}{Coastline file for gbm.map}
+\item{shape}{Coastline file for gbm.map}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 }
