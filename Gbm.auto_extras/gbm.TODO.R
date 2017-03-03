@@ -1,4 +1,16 @@
 ####TO DO####
+# Add titles to plots:
+## line: mtext("text to place", side=1, line=?, ...) line controls dist from
+## either margin or axis, not sure, play around. Get text from either expvarcols
+## or separate user-entered character vector to allow spaces & units e.g. from
+## "Distance_to_Shore" to "Distance to Shore (m)". If using this, need a way to
+## bind/match labels to expvarcols names
+#
+## Bars: currently: labels = rev(Bin_Bars[,1]). Swap with character vector entry
+#
+## dotplots: more difficult, labels with expvar as default. Would have to set
+## v=variablename for each variable, plot separately, add mtext etc. Rarely use
+## dotplots, leave for now.
 
 # option either in gbm.auto or separate function to take line plots (feasibly as
 # linesfiles csvs) and overlay multiple lins on the same plot to save space and
