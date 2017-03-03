@@ -24,7 +24,7 @@
 #' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
 #' @param alerts Play sounds to mark progress steps
 #' @param BnW Also produce greyscale images for print publications
-#' @param mapshape Set coastline shapefile, else uses British Isles. Generate your own with gbm.basemap
+#' @param shape Set coastline shapefile, else uses British Isles. Generate your own with gbm.basemap
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param ... Optional terms for gbm.map
 #'
@@ -58,7 +58,7 @@ gbm.valuemap <- function(
 # 0.001 kilos to tonnes. Assumedly the same for all goodcols.
   alerts = TRUE,  # play sounds to mark progress steps
   BnW = TRUE,  # also produce greyscale images for print publications
-  mapshape = NULL, #  set coastline shapefile, else
+  shape = NULL, #  set coastline shapefile, else
 # uses British Isles. Generate your own with gbm.basemap
   pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
   ...) {  # optional terms for gbm.map
@@ -70,7 +70,7 @@ if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to
   if (alerts) require(beepr) #for progress noises
 if (alerts) options(error = function() {beep(9)})  # warn for fails
 
-if (is.null(mapshape)) {
+if (is.null(shape)) {
   if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
     bounds = c(range(dbase[,loncolno]),range(dbase[,latcolno]))
     #create standard bounds from data, and extra bounds for map aesthetic
@@ -81,7 +81,7 @@ if (is.null(mapshape)) {
     yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
     yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
     extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-    mapshape <- gbm.basemap(bounds = extrabounds)
+    shape <- gbm.basemap(bounds = extrabounds)
   }
 
 goodname = colnames(dbase)[goodcols] #the response varible(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
@@ -114,7 +114,7 @@ if ("bad" %in% plotthis) {
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno],  # run gbm.map function with generated parameters
           y = dbase[,latcolno], z = baddata, mapmain = "Fishing Effort",
-          species = "", legendtitle = "Effort Level", shape = mapshape)
+          species = "", legendtitle = "Effort Level", shape = shape)
   dev.off()
 
   if (BnW) {
@@ -125,7 +125,7 @@ if ("bad" %in% plotthis) {
             y = dbase[,latcolno], z = baddata,
             mapmain = "Fishing Effort", species = "",
             legendtitle = "Effort Level",
-            shape = mapshape,
+            shape = shape,
             landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
             mapback = "white", heatcolours = grey.colors(8, start = 1, end = 0))
     dev.off()
@@ -153,7 +153,7 @@ png(filename = paste("./", goodname[j], "_Map.png", sep = ""),
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
-        species = goodname[j], shape = mapshape)
+        species = goodname[j], shape = shape)
 dev.off()
 
 if (BnW) {
@@ -165,7 +165,7 @@ if (BnW) {
           landcol = grey.colors(1, start = 0.8, end = 0.8),
           mapback = "white",
           heatcolours = grey.colors(8, start = 1, end = 0),
-          shape = mapshape)
+          shape = shape)
   dev.off()
   if (alerts) beep(2) # alert user of success
 }} # close goodplot & BnW
@@ -183,7 +183,7 @@ if ("both" %in% plotthis) {
           species = goodname[j],
           heatcolours = c("red", "lightyellow","blue"),
           legendtitle = "0 - 2", byxout = TRUE,
-          shape = mapshape)
+          shape = shape)
   dev.off()
   byx <- byxport
   byy <- byx
@@ -200,7 +200,7 @@ if ("both" %in% plotthis) {
             landcol = grey.colors(1, start = 0.8, end = 0.8),
             mapback = "white",
             heatcolours = grey.colors(3, start = 1, end = 0),
-            shape = mapshape)
+            shape = shape)
     dev.off()} # close BnW
   if (alerts) beep(2) } # alert user, close bothplot
   } # close species loop 1
@@ -251,7 +251,7 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
             z = dbase[,bothdatarange[j]] # scaled & weighted (bothdata) *m
             heatcolours = c("red", "lightyellow","blue")
             colournumber = 8   #number of colours to spread heatcol over, default:8
-            shape = mapshape   #basemap shape to draw, from draw.shape in mapplots
+            shape = shape   #basemap shape to draw, from draw.shape in mapplots
             landcol = "grey80" #colour for 'null' (land) area of map, from draw.shape in mapplots
             mapback = "lightblue" # basemap background (sea) colour
             legendloc = "bottomright" #location on map of legend box, from legend.grid in mapplots
@@ -288,7 +288,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               breaks2 <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol2 = c("#00000000", colorRampPalette(heatcol2)(length(heatcol2) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
               draw.grid(grd2, breaks2, col = heatcol2) # plot grd data w/ breaks for colour breakpoints
-              draw.shape(shape = mapshape, col = landcol) # add coastline
+              draw.shape(shape = shape, col = landcol) # add coastline
               legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
             dev.off()
 
@@ -308,7 +308,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               z = dbase[,bothdatarange[j]] # scaled & weighted (bothdata) *m
               heatcolours = grey.colors(3, start = 1, end = 0)
               colournumber = 8
-              shape = mapshape
+              shape = shape
               landcol = grey.colors(1, start = 0.8, end = 0.8)
               mapback = "white"
               legendloc = "bottomright"
@@ -342,7 +342,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               breaks2 <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))
               if (zero) {heatcol2 = c("#00000000",colorRampPalette(heatcol2)(length(heatcol2) - 1))}
               draw.grid(grd2, breaks2, col = heatcol2)
-              draw.shape(shape = mapshape, col = landcol)
+              draw.shape(shape = shape, col = landcol)
               legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
               dev.off()
             } # close BnW
@@ -399,7 +399,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ",((o - 1)
           mapmain = "Cumulative Closed Area: ",
           species = paste(maploopnames[o]," ",goodname[l],sep = ""),
           heatcolours = c("black","black"), colournumber = 2,
-          shape = mapshape, mapback = "white",
+          shape = shape, mapback = "white",
           legendtitle = paste(badpct2,"% E closed",sep = ""),
           byx = byx, byy = byy)
     dev.off()
@@ -426,7 +426,7 @@ gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,ncol(dbase)],
         mapmain = "Per Species Closed Area: ", species = maploopnames[o],
         heatcolours = c("black",rainbow(length(goodcols) - 1)), #black then rainbow colours. Total n is length(goodcols): blank, black, then goodcols-1 other colours
         colournumber = length(goodcols) + 1, # Colours are set as the breaks, but painted from the midpoints
-        shape = mapshape, mapback = "white",
+        shape = shape, mapback = "white",
         legendtitle = paste(badpct2,"% E closed",sep = ""),
         byx = byx, byy = byy, breaks = c(0,0:length(goodcols)))
 dev.off()
@@ -441,7 +441,7 @@ if (BnW) {
           species = maploopnames[o],
           heatcolours = grey.colors(8, start = 0.7, end = 0),
           colournumber = length(goodcols) + 1,
-          shape = mapshape, mapback = "white",
+          shape = shape, mapback = "white",
           legendtitle = paste(badpct2, "% E closed", sep = ""),
           byx = byx, byy = byy, breaks = c(0,0:length(goodcols)))
     dev.off()} # close BnW

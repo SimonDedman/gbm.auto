@@ -8,7 +8,7 @@ gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
   conservecol = NULL, plotthis = c("good", "bad", "both", "close"),
   maploops = c("Combo", "Biomass", "Effort", "Conservation"),
   savethis = TRUE, HRMSY = NULL, goodweight = NULL, badweight = NULL,
-  m = 1, alerts = TRUE, BnW = TRUE, mapshape = NULL,
+  m = 1, alerts = TRUE, BnW = TRUE, shape = NULL,
   pngtype = "cairo-png", ...)
 }
 \arguments{
@@ -42,7 +42,7 @@ gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
 
 \item{BnW}{Also produce greyscale images for print publications}
 
-\item{mapshape}{Set coastline shapefile, else uses British Isles. Generate your own with gbm.basemap}
+\item{shape}{Set coastline shapefile, else uses British Isles. Generate your own with gbm.basemap}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
