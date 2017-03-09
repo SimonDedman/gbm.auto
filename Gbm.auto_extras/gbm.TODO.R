@@ -1,4 +1,28 @@
 ####TO DO####
+## Area not included in input CPUE values nor output predictions!
+# One current limitation is that the surveyed CPUE values input into the gbm.auto
+# and gbm.valuemap functions are taken as the midpoints of the survey trawl. This
+# converts the swept area (trawl net width times bottom trawled distance) into a
+# single point value, rather than assigning the CPUE over the area. When gbm.auto
+# predicts to points, logically those points should represent the same swept area
+# as the average survey trawl, however they are currently a function of the
+# resolution of the highest resolution dataset interpolated to, the 275x455m depth
+# grids. The total CPUE calculated for the study area (i.e. the sum of all
+# predicted CPUE points) could therefore be higher or lower than is logically
+# defensible, depending on whether the areas of the predict-to grids are lower or
+# higher (respectively) than the surveyed swept area. This has further
+# implications for gbm.valuemap, since the candidate MPA sizes are a function of
+# that total study area CPUE. Addressing this issue would require the user to
+# include the (average) swept area for the response variable survey trawls, and
+# predict-to areas corresponding to interpolated points, so predicted CPUE values
+# are automatically scaled to the survey:predict-to area ratio. Maps in our study
+# benefit from the uniform high-resolution grids that the predictions are made to,
+# but this is not guaranteed to be the case for all studies. Incorporating an area
+# ratio adjustment calculation would allow a more precise relationship to be
+# inferred from variable length trawls and their CPUE values, and for the
+# subsequent predictions to be made to variable area sites, such as Voronoi
+# polygons.
+
 # Add titles to plots:
 ## line: mtext("text to place", side=1, line=?, ...) line controls dist from
 ## either margin or axis, not sure, play around. Get text from either expvarcols
