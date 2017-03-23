@@ -1,4 +1,11 @@
 ####TO DO####
+# Add ability to specify distribution family instead of default bin & gaus?
+# L325 & 371 possibly change from:
+family = "bernoulli" / family = "gaussian"
+# to
+family = fam1 / family = fam2
+# with fam1 & fam2 as params with bin & gaus as defaults. Only occur once.
+
 ## Area not included in input CPUE values nor output predictions!
 # One current limitation is that the surveyed CPUE values input into the gbm.auto
 # and gbm.valuemap functions are taken as the midpoints of the survey trawl. This
