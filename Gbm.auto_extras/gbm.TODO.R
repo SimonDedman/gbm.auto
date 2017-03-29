@@ -1,10 +1,8 @@
 ####TO DO####
-# Add ability to specify distribution family instead of default bin & gaus?
-# L325 & 371 possibly change from:
-family = "bernoulli" / family = "gaussian"
-# to
-family = fam1 / family = fam2
-# with fam1 & fam2 as params with bin & gaus as defaults. Only occur once.
+# CofV map & gbm.loop work out variance of predictions but I don't currently
+# calculate variance of 1st stage, the learnt model object, i.e. how variable
+# are linesfiles, bars, etc? Small n can see huge changes in these. Could lend
+# itself to a bootstrap?
 
 ## Area not included in input CPUE values nor output predictions!
 # One current limitation is that the surveyed CPUE values input into the gbm.auto
@@ -31,17 +29,12 @@ family = fam1 / family = fam2
 # polygons.
 
 # Add titles to plots:
-## line: mtext("text to place", side=1, line=?, ...) line controls dist from
-## either margin or axis, not sure, play around. Get text from either expvarcols
-## or separate user-entered character vector to allow spaces & units e.g. from
-## "Distance_to_Shore" to "Distance to Shore (m)". If using this, need a way to
-## bind/match labels to expvarcols names
-#
 ## Bars: currently: labels = rev(Bin_Bars[,1]). Swap with character vector entry
+# or change style to de2017importance fig4 style: lines with dot ends (lend=0)?
 #
-## dotplots: more difficult, labels with expvar as default. Would have to set
-## v=variablename for each variable, plot separately, add mtext etc. Rarely use
-## dotplots, leave for now.
+## dotplots: more difficult, labels with expvar as default, few parameter options.
+## Would have to set v=variablename for each variable, plot separately,
+## add mtext etc. Rarely use dotplots, leave for now.
 
 # option either in gbm.auto or separate function to take line plots (feasibly as
 # linesfiles csvs) and overlay multiple lins on the same plot to save space and
@@ -51,8 +44,6 @@ family = fam1 / family = fam2
 # a panel/matrix of plots, to avoid having to postprocess in GIMP.
 # Conceptualy would have to order the line plots by rank of bin+gaus importance
 # from "Binary/Gaussian BRT Variable contributions.csv" auto output
-
-# paste0() = paste(..., sep = "")
 
 # RSB log/ unlog cleverness is in gbm.auto map plottting section but nowhere else.
 
@@ -223,6 +214,22 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# paste0() = paste(..., sep = ""). Replace all in gbm.auto and elsewhere.
+
+# Add ability to specify distribution family instead of default bin & gaus?
+# L325 & 371 possibly change from:
+family = "bernoulli" / family = "gaussian"
+# to
+family = fam1 / family = fam2
+# with fam1 & fam2 as params with bin & gaus as defaults. Only occur once.
+
+# Add titles to plots:
+## line: mtext("text to place", side=1, line=?, ...) line controls dist from
+## either margin or axis, not sure, play around. Get text from either expvarcols
+## or separate user-entered character vector to allow spaces & units e.g. from
+## "Distance_to_Shore" to "Distance to Shore (m)". If using this, need a way to
+## bind/match labels to expvarcols names
+
 # variance estimates: gbm.loop
 
 # Process & map bin only

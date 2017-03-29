@@ -109,8 +109,8 @@ for (h in 1:length(subsets)) {  #e.g. 1:2
 ####gbm.auto loops subsets & species####
 # Loop through subsets
 for (i in 1:length(subsets)) {  #currently 2
-  if (gbmautos) {dir.create(paste("./", subsets[i], sep = ""))} # Create WD for subset[i] name
-  setwd(paste("./", subsets[i], sep = ""))  # go there
+  if (gbmautos) {dir.create(paste0("./", subsets[i]))} # Create WD for subset[i] name
+  setwd(paste0("./", subsets[i]))  # go there
 
   for (j in 1:GS) {  #loop through all species in group e.g. 4
 
@@ -142,11 +142,11 @@ for (i in 1:length(subsets)) {  #currently 2
       if (alerts) beep(2)} # ping for each completion
 
     # create object for resulting abundance preds csv, e.g. Juveniles_Cuckoo
-    assign(paste(subsets[i], "_", names(mysamples)[(resvars)[resvarrange[[i]]]][j], sep = ""),
-           read.csv(paste("./", names(mysamples)[(resvars)[resvarrange[[i]]]][j], "/Abundance_Preds_only.csv", sep = ""), header = TRUE))
+    assign(paste0(subsets[i], "_", names(mysamples)[(resvars)[resvarrange[[i]]]][j]),
+           read.csv(paste0("./", names(mysamples)[(resvars)[resvarrange[[i]]]][j], "/Abundance_Preds_only.csv"), header = TRUE))
     # names(mysamples)[(resvars)[resvarrange[[i]]]][j] is the (species) name for the
     # column no. in samples, for the j'th response variable in this subsets' group
-    print(paste("XXXXXXXXXXXXXXXXXXXXXX           Species ", j, " of ", GS, ", Subset ", i, " of ", length(subsets), "           XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+    print(paste0("XXXXXXXXXXXXXXXXXXXXXX           Species ", j, " of ", GS, ", Subset ", i, " of ", length(subsets), "           XXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # reloop/end j loop of species
   setwd("../") # go back up to /Maps root folder for correct placement @ restart
 } # reloop/end i loop of subsets
@@ -157,30 +157,30 @@ dir.create("ConservationMaps") # create conservation maps directory
 for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
   # name list from last mysamples & last subset resvarnames list, e.g. CTBS
   # make grids-length blank objects e.g. All_Cuckoo, Scaled_Cuckoo & allscaled
-  assign(paste("All_", k, sep = ""),rep(0,dim(mygrids)[1]))
-  assign(paste("Scaled_", k, sep = ""),rep(0,dim(mygrids)[1]))
+  assign(paste0("All_", k),rep(0,dim(mygrids)[1]))
+  assign(paste0("Scaled_", k),rep(0,dim(mygrids)[1]))
   allscaled <- rep(0,dim(mygrids)[1])
 
   # loop subsets
   for (i in 1:length(subsets)) {
     # replace All_Cuckoo (starts blank) w/ All_Cuckoo + e.g. Juveniles_Cuckoo
-    assign(paste("All_", k, sep = ""),get(paste("All_", k, sep = "")) + get(paste(subsets[i], "_", k, sep = ""))[,3])
+    assign(paste0("All_", k),get(paste0("All_", k)) + get(paste0(subsets[i], "_", k))[,3])
     # scale subsets' values to 1 for species k & add to blanks
-    assign(paste("Scaled_", k, sep = ""),
-           get(paste("Scaled_", k, sep = ""))
-           + (get(paste(subsets[i], "_", k, sep = ""))[,3]
-              / max(get(paste(subsets[i], "_", k, sep = ""))[,3], na.rm = TRUE)))
+    assign(paste0("Scaled_", k),
+           get(paste0("Scaled_", k))
+           + (get(paste0(subsets[i], "_", k))[,3]
+              / max(get(paste0(subsets[i], "_", k))[,3], na.rm = TRUE)))
     ###could have option here to normalise another way than scaling to 1
 
-    xtmp <- get(paste(subsets[i], "_", k, sep = ""))[,2] # LONG for later
-    ytmp <- get(paste(subsets[i], "_", k, sep = ""))[,1] # LAT for later
+    xtmp <- get(paste0(subsets[i], "_", k))[,2] # LONG for later
+    ytmp <- get(paste0(subsets[i], "_", k))[,1] # LAT for later
   } # end/reloop i & add next subset of same species e.g. Adult Females_Cuckoo
 
-  print(paste("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "          XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  print(paste0("XXXXXXXXXXXXXXXXXXXXXX          Both subsets scaled for ", k, "          XXXXXXXXXXXXXXXXXXXXXXXXXX"))
   # create simple temp object name for e.g. All_Cuckoo
-  ztmp <- get(paste("All_", k, sep = "")) # already includes the [,3]
-  dir.create(paste("./ConservationMaps/", k, sep = ""))
-  setwd(paste("./ConservationMaps/", k, sep = ""))
+  ztmp <- get(paste0("All_", k)) # already includes the [,3]
+  dir.create(paste0("./ConservationMaps/", k))
+  setwd(paste0("./ConservationMaps/", k))
 
   ####Unscaled conservation maps####
   # map all subsets' abundance for species k
@@ -198,7 +198,7 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
       shape <- gbm.basemap(bounds = extrabounds)
     } else {shape <- shape}
 
-    png(filename = paste("./Conservation_Map_", k, ".png", sep = ""),
+    png(filename = paste0("./Conservation_Map_", k, ".png"),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
         bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
@@ -213,7 +213,7 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
     dev.off()
 
     if (BnW) {  # again in B&W
-      png(filename = paste("./Conservation_Map_BnW_", k, ".png", sep = ""),
+      png(filename = paste0("./Conservation_Map_BnW_", k, ".png"),
           width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
           bg = "white", res = NA, family = "", type = pngtype)
       par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -231,18 +231,18 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
       dev.off()
     } # close BnW
     if (alerts) beep(2)
-    print(paste("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+    print(paste0("XXXXXXXXXXXXXXXXXXXXXX   Unscaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close mapping IF
 
   ####Scaled-to-1 conservation maps####
   if (map) {
-    png(filename = paste("./Scale1-1_Conservation_Map_",k,".png",sep = ""),
+    png(filename = paste0("./Scale1-1_Conservation_Map_",k,".png",sep = ""),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
         bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
     gbm.map(x = xtmp,
             y = ytmp,
-            z = (get(paste("Scaled_", k, sep = ""))) * (100/length(subsets)),
+            z = (get(paste0("Scaled_", k))) * (100/length(subsets)),
             mapmain = "Predicted CPUE (numbers per hour): ",
             species = k,
             zero = FALSE,
@@ -253,13 +253,13 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
     dev.off()
 
     if (BnW) {   # again in B&W
-      png(filename = paste("./Scale1-1_Conservation_Map_BnW_",k,".png", sep = ""),
+      png(filename = paste0("./Scale1-1_Conservation_Map_BnW_",k,".png"),
           width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
           bg = "white", res = NA, family = "", type = pngtype)
       par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
       gbm.map(x = xtmp,
               y = ytmp,
-              z = (get(paste("Scaled_", k, sep = ""))) * (100/length(subsets)),
+              z = (get(paste0("Scaled_", k))) * (100/length(subsets)),
               mapmain = "Predicted CPUE (numbers per hour): ",
               species = k,
               zero = FALSE,
@@ -272,7 +272,7 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
       dev.off()
     } # close BnW
     if (alerts) beep(2) # ping on completion
-    print(paste("XXXXXXXXXXXXXXXXXXXXXX    Scaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+    print(paste0("XXXXXXXXXXXXXXXXXXXXXX    Scaled ", k, " conservation map(s) generated  XXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close mapping IF
 
   setwd("../") # go back up to ConservationMaps
@@ -280,16 +280,16 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
 } # go back up to Maps & end/reloop k for next species
 
 ####Add scaled outputs, all species####
-dir.create(paste("./ConservationMaps/Combo/", sep = ""))
-setwd(paste("./ConservationMaps/Combo/", sep = ""))
+dir.create(paste0("./ConservationMaps/Combo/"))
+setwd(paste0("./ConservationMaps/Combo/"))
 
 # loop & add each species' combined scaled values
 for (l in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
-  allscaled <- allscaled + get(paste("Scaled_", l, sep = ""))}
+  allscaled <- allscaled + get(paste0("Scaled_", l))}
 
 #save as csv
 allscaleddf <- data.frame(LATITUDE = ytmp, LONGITUDE = xtmp, allscaled)
-write.csv(allscaleddf, row.names = FALSE, file = paste("./AllScaledData.csv", sep = ""))
+write.csv(allscaleddf, row.names = FALSE, file = paste0("./AllScaledData.csv"))
 
 if (map) {
   png(filename = "Scaled_Conservation_Map.png",
@@ -324,11 +324,11 @@ if (map) {
     dev.off()
   } # close BnW
   if (alerts) beep(2) # ping on completion
-  print(paste("XXXXXXXXXXXXXXXXXXXXXX     All-scaled conservation map(s) generated      XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+  print(paste0("XXXXXXXXXXXXXXXXXXXXXX     All-scaled conservation map(s) generated      XXXXXXXXXXXXXXXXXXXXXXXXXX"))
 } # close mapping IF
 
 setwd("../../") # return to original directory
-print(paste("XXXXXXXXXXXXXXXXXXXXXX                Everything complete                XXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+print(paste0("XXXXXXXXXXXXXXXXXXXXXX                Everything complete                XXXXXXXXXXXXXXXXXXXXXXXXXX"))
 if (alerts) beep(8) # complete sound & close function
 ####END####
 }

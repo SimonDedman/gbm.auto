@@ -33,7 +33,7 @@
 #' @importFrom gbm predict.gbm
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
-roc <-function (obsdat, preddat) {
+roc <- function(obsdat, preddat) {
 # code adapted from Ferrier, Pearce and Watson's code, by J.Elith
 # see: Hanley, J.A. & McNeil, B.J. (1982) The meaning and use of the area
 # under a Receiver Operating Characteristic (ROC) curve. Radiology, 143, 29-36
@@ -61,12 +61,12 @@ calibration <- function(obs, preds, family = "binomial")  {
 
 if (family == "bernoulli") family <- "binomial"
 pred.range <- max(preds) - min(preds)
-if(pred.range > 1.2 & family == "binomial") {
-print(paste("range of response variable is ", round(pred.range, 2)), sep = "", quote = F)
+if (pred.range > 1.2 & family == "binomial") {
+print(paste0("range of response variable is ", round(pred.range, 2)), quote = F)
 print("check family specification", quote = F)
 return()
 }
-if(family == "binomial") {
+if (family == "binomial") {
 pred <- preds + 1e-005
 pred[pred >= 1] <- 0.99999
 mod <- glm(obs ~ log((pred)/(1 - (pred))), family = binomial)
@@ -77,7 +77,7 @@ ab1 <- glm(obs ~ offset(lp), family = binomial)
 miller2 <- 1 - pchisq(a0b1$deviance - ab1$deviance, 1)
 miller3 <- 1 - pchisq(ab1$deviance - mod$deviance, 1)
 }
-if(family == "poisson") {
+if (family == "poisson") {
 mod <- glm(obs ~ log(preds), family = poisson)
 lp <- log(preds)
 a0b1 <- glm(obs ~ offset(lp) - 1, family = poisson)
@@ -92,9 +92,9 @@ return(calibration.result)
 }
 
 
-gbm.predict.grids <- function(model, new.dat, want.grids = F, preds2R = T, sp.name = "preds",pred.vec = NULL, filepath = NULL,
-                               num.col = NULL,num.row = NULL, xll = NULL, yll = NULL, cell.size = NULL, no.data = NULL, plot=F,
-                               full.grid=T, part.number=NULL, part.row = NULL, header = T)
+gbm.predict.grids <- function(model, new.dat, want.grids = F, preds2R = T, sp.name = "preds", pred.vec = NULL, filepath = NULL,
+                               num.col = NULL, num.row = NULL, xll = NULL, yll = NULL, cell.size = NULL, no.data = NULL, plot = F,
+                               full.grid = T, part.number = NULL, part.row = NULL, header = T)
 {
 # J.Elith / J.Leathwick, March 07
 # to make predictions to sites or grids. If to sites, the predictions are written to the R workspace. If to grid,
@@ -104,38 +104,38 @@ gbm.predict.grids <- function(model, new.dat, want.grids = F, preds2R = T, sp.na
 # pred.vec is a vector of -9999's, the length of the scanned full grid (i.e. without nodata values excluded).
 # filepath must specify the whole path as a character vector,but without the final file name - eg "c:/gbm/"
 
-temp <- predict.gbm(model, new.dat, n.trees=model$gbm.call$best.trees, type="response")
+temp <- predict.gbm(model, new.dat, n.trees = model$gbm.call$best.trees, type = "response")
 
-if(want.grids)
+if (want.grids)
 {
-newname <- paste(filepath, sp.name,".asc", sep="")
+newname <- paste0(filepath, sp.name,".asc")
 full.pred <- pred.vec
 full.pred[as.numeric(row.names(new.dat))] <- temp
-if(header){
-write(paste("ncols          ",num.col,sep=""),newname)
-write(paste("nrows          ",num.row,sep=""),newname,append=T)
-write(paste("xllcorner      ",xll,sep=""),newname,append=T)
-write(paste("yllcorner      ",yll,sep=""),newname,append=T)
-write(paste("cellsize       ",cell.size,sep=""),newname,append=T)
-write(paste("NODATA_value ",no.data,sep=""),newname,append=T)
+if (header) {
+write(paste0("ncols          ",num.col),newname)
+write(paste0("nrows          ",num.row),newname,append = T)
+write(paste0("xllcorner      ",xll),newname,append = T)
+write(paste0("yllcorner      ",yll),newname,append = T)
+write(paste0("cellsize       ",cell.size),newname,append = T)
+write(paste0("NODATA_value ",no.data),newname,append = T)
 }
-  if(full.grid){
-         full.pred.mat <- matrix(full.pred, nrow=num.row, ncol=num.col, byrow=T)
+  if (full.grid) {
+         full.pred.mat <- matrix(full.pred, nrow = num.row, ncol = num.col, byrow = T)
 	if (plot)
 	{
 	image(z = t(full.pred.mat)[, nrow(full.pred.mat):1], zlim =  c(0,1), col = rev(topo.colors(12)))
 	}
-	write.table(full.pred.mat, newname, sep=" ", append=T, row.names=F, col.names=F)
+	write.table(full.pred.mat, newname, sep = " ", append = T, row.names = F, col.names = F)
 	#also write to R directory, if required:
-	if(preds2R){assign(sp.name,temp, pos=1)}
+	if (preds2R) {assign(sp.name, temp, pos = 1)}
 	}
 	else{
-         full.pred.mat <- matrix(full.pred, nrow=part.row, ncol=num.col, byrow=T)
-	write.table(full.pred.mat, newname, sep=" ", append=T, row.names=F, col.names=F)
-	if(preds2R){assign(paste(sp.name, part.number, sep=""),temp, pos=1)}
+         full.pred.mat <- matrix(full.pred, nrow = part.row, ncol = num.col, byrow = T)
+	write.table(full.pred.mat, newname, sep = " ", append = T, row.names = F, col.names = F)
+	if (preds2R) {assign(paste0(sp.name, part.number), temp, pos = 1)}
 	}
 }
 else{
-assign(sp.name,temp, pos=1)
+assign(sp.name, temp, pos = 1)
 }
 }

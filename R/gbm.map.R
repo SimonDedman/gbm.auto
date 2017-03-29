@@ -119,7 +119,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   # if breaks specified, do nothing (used later in draw.grid) else generate them
   if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))}
   # if zero = TRUE add alpha as 1st colour (1st 2 breakpoints)
-  basemap(xlim = range(x), ylim = range(y), main = paste(mapmain, species, sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
+  basemap(xlim = range(x), ylim = range(y), main = paste0(mapmain, species), bg = mapback, xlab = "Longitude", ylab = "Latitude")
   draw.grid(grd, breaks, col = heatcol)
   # plot grd data w/ breaks for colour breakpoints
   draw.shape(shape = shape, col = landcol) # add coastline

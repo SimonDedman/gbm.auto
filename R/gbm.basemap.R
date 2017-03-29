@@ -93,7 +93,7 @@ if (res == "CALC") { # Calculate res based on size of bounds
   if (9 > scope) res <- "f"}
 
 ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
-  download.file(paste("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip", sep = ""), "GSHHG.zip")
+  download.file(paste0("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip"), "GSHHG.zip")
   unzip("GSHHG.zip")
   setwd("./GSHHS_shp")}
   , setwd(getzip)) # else just setwd to there
@@ -112,7 +112,7 @@ if (extrabounds) { # grow bounds extents if requested
 }
 
 # read in worldmap
-world <- readOGR(dsn = paste("GSHHS_", res, "_L1.shp", sep = ""), layer = paste("GSHHS_", res, "_L1", sep = ""))
+world <- readOGR(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"))
 cropshp <- crop(world, bounds) # crop to extents
 setwd(startdir)
 dir.create("CroppedMap") # create conservation maps directory

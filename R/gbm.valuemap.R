@@ -96,7 +96,7 @@ dbasecoln <- ncol(dbase)  # note original number of columns for use later
 # Scale values to 1 and add as columns at end of 'data' then name them, in goodcols order NOT original order.
   for (i in 1:length(c(goodcols,badcols))) {
     dbase[,dbasecoln + i] <- dbase[,(c(goodcols,badcols))[i]]/max(dbase[,(c(goodcols,badcols))[i]],na.rm = TRUE)  # for each column to scale (i), bind a column to data with i/max(i)
-    colnames(dbase)[dbasecoln + i] <- paste(names(dbase)[(c(goodcols,badcols))[i]], "_s", sep = "")} #name them
+    colnames(dbase)[dbasecoln + i] <- paste0(names(dbase)[(c(goodcols,badcols))[i]], "_s")} #name them
 
 # If weighting factors given, multiply then sum scaled values & create objects, else sum & create objects
 ifelse(!is.null(goodweight),
@@ -108,8 +108,8 @@ ifelse(!is.null(badweight), # assuming there's only going to be one baddata colu
 
 ####map baddata####
 if ("bad" %in% plotthis) {
-  print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       Mapping Baddata     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
-  png(filename = paste("./",badname,"_Map.png",sep = ""),
+  print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       Mapping Baddata     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+  png(filename = paste0("./",badname,"_Map.png"),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno],  # run gbm.map function with generated parameters
@@ -118,7 +118,7 @@ if ("bad" %in% plotthis) {
   dev.off()
 
   if (BnW) {
-    png(filename = paste("./",badname,"_Map_BnW.png",sep = ""),
+    png(filename = paste0("./",badname,"_Map_BnW.png"),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = dbase[,loncolno],
@@ -137,7 +137,7 @@ ifelse((baddata - badmax <= 0), {baddata = -(baddata - badmax)}, {baddata = (bad
 bothdata <- gooddata + baddata # create bothdata: good+(inverted) bad. ncols=gooddata+baddata
 dbase <- cbind(dbase,bothdata) # add bothdata to data
 for (i in 1:length(goodcols)) { #name bothdata cols: append w (Weighted) c (Combined)
-  colnames(dbase)[ncol(dbase) - length(goodcols) + i] <- paste(names(dbase)[goodcols[i]],"_swc",sep = "")}
+  colnames(dbase)[ncol(dbase) - length(goodcols) + i] <- paste0(names(dbase)[goodcols[i]],"_swc")}
 
 ####create DF for HRMSY masking maps in loop####
 bothdatarange <- (ncol(dbase) - length(goodcols) + 1):ncol(dbase)
@@ -148,8 +148,8 @@ for (j in 1:length(goodcols)) {  #loop through gooddata columns
 
 ####map gooddata####
 if ("good" %in% plotthis) {
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Mapping Gooddata ",j,"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
-png(filename = paste("./", goodname[j], "_Map.png", sep = ""),
+print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Mapping Gooddata ",j,"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+png(filename = paste0("./", goodname[j], "_Map.png"),
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
@@ -157,7 +157,7 @@ gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
 dev.off()
 
 if (BnW) {
-  png(filename = paste("./",goodname[j],"_Map_BnW.png",sep = ""),
+  png(filename = paste0("./",goodname[j],"_Map_BnW.png"),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,goodcols[j]],
@@ -173,8 +173,8 @@ if (BnW) {
 ####map bothdata####
   #i.e. predabund scaled to 1 + effort scaled to 1 inverted.
 if ("both" %in% plotthis) {
- print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Mapping Bothdata ",j,"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
-  png(filename = paste("./",goodname[j]," plus ", badname, "_Map.png", sep = ""),
+ print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Mapping Bothdata ",j,"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+  png(filename = paste0("./",goodname[j]," plus ", badname, "_Map.png"),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
@@ -189,7 +189,7 @@ if ("both" %in% plotthis) {
   byy <- byx
 
   if (BnW) {
-    png(filename = paste("./",goodname[j]," plus ",badname,"_Map_BnW.png",sep = ""),
+    png(filename = paste0("./",goodname[j]," plus ",badname,"_Map_BnW.png"),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
     gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
@@ -231,9 +231,9 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
             n <- which.min((cumsum(dbase[nrow(dbase):1,goodcols[j]]) - CPUEMSY) ^ 2)
             # cumsum from end (n) upwards towards 1 of CPUE until the row X
             # where end:X = CPUEMSY i.e. 'open' cells; close rest i.e. n-X
-            assign(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""),rep(0,nrow(dbase))) # create a vector of zeroes called sort[j name]
-            dbase <- cbind(dbase,get(paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = ""))) # bind it to dbase
-            colnames(dbase)[ncol(dbase)] <- paste("sort",maploopnames[o],"_",names(dbase)[goodcols[j]],sep = "") # reinstate its name (lost because bound with get())
+            assign(paste0("sort",maploopnames[o],"_",names(dbase)[goodcols[j]]),rep(0,nrow(dbase))) # create a vector of zeroes called sort[j name]
+            dbase <- cbind(dbase,get(paste0("sort",maploopnames[o],"_",names(dbase)[goodcols[j]]))) # bind it to dbase
+            colnames(dbase)[ncol(dbase)] <- paste0("sort",maploopnames[o],"_",names(dbase)[goodcols[j]]) # reinstate its name (lost because bound with get())
             dbase[1:n + 1,ncol(dbase)] <- rep(1,n) # populate first n+1 rows with 1 [k:n]
             badcut <- sum(dbase[1:n + 1,badcols]) # sum badcols values (i.e. total badcol value in closed area)
             badall <- sum(dbase[,badcols])    # total badcols values
@@ -241,7 +241,7 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
             # this counts UP from the WORST row (last) until reaching HRMSY% (e.g. 8%) then closes the inverse
             # This is massively quicker than counting DOWN from the best row to 1-HRMSY, e.g. counting through 92% of the data
             # INDIVIDUAL MAPS: Map bothdata. Then Overlay map onto bothdata map: ncol=1 zeroes=TRUE. Heatcol="black".
-            png(filename = paste("./ClosedValueMap_",maploopnames[o],"_",goodname[j],".png",sep = ""), # map species j's bothdata with black closed areas overlaid
+            png(filename = paste0("./ClosedValueMap_",maploopnames[o],"_",goodname[j],".png"), # map species j's bothdata with black closed areas overlaid
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 
@@ -260,7 +260,7 @@ for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
             zero = TRUE # allow 0 category in breaks.grid & thus legend?
             quantile = 1 # set max breakpoint; lower this to cutoff outliers
 
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length(maploopcodes)) + j," of ",length(goodcols)*length(maploopcodes),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
+print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length(maploopcodes)) + j," of ",length(goodcols)*length(maploopcodes),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
               if (!exists("byx")) {    # if users hasn't entered byx or byy values, generate them from the data
                 bydist <- rep(NA,length(x))   # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
                 cells <- data.frame(LONGITUDE = x, bydist = bydist, stringsAsFactors = FALSE)   # and attach it to grids
@@ -274,7 +274,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
               breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-              basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
+              basemap(xlim = range(x), ylim = range(y), main = paste0(maploopnames[o], "-Sorted Closed Area: ", goodname[j]), bg = mapback, xlab = "Longitude", ylab = "Latitude")
               draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
 
               # Plot second map: closed area overlay only
@@ -289,7 +289,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               if (zero) {heatcol2 = c("#00000000", colorRampPalette(heatcol2)(length(heatcol2) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
               draw.grid(grd2, breaks2, col = heatcol2) # plot grd data w/ breaks for colour breakpoints
               draw.shape(shape = shape, col = landcol) # add coastline
-              legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
+              legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste0(badpct, "% E closed"), col = heatcol)
             dev.off()
 
             # create csvs for closed area comparisons
@@ -297,10 +297,10 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
             ca_y <- dbase[,latcolno]
             ca_z <- dbase[,ncol(dbase)]
             ca_df <- data.frame(lon = ca_x, lat = ca_y, closed = ca_z)
-            write.csv(ca_df, row.names = FALSE, file = paste("./ClosedArea_", maploopnames[o], "_", goodname[j], ".csv", sep = ""))
+            write.csv(ca_df, row.names = FALSE, file = paste0("./ClosedArea_", maploopnames[o], "_", goodname[j], ".csv"))
 
             if (BnW) {
-              png(filename = paste("./ClosedValueMap_",maploopnames[o],"_",goodname[j],"_BnW.png",sep = ""),
+              png(filename = paste0("./ClosedValueMap_",maploopnames[o],"_",goodname[j],"_BnW.png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
               x = dbase[,loncolno]
@@ -330,7 +330,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
               breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
               if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-              basemap(xlim = range(x), ylim = range(y), main = paste(maploopnames[o], "-Sorted Closed Area: ", goodname[j], sep = ""), bg = mapback, xlab = "Longitude", ylab = "Latitude")
+              basemap(xlim = range(x), ylim = range(y), main = paste0(maploopnames[o], "-Sorted Closed Area: ", goodname[j]), bg = mapback, xlab = "Longitude", ylab = "Latitude")
               draw.grid(grd, breaks, col = heatcol)
               x = dbase[,loncolno]
               y = dbase[,latcolno]
@@ -343,7 +343,7 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
               if (zero) {heatcol2 = c("#00000000",colorRampPalette(heatcol2)(length(heatcol2) - 1))}
               draw.grid(grd2, breaks2, col = heatcol2)
               draw.shape(shape = shape, col = landcol)
-              legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste(badpct, "% E closed", sep = ""), col = heatcol)
+              legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste0(badpct, "% E closed"), col = heatcol)
               dev.off()
             } # close BnW
   if (alerts) beep(2)} # alert user & end of 2nd FOR loop j (species)
@@ -355,28 +355,28 @@ print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length
 for (q in length(goodcols):1) {dbase <- dbase[order(-dbase[,SortCol0 + q]),]}
 
 # then add a column which is max(k:n). This will be 1s and 0s and will be the full extent (try append)
-  assign(paste("AllClosed_", maploopnames[o], sep = ""),
+  assign(paste0("AllClosed_", maploopnames[o]),
          do.call(pmax, dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
          # do.call allows df format for pmax
- dbase <- cbind(dbase, get(paste("AllClosed_", maploopnames[o],sep = "")))
+ dbase <- cbind(dbase, get(paste0("AllClosed_", maploopnames[o])))
  # reinstate its name (lost because bound with get())
- colnames(dbase)[ncol(dbase)] <- paste("AllClosed_", maploopnames[o],sep = "")
+ colnames(dbase)[ncol(dbase)] <- paste0("AllClosed_", maploopnames[o])
 
 # then add a column which is sum(k:n). This will be 0:length(goodcols) and will be the full extent. Both are similar
-assign(paste("SumClosed_", maploopnames[o], sep = ""), rowSums(dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
-dbase <- cbind(dbase,get(paste("SumClosed_", maploopnames[o], sep = "")))
-colnames(dbase)[ncol(dbase)] <- paste("SumClosed_", maploopnames[o], sep = "")
+assign(paste0("SumClosed_", maploopnames[o]), rowSums(dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
+dbase <- cbind(dbase,get(paste0("SumClosed_", maploopnames[o])))
+colnames(dbase)[ncol(dbase)] <- paste0("SumClosed_", maploopnames[o])
 
 # then create a new df with a column of zeroes, length = nrow(dbase)
-assign(paste("Zeroes_", maploopnames[o], sep = ""), rep(0, nrow(dbase)))
-MPAgrow <- as.data.frame(get(paste("Zeroes_", maploopnames[o], sep = "")))
+assign(paste0("Zeroes_", maploopnames[o]), rep(0, nrow(dbase)))
+MPAgrow <- as.data.frame(get(paste0("Zeroes_", maploopnames[o])))
 
 # then create a vec of the max of zeroes & species 1 value
 for (r in 1:length(goodcols)) { # loop through 1:length(goodcols)
-  assign(paste("Closure", r, "_", maploopnames[o], sep = ""), pmax(dbase[,SortCol0 + r], MPAgrow[,r]))
+  assign(paste0("Closure", r, "_", maploopnames[o]), pmax(dbase[,SortCol0 + r], MPAgrow[,r]))
   # bind that to the zeroes & name it
-  MPAgrow <- cbind(MPAgrow, get(paste("Closure", r, "_", maploopnames[o], sep = "")))
-  colnames(MPAgrow)[ncol(MPAgrow)] <- paste("Closure", r, "_", maploopnames[o], sep = "")}
+  MPAgrow <- cbind(MPAgrow, get(paste0("Closure", r, "_", maploopnames[o])))
+  colnames(MPAgrow)[ncol(MPAgrow)] <- paste0("Closure", r, "_", maploopnames[o])}
 
 dbase <- cbind(dbase, MPAgrow[,2:ncol(MPAgrow)]) # bind to dbase, removing zeroes
 
@@ -389,18 +389,18 @@ for (l in 1:length(goodcols)) {
   badpct2 <- round((badcut2/badall) * 100, 1) # badcols percent
 
 ####Cumulative closed area maps####
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ",((o - 1) * length(maploopcodes)) + l," of ",length(goodcols)*length(maploopcodes)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
-  png(filename = paste("./CumulativeClosedArea",maploopnames[o],"Map_",goodname[l],".png",sep = ""),
+print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ",((o - 1) * length(maploopcodes)) + l," of ",length(goodcols)*length(maploopcodes)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+  png(filename = paste0("./CumulativeClosedArea",maploopnames[o],"Map_",goodname[l],".png"),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 
   gbm.map(x = dbase[,loncolno], y = dbase[,latcolno],
           z = dbase[,ncol(dbase) - length(goodcols) + l],
           mapmain = "Cumulative Closed Area: ",
-          species = paste(maploopnames[o]," ",goodname[l],sep = ""),
+          species = paste0(maploopnames[o]," ",goodname[l]),
           heatcolours = c("black","black"), colournumber = 2,
           shape = shape, mapback = "white",
-          legendtitle = paste(badpct2,"% E closed",sep = ""),
+          legendtitle = paste0(badpct2,"% E closed"),
           byx = byx, byy = byy)
     dev.off()
 
@@ -414,11 +414,11 @@ for (p in 1:length(goodcols)) {
   MPAgrow2[,1] <- ifelse(MPAgrow2[,1] == 0, MPAgrow2[,p + 1], MPAgrow2[,1])} # for areas in col1 not already closed, that are closed in this species' col, put the species no.
 
 dbase <- cbind(dbase, MPAgrow2[,1]) # add completed SpeciesGrow column (MPAgrow2 col1 to dbase. Is single column.
-colnames(dbase)[ncol(dbase)] <- paste("SpeciesGrow_", maploopnames[o], sep = "") # Name the column
+colnames(dbase)[ncol(dbase)] <- paste0("SpeciesGrow_", maploopnames[o]) # Name the column
 
 ####Per species closed area maps####
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(goodcols)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
-png(filename = paste("./PerSpeciesClosedArea",maploopnames[o],"Map.png",sep = ""),
+print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(goodcols)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+png(filename = paste0("./PerSpeciesClosedArea",maploopnames[o],"Map.png"),
     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
 par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
 
@@ -427,12 +427,12 @@ gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,ncol(dbase)],
         heatcolours = c("black",rainbow(length(goodcols) - 1)), #black then rainbow colours. Total n is length(goodcols): blank, black, then goodcols-1 other colours
         colournumber = length(goodcols) + 1, # Colours are set as the breaks, but painted from the midpoints
         shape = shape, mapback = "white",
-        legendtitle = paste(badpct2,"% E closed",sep = ""),
+        legendtitle = paste0(badpct2,"% E closed"),
         byx = byx, byy = byy, breaks = c(0,0:length(goodcols)))
 dev.off()
 
 if (BnW) {
-  png(filename = paste("./PerSpeciesClosedArea_BnW", maploopnames[o], "Map.png", sep = ""),
+  png(filename = paste0("./PerSpeciesClosedArea_BnW", maploopnames[o], "Map.png"),
       width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
   par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 
@@ -442,13 +442,13 @@ if (BnW) {
           heatcolours = grey.colors(8, start = 0.7, end = 0),
           colournumber = length(goodcols) + 1,
           shape = shape, mapback = "white",
-          legendtitle = paste(badpct2, "% E closed", sep = ""),
+          legendtitle = paste0(badpct2, "% E closed"),
           byx = byx, byy = byy, breaks = c(0,0:length(goodcols)))
     dev.off()} # close BnW
 if (alerts) beep(2)} # alert user & end of "close" optional section
 } # end o loop through combination, goodcols & badcols
 
 ####Save csvs####
-print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX         Saving CSV        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",sep = ""))
-if (savethis) write.csv(dbase,row.names = FALSE, file = paste("./ProcessedData.csv", sep = ""))
+print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX         Saving CSV        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+if (savethis) write.csv(dbase,row.names = FALSE, file = paste0("./ProcessedData.csv"))
 beep(8)} # notify user & close function

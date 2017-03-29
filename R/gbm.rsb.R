@@ -51,22 +51,22 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
     # set breaks, min to max, 10 binrange increments. 0.01 added as findInterval (later) needs x to be < nmax, and some will == nmax, causing NAs.
     binbreaks <- c(nmin, nmin + bin, nmin + (bin * 2), nmin + (bin * 3), nmin + (bin * 4), nmin + (bin * 5), nmin + (bin * 6),nmin + (bin * 7), nmin + (bin * 8), nmin + (bin*9), nmax + 0.01)
     # make object from samples histogram
-    assign(paste("hist_samples_", expvarnames[q], sep = ""), hist(samples[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
+    assign(paste0("hist_samples_", expvarnames[q]), hist(samples[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
     # make object from grids histogram
-    assign(paste("hist_grids_", expvarnames[q], sep = ""), hist(grids[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
+    assign(paste0("hist_grids_", expvarnames[q]), hist(grids[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
     # calculate difference between frequencies, assign to object
-    assign(paste("hist_diff_", expvarnames[q], sep = ""), (get(paste("hist_samples_", expvarnames[q], sep = ""))$density*bin - get(paste("hist_grids_",expvarnames[q], sep = ""))$density * bin))
+    assign(paste0("hist_diff_", expvarnames[q]), (get(paste0("hist_samples_", expvarnames[q]))$density*bin - get(paste0("hist_grids_",expvarnames[q]))$density * bin))
     # calculate modulus of that #could use abs() to do this
-    assign(paste("hist_diff_mod_",expvarnames[q], sep = ""),sqrt(get(paste("hist_diff_", expvarnames[q], sep = "")) ^ 2))
+    assign(paste0("hist_diff_mod_",expvarnames[q]),sqrt(get(paste0("hist_diff_", expvarnames[q])) ^ 2))
     # create a vector for the diff lookup results: from that expvar's dataframe, get the diff value (col4) for the bin range number corresponding to the expvar value in grids
-    assign(paste(expvarnames[q],"_hist_diff", sep = ""),get(paste("hist_diff_", expvarnames[q], sep = ""))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
+    assign(paste0(expvarnames[q],"_hist_diff"),get(paste0("hist_diff_", expvarnames[q]))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
     # create a vector for the modulus lookup results: from that expvar's dataframe, get the modulus value (col5) for the bin range number corresponding to the expvar value in grids
-    assign(paste(expvarnames[q],"_hist_diff_mod", sep = ""),get(paste("hist_diff_mod_", expvarnames[q], sep = ""))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
+    assign(paste0(expvarnames[q],"_hist_diff_mod"),get(paste0("hist_diff_mod_", expvarnames[q]))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
     # put those 2 vectors in a dafa frame (first expvar) or add them to the existing one (latter expvars)
-    ifelse(q == 1, rsbdf <- data.frame(get(paste(expvarnames[q],"_hist_diff", sep = "")), get(paste(expvarnames[q], "_hist_diff_mod", sep = ""))),
-                   rsbdf <- data.frame(rsbdf, get(paste(expvarnames[q], "_hist_diff", sep = "")), get(paste(expvarnames[q], "_hist_diff_mod", sep = ""))))
+    ifelse(q == 1, rsbdf <- data.frame(get(paste0(expvarnames[q],"_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))),
+                   rsbdf <- data.frame(rsbdf, get(paste0(expvarnames[q], "_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))))
     # name those columns
-    colnames(rsbdf)[(length(rsbdf) - 1):length(rsbdf)] <- c(paste(expvarnames[q],"_hist_diff", sep = ""), paste(expvarnames[q], "_hist_diff_mod", sep = ""))
+    colnames(rsbdf)[(length(rsbdf) - 1):length(rsbdf)] <- c(paste0(expvarnames[q],"_hist_diff"), paste0(expvarnames[q], "_hist_diff_mod"))
   }  # close expvar loop
   # create vector of sum of mod diffs, scaled to score out of 1. Add to rsbdf. Globally assign so it's available to gbm.map as Z later. Will cause problems in loops?
   rsbdf <- data.frame(gridslat, gridslon, rsbdf, "Unrepresentativeness" = rowMeans(rsbdf[ls(pattern = "_hist_diff_mod")]))
