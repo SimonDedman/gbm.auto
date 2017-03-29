@@ -16,8 +16,8 @@
 #'  subset
 #' @param expvar List of column numbers of explanatory variables in 'samples',
 #' expected e.g. c(1,35,67,etc.). No default
-#' @param resvar Column number of response variable (e.g. CPUE) in samples.
-#' Expected, e.g. 12. No default. Column name should be species name
+#' @param resvar Column number(s) of response variable (e.g. CPUE) in samples.
+#' e.g. 12 or c(4,5,6). No default. Column name should be species name
 #' @param tc Permutations of tree complexity allowed, can be vector with
 #' the largest sized number no larger than the number of explanatory variables
 #' e.g. c(2,7), or a list of 2 single numbers or vectors, the first to be passed
@@ -38,6 +38,7 @@
 #' @param cols Barplot colour vector. Assignment in order of explanatory
 #' variables. Default 1*white: white bars black borders. '1*' repeats
 #' @param linesfiles Save individual line plots' data as csv's?
+#' @param smooth Apply a smoother to the line plots? Default FALSE
 #' @param savegbm Save gbm objects and make available in environment after
 #' running? Open with load("Bin_Best_Model")
 #' @param varint Calculate variable interactions? Default:TRUE, FALSE for error
@@ -121,8 +122,8 @@ gbm.auto <- function(
   # Can be a subset
   expvar,               # list of column numbers of explanatory variables in
   # 'samples', expected e.g. c(1,35,67,etc.). No default
-  resvar,               # column number of response variable (e.g. CPUE) in
-  # samples. Expected, e.g. 12. No default. Column name should be species name
+  resvar,               # column number(s) of response variable (e.g. CPUE) in
+  # samples, e.g. 12 or c(4,5,6). No default. Column name should be species name
   tc = c(2),            # permutations of tree complexity allowed, can be a
   # vector with the largest sized number no larger than the number of
   # explanatory variables e.g. c(2,7), or a list of 2 single numbers or vectors,
@@ -143,7 +144,8 @@ gbm.auto <- function(
   gridslon = 1,         # column number for longitude in 'grids'
   cols = grey.colors(1,1,1), # barplot colour vector. Assignment in order of
   # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
-  linesfiles = TRUE,   # save individual line plots' data as csv's?
+  linesfiles = TRUE,    # save individual line plots' data as csv's?
+  smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
   savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
   varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
   # for error "contrasts can be applied only to factors with 2 or more levels"
@@ -384,7 +386,8 @@ gbm.auto <- function(
           Gaus_Best_Model <- paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = "")}
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
-          print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+          if (ZI) {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+          } else {print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))}
 
           ####10. Add BRT bin stats to report####
           Report[1:6,(3 + n)] <- c(paste("trees: ",get(paste("Gaus_BRT",".tc",j,".lr",k,".bf",l, sep = ""))$n.trees, sep = ""),
@@ -503,35 +506,59 @@ gbm.auto <- function(
     # All plots individually, named by explanatory variable, bin & gaus
     if (ZI) {  # don't do if ZI=FALSE
       for (o in 1:length(get(Bin_Best_Model)$contributions$var)) {
-        png(filename = paste("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$contributions$var[o]),".png", sep = ""),
+        png(filename = paste("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$gbm.call$predictor.names[o]),".png", sep = ""),
             width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
-        par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
+        par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
+        gbm.plot(get(Bin_Best_Model),
+                 variable.no = o, # order of variable.no =! order of get(Bin_Best_Model)$contributions$var
+                 n.plots = 1,
+                 smooth = smooth,
+                 rug = TRUE,
+                 write.title = FALSE,
+                 y.label = "Marginal Effect",
+                 x.label = NULL,
+                 show.contrib = TRUE,
+                 plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
+        mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
+
         # bg=expvarcols[match(get(Bin_Best_Model)$contributions$var[o],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
-        plotgrid <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
-        if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Bin_Best_line_", as.character(get(Bin_Best_Model)$contributions$var[o]), ".csv", sep = ""))
-        xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE) # sets range & ticks
-        yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE) # sets range & ticks
-        plot(range(xx), range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
-        lines(plotgrid, type = "l")
-        axis(1, lwd.ticks = 8, lwd = 8, at = xx) # is providing only the thick line & downticks
-        axis(2, lwd.ticks = 8, lwd = 8, at = yy)
+        #plotgrid <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
+        #if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Bin_Best_line_", as.character(get(Bin_Best_Model)$contributions$var[o]), ".csv", sep = ""))
+        #xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE) # sets range & ticks
+        #yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE) # sets range & ticks
+        #plot(range(xx), range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
+        #lines(plotgrid, type = "l")
+        #axis(1, lwd.ticks = 8, lwd = 8, at = xx) # is providing only the thick line & downticks
+        #axis(2, lwd.ticks = 8, lwd = 8, at = yy)
         #rug(quantile(samples[as.character(get(Bin_Best_Model)$contributions$var[o])], probs=seq(0,1,0.01), na.rm=TRUE), side=1, lwd=5, ticksize=0.03) #n of ticks probs seq arg 3: 0.1, 0.05, 0.01
-        rug(samples[as.character(get(Bin_Best_Model)$contributions$var[o])][,1], side = 1, lwd = 5, ticksize = 0.03) # all points rug
+        #rug(samples[as.character(get(Bin_Best_Model)$contributions$var[o])][,1], side = 1, lwd = 5, ticksize = 0.03) # all points rug
         dev.off() }} # close ZI option
 
     if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
-      png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$contributions$var[p]),".png", sep = ""),
+      png(filename = paste("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p]),".png", sep = ""),
           width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
-      par(mar = c(1.35,3.4,0.4,0.5), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(2,0.5,0), xpd = NA)
-      plotgrid <- plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
-      if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$contributions$var[p]), ".csv", sep = ""))
-      xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE)
-      yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE)
-      plot(range(xx),range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
-      lines(plotgrid, type = "l")
-      axis(1, lwd.ticks = 8, lwd = 8, at = xx)
-      axis(2, lwd.ticks = 8, lwd = 8, at = yy)
-      rug(samples[as.character(get(Gaus_Best_Model)$contributions$var[p])][,1], side = 1, lwd = 5, ticksize = 0.03, quiet = TRUE)
+      par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
+      gbm.plot(get(Gaus_Best_Model),
+               variable.no = p,
+               n.plots = 1,
+               smooth = smooth,
+               rug = TRUE,
+               write.title = FALSE,
+               y.label = "",
+               x.label = NULL,
+               show.contrib = TRUE,
+               plot.layout = c(1, 1))
+      mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
+
+      #plotgrid <- plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
+      #if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$contributions$var[p]), ".csv", sep = ""))
+      #xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE)
+      #yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE)
+      #plot(range(xx),range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
+      #lines(plotgrid, type = "l")
+      #axis(1, lwd.ticks = 8, lwd = 8, at = xx)
+      #axis(2, lwd.ticks = 8, lwd = 8, at = yy)
+      #rug(samples[as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p])][,1], side = 1, lwd = 5, ticksize = 0.03, quiet = TRUE)
       # quiet=TRUE because x axis is incorrect relative to points. Have tried only.loose=FALSE in xx line
       # also plotgridbin from bin to use bin's x axis but didn't work. Tried matching gaus & bin no joy.
       dev.off() }}
@@ -643,18 +670,20 @@ gbm.auto <- function(
       write.csv(grids, row.names = FALSE, file = paste("./", names(samples[i]), "/Abundance_Preds_All.csv", sep = ""))
       # CSV of Predicted values at each site without predictor variables' values.
       write.csv(grids[c(gridslat,gridslon,predabund)], row.names = FALSE, file = paste("./", names(samples[i]), "/Abundance_Preds_only.csv", sep = ""))
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
     } #close grids option from above section 16
 
     if (savegbm) { # Save model objects if switched on
-      Bin_Best_Model_Object <- get(Bin_Best_Model)
-      Bin_Best_Model <<- Bin_Best_Model_Object
+      if (ZI) {Bin_Best_Model_Object <- get(Bin_Best_Model)
+      Bin_Best_Model <<- Bin_Best_Model_Object}
       if (gaus) {Gaus_Best_Model_Object <- get(Gaus_Best_Model)
       Gaus_Best_Model <<- Gaus_Best_Model_Object
       save(Gaus_Best_Model_Object,file = paste("./",names(samples[i]),"/Gaus_Best_Model", sep = ""))}
-      if (ZI) {save(Bin_Best_Model_Object,file = paste("./",names(samples[i]),"/Bin_Best_Model", sep = ""))}} #only save bin if ZI=TRUE
-
-    if (alerts) beep(2) # progress printer, right aligned for visibility
-    print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+      if (ZI) {save(Bin_Best_Model_Object,file = paste("./",names(samples[i]),"/Bin_Best_Model", sep = ""))} #only save bin if ZI=TRUE
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Model objects saved     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", sep = ""))
+      }
 
     ####22. Finalise & Write Report####
     if (ZI)

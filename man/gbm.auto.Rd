@@ -7,8 +7,9 @@
 gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
   0.005), bf = 0.5, ZI = "CHECK", simp = TRUE, gridslat = 2,
   gridslon = 1, cols = grey.colors(1, 1, 1), linesfiles = TRUE,
-  savegbm = TRUE, varint = TRUE, map = TRUE, shape = NULL, RSB = TRUE,
-  BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
+  smooth = FALSE, savegbm = TRUE, varint = TRUE, map = TRUE,
+  shape = NULL, RSB = TRUE, BnW = TRUE, alerts = TRUE,
+  pngtype = "cairo-png", gaus = TRUE, ...)
 }
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
@@ -22,8 +23,8 @@ names short, no odd characters, starting numerals or terminal periods. Spaces
 \item{expvar}{List of column numbers of explanatory variables in 'samples',
 expected e.g. c(1,35,67,etc.). No default}
 
-\item{resvar}{Column number of response variable (e.g. CPUE) in samples.
-Expected, e.g. 12. No default. Column name should be species name}
+\item{resvar}{Column number(s) of response variable (e.g. CPUE) in samples.
+e.g. 12 or c(4,5,6). No default. Column name should be species name}
 
 \item{tc}{Permutations of tree complexity allowed, can be vector with
 the largest sized number no larger than the number of explanatory variables
@@ -53,6 +54,8 @@ only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.}
 variables. Default 1*white: white bars black borders. '1*' repeats}
 
 \item{linesfiles}{Save individual line plots' data as csv's?}
+
+\item{smooth}{Apply a smoother to the line plots? Default FALSE}
 
 \item{savegbm}{Save gbm objects and make available in environment after
 running? Open with load("Bin_Best_Model")}
