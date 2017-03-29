@@ -239,7 +239,7 @@ gbm.auto <- function(
 
     ####2. ZI check & log####
     # if user has asked code to check for ZI, check it & set new ZI status
-    if (ZI == "CHECK") if (sum(samples[,resvar] == 0,na.rm = TRUE)/length(samples[,resvar]) >= 0.5) ZI = TRUE else ZI = FALSE
+    if (ZI == "CHECK") if (sum(samples[,i] == 0,na.rm = TRUE)/length(samples[,i]) >= 0.5) ZI = TRUE else ZI = FALSE
 
     # ensure resvar has zeroes (expects mix of successful & unsuccessful samples)
     if (min(samples[i]) > 0) print("No zeroes in response variable. Method expects unsuccessful, as well as successful, samples")
