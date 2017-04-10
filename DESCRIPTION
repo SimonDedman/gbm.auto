@@ -15,10 +15,11 @@ Imports:
     gbm (>= 2.1.1),
     dismo (>= 1.0-15),
     beepr (>= 1.2),
-    labeling (>= 0.3),
     mapplots (>= 1.5),
+    maptools (>= 0.9-1),
     rgdal (>= 1.1-10),
     rgeos (>= 0.3-19),
     raster (>= 2.5-8),
+    shapefiles (>= 0.7),
     stats (>= 3.3.1)
 RoxygenNote: 6.0.1

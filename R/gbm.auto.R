@@ -107,14 +107,8 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
 #' @export
-#' @import mapplots
+#' @import dismo
 #' @importFrom beepr beep
-#' @importFrom labeling extended
-#' @importFrom dismo gbm.interactions
-#' @importFrom dismo gbm.plot.fits
-#' @importFrom dismo gbm.plot
-#' @importFrom dismo gbm.simplify
-#' @importFrom dismo gbm.step
 #' @importFrom gbm plot.gbm
 #'
 gbm.auto <- function(
@@ -528,18 +522,6 @@ gbm.auto <- function(
                  show.contrib = TRUE,
                  plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-
-        # bg=expvarcols[match(get(Bin_Best_Model)$contributions$var[o],expvarcols[,2]),1]) #changed margin to hide label #XPD YPD ALLOWS AXES TO EXTEND FURTHER TO ENCOMPASS ALL DATA? #colour removed
-        #plotgrid <- plot.gbm(get(Bin_Best_Model), match(get(Bin_Best_Model)$contributions$var[o], get(Bin_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
-        #if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/Bin_Best_line_", as.character(get(Bin_Best_Model)$contributions$var[o]), ".csv"))
-        #xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE) # sets range & ticks
-        #yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE) # sets range & ticks
-        #plot(range(xx), range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
-        #lines(plotgrid, type = "l")
-        #axis(1, lwd.ticks = 8, lwd = 8, at = xx) # is providing only the thick line & downticks
-        #axis(2, lwd.ticks = 8, lwd = 8, at = yy)
-        #rug(quantile(samples[as.character(get(Bin_Best_Model)$contributions$var[o])], probs=seq(0,1,0.01), na.rm=TRUE), side=1, lwd=5, ticksize=0.03) #n of ticks probs seq arg 3: 0.1, 0.05, 0.01
-        #rug(samples[as.character(get(Bin_Best_Model)$contributions$var[o])][,1], side = 1, lwd = 5, ticksize = 0.03) # all points rug
         dev.off() }} # close ZI option
 
     if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
@@ -557,18 +539,6 @@ gbm.auto <- function(
                show.contrib = TRUE,
                plot.layout = c(1, 1))
       mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-
-      #plotgrid <- plot.gbm(get(Gaus_Best_Model),match(get(Gaus_Best_Model)$contributions$var[p], get(Gaus_Best_Model)$gbm.call$predictor.names), lwd = 8, return.grid = TRUE)
-      #if (linesfiles) write.csv(plotgrid, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$contributions$var[p]), ".csv"))
-      #xx <- extended(min(plotgrid[1]), max(plotgrid[1]),7, only.loose = TRUE)
-      #yy <- extended(min(plotgrid[2]), max(plotgrid[2]),7, only.loose = TRUE)
-      #plot(range(xx),range(yy), t = "n", xaxt = "n", yaxt = "n", bty = "n", ylab = NA)
-      #lines(plotgrid, type = "l")
-      #axis(1, lwd.ticks = 8, lwd = 8, at = xx)
-      #axis(2, lwd.ticks = 8, lwd = 8, at = yy)
-      #rug(samples[as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p])][,1], side = 1, lwd = 5, ticksize = 0.03, quiet = TRUE)
-      # quiet=TRUE because x axis is incorrect relative to points. Have tried only.loose=FALSE in xx line
-      # also plotgridbin from bin to use bin's x axis but didn't work. Tried matching gaus & bin no joy.
       dev.off() }}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility

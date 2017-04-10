@@ -37,6 +37,7 @@
 #' and a final variance score per cell.
 #'
 #' @export
+#' @importFrom beepr beep
 #'
 #' @examples
 #' library("gbm.auto")

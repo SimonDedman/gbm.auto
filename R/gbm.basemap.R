@@ -59,11 +59,6 @@ gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
 # to expand rectangular datasets basemaps over the entire square area created by
 # basemap in mapplots
 
-# Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set
-# box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
-# "Use secure download method for HTTP" in Tools > Global Options > # Packages
-# Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
-
 print(paste("if rgdal install fails in linux try: sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"))
 if (!require(rgdal)) install.packages("rgdal")
   require(rgdal) # for readOGR

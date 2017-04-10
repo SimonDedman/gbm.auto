@@ -5,10 +5,10 @@
 \title{Automated Boosted Regression Tree modelling and mapping suite}
 \usage{
 gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
-  0.005), bf = 0.5, ZI = "CHECK", simp = TRUE, gridslat = 2,
-  gridslon = 1, cols = grey.colors(1, 1, 1), linesfiles = TRUE,
-  smooth = FALSE, savegbm = TRUE, varint = TRUE, map = TRUE,
-  shape = NULL, RSB = TRUE, BnW = TRUE, alerts = TRUE,
+  0.005), bf = 0.5, ZI = "CHECK", fam1 = "bernoulli", fam2 = "gaussian",
+  simp = TRUE, gridslat = 2, gridslon = 1, cols = grey.colors(1, 1, 1),
+  linesfiles = TRUE, smooth = FALSE, savegbm = TRUE, varint = TRUE,
+  map = TRUE, shape = NULL, RSB = TRUE, BnW = TRUE, alerts = TRUE,
   pngtype = "cairo-png", gaus = TRUE, ...)
 }
 \arguments{
@@ -43,6 +43,12 @@ or list, per tc and lr}
 \item{ZI}{are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
 log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
 only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.}
+
+\item{fam1}{probability distribution family for 1st part of delta process,
+defaults to "bernoulli"}
+
+\item{fam2}{probability distribution family for 2nd part of delta process,
+defaults to "gaussian"}
 
 \item{simp}{Try simplfying best BRTs?}
 
