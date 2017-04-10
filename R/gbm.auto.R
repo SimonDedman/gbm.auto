@@ -522,6 +522,15 @@ gbm.auto <- function(
                  show.contrib = TRUE,
                  plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
+
+        if (linesfiles) {plotgrid <- plot.gbm(get(Bin_Best_Model),
+                                              match(get(Bin_Best_Model)$contributions$var[o],
+                                                    get(Bin_Best_Model)$gbm.call$predictor.names),
+                                              return.grid = TRUE)
+        write.csv(plotgrid, row.names = FALSE, na = "",
+                  file = paste0("./", names(samples[i]), "/Bin_Best_line_",
+                                as.character(get(Bin_Best_Model)$contributions$var[o]),
+                                ".csv"))} #close linesfiles
         dev.off() }} # close ZI option
 
     if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
@@ -539,6 +548,16 @@ gbm.auto <- function(
                show.contrib = TRUE,
                plot.layout = c(1, 1))
       mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
+
+      if (linesfiles) {plotgrid <- plot.gbm(get(Gaus_Best_Model),
+                                            match(get(Gaus_Best_Model)$contributions$var[p],
+                                                  get(Gaus_Best_Model)$gbm.call$predictor.names),
+                                            return.grid = TRUE)
+      write.csv(plotgrid, row.names = FALSE, na = "",
+                file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
+                              as.character(get(Gaus_Best_Model)$contributions$var[p]),
+                              ".csv"))} #close linesfiles
+
       dev.off() }}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
