@@ -4,17 +4,19 @@
 \alias{gbm.loop}
 \title{Calculate Coefficient Of Variation surfaces for gbm.auto predictions}
 \usage{
-gbm.loop(loops = 10, savecsv = T, varmap = T, measure = "CPUE",
-  cleanup = FALSE, grids, samples, expvar, resvar, tc = c(2),
-  lr = c(0.01), bf = 0.5, ZI = "CHECK", simp = TRUE, gridslat = 2,
-  gridslon = 1, cols = grey.colors(1, 1, 1), linesfiles = F,
-  savegbm = F, varint = F, map = F, shape = NULL, RSB = F, BnW = F,
-  alerts = T, pngtype = "cairo-png", ...)
+gbm.loop(loops = 10, savecsv = TRUE, calcpreds = TRUE, varmap = T,
+  measure = "CPUE", cleanup = FALSE, grids = NULL, samples, expvar,
+  resvar, tc = c(2), lr = c(0.01), bf = 0.5, ZI = "CHECK",
+  simp = TRUE, gridslat = 2, gridslon = 1, cols = grey.colors(1, 1, 1),
+  linesfiles = F, savegbm = F, varint = F, map = F, shape = NULL,
+  RSB = F, BnW = F, alerts = T, pngtype = "cairo-png", ...)
 }
 \arguments{
 \item{loops}{The number of loops required, integer}
 
 \item{savecsv}{Save the coefficients of variation in simple & extended format}
+
+\item{calcpreds}{Calculate coefficients of variation of predicted abundance?}
 
 \item{varmap}{Create a map of the coefficients of variation outputs?}
 

@@ -1,4 +1,6 @@
 ####TO DO####
+# indivudual line plots: add a horizontal line at 0 to visually split pos & neg
+
 # CofV map & gbm.loop work out variance of predictions but I don't currently
 # calculate variance of 1st stage, the learnt model object, i.e. how variable
 # are linesfiles, bars, etc? Small n can see huge changes in these. Could lend

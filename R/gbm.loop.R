@@ -7,6 +7,7 @@
 #'
 #' @param loops The number of loops required, integer
 #' @param savecsv Save the coefficients of variation in simple & extended format
+#' @param calcpreds Calculate coefficients of variation of predicted abundance?
 #' @param varmap Create a map of the coefficients of variation outputs?
 #' @param measure Map legend, coefficients of variation of what? Default CPUE
 #' @param cleanup Remove gbm.auto-generated directory each loop? Default FALSE
@@ -49,11 +50,12 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
 gbm.loop <- function(loops = 10, # the number of loops required, integer
-                     savecsv = T, # save the coefficients of variation in simple & extended format
+                     savecsv = TRUE, # save the coefficients of variation in simple & extended format
+                     calcpreds = TRUE, # calculate coefficients of variation of predicted abundance?
                      varmap = T, # create a map of the coefficients of variation outputs?
                      measure = "CPUE", # map legend, coefficients of variation of what? Default CPUE
                      cleanup = FALSE, # remove gbm.auto-generated directory each loop?
-                     grids,         # explantory data to predict to. Import with (e.g.)
+                     grids = NULL,         # explantory data to predict to. Import with (e.g.)
                      # read.csv and specify object name.
                      samples,  # explanatory and response variables to predict from.
                      # Keep col names short, no odd characters, starting numerals or terminal periods
@@ -101,7 +103,11 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
 
-  var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
+  binbars.df <- data.frame(var = rep(NA, length(expvar)),
+                           rel.inf = rep(NA, length(expvar)))
+  gausbars.df <- binbars.df # blnk dataframes for bin & gaus bars data
+  if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
+
   for (i in 1:loops) { # loop through all gbm.autos
     dir.create(paste0("./", i)) # create i'th folder
     setwd(paste0("./", i)) # move to it
@@ -128,20 +134,143 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
              pngtype = pngtype,
              ...) # accept other gbm.auto values than these basics
     setwd(paste0("./", colnames(samples[resvar]))) # set wd to species named subfolder
-    predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
+
+    if (file.exists("Binary BRT Variable contributions.csv")) {
+    binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
+    if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
+      binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
+    bin = TRUE} else bin = FALSE
+
+    # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
+    # adding i'th loop's values as new column
+    if (bin) for (j in colnames(samples)[expvar]) {
+      assign(paste0("bintmp_", j), read.csv(paste0("Bin_Best_line_", j, ".csv"))) # temp container for bin bars
+      if (i == 1) {assign(paste0("binline_", j), get(paste0("bintmp_", j)))
+        #colnames(paste0("binline_", j))[1 + i] <- paste0("Loop_", i) # label newly added column
+      } else {
+        assign(paste0("binline_", j), cbind(get(paste0("binline_", j)), get(paste0("bintmp_", j))[,2]))
+        #colnames(paste0("binline_", j))[1 + i] <- paste0("Loop_", i)
+        }}
+
+    if (file.exists("Gaussian BRT Variable contributions.csv")) {
+    gausbarstmp <- read.csv("Gaussian BRT Variable contributions.csv") # temp container for Gaus bars
+    if (i == 1) {gausbars.df <- gausbarstmp} else {
+      gausbars.df <- rbind(gausbars.df, gausbarstmp)}
+    gaus = TRUE} else gaus = FALSE
+
+    if (gaus) for (k in colnames(samples)[expvar]) {
+      # if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) { #if variable line csv doesn't exist
+      #   assign(paste0("gaustmp_", k),
+      assign(paste0("gaustmp_", k), read.csv(paste0("Gaus_Best_line_", k, ".csv")))
+      ##fails if variable influence is 0 and not plotted or has been removed by simp, goes to read csv but csv not present.
+      if (i == 1) {assign(paste0("gausline_", k), get(paste0("gaustmp_", k)))
+        #colnames(get(paste0("gausline_", k)))[1 + i] <- paste0("Loop_", i) # label newly added column
+        # target of assignment expands to non-language object
+        # see https://stackoverflow.com/questions/14464442/using-get-with-replacement-functions
+        } else {
+        assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)), get(paste0("gaustmp_", k))[,2]))
+          #colnames(paste0("gausline_", k))[1 + i] <- paste0("Loop_", i)
+          }}
+
+    if (!file.exists("Abundance_Preds_only.csv")) calcpreds = FALSE
+    if (calcpreds) {predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
     var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
-    colnames(var.df)[2 + i] <- paste0("Loop_", i) # label newly added preds column
+    colnames(var.df)[2 + i] <- paste0("Loop_", i)} # label newly added preds column
+
     setwd("../../") # move back up to root folder
     if (cleanup) unlink(i, recursive = T)
   } # close i loop & go to the next i
 
-  var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
+####loops done create dfs####
+  # create bin & Gaus barplot stats data frames
+  if (bin) {binbars <- data.frame(Min.Inf = with(binbars.df, tapply(rel.inf, var, min)),
+                         Av.Inf = with(binbars.df, tapply(rel.inf, var, mean)),
+                         Max.Inf = with(binbars.df, tapply(rel.inf, var, max)),
+                         Inf.variance = with(binbars.df, tapply(rel.inf, var, var)),
+                         row.names = levels.default(binbars.df$var))}
+  if (gaus) {gausbars <- data.frame(Min.Inf = with(gausbars.df, tapply(rel.inf, var, min)),
+                         Av.Inf = with(gausbars.df, tapply(rel.inf, var, mean)),
+                         Max.Inf = with(gausbars.df, tapply(rel.inf, var, max)),
+                         Inf.variance = with(gausbars.df, tapply(rel.inf, var, var)),
+                         row.names = levels.default(gausbars.df$var))}
+
+  # create linesfiles end-column stats for each variable
+    if (bin) for (l in colnames(samples)[expvar]) {
+    assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
+                                        "MinLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, min)))
+    assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
+                                        "AvLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, mean)))
+    assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
+                                        "MaxLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, max)))
+    assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
+                                        "VarLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, var)))}
+
+  if (gaus) for (m in colnames(samples)[expvar]) {
+    assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
+                                         "MinLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, min)))
+    assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
+                                         "AvLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, mean)))
+    assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
+                                         "MaxLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, max)))
+    assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
+                                         "VarLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, var)))}
+
   # apply variances to a new column at the end of var.df
+  if (calcpreds) var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
 
-  if (savecsv) {write.csv(var.df, file = "VarAll.csv", row.names = F)
-    write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}
+####save csvs####
+  if (savecsv) {
+    if (bin) write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
+    if (gaus) write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
 
-  if (varmap) { # if mapping requested,
+    if (bin) for (n in colnames(samples)[expvar]) {
+      write.csv(get(paste0("binline_", n)), file = paste0("BinLineLoop_", n, ".csv"), row.names = F)}
+    if (gaus) for (o in colnames(samples)[expvar]) {
+      write.csv(get(paste0("gausline_", o)), file = paste0("GausLineLoop_", o, ".csv"), row.names = F)}
+
+    if (calcpreds) {write.csv(var.df, file = "VarAll.csv", row.names = F)
+    write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}}
+
+####plot linesfiles####
+  if (bin) for (p in colnames(samples)[expvar]) {
+    png(filename = paste0("Bin_Loop_lines_", p, ".png"),
+        width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
+    plot(get(paste0("binline_", p))[,1],
+       get(paste0("binline_", p))[,"MaxLine"],
+       type = "l",
+       xlab = colnames(get(paste0("binline_", p)))[1],
+       ylab = "Marginal Effect",
+       main = "",
+       yasx = "r")
+  lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MinLine"], col = "red")
+  lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"AvLine"], col = "blue")
+  legend("topleft", legend = c("Max","Av.","Min"), col = c("black","blue","red"),
+         lty = 1, pch = "-")
+  dev.off()}
+
+  if (gaus) for (q in colnames(samples)[expvar]) {
+    png(filename = paste0("Gaus_Loop_lines_", q, ".png"),
+        width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
+    plot(get(paste0("gausline_", q))[,1],
+         get(paste0("gausline_", q))[,"MaxLine"],
+         type = "l",
+         xlab = colnames(get(paste0("gausline_", q)))[1],
+         ylab = "Marginal Effect",
+         main = "",
+         yasx = "r")
+    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MinLine"], col = "red")
+    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"AvLine"], col = "blue")
+    legend("topleft", legend = c("Max","Av.","Min"), col = c("black","blue","red"),
+           lty = 1, pch = "-")
+    dev.off()}
+  ## need to change from lines for factorial variables
+  ## need to fix the y axis range lengths, between minmin & maxmax
+  ## marginal effect y axis label values are raw values not the +/- from gbm.plot
+
+####map predabund CofVs####
+  if (calcpreds) if (varmap) { # if mapping requested,
     if (is.null(shape)) { # and shape not set, check presence of basemap
       if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
       bounds = c(range(grids[,gridslon]),range(grids[,gridslat])) #then create bounds
@@ -172,5 +301,5 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     # res there, but high values captures in the last few bins.
   } # close map optional
   if (alerts) beep(3)
-  return(var.df) #return output
+  if (calcpreds) return(var.df) #return output
 } # close function
