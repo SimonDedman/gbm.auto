@@ -100,6 +100,29 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # Generalised Boosting Model / Boosted Regression Tree process chain automater
   # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 
+  ####TODO####
+  # Need AUC & COR scores for each loop
+  # AUC:
+  # if (gaus) {Report[1:5,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
+  #                                                paste0("Model CV score: ", Bin_Best_Score),
+  #                                                paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
+  #                                                paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
+  #                                                paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))
+  # } else {Report[1:5,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
+  #                                            paste0("Model CV score: ", Bin_Best_Score),
+  #                                            paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
+  #                                            paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
+  #                                            paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))}
+  #
+  #
+  # COR: paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
+  # if (gaus) {Report[1:2,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name), paste0("Model CV score: ", Gaus_Best_Score))
+  #
+  #
+  # See how many loops until things stabilise, i.e. variance decreases, average smooths out, etc, is that even logical?
+  # Yes. min max av var should be similar between e.g. 1,000,000 loops & 1,000,001, but less likely between 1 & 2.
+  # But based on what though? Just do a line of x:loop# vs y: minmin/maxmax/avav/avvar?
+
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
 
@@ -265,8 +288,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     legend("topleft", legend = c("Max","Av.","Min"), col = c("black","blue","red"),
            lty = 1, pch = "-")
     dev.off()}
-  ## need to change from lines for factorial variables
-  ## need to fix the y axis range lengths, between minmin & maxmax
+  ## for factorial variables, need to change from lines to bars
+  ## need to fix the y axis range lengths, between minmin & maxmax (not min & max of first plot)
   ## marginal effect y axis label values are raw values not the +/- from gbm.plot
 
 ####map predabund CofVs####

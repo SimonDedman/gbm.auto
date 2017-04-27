@@ -1,5 +1,11 @@
 ####TO DO####
+# RSB: add option to output histogram plots per expvar loop.
+# Rerun hist samples & hist grids lines with plot=T, have one atop the other,
+# then add hist diff mod.
+
 # indivudual line plots: add a horizontal line at 0 to visually split pos & neg
+# absolute values of marginal effect? currently Y scale tied to values, which
+# gives impression that max maginal effect is 'big' but all might be tiny
 
 # CofV map & gbm.loop work out variance of predictions but I don't currently
 # calculate variance of 1st stage, the learnt model object, i.e. how variable

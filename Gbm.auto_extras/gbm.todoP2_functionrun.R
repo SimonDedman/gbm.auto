@@ -1,9 +1,18 @@
 ## Run gbm.cons
+library("devtools")
+install_github("SimonDedman/gbm.auto") # update gbm.auto to latest
+library("gbm.auto")
+mygrids <- gbm.auto::grids
+Juveniles <- gbm.auto::Juveniles
+Adult_Females <- gbm.auto::Adult_Females
+
 setwd("/home/simon/Dropbox/Galway/Project Sections/2. Spatial subsets inc fishery data/Data/Maps/Testbench")
-source('~/Dropbox/Galway/Analysis/R/gbm.auto/gbm.cons.R')
-gbm.cons(grids = "grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", # csv file (/ & location) of gridded lat long data to predict to
-         subsets = c("Juveniles","Adult Females"), # Subset names
-         conssamples = c("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays.csv","F_Mat_plus_LPUE_plus_Enviro_IS_AllSp.csv"), # single or vector of samples data csv files corresponding to subsets
+# source('~/Dropbox/Galway/Analysis/R/gbm.auto/gbm.cons.R')
+# Juveniles <- read.csv("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays.csv")
+# Adult_Females <- read.csv("F_Mat_plus_LPUE_plus_Enviro_IS_AllSp.csv") # single or vector of samples data csv files corresponding to subsets
+
+gbm.cons(mygrids = mygrids, # csv file (/ & location) of gridded lat long data to predict to
+         subsets = c("Juveniles","Adult_Females"), # Subset names
          alerts = TRUE,                # play sounds to mark progress steps
          map = TRUE,                   # produce maps
          BnW = TRUE,
@@ -41,10 +50,7 @@ gbm.cons(grids = "grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_
          zeroes = rep(FALSE,8))
 
 
-# without going gmb.auto runs
-gbm.cons(grids = "grids_Enviro_HansLPUE_MI&MMOlog_MIscallopVMS_MMOWhelk_MMOScal_Dist2Srvy_Preds_IS_NA_HansE.csv", # csv file (/ & location) of gridded lat long data to predict to
+# without doing gmb.auto runs
+gbm.cons(mygrids = subsets = c("Juveniles","Adult_Females"), # Subset names
          subsets = c("Juveniles","Adult Females"), # Subset names
-         conssamples = c("Hauls&J&Preds&Enviros_Trimmed_ISonly_newdata_oldbkuporder&enviros&rays.csv","F_Mat_plus_LPUE_plus_Enviro_IS_AllSp.csv"), # single or vector of samples data csv files corresponding to subsets
-         alerts = TRUE,                # play sounds to mark progress steps
-         gbmautos = FALSE,
-         resvars = c(44:47,11:14))
+         gbmautos = FALSE, resvars = c(44:47,11:14))

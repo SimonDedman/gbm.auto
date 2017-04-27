@@ -118,7 +118,7 @@ for (i in 1:length(subsets)) {  #currently 2
     # e.g. CTBS,CTBS = 1:8. Allows (e.g.) length=8 lists to be entered by user in
     # function terms & used by gbm.auto calls across subset loops
 
-    mysamples <- get(subsets[i]) # for gbm.auto (default) & later, <<- bad but reqd
+    mysamples <- get(subsets[i]) # for gbm.auto (default) & later
     # gbm.auto pulls relevant group-ignoring variable from user entries or defaults
     if (gbmautos) {gbm.auto(grids = mygrids,
                             samples = mysamples,
