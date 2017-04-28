@@ -7,13 +7,12 @@
 gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
   gbmautos = TRUE, expvars, tcs = NULL, lrs = rep(list(c(0.01, 0.005)),
   length(resvars)), bfs = rep(0.5, length(resvars)), ZIs = rep("CHECK",
-  length(resvars)), gridslats = rep(2, length(resvars)), gridslons = rep(1,
   length(resvars)), colss = rep(list(grey.colors(1, 1, 1)), length(resvars)),
   linesfiless = rep(FALSE, length(resvars)), savegbms = rep(TRUE,
   length(resvars)), varints = rep(TRUE, length(resvars)), maps = rep(TRUE,
   length(resvars)), RSBs = rep(TRUE, length(resvars)), BnWs = rep(TRUE,
   length(resvars)), zeroes = rep(TRUE, length(resvars)), shape = NULL,
-  pngtype = "cairo-png")
+  pngtype = "cairo-png", gridslat = 2, gridslon = 1)
 }
 \arguments{
 \item{mygrids}{Gridded lat+long+data object to predict to}
@@ -33,37 +32,38 @@ matching-named dataset objects e.g. read in by read.csv()}
 
 \item{expvars}{List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default}
 
-\item{tcs}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{tcs}{Gbm.auto parameters, autocalculated below if not provided by user}
 
-\item{lrs}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{lrs}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{bfs}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{bfs}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{ZIs}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{ZIs}{Gbm.auto parameter, autocalculated below if not provided by user}
 
-\item{gridslats}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{colss}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{gridslons}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{linesfiless}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{colss}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{savegbms}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{linesfiless}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{varints}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{savegbms}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{maps}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{varints}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{RSBs}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{maps}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{BnWs}{Gbm.auto parameter, uses defaults if not provided by user}
 
-\item{RSBs}{Gbm.auto paramaters, autocalculated below if not provided by user}
-
-\item{BnWs}{Gbm.auto paramaters, autocalculated below if not provided by user}
-
-\item{zeroes}{Gbm.auto paramaters, autocalculated below if not provided by user}
+\item{zeroes}{For breaks.grid, include zero-only category in colour
+breakpoints and subsequent legend. Defaults to TRUE}
 
 \item{shape}{Coastline file for gbm.map}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
+
+\item{gridslat}{per Gbm.auto defaults to 2}
+
+\item{gridslon}{per Gbm.auto defaults to 1}
 }
 \value{
 Maps via gbm.map & saved data as csv file

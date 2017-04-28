@@ -15,22 +15,23 @@
 #' @param resvars Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default
 #' @param gbmautos Do gbm.auto runs for species?
 #' @param expvars List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default
-#' @param tcs Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param lrs Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param bfs Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param ZIs Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param gridslats Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param gridslons Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param colss Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param linesfiless Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param savegbms Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param varints Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param maps Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param RSBs Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param BnWs Gbm.auto paramaters, autocalculated below if not provided by user
-#' @param zeroes Gbm.auto paramaters, autocalculated below if not provided by user
+#' @param tcs Gbm.auto parameters, autocalculated below if not provided by user
+#' @param lrs Gbm.auto parameter, uses defaults if not provided by user
+#' @param bfs Gbm.auto parameter, uses defaults if not provided by user
+#' @param ZIs Gbm.auto parameter, autocalculated below if not provided by user
+#' @param colss Gbm.auto parameter, uses defaults if not provided by user
+#' @param linesfiless Gbm.auto parameter, uses defaults if not provided by user
+#' @param savegbms Gbm.auto parameter, uses defaults if not provided by user
+#' @param varints Gbm.auto parameter, uses defaults if not provided by user
+#' @param maps Gbm.auto parameter, uses defaults if not provided by user
+#' @param RSBs Gbm.auto parameter, uses defaults if not provided by user
+#' @param BnWs Gbm.auto parameter, uses defaults if not provided by user
+#' @param zeroes For breaks.grid, include zero-only category in colour
+#' breakpoints and subsequent legend. Defaults to TRUE
 #' @param shape Coastline file for gbm.map
 #' @param pngtype Filetype for png files, alternatively try "quartz"
+#' @param gridslat per Gbm.auto defaults to 2
+#' @param gridslon per Gbm.auto defaults to 1
 #'
 #' @return  Maps via gbm.map & saved data as csv file
 #' @export
@@ -69,8 +70,6 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      lrs = rep(list(c(0.01,0.005)),length(resvars)),
                      bfs = rep(0.5, length(resvars)),
                      ZIs = rep("CHECK", length(resvars)),
-                     gridslats = rep(2, length(resvars)),
-                     gridslons = rep(1, length(resvars)),
                      colss = rep(list(grey.colors(1,1,1)),length(resvars)),
                      linesfiless = rep(FALSE, length(resvars)),
                      savegbms = rep(TRUE, length(resvars)),
@@ -80,7 +79,9 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      BnWs = rep(TRUE, length(resvars)),
                      zeroes = rep(TRUE, length(resvars)),
                      shape = NULL, # coastline file for gbm.map
-                     pngtype = "cairo-png") # filetype for png files, alternatively try "quartz"
+                     pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
+                     gridslat = 2, #per Gbm.auto defaults to 2
+                     gridslon = 1) #per Gbm.auto defaults to 1
 {
   ####todo: make running gbm.auto optional####
   # if they've already been run.
@@ -128,8 +129,8 @@ for (i in 1:length(subsets)) {  #currently 2
                             lr = lrs[[((i - 1) * GS) + j]],
                             bf = bfs[[((i - 1) * GS) + j]],
                             ZI = ZIs[[((i - 1) * GS) + j]],
-                            gridslat = gridslats[[((i - 1) * GS) + j]],
-                            gridslon = gridslons[[((i - 1) * GS) + j]],
+                            gridslat = gridslat,
+                            gridslon = gridslon,
                             cols = colss[[((i - 1) * GS) + j]],
                             linesfiles = linesfiless[[((i - 1) * GS) + j]],
                             savegbm = savegbms[[((i - 1) * GS) + j]],

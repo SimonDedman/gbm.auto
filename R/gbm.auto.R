@@ -55,8 +55,8 @@
 #' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param gaus Do Gaussian runs as well as Bin? Default TRUE.
-#' @param ... Optional arguments for legend in legend.grid in gbm.map, and
-#' gbm.step (dismo)
+#' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
+#' legend.grid in gbm.map, and gbm.step (dismo)
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics
 #' for tests, variable interactions, predictors used and dropped, etc. If

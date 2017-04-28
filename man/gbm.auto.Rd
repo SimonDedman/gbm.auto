@@ -84,8 +84,8 @@ then calls gbm.basemap to download and autogenerate the base map.}
 
 \item{gaus}{Do Gaussian runs as well as Bin? Default TRUE.}
 
-\item{...}{Optional arguments for legend in legend.grid in gbm.map, and
-gbm.step (dismo)}
+\item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
+legend.grid in gbm.map, and gbm.step (dismo)}
 }
 \value{
 Line, dot and bar plots, a report of all variables used, statistics
