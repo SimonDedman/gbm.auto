@@ -1,4 +1,6 @@
 ####TO DO####
+# add option or list style n.trees & other gbm.plot / gbm.step parameters.
+
 # RSB: add option to output histogram plots per expvar loop.
 # Rerun hist samples & hist grids lines with plot=T, have one atop the other,
 # then add hist diff mod.
@@ -6,11 +8,6 @@
 # indivudual line plots: add a horizontal line at 0 to visually split pos & neg
 # absolute values of marginal effect? currently Y scale tied to values, which
 # gives impression that max maginal effect is 'big' but all might be tiny
-
-# CofV map & gbm.loop work out variance of predictions but I don't currently
-# calculate variance of 1st stage, the learnt model object, i.e. how variable
-# are linesfiles, bars, etc? Small n can see huge changes in these. Could lend
-# itself to a bootstrap?
 
 ## Area not included in input CPUE values nor output predictions!
 # One current limitation is that the surveyed CPUE values input into the gbm.auto
@@ -45,7 +42,7 @@
 ## add mtext etc. Rarely use dotplots, leave for now.
 
 # option either in gbm.auto or separate function to take line plots (feasibly as
-# linesfiles csvs) and overlay multiple lins on the same plot to save space and
+# linesfiles csvs) and overlay multiple lines on the same plot to save space and
 # allow comparisons. Bin & gaus obviously, but potentially subsets as well.
 # Lines options either colours or dash variants.
 # Related: Possibly a function to plot bars (bin, gaus) and lines (as above) as
@@ -53,11 +50,14 @@
 # Conceptualy would have to order the line plots by rank of bin+gaus importance
 # from "Binary/Gaussian BRT Variable contributions.csv" auto output
 
-# RSB log/ unlog cleverness is in gbm.auto map plottting section but nowhere else.
+# RSB log/ unlog cleverness is in gbm.auto map plotting section but nowhere else.
 
 # L246 250 618: optionally change hurdle/delta model to include zeroes in the gaussian part
 
-# L579 increase bar thickness with lwd
+# L606 increase bar thickness with lwd (1/6/17 went from 5 to 6, check difference)
+
+# line plots: thicker axis lines & ticks & rug ticks.
+# have rugs as density aka all points or 100 quantiles rather than current (10ths)
 
 # Examples for all functions man pages
 
@@ -222,6 +222,11 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# CofV map & gbm.loop work out variance of predictions but I don't currently
+# calculate variance of 1st stage, the learnt model object, i.e. how variable
+# are linesfiles, bars, etc? Small n can see huge changes in these. Could lend
+# itself to a bootstrap?
+
 # paste0() = paste(..., sep = ""). Replace all in gbm.auto and elsewhere.
 
 # Add ability to specify distribution family instead of default bin & gaus?

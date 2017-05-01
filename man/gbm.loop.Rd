@@ -8,7 +8,7 @@ gbm.loop(loops = 10, savecsv = TRUE, calcpreds = TRUE, varmap = T,
   measure = "CPUE", cleanup = FALSE, grids = NULL, samples, expvar,
   resvar, tc = c(2), lr = c(0.01), bf = 0.5, ZI = "CHECK",
   simp = TRUE, gridslat = 2, gridslon = 1, cols = grey.colors(1, 1, 1),
-  linesfiles = F, savegbm = F, varint = F, map = F, shape = NULL,
+  linesfiles = T, savegbm = F, varint = F, map = T, shape = NULL,
   RSB = F, BnW = F, alerts = T, pngtype = "cairo-png", ...)
 }
 \arguments{
@@ -48,7 +48,7 @@ gbm.loop(loops = 10, savecsv = TRUE, calcpreds = TRUE, varmap = T,
 
 \item{cols}{See gbm.auto help}
 
-\item{linesfiles}{See gbm.auto help}
+\item{linesfiles}{See gbm.auto help; TRUE else linesfiles calcs will fail}
 
 \item{savegbm}{See gbm.auto help}
 

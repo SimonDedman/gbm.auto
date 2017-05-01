@@ -510,14 +510,14 @@ gbm.auto <- function(
       for (o in 1:length(get(Bin_Best_Model)$contributions$var)) {
         png(filename = paste0("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$gbm.call$predictor.names[o]),".png"),
             width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
-        par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
+        par(mar = c(2.3,5,0.3,0.6), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
         gbm.plot(get(Bin_Best_Model),
                  variable.no = o, # order of variable.no =! order of get(Bin_Best_Model)$contributions$var
                  n.plots = 1,
                  smooth = smooth,
                  rug = TRUE,
                  write.title = FALSE,
-                 y.label = "Marginal Effect",
+                 y.label = "",
                  x.label = NULL,
                  show.contrib = TRUE,
                  plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
@@ -536,7 +536,7 @@ gbm.auto <- function(
     if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
       png(filename = paste0("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p]),".png"),
           width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
-      par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
+      par(mar = c(2.3,5,0.3,0.6), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
       gbm.plot(get(Gaus_Best_Model),
                variable.no = p,
                n.plots = 1,
@@ -603,7 +603,7 @@ gbm.auto <- function(
       png(filename = paste0("./",names(samples[i]),"/Bin_Bars.png"),
           width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
           type = pngtype)
-      par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 5)
+      par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
       midpoints <- barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1,
                            horiz = TRUE, cex.names = 0.8, xlab = "Influence %",
                            col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]),
@@ -617,7 +617,7 @@ gbm.auto <- function(
     if (gaus) {png(filename = paste0("./",names(samples[i]),"/Gaus_Bars.png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
         type = pngtype)
-    par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 5)
+    par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
     midpoints <- barplot(rev(Gaus_Bars[,2]), cex.lab = 1.2, las = 1,
                          horiz = TRUE, cex.names = 0.5, xlab = "Influence %",
                          col = rev(expvarcols[match(Gaus_Bars[,1],expvarcols[,2]),1]),

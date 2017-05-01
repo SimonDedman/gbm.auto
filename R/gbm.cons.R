@@ -101,6 +101,21 @@ for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
 # load("Bin_Best_Model")
 # load("Gaus_Best_Model")
 
+# create basemap if not provided
+  if (map) {
+    if (is.null(shape)) {
+      bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
+      #create standard bounds from data, and extra bounds for map aesthetic
+      xmid <- mean(bounds[1:2])
+      ymid <- mean(bounds[3:4])
+      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
+      shape <- gbm.basemap(bounds = extrabounds)
+    } else {shape <- shape}} # use user-defined otherwise; close map section
+
 # create a list of response variables for name ranges
 GS <- length(resvars)/length(subsets) # calculate group size, e.g. 8/2
 resvarrange = list() # create blank list to populate with subset values
@@ -186,19 +201,6 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
   ####Unscaled conservation maps####
   # map all subsets' abundance for species k
   if (map) {
-    if (is.null(shape)) { # create basemap if not provided
-      bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
-      #create standard bounds from data, and extra bounds for map aesthetic
-      xmid <- mean(bounds[1:2])
-      ymid <- mean(bounds[3:4])
-      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-      shape <- gbm.basemap(bounds = extrabounds)
-    } else {shape <- shape}
-
     png(filename = paste0("./Conservation_Map_", k, ".png"),
         width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48,
         bg = "white", res = NA, family = "", type = pngtype)
