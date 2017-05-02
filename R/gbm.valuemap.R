@@ -9,22 +9,28 @@
 #' All maps list the percentage of the avoidvariables total that is overlapped
 #' by the MPA in the map legend.
 #'
-#' @param dbase data.frame to load. Expects Lon, Lat & data columns: predicted abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
+#' @param dbase data.frame to load. Expects Lon, Lat & data columns: predicted
+#' abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
 #' @param loncolno Column number in dbase which has longitudes
 #' @param latcolno Column number in dbase which has latitudes
-#' @param goodcols Which column numbers are abundances (where higher = better)? List them in order of highest conservation importance first e.g. c(3,1,2,4)
+#' @param goodcols Which column numbers are abundances (where higher = better)?
+#' List them in order of highest conservation importance first e.g. c(3,1,2,4)
 #' @param badcols Which col no.s are 'negative' e.g. fishing (where higher = worse)?
 #' @param conservecol Conservation column, from gbm.cons
 #' @param plotthis To plot? delete any,or all w/ NULL
 #' @param maploops Sort loops to run
 #' @param savethis Export all data as csv?
-#' @param HRMSY Maximum percent of each goodcols stock which can be removed yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single number or vector. Same order as goodcols
+#' @param HRMSY Maximum percent of each goodcols stock which can be removed
+#' yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
+#' number or vector. Same order as goodcols
 #' @param goodweight Single/vector weighting multiple(s) for goodcols array
 #' @param badweight Ditto for badcols array
-#' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
+#' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to
+#' kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
 #' @param alerts Play sounds to mark progress steps
 #' @param BnW Also produce greyscale images for print publications
-#' @param shape Set coastline shapefile, else uses British Isles. Generate your own with gbm.basemap
+#' @param shape Set coastline shapefile, else uses British Isles. Generate your
+#' own with gbm.basemap
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param ... Optional terms for gbm.map
 #'

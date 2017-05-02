@@ -28,7 +28,8 @@ matching-named dataset objects e.g. read in by read.csv()}
 
 \item{resvars}{Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default}
 
-\item{gbmautos}{Do gbm.auto runs for species?}
+\item{gbmautos}{Do gbm.auto runs for species? Default TRUE, set FALSE if
+already run and output files in expected directories}
 
 \item{expvars}{List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default}
 

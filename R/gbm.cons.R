@@ -13,7 +13,8 @@
 #' @param map Produce maps
 #' @param BnW Also produce B&W maps?
 #' @param resvars Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default
-#' @param gbmautos Do gbm.auto runs for species?
+#' @param gbmautos Do gbm.auto runs for species? Default TRUE, set FALSE if
+#' already run and output files in expected directories
 #' @param expvars List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default
 #' @param tcs Gbm.auto parameters, autocalculated below if not provided by user
 #' @param lrs Gbm.auto parameter, uses defaults if not provided by user

@@ -76,13 +76,13 @@ then calls gbm.basemap to download and autogenerate the base map.}
 
 \item{RSB}{Run Unrepresentativeness surface builder?}
 
-\item{BnW}{Repeat maps in black and white e.g. for print journals}
+\item{BnW}{Repeat maps in black and white e.g. for print journals?}
 
-\item{alerts}{Play sounds to mark progress steps}
+\item{alerts}{Play sounds to mark progress steps?}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
-\item{gaus}{Do Gaussian runs as well as Bin? Default TRUE.}
+\item{gaus}{Do Gaussian (fam2) runs as well as Bin? Default TRUE.}
 
 \item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
 legend.grid in gbm.map, and gbm.step (dismo)}

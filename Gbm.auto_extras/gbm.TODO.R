@@ -1,4 +1,5 @@
 ####TO DO####
+# automatically spit out a warning if the user-set value of bf isn't allowed by gbm.bfcheck?
 # add option or list style n.trees & other gbm.plot / gbm.step parameters.
 
 # RSB: add option to output histogram plots per expvar loop.
@@ -64,6 +65,9 @@
 # gbm.loop: C of V map: C of V map: 20% CV is a concerningly high figure.
 # Ideally have a colour scheme which clearly illustrates when 20% is
 # reached/passed (Cóilín). C of V is really important bit of thesis.
+#
+# add barplot plotting, same sideways histogram style, descending order by average,
+# listing min av max & somehow also variance. Bin & Gaus (assuming both run).
 
 # L377 & 383 xx & rug: gaus linesfiles x axes incorrect size. Bin fine. Means
 # rugs are clipped. Turned rug to quiet=TRUE to surpress messages but should fix
