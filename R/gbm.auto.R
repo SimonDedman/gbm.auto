@@ -51,10 +51,10 @@
 #' @param shape Set coast shapefile, else bounds calculated by gbm.map which
 #' then calls gbm.basemap to download and autogenerate the base map.
 #' @param RSB Run Unrepresentativeness surface builder?
-#' @param BnW Repeat maps in black and white e.g. for print journals?
-#' @param alerts Play sounds to mark progress steps?
+#' @param BnW Repeat maps in black and white e.g. for print journals
+#' @param alerts Play sounds to mark progress steps
 #' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param gaus Do Gaussian (fam2) runs as well as Bin? Default TRUE.
+#' @param gaus Do Gaussian runs as well as Bin? Default TRUE.
 #' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
 #' legend.grid in gbm.map, and gbm.step (dismo)
 #'
@@ -430,7 +430,8 @@ gbm.auto <- function(
                         tree.complexity = get(Bin_Best_Model)$gbm.call$tree.complexity,
                         learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
                         family = get(Bin_Best_Model)$gbm.call$family,
-                        bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction))}
+                        bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction,
+                        ...))}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Bin model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -446,7 +447,8 @@ gbm.auto <- function(
                         tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
                         learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
                         family = get(Gaus_Best_Model)$gbm.call$family,
-                        bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction))
+                        bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction
+                        ...))
 
       if (alerts) beep(2)
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}

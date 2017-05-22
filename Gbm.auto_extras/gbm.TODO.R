@@ -33,6 +33,7 @@
 # inferred from variable length trawls and their CPUE values, and for the
 # subsequent predictions to be made to variable area sites, such as Voronoi
 # polygons.
+# See Hans' email 6/10/15
 
 # Add titles to plots:
 ## Bars: currently: labels = rev(Bin_Bars[,1]). Swap with character vector entry
