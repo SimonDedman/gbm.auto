@@ -101,24 +101,6 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 
   ####TODO####
-  # Need AUC & COR scores for each loop
-  # AUC:
-  # if (gaus) {Report[1:5,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
-  #                                                paste0("Model CV score: ", Bin_Best_Score),
-  #                                                paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
-  #                                                paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-  #                                                paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))
-  # } else {Report[1:5,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
-  #                                            paste0("Model CV score: ", Bin_Best_Score),
-  #                                            paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
-  #                                            paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-  #                                            paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))}
-  #
-  #
-  # COR: paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
-  # if (gaus) {Report[1:2,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name), paste0("Model CV score: ", Gaus_Best_Score))
-  #
-  #
   # See how many loops until things stabilise, i.e. variance decreases, average smooths out, etc, is that even logical?
   # Yes. min max av var should be similar between e.g. 1,000,000 loops & 1,000,001, but less likely between 1 & 2.
   # But based on what though? Just do a line of x:loop# vs y: minmin/maxmax/avav/avvar?
@@ -128,7 +110,10 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
   binbars.df <- data.frame(var = rep(NA, length(expvar)),
                            rel.inf = rep(NA, length(expvar)))
-  gausbars.df <- binbars.df # blnk dataframes for bin & gaus bars data
+  gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
+  report.df <- data.frame(BinCV = rep(NA, length(loops)),
+                          AUC = rep(NA, length(loops)),
+                          GausCV = rep(NA, length(loops)))
   if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
 
   for (i in 1:loops) { # loop through all gbm.autos
@@ -200,6 +185,26 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
     colnames(var.df)[2 + i] <- paste0("Loop_", i)} # label newly added preds column
 
+    #Collect report CV & AUC scores
+      reporttmp <- read.csv("Report.csv") # temp container for bin bars
+
+      if ("Best.Binary.BRT" %in% colnames(reporttmp)) {
+      bincvtmp <- as.character(reporttmp$Best.Binary.BRT[2])
+      bincvspltmp <- strsplit(bincvtmp, "Model CV score: ")
+      bincvsplnumtmp <- as.numeric(bincvspltmp[[1]][2])
+      report.df[i,1] <- bincvsplnumtmp # copy BinCV score from this loop's report to allreport
+
+      auctmp <- as.character(reporttmp$Best.Binary.BRT[3])
+      aucspltmp <- strsplit(auctmp, "Training data AUC score: ")
+      aucsplnumtmp <- as.numeric(aucspltmp[[1]][2])
+      report.df[i,2] <- aucsplnumtmp} # copy AUC score from this loop's report to allreport
+
+      if ("Best.Gaussian.BRT" %in% colnames(reporttmp)) {
+      gauscvtmp <- as.character(reporttmp$Best.Gaussian.BRT[2])
+      gauscvspltmp <- strsplit(gauscvtmp, "Model CV score: ")
+      gauscvsplnumtmp <- as.numeric(gauscvspltmp[[1]][2])
+      report.df[i,3] <- gauscvsplnumtmp} # copy GausCV score from this loop's report to allreport
+
     setwd("../../") # move back up to root folder
     if (cleanup) unlink(i, recursive = T)
   } # close i loop & go to the next i
@@ -241,7 +246,18 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # apply variances to a new column at the end of var.df
   if (calcpreds) var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
 
+  # Build CV & AUC stats report by scraping individual loops' reports
+  Minima <- c(min(report.df[,1]), min(report.df[,2]), min(report.df[,3]))
+  Averages <- c(mean(report.df[,1]), mean(report.df[,2]), mean(report.df[,3]))
+  Maxima <- c(max(report.df[,1]), max(report.df[,2]), max(report.df[,3]))
+  Variances <- c(var(report.df[,1]), var(report.df[,2]), var(report.df[,3]))
+  report.df <- rbind(report.df, "Minima" = Minima, "Averages" = Averages, "Maxima" = Maxima, "Variances" = Variances)
+
 ####save csvs####
+  # create resvar named subfolder & go to it
+  dir.create(names(samples[resvar]))
+  setwd(names(samples[resvar]))
+
   if (savecsv) {
     if (bin) write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
     if (gaus) write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
@@ -252,7 +268,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       write.csv(get(paste0("gausline_", o)), file = paste0("GausLineLoop_", o, ".csv"), row.names = F)}
 
     if (calcpreds) {write.csv(var.df, file = "VarAll.csv", row.names = F)
-    write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}}
+    write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}
+    write.csv(report.df, file = "Report.csv", row.names = T)}
 
 ####plot linesfiles####
   if (bin) for (p in colnames(samples)[expvar]) {
@@ -325,6 +342,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
     # res there, but high values captures in the last few bins.
   } # close map optional
+  setwd("../") # go back up from samples-named wd to original parent
   if (alerts) beep(3)
   if (calcpreds) return(var.df) #return output
 } # close function

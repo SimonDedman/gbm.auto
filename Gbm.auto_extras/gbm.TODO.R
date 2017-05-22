@@ -1,5 +1,6 @@
 ####TO DO####
 # automatically spit out a warning if the user-set value of bf isn't allowed by gbm.bfcheck?
+
 # add option or list style n.trees & other gbm.plot / gbm.step parameters.
 
 # RSB: add option to output histogram plots per expvar loop.
