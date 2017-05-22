@@ -447,7 +447,7 @@ gbm.auto <- function(
                         tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
                         learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
                         family = get(Gaus_Best_Model)$gbm.call$family,
-                        bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction
+                        bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
                         ...))
 
       if (alerts) beep(2)
