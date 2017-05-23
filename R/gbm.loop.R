@@ -215,12 +215,15 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                          Av.Inf = with(binbars.df, tapply(rel.inf, var, mean)),
                          Max.Inf = with(binbars.df, tapply(rel.inf, var, max)),
                          Inf.variance = with(binbars.df, tapply(rel.inf, var, var)),
-                         row.names = levels.default(binbars.df$var))}
+                         row.names = levels.default(binbars.df$var))
+            binbars <- binbars[order(-binbars[,"Av.Inf"]),]}
+
   if (gaus) {gausbars <- data.frame(Min.Inf = with(gausbars.df, tapply(rel.inf, var, min)),
                          Av.Inf = with(gausbars.df, tapply(rel.inf, var, mean)),
                          Max.Inf = with(gausbars.df, tapply(rel.inf, var, max)),
                          Inf.variance = with(gausbars.df, tapply(rel.inf, var, var)),
-                         row.names = levels.default(gausbars.df$var))}
+                         row.names = levels.default(gausbars.df$var))
+             gausbars <- gausbars[order(-gausbars[,"Av.Inf"]),]}
 
   # create linesfiles end-column stats for each variable
     if (bin) for (l in colnames(samples)[expvar]) {
@@ -312,6 +315,31 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   ## for factorial variables, need to change from lines to bars
   ## need to fix the y axis range lengths, between minmin & maxmax (not min & max of first plot)
   ## marginal effect y axis label values are raw values not the +/- from gbm.plot
+
+  # make bin & gaus barplot figures
+  if (bin) {png(filename = "BinBarsLoop.png", width = 4*480, height = 4*480, units = "px",
+                pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
+    midpoints <- barplot(rev(binbars[,2]), cex.lab = 1.2, las = 1,
+                         horiz = TRUE, cex.names = 0.8, xlab = "Av. Influence %",
+                         col = grey.colors(1,1,1),
+                         xlim = c(0,2.5 + ceiling(max(binbars[,2]))),
+                         lwd = 4)
+    text(0.1, midpoints, labels = rev(rownames(binbars)), adj = 0, cex = 1.4)
+    axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
+    dev.off()}
+
+  if (gaus) {png(filename = "GausBarsLoop.png", width = 4*480, height = 4*480, units = "px",
+                 pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
+    midpoints <- barplot(rev(gausbars[,2]), cex.lab = 1.2, las = 1,
+                         horiz = TRUE, cex.names = 0.8, xlab = "Av. Influence %",
+                         col = grey.colors(1,1,1),
+                         xlim = c(0,2.5 + ceiling(max(gausbars[,2]))),
+                         lwd = 4)
+    text(0.1, midpoints, labels = rev(rownames(gausbars)), adj = 0, cex = 1.4)
+    axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
+    dev.off()}
 
 ####map predabund CofVs####
   if (calcpreds) if (varmap) { # if mapping requested,

@@ -611,7 +611,6 @@ gbm.auto <- function(
                            col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]),
                            xlim = c(0,2.5 + ceiling(max(Bin_Bars[,2]))),
                            lwd = 4)
-      # add lwd = 4 to barplot to increase line thickness
       text(0.1, midpoints, labels = rev(Bin_Bars[,1]), adj = 0, cex = 1.4)
       axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
       dev.off()} # close ZI
