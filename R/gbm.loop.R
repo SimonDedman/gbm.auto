@@ -253,7 +253,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   Variances <- c(var(report.df[,1]), var(report.df[,2]), var(report.df[,3]))
   report.df <- rbind(report.df, Minima, Averages, Maxima, Variances)
   rep.len <- dim(report.df)[1]
-  rownames(report.df) <- c(1:(rep.len - 4), "Minima", "Averages", "Maxima", "Variances")
+  rownames(report.df) <- c((1:(rep.len - 4)), "Minima", "Averages", "Maxima", "Variances")
 
 ####save csvs####
   # create resvar named subfolder & go to it
