@@ -483,8 +483,11 @@ gbm.auto <- function(
 
     # All plots on one image for Bin & Gaus
     if (ZI) {  # don't do if ZI=FALSE
+      op <- par(oma=c(5,7,1,1)) # younes
+      par(mar = rep(2, 4)) # for Younes' Error in plot.new() : figure margins too large
       png(filename = paste0("./",names(samples[i]),"/Bin_Best_line.png"),
           width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    PREFAIL     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       gbm.plot(get(Bin_Best_Model),
                n.plots = length(get(Bin_Best_Model)$contributions$var),
                write.title = F, y.label = "Marginal Effect",
@@ -493,7 +496,8 @@ gbm.auto <- function(
                                       - floor(sqrt(length(get(Bin_Best_Model)$contributions$var))) < 0.5,
                                       floor(sqrt(length(get(Bin_Best_Model)$contributions$var))),
                                       floor(sqrt(length(get(Bin_Best_Model)$contributions$var))) + 1)))
-      dev.off()} # close ZI
+      dev.off()
+      par(op)} # close ZI     # younes
 
     if (gaus) {png(filename = paste0("./",names(samples[i]),"/Gaus_Best_line.png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
