@@ -606,31 +606,45 @@ gbm.auto <- function(
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Bar plot csvs created    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
     if (ZI) {  # produce graphics. Don't do bin if ZI=FALSE
+      pointlineseqbin <- seq(0, length(Bin_Bars[,2]) - 1, 1)
       png(filename = paste0("./",names(samples[i]),"/Bin_Bars.png"),
           width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
           type = pngtype)
       par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
-      midpoints <- barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1,
-                           horiz = TRUE, cex.names = 0.8, xlab = "Influence %",
-                           col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]),
-                           xlim = c(0,2.5 + ceiling(max(Bin_Bars[,2]))),
-                           lwd = 4)
-      text(0.1, midpoints, labels = rev(Bin_Bars[,1]), adj = 0, cex = 1.4)
+      barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1, # axis labs horizontal
+              horiz = TRUE, # make horizontal
+              xlab = "Relative Influence %", col = NA, lwd = 6, border = NA, # no border
+              xlim = c(0, 2.5 + ceiling(max(Bin_Bars[,2]))),
+              ylim = c(0, (length(Bin_Bars[,2]) - (length(Bin_Bars[,2])/7.5))), # figure height as a proportion of nBars
+              beside = T) # juxtaposed not stacked
+      points(rev(Bin_Bars[,2]), pointlineseqbin, pch = 20, cex = 1.75, col = "black")
+      revseq <- rev(pointlineseqbin)
+      for (q in 1:length(Bin_Bars[,2])) {
+        lines(c(0, Bin_Bars[q,2]), c(revseq[q], revseq[q]), col = "black", lwd = 8)}
+      text(0.1, pointlineseqbin + (length(Bin_Bars[,2])/55), labels = rev(Bin_Bars[,1]), adj = 0, cex = 0.9)
       axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
       dev.off()} # close ZI
 
-    if (gaus) {png(filename = paste0("./",names(samples[i]),"/Gaus_Bars.png"),
+    if (gaus) {pointlineseqgaus <- seq(0, length(Bin_Bars[,2]) - 1, 1)
+      png(filename = paste0("./",names(samples[i]),"/Gaus_Bars.png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
         type = pngtype)
     par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
-    midpoints <- barplot(rev(Gaus_Bars[,2]), cex.lab = 1.2, las = 1,
-                         horiz = TRUE, cex.names = 0.5, xlab = "Influence %",
-                         col = rev(expvarcols[match(Gaus_Bars[,1],expvarcols[,2]),1]),
-                         xlim = c(0,2.5 + ceiling(max(Gaus_Bars[,2]))),
-                         lwd = 4)
-    text(0.1, midpoints, labels = rev(Gaus_Bars[,1]), adj = 0, cex = 1.4)
+    barplot(rev(Gaus_Bars[,2]), cex.lab = 1.2, las = 1, # axis labs horizontal
+            horiz = TRUE, # make horizontal
+            xlab = "Relative Influence %", col = NA, lwd = 6, border = NA, # no border
+            xlim = c(0, 2.5 + ceiling(max(Gaus_Bars[,2]))),
+            ylim = c(0, (length(Gaus_Bars[,2]) - (length(Gaus_Bars[,2])/7.5))), # figure height as a proportion of nBars
+            beside = T) # juxtaposed not stacked
+    points(rev(Gaus_Bars[,2]), pointlineseqgaus, pch = 20, cex = 1.75, col = "black")
+    revseq <- rev(pointlineseqgaus)
+    for (r in 1:length(Gaus_Bars[,2])) {
+      lines(c(0, Gaus_Bars[r,2]), c(revseq[r], revseq[r]), col = "black", lwd = 8)}
+    text(0.1, pointlineseqgaus + (length(Gaus_Bars[,2])/55), labels = rev(Gaus_Bars[,1]), adj = 0, cex = 0.9)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
-    dev.off()}
+    dev.off()} #close PNG
+    # col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]), #in case I want to colour the bars/points later
+    # elements of barplot lines+points code adapted from Jane Elith code donated to Agustín De Wysiecki & then shared with SD
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))

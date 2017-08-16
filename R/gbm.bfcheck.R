@@ -34,7 +34,7 @@ if (ZI) {samples$grv <- logem} else {samples$grv <- dont}
 grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
 grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
 
-# Minimum bag fraction for binary
+# Minimum bag fraction for Gaussian
 minbfgaus <- 21/nrow(grv_yes)
 print(paste0("Gaussian bag fraction must be at least ", round(minbfgaus,3)))
 }
