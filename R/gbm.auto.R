@@ -487,7 +487,6 @@ gbm.auto <- function(
       par(mar = rep(2, 4)) # for Younes' Error in plot.new() : figure margins too large
       png(filename = paste0("./",names(samples[i]),"/Bin_Best_line.png"),
           width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    PREFAIL     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       gbm.plot(get(Bin_Best_Model),
                n.plots = length(get(Bin_Best_Model)$contributions$var),
                write.title = F, y.label = "Marginal Effect",
