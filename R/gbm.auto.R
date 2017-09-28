@@ -64,6 +64,12 @@
 #'
 #' @details Errors and their origins:
 #'
+#' 0. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package ‘gbm.auto’
+#' for linux/*buntu systems, in terminal, type
+#' sudo apt install libgeos-dev
+#' sudo apt install libproj-dev
+#' sudo apt install libgdal-dev
+#'
 #' 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
 #' > Explanatory variables are expected to be numeric
 #'
@@ -108,6 +114,7 @@
 #'
 #' @export
 #' @import dismo
+#' @import labeling
 #' @importFrom beepr beep
 #' @importFrom gbm plot.gbm
 #'
