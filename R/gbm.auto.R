@@ -49,7 +49,10 @@
 #' "contrasts can be applied only to factors with 2 or more levels"
 #' @param map Save abundance map png files?
 #' @param shape Set coast shapefile, else bounds calculated by gbm.map which
-#' then calls gbm.basemap to download and autogenerate the base map.
+#' then calls gbm.basemap to download and autogenerate the base map. Read in
+#' existing files by installing the shapefiles package then
+#' DesiredMapName <- read.shapefile("ShapeFileName")
+#' omitting the .shp extension
 #' @param RSB Run Unrepresentativeness surface builder?
 #' @param BnW Repeat maps in black and white e.g. for print journals
 #' @param alerts Play sounds to mark progress steps
@@ -114,7 +117,6 @@
 #'
 #' @export
 #' @import dismo
-#' @import labeling
 #' @importFrom beepr beep
 #' @importFrom gbm plot.gbm
 #'

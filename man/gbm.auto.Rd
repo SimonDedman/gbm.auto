@@ -72,7 +72,10 @@ running? Open with load("Bin_Best_Model")}
 \item{map}{Save abundance map png files?}
 
 \item{shape}{Set coast shapefile, else bounds calculated by gbm.map which
-then calls gbm.basemap to download and autogenerate the base map.}
+then calls gbm.basemap to download and autogenerate the base map. Read in
+existing files by installing the shapefiles package then
+DesiredMapName <- read.shapefile("ShapeFileName")
+omitting the .shp extension}
 
 \item{RSB}{Run Unrepresentativeness surface builder?}
 
