@@ -4,11 +4,18 @@
 \alias{gbm.basemap}
 \title{Creates Basemaps for Gbm.auto mapping from your data range}
 \usage{
-gbm.basemap(bounds, getzip = TRUE, zipvers = "2.3.6",
+gbm.basemap(bounds = NULL, grids = NULL, gridslat = NULL,
+  gridslon = NULL, getzip = TRUE, zipvers = "2.3.6",
   savename = "Crop_Map", res = "CALC", extrabounds = FALSE)
 }
 \arguments{
 \item{bounds}{Region to crop to: c(xmin,xmax,ymin,ymax)}
+
+\item{grids}{if bounds unspecified, name your grids database here}
+
+\item{gridslat}{if bounds unspecified, specify which column in grids is latitude}
+
+\item{gridslon}{if bounds unspecified, specify which column in grids is longitude}
 
 \item{getzip}{Download & unpack GSHHS data to WD? "TRUE" else
 absolute/relative reference to GSHHS_shp folder, inc that folder}

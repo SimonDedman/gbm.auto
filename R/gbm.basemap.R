@@ -6,6 +6,9 @@
 #' Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 #'
 #' @param bounds Region to crop to: c(xmin,xmax,ymin,ymax)
+#' @param grids if bounds unspecified, name your grids database here
+#' @param gridslat if bounds unspecified, specify which column in grids is latitude
+#' @param gridslon if bounds unspecified, specify which column in grids is longitude
 #' @param getzip Download & unpack GSHHS data to WD? "TRUE" else
 #' absolute/relative reference to GSHHS_shp folder, inc that folder
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
@@ -47,11 +50,17 @@
 #' compatible Spatial*DataFrame.
 #' Ensure that your lats and longs are the the right way around
 #'
-gbm.basemap <- function(bounds, # region to crop to: c(xmin,xmax,ymin,ymax)
+gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
+                        grids = NULL, # if bounds unspecified, name your grids
+# database here
+                        gridslat = NULL, # if bounds unspecified, specify which
+# column in grids is latitude
+                        gridslon = NULL, # if bounds unspecified, specify which
+# column in grids is longitude
                         getzip = TRUE, # download & unpack GSHHS data to WD?
-  # "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
+# "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
                         zipvers = "2.3.6", # GSHHS version, in case it updates
-  # Please email developer if this is incorrect
+# Please email developer if this is incorrect
                         savename = "Crop_Map", #shapefile savename, no extension
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f
 # (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
@@ -72,6 +81,19 @@ if (!require(shapefiles)) install.packages("shapefiles")
   require(shapefiles) # for read.shapefile
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
+
+# if bounds is entered it's user below, else check grids & gridslat & gridslon
+if(is.null(bounds)) {
+  #check none of grids & gridslat & gridslon is null, if any are print message
+  if(is.null(grids)) stop("if bounds is NULL grids needs to be specified")
+  if(is.null(gridslat)) stop("if bounds is NULL gridslat needs to be specified")
+  if(is.null(gridslon)) stop("if bounds is NULL gridslon needs to be specified")
+  #check they're all the correct format
+  if(!is.data.frame(grids)) stop("grids needs to be a data frame")
+  if(!is.numeric(gridslat)) stop("gridslat needs to be a number")
+  if(!is.numeric(gridslon)) stop("gridslon needs to be a number")
+  # construct bounds from gridslat & gridslon ranges in grids
+  bounds <- c(range(grids[,gridslon]), range(grids[,gridslat]))}
 
 if (res == 1) res <- "c" # If res provided as number convert to letter
 if (res == 2) res <- "l"
