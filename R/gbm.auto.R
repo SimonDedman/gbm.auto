@@ -633,7 +633,7 @@ gbm.auto <- function(
       axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
       dev.off()} # close ZI
 
-    if (gaus) {pointlineseqgaus <- seq(0, length(Bin_Bars[,2]) - 1, 1)
+    if (gaus) {pointlineseqgaus <- seq(0, length(Gaus_Bars[,2]) - 1, 1)
       png(filename = paste0("./",names(samples[i]),"/Gaus_Bars.png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
         type = pngtype)
