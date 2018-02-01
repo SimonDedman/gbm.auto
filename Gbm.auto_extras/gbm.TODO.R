@@ -1,4 +1,10 @@
 ####TO DO####
+# gbm.rsb note: No mention of bin vs bin+gaus. Need to seriously think about
+# bin+gaus, go back to emails & notes if available. Essentially: it’s double
+# counting, all sites + pos-only subset = pos only subset counted twice. Nothing
+# has changed regarding the sampling coverage Vs the grids coverage simply by
+# subsetting the samples.
+
 # automatically spit out a warning if the user-set value of bf isn't allowed by gbm.bfcheck?
 
 # add option or list style n.trees & other gbm.plot / gbm.step parameters.

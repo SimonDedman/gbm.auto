@@ -28,10 +28,10 @@
 #'  second to the Gaussian, e.g. lr = list(c(0.01,0.02),0.0001) or
 #'  list(0.01,c(0.001, 0.0005))
 #' @param bf Permutations of bag fraction allowed, can be single number, vector
-#' or list, per tc and lr
+#' or list, per tc and lr. Defaults to 0.5
 #' @param ZI are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
 #' log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
-#' only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.
+#' only, no log-normalisation. CHECK: Tests data for you. Default is CHECK.
 #' @param fam1 probability distribution family for 1st part of delta process,
 #' defaults to "bernoulli"
 #' @param fam2 probability distribution family for 2nd part of delta process,
@@ -41,11 +41,11 @@
 #' @param gridslon Column number for longitude in 'grids'
 #' @param cols Barplot colour vector. Assignment in order of explanatory
 #' variables. Default 1*white: white bars black borders. '1*' repeats
-#' @param linesfiles Save individual line plots' data as csv's?
+#' @param linesfiles Save individual line plots' data as csv's? Default TRUE
 #' @param smooth Apply a smoother to the line plots? Default FALSE
 #' @param savegbm Save gbm objects and make available in environment after
-#' running? Open with load("Bin_Best_Model")
-#' @param varint Calculate variable interactions? Default:TRUE, FALSE for error
+#' running? Open with load("Bin_Best_Model") Default TRUE
+#' @param varint Calculate variable interactions? Default:TRUE, FALSE for error:
 #' "contrasts can be applied only to factors with 2 or more levels"
 #' @param map Save abundance map png files?
 #' @param shape Set coast shapefile, else bounds calculated by gbm.map which
@@ -53,9 +53,9 @@
 #' existing files by installing the shapefiles package then
 #' DesiredMapName <- read.shapefile("ShapeFileName")
 #' omitting the .shp extension
-#' @param RSB Run Unrepresentativeness surface builder?
-#' @param BnW Repeat maps in black and white e.g. for print journals
-#' @param alerts Play sounds to mark progress steps
+#' @param RSB Run Unrepresentativeness surface builder? Default TRUE
+#' @param BnW Repeat maps in black and white e.g. for print journals. Default TRUE
+#' @param alerts Play sounds to mark progress steps. Default TRUE
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param gaus Do Gaussian runs as well as Bin? Default TRUE.
 #' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
