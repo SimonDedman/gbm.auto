@@ -1,4 +1,6 @@
 ####TO DO####
+# Could start to plot a relationship between +ve/all samples & chance of resolving
+
 # gbm.rsb note: No mention of bin vs bin+gaus. Need to seriously think about
 # bin+gaus, go back to emails & notes if available. Essentially: it’s double
 # counting, all sites + pos-only subset = pos only subset counted twice. Nothing
@@ -234,6 +236,11 @@ ptm$elapsed # is the time taken in seconds
 # what to do? Bother with it?
 
 ####DONE####
+# automatically save deviance optimisation plot externally to folder
+# initial & simp if run. Also simp drop deviance line.
+# plot.main from gbm.step. plot from gbm.simplify
+# bin brt L344, gaus l390; bin simp L430, gaus L453; bin simp brt L446, gaus l465
+
 # CofV map & gbm.loop work out variance of predictions but I don't currently
 # calculate variance of 1st stage, the learnt model object, i.e. how variable
 # are linesfiles, bars, etc? Small n can see huge changes in these. Could lend
