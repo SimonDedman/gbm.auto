@@ -108,7 +108,10 @@
 #'
 #' 9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
 #' 32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
-#' in the tiny bit at the right. Clean your data well beforehand.SD
+#' in the tiny bit at the right. Clean your data well beforehand.
+#'
+#' 10. Error in plot.new() : figure margins too large:
+#' > In RStudio, adjust plot frame (usually bottom right) to increase its size
 #'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
