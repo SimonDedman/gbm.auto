@@ -194,7 +194,7 @@ gbm.auto <- function(
   if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
   if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  if (!require(labeling)) {stop("you need to install the labeling package to run this function")}
+  #if (!require(labeling)) {stop("you need to install the labeling package to run this function")}
   if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
   if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
   if (RSB) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
@@ -205,7 +205,7 @@ gbm.auto <- function(
   require(gbm)
   require(dismo)
   if (alerts) require(beepr)
-  require(labeling)
+  # require(labeling) #no longer reqd since axis labeling changed?
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided

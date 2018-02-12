@@ -3,6 +3,12 @@ gbm.auto
 
 Automatically runs numerous processes from R packages 'gbm' and 'dismo' &amp; script 'gbm.utils.R' which contains Elith et al.'s functions: roc, calibration, and gbm.predict.grids, as well as running my packages gbm.map & gbm.rsb.  
 
+Especially on Linux systems it is recommended to type, in terminal:
+sudo apt install libgeos-dev
+sudo apt install libproj-dev
+sudo apt install libgdal-dev
+then manually install rgeos and rgdal in R/Rstudio.
+
 ***
 
 ### gbm.auto.R: Automated Boosted Regression Tree modelling and mapping suite
