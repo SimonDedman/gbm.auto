@@ -59,7 +59,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
 # column in grids is longitude
                         getzip = TRUE, # download & unpack GSHHS data to WD?
 # "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
-                        zipvers = "2.3.6", # GSHHS version, in case it updates
+                        zipvers = "2.3.7", # GSHHS version, in case it updates
 # Please email developer if this is incorrect
                         savename = "Crop_Map", #shapefile savename, no extension
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f

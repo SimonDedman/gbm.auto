@@ -194,7 +194,6 @@ gbm.auto <- function(
   if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
   if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  #if (!require(labeling)) {stop("you need to install the labeling package to run this function")}
   if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
   if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
   if (RSB) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
@@ -205,7 +204,6 @@ gbm.auto <- function(
   require(gbm)
   require(dismo)
   if (alerts) require(beepr)
-  # require(labeling) #no longer reqd since axis labeling changed?
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
@@ -477,14 +475,12 @@ gbm.auto <- function(
           if (Bin_Best_Simp$self.statistics$correlation > Bin_Best_Score[1])
             # then replace Bin_Best score/model values with those from the simplified model
           {Bin_Best_Score <- Bin_Best_Simp$self.statistics$correlation
-          Bin_Best_Model <- "Bin_Best_Simp"
           Bin_Best_Name <- paste0(Bin_Best_Model, "_Simp")}} # close ZI
 
       # Same for Gaus:
       if (gaus) {if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
         if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1])
         {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
-        Gaus_Best_Model <- "Gaus_Best_Simp"
         Gaus_Best_Name <- paste0(Gaus_Best_Model, "_Simp")}}
     } # close simp optional
 

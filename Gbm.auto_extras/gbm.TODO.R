@@ -1,4 +1,6 @@
 ####TO DO####
+# Bin & Gaus Bars compress at top, top line text gets cut off, need to fix.
+
 # Could start to plot a relationship between +ve/all samples & chance of resolving
 
 # gbm.rsb note: No mention of bin vs bin+gaus. Need to seriously think about
@@ -17,7 +19,9 @@
 
 # indivudual line plots: add a horizontal line at 0 to visually split pos & neg
 # absolute values of marginal effect? currently Y scale tied to values, which
-# gives impression that max maginal effect is 'big' but all might be tiny
+# gives impression that max marginal effect is 'big' but all might be tiny
+# option to ALSO plot in log scale +/- with coloured shaded areas for rule-of-thumb
+# better to worse? More to less?
 
 ## Area not included in input CPUE values nor output predictions!
 # One current limitation is that the surveyed CPUE values input into the gbm.auto
