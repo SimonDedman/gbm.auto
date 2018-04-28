@@ -494,7 +494,7 @@ gbm.auto <- function(
 
     # All plots on one image for Bin & Gaus
     if (ZI) {  # don't do if ZI=FALSE
-      op <- par(oma=c(5,7,1,1)) # younes
+      op <- par(oma = c(5,7,1,1)) # younes
       par(mar = rep(2, 4)) # for Younes' Error in plot.new() : figure margins too large
       png(filename = paste0("./",names(samples[i]),"/Bin_Best_line.png"),
           width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
@@ -583,11 +583,11 @@ gbm.auto <- function(
                plot.layout = c(1, 1))
       mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
-      if (linesfiles) {u <- match(get(Bin_Best_Model)$contributions$var[p],
-                                  get(Bin_Best_Model)$gbm.call$predictor.names)
-        plotgrid <- plot.gbm(get(Bin_Best_Model), u, return.grid = TRUE)
+      if (linesfiles) {u <- match(get(Gaus_Best_Model)$contributions$var[p],
+                                  get(Gaus_Best_Model)$gbm.call$predictor.names)
+        plotgrid <- plot.gbm(get(Gaus_Best_Model), u, return.grid = TRUE)
         if (is.factor(plotgrid[,1])) {
-        plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[u]]))}
+        plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Gaus_Best_Model)$gbm.call$dataframe[,get(Gaus_Best_Model)$gbm.call$gbm.x[u]]))}
         plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
         plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
         plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
