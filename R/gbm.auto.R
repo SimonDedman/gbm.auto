@@ -646,7 +646,7 @@ gbm.auto <- function(
               horiz = TRUE, # make horizontal
               xlab = "Relative Influence %", col = NA, lwd = 6, border = NA, # no border
               xlim = c(0, 2.5 + ceiling(max(Bin_Bars[,2]))),
-              ylim = c(0, (length(Bin_Bars[,2]) - (length(Bin_Bars[,2])/7.5))), # figure height as a proportion of nBars
+              ylim = c(0, length(Bin_Bars[,2])), # figure height as a proportion of nBars
               beside = T) # juxtaposed not stacked
       points(rev(Bin_Bars[,2]), pointlineseqbin, pch = 20, cex = 1.75, col = "black")
       revseq <- rev(pointlineseqbin)
@@ -665,7 +665,7 @@ gbm.auto <- function(
             horiz = TRUE, # make horizontal
             xlab = "Relative Influence %", col = NA, lwd = 6, border = NA, # no border
             xlim = c(0, 2.5 + ceiling(max(Gaus_Bars[,2]))),
-            ylim = c(0, (length(Gaus_Bars[,2]) - (length(Gaus_Bars[,2])/7.5))), # figure height as a proportion of nBars
+            ylim = c(0, length(Gaus_Bars[,2])), # figure height as a proportion of nBars
             beside = T) # juxtaposed not stacked
     points(rev(Gaus_Bars[,2]), pointlineseqgaus, pch = 20, cex = 1.75, col = "black")
     revseq <- rev(pointlineseqgaus)
