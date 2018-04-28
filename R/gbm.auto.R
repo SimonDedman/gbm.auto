@@ -539,10 +539,28 @@ gbm.auto <- function(
                  plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
-        if (linesfiles) {plotgrid <- plot.gbm(get(Bin_Best_Model),
-                                              match(get(Bin_Best_Model)$contributions$var[o],
-                                                    get(Bin_Best_Model)$gbm.call$predictor.names),
-                                              return.grid = TRUE)
+        # create lines data to export to file. Need to recreate transformations from gbm.plot
+        if (linesfiles) {s <- match(get(Bin_Best_Model)$contributions$var[o],
+                                    get(Bin_Best_Model)$gbm.call$predictor.names)
+
+        # create dataframe
+        plotgrid <- plot.gbm(get(Bin_Best_Model), s, return.grid = TRUE)
+
+        #If factor variable
+        # Next 4 lines from GHG answer https://stats.stackexchange.com/a/144871/43360
+        if (is.factor(plotgrid[,1])) {
+          plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))}
+
+        # replace Y values in place with average-centred values
+        plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
+
+        #Put Y values on a log scale
+        plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
+
+        #Center the response to have zero mean over the data distribution
+        plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
+
+        # write out csv
         write.csv(plotgrid, row.names = FALSE, na = "",
                   file = paste0("./", names(samples[i]), "/Bin_Best_line_",
                                 as.character(get(Bin_Best_Model)$contributions$var[o]),
@@ -565,15 +583,18 @@ gbm.auto <- function(
                plot.layout = c(1, 1))
       mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
-      if (linesfiles) {plotgrid <- plot.gbm(get(Gaus_Best_Model),
-                                            match(get(Gaus_Best_Model)$contributions$var[p],
-                                                  get(Gaus_Best_Model)$gbm.call$predictor.names),
-                                            return.grid = TRUE)
-      write.csv(plotgrid, row.names = FALSE, na = "",
-                file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
-                              as.character(get(Gaus_Best_Model)$contributions$var[p]),
-                              ".csv"))} #close linesfiles
-
+      if (linesfiles) {u <- match(get(Bin_Best_Model)$contributions$var[p],
+                                  get(Bin_Best_Model)$gbm.call$predictor.names)
+        plotgrid <- plot.gbm(get(Bin_Best_Model), u, return.grid = TRUE)
+        if (is.factor(plotgrid[,1])) {
+        plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[u]]))}
+        plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
+        plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
+        plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
+        write.csv(plotgrid, row.names = FALSE, na = "",
+                  file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
+                                as.character(get(Gaus_Best_Model)$contributions$var[p]),
+                                ".csv"))} #close linesfiles
       dev.off() }}
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
