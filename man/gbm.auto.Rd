@@ -6,10 +6,10 @@
 \usage{
 gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
   0.005), bf = 0.5, ZI = "CHECK", fam1 = "bernoulli", fam2 = "gaussian",
-  simp = TRUE, gridslat = 2, gridslon = 1, cols = grey.colors(1, 1, 1),
-  linesfiles = TRUE, smooth = FALSE, savegbm = TRUE, varint = TRUE,
-  map = TRUE, shape = NULL, RSB = TRUE, BnW = TRUE, alerts = TRUE,
-  pngtype = "cairo-png", gaus = TRUE, ...)
+  simp = TRUE, gridslat = 2, gridslon = 1, multiplot = TRUE,
+  cols = grey.colors(1, 1, 1), linesfiles = TRUE, smooth = FALSE,
+  savegbm = TRUE, varint = TRUE, map = TRUE, shape = NULL, RSB = TRUE,
+  BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
 }
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
@@ -38,11 +38,11 @@ second to the Gaussian, e.g. lr = list(c(0.01,0.02),0.0001) or
 list(0.01,c(0.001, 0.0005))}
 
 \item{bf}{Permutations of bag fraction allowed, can be single number, vector
-or list, per tc and lr}
+or list, per tc and lr. Defaults to 0.5}
 
 \item{ZI}{are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
 log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
-only, no log-normalisation. CHECK: Tests data for you. Default is TRUE.}
+only, no log-normalisation. CHECK: Tests data for you. Default is CHECK.}
 
 \item{fam1}{probability distribution family for 1st part of delta process,
 defaults to "bernoulli"}
@@ -56,17 +56,20 @@ defaults to "gaussian"}
 
 \item{gridslon}{Column number for longitude in 'grids'}
 
+\item{multiplot}{create matrix plot of all line files? Default true
+turn off if big n of exp vars causes an error due to margin size problems.}
+
 \item{cols}{Barplot colour vector. Assignment in order of explanatory
 variables. Default 1*white: white bars black borders. '1*' repeats}
 
-\item{linesfiles}{Save individual line plots' data as csv's?}
+\item{linesfiles}{Save individual line plots' data as csv's? Default TRUE}
 
 \item{smooth}{Apply a smoother to the line plots? Default FALSE}
 
 \item{savegbm}{Save gbm objects and make available in environment after
-running? Open with load("Bin_Best_Model")}
+running? Open with load("Bin_Best_Model") Default TRUE}
 
-\item{varint}{Calculate variable interactions? Default:TRUE, FALSE for error
+\item{varint}{Calculate variable interactions? Default:TRUE, FALSE for error:
 "contrasts can be applied only to factors with 2 or more levels"}
 
 \item{map}{Save abundance map png files?}
@@ -77,11 +80,11 @@ existing files by installing the shapefiles package then
 DesiredMapName <- read.shapefile("ShapeFileName")
 omitting the .shp extension}
 
-\item{RSB}{Run Unrepresentativeness surface builder?}
+\item{RSB}{Run Unrepresentativeness surface builder? Default TRUE}
 
-\item{BnW}{Repeat maps in black and white e.g. for print journals}
+\item{BnW}{Repeat maps in black and white e.g. for print journals. Default TRUE}
 
-\item{alerts}{Play sounds to mark progress steps}
+\item{alerts}{Play sounds to mark progress steps. Default TRUE}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
@@ -149,6 +152,10 @@ Run gbm.bfcheck to check recommended minimum BF size
 9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
 32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
 in the tiny bit at the right. Clean your data well beforehand.
+
+10. Error in plot.new() : figure margins too large:
+> In RStudio, adjust plot frame (usually bottom right) to increase its size
+Still fails? Set multiplot=FALSE
 }
 \examples{
 gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,

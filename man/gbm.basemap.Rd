@@ -5,7 +5,7 @@
 \title{Creates Basemaps for Gbm.auto mapping from your data range}
 \usage{
 gbm.basemap(bounds = NULL, grids = NULL, gridslat = NULL,
-  gridslon = NULL, getzip = TRUE, zipvers = "2.3.6",
+  gridslon = NULL, getzip = TRUE, zipvers = "2.3.7",
   savename = "Crop_Map", res = "CALC", extrabounds = FALSE)
 }
 \arguments{

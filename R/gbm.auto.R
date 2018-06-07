@@ -39,6 +39,8 @@
 #' @param simp Try simplfying best BRTs?
 #' @param gridslat Column number for latitude in 'grids'
 #' @param gridslon Column number for longitude in 'grids'
+#' @param multiplot create matrix plot of all line files? Default true
+#' turn off if big n of exp vars causes an error due to margin size problems.
 #' @param cols Barplot colour vector. Assignment in order of explanatory
 #' variables. Default 1*white: white bars black borders. '1*' repeats
 #' @param linesfiles Save individual line plots' data as csv's? Default TRUE
@@ -112,6 +114,7 @@
 #'
 #' 10. Error in plot.new() : figure margins too large:
 #' > In RStudio, adjust plot frame (usually bottom right) to increase its size
+#' Still fails? Set multiplot=FALSE
 #'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
@@ -156,6 +159,8 @@ gbm.auto <- function(
   simp = TRUE,          # try simplfying best BRTs?
   gridslat = 2,         # column number for latitude in 'grids'
   gridslon = 1,         # column number for longitude in 'grids'
+  multiplot = TRUE,     # create matrix plot of all line files? Default true
+  # turn off if big n of exp vars causes an error due to margin size problems.
   cols = grey.colors(1,1,1), # barplot colour vector. Assignment in order of
   # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
   linesfiles = TRUE,    # save individual line plots' data as csv's?
@@ -249,13 +254,14 @@ gbm.auto <- function(
     m = 1 # Gaus only loop counter to allow best gaus BRT choice
     n = 1   # Print counter for all loops of BRT combos & best bin BRT choice
     if (!is.null(grids)) if (!all(expvarnames %in% names(grids))) {stop("Not all expvar column names found as column names in grids")}
+    if (anyNA(samples[i])) {stop("Response variable range contains NA values, please filter out these rows with: mysamples <- mysamples[-which(is.na(mysamples[resvar])),]")}
 
     ####2. ZI check & log####
     # if user has asked code to check for ZI, check it & set new ZI status
     if (ZI == "CHECK") if (sum(samples[,i] == 0,na.rm = TRUE)/length(samples[,i]) >= 0.5) ZI = TRUE else ZI = FALSE
 
-    # ensure resvar has zeroes (expects mix of successful & unsuccessful samples)
-    if (min(samples[i]) > 0) print("No zeroes in response variable. Method expects unsuccessful, as well as successful, samples")
+    # ensure resvar has zeroes (expects mix of successful & unsuccessful samples for bernoulli/binary runs)
+    if (ZI == F) if (min(samples[i]) > 0) print("No zeroes in response variable. Method expects unsuccessful, as well as successful, samples")
 
     # create binary (0/1) response variable, for bernoulli BRTs
     samples$brv <- ifelse(samples[i] > 0, 1, 0)
@@ -493,6 +499,7 @@ gbm.auto <- function(
     # in the tiny bit at the right. Clean your data well.
 
     # All plots on one image for Bin & Gaus
+    if (multiplot) { # don't do if multiplot=FALSE
     if (ZI) {  # don't do if ZI=FALSE
       op <- par(oma = c(5,7,1,1)) # younes
       par(mar = rep(2, 4)) # for Younes' Error in plot.new() : figure margins too large
@@ -519,7 +526,8 @@ gbm.auto <- function(
                                       - floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))) < 0.5,
                                       floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))),
                                       floor(sqrt(length(get(Gaus_Best_Model)$contributions$var))) + 1)))
-      dev.off()}
+      dev.off()} #close plot device & gaus if
+    } # close multiplot if
 
     # All plots individually, named by explanatory variable, bin & gaus
     if (ZI) {  # don't do if ZI=FALSE
