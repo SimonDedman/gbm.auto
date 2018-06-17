@@ -1,13 +1,15 @@
 gbm.auto
 =======
 
-Automatically runs numerous processes from R packages 'gbm' and 'dismo' &amp; script 'gbm.utils.R' which contains Elith et al.'s functions: roc, calibration, and gbm.predict.grids, as well as running my packages gbm.map & gbm.rsb.  
+Automatically runs numerous processes from R packages 'gbm' and 'dismo' &amp; script 'gbm.utils.R' which contains Elith et al.'s functions: roc, calibration, and gbm.predict.grids, as well as running my packages gbm.bfcheck, gbm.basemap, gbm.map, gbm.rsb, gbm.cons, gbm.valuemap, and gbm.loop.  
 
 Especially on Linux systems it is recommended to type, in terminal:
 sudo apt install libgeos-dev
 sudo apt install libproj-dev
 sudo apt install libgdal-dev
 then manually install rgeos and rgdal in R/Rstudio.
+
+Also see each script's Details section in the manual pages, as these frequently contain tips or common bugfixes.
 
 ***
 
@@ -66,4 +68,5 @@ Processes a user-specified number of loops through the same gbm.auto parameter c
 
 # ToDo List:
 
-See individual files in Gbm.auto_extras
+See GitHub issues section https://github.com/SimonDedman/gbm.auto/issues
+Feel free to contribute to this!
