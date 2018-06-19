@@ -1,5 +1,5 @@
 ####TO DO####
-# Bin & Gaus Bars compress at top, top line text gets cut off, need to fix.
+# Bin & Gaus Bars compress at top, top line text gets cut off, need to fix..
 
 # Could start to plot a relationship between +ve/all samples & chance of resolving
 
