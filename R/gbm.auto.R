@@ -12,8 +12,8 @@
 #' specify object name. Defaults to NULL (won't predict to grids)
 #' @param samples Explanatory and response variables to predict from. Keep col
 #' names short, no odd characters, starting numerals or terminal periods. Spaces
-#'  may be converted to periods in directory names, underscores won't. Can be a
-#'  subset
+#' may be converted to periods in directory names, underscores won't. Can be a
+#' subset
 #' @param expvar List of column numbers of explanatory variables in 'samples',
 #' expected e.g. c(1,35,67,etc.). No default
 #' @param resvar Column number(s) of response variable (e.g. CPUE) in samples.
@@ -24,11 +24,13 @@
 #' to the binary BRT, the second to the Gaussian, e.g. tc = list(c(2,6), 2) or
 #' list(6, c(2,6))
 #' @param lr Permutations of learning rate allowed. Can be a vector or a list of
-#'  2 single numbers or vectors, the first to be passed to the binary BRT, the
-#'  second to the Gaussian, e.g. lr = list(c(0.01,0.02),0.0001) or
-#'  list(0.01,c(0.001, 0.0005))
+#' 2 single numbers or vectors, the first to be passed to the binary BRT, the
+#' second to the Gaussian, e.g. lr = list(c(0.01,0.02),0.0001) or
+#' list(0.01,c(0.001, 0.0005))
 #' @param bf Permutations of bag fraction allowed, can be single number, vector
 #' or list, per tc and lr. Defaults to 0.5
+#' @param n.trees from gbm.step, number of initial trees to fit. Can be
+#' single or list but not vector i.e. list(fam1,fam2)
 #' @param ZI are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
 #' log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
 #' only, no log-normalisation. CHECK: Tests data for you. Default is CHECK.
@@ -61,7 +63,8 @@
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param gaus Do Gaussian runs as well as Bin? Default TRUE.
 #' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
-#' legend.grid in gbm.map, and gbm.step (dismo)
+#' legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
+#' max.trees, both of which can be added in list(1,2) format to pass to fam1 and 2
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics
 #' for tests, variable interactions, predictors used and dropped, etc. If
@@ -76,7 +79,11 @@
 #' sudo apt install libgdal-dev
 #'
 #' 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
-#' > Explanatory variables are expected to be numeric
+#' > Check your variable types are correct, e.g. numerics haven't been imported
+#' as factors because there's an errant first row of text information before the
+#' data. Remove NA rows from the response variable if present: convert blank
+#' cells to NA on import with read.csv(x, na.strings = "") then
+#' samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
 #'
 #' 2. At bf=0.5, if nrows <= 42 gbm.step will crash
 #' > Use gbm.bfcheck to determine optimal viable bf size
@@ -86,8 +93,10 @@
 #'
 #' 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted < max.trees)  :
 #'  missing value where TRUE/FALSE needed
-#' > Data are expected to contain zeroes (lots of them in zero-inflated cases),
-#' have you already filtered them out?
+#' > If running a zero-inflated delta model (bernoilli/bin & gaussian/gaus),
+#' Data are expected to contain zeroes (lots of them in zero-inflated cases),
+#' have you already filtered them out, i.e. are only testing the positive cases?
+#' Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to FALSE
 #'
 #' 5. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric
 #' argument to mathematical function
@@ -109,12 +118,17 @@
 #' Run gbm.bfcheck to check recommended minimum BF size
 #'
 #' 9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
-#' 32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
-#' in the tiny bit at the right. Clean your data well beforehand.
+#' 32:35ppm  but dataset has errant 0 value: plot axis will be 0:35 and 99.99%
+#' of the data will be in the tiny bit at the right. Clean your data beforehand
 #'
 #' 10. Error in plot.new() : figure margins too large:
 #' > In RStudio, adjust plot frame (usually bottom right) to increase its size
 #' Still fails? Set multiplot=FALSE
+#'
+#' 11. Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"),
+#' : can only print from a screen device
+#' > An earlier failed run (e.g. LR/BF too low) left a plotting device open.
+#' Close it with: dev.off()
 #'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
@@ -148,6 +162,8 @@ gbm.auto <- function(
   # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
   bf = 0.5,             # permutations of bag fraction allowed, can be single
   # number, vector or list, per tc and lr
+  n.trees = 50,         # from gbm.step, number of initial trees to fit. Can be
+                        # single or list but not vector i.e. list(fam1,fam2)
   ZI = "CHECK",         # are data zero-inflated? TRUE/FALSE/"CHECK".
   # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
   # FALSE: do Gaussian only, no log-normalisation.
@@ -176,7 +192,10 @@ gbm.auto <- function(
   alerts = TRUE,        # play sounds to mark progress steps
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
   gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
-  ...)                  # optional arguments for gbm.map and gbm.step
+  ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
+                        # legend in legend.grid in gbm.map, and gbm.step (dismo
+                        # package) argument max.trees and others.
+
 {
   # Generalised Boosting Model / Boosted Regression Tree process chain automater.
   # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
@@ -232,22 +251,30 @@ gbm.auto <- function(
   expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 
   if (is.list(tc)) { # if lists entered for tc lr or bf, split them to bin and gaus
-    if (length(tc) > 2) {stop("Only 2 tc list items allowed: 1 bin 1 Gaus")}
+    if (length(tc) > 2) {stop("Only 2 tc list items allowed: 1 per family")}
     tcgaus <- tc[[2]]
     tc <- tc[[1]]
   } else {tcgaus <- tc} # else make the gaus object the same as the bin
 
   if (is.list(lr)) {
-    if (length(lr) > 2) {stop("Only 2 lr list items allowed: 1 bin 1 Gaus")}
+    if (length(lr) > 2) {stop("Only 2 lr list items allowed: 1 per family")}
     lrgaus <- lr[[2]]
     lr <- lr[[1]]
   } else {lrgaus <- lr}
 
   if (is.list(bf)) {
-    if (length(bf) > 2) {stop("Only 2 bf list items allowed: 1 bin 1 Gaus")}
+    if (length(bf) > 2) {stop("Only 2 bf list items allowed: 1 per family")}
     bfgaus <- bf[[2]]
     bf <- bf[[1]]
   } else {bfgaus <- bf}
+
+  if (is.list(n.trees)) { # if list entered n.trees, split to fam1 and fam2
+    if (length(n.trees) > 2) {stop("Only 2 n.trees list items allowed: 1 per family")}
+    ntf1 <- n.trees[[1]]
+    ntf2 <- n.trees[[2]]
+  } else {
+    ntf1 <- n.trees
+    ntf2 <- n.trees} # else make fam1 and fam2 the same
 
   for (i in resvar) { # loop everything for each response variable (e.g. species)
     dir.create(names(samples[i])) # create resvar-named directory for outputs
@@ -302,22 +329,22 @@ gbm.auto <- function(
     colnames(Report) <- c("Explanatory Variables","Response Variables","Zero Inflated?") # populate static colnames 1:3
     # name bin columns if ZI
     if (!gaus) {colnames(Report)[(reportcolno - 6):reportcolno] <- c("Best Binary BRT",
-                                                                     "Bin_BRT_simp predictors kept (ordered)",
                                                                      "Bin_BRT_simp predictors dropped",
+                                                                     "Bin_BRT_simp predictors kept (ordered)",
                                                                      "Simplified Binary BRT stats",
                                                                      "Best Binary BRT variables",
                                                                      "Relative Influence (Bin)",
                                                                      "Biggest Interactions (Bin)")
     } else {if (ZI) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
-                                                                                 "Bin_BRT_simp predictors kept (ordered)",
                                                                                  "Bin_BRT_simp predictors dropped",
+                                                                                 "Bin_BRT_simp predictors kept (ordered)",
                                                                                  "Simplified Binary BRT stats",
                                                                                  "Best Binary BRT variables",
                                                                                  "Relative Influence (Bin)",
                                                                                  "Biggest Interactions (Bin)")}
       colnames(Report)[(reportcolno - 6):reportcolno] <- c("Best Gaussian BRT",
-                                                           "Gaus_BRT_simp predictors kept (ordered)",
                                                            "Gaus_BRT_simp predictors dropped",
+                                                           "Gaus_BRT_simp predictors kept (ordered)",
                                                            "Simplified Gaussian BRT stats",
                                                            "Best Gaussian BRT variables",
                                                            "Relative Influence (Gaus)",
@@ -347,6 +374,7 @@ gbm.auto <- function(
                             tree.complexity = j,
                             learning.rate = k,
                             bag.fraction = l,
+                            n.trees = ntf1,
                             ...)
             )
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
@@ -393,6 +421,7 @@ gbm.auto <- function(
                           tree.complexity = j,
                           learning.rate = k,
                           bag.fraction = l,
+                          n.trees = ntf2,
                           ...)
           )
           dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)

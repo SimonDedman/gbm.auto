@@ -1,7 +1,7 @@
 gbm.auto
 =======
 
-Automatically runs numerous processes from R packages 'gbm' and 'dismo' &amp; script 'gbm.utils.R' which contains Elith et al.'s functions: roc, calibration, and gbm.predict.grids, as well as running my packages gbm.bfcheck, gbm.basemap, gbm.map, gbm.rsb, gbm.cons, gbm.valuemap, and gbm.loop.  
+Automatically runs numerous processes from R packages 'gbm' and 'dismo' and script 'gbm.utils.R' which contains Elith et al.'s functions: roc, calibration, and gbm.predict.grids, as well as running my packages gbm.bfcheck, gbm.basemap, gbm.map, gbm.rsb, gbm.cons, gbm.valuemap, and gbm.loop.  
 
 Especially on Linux systems it is recommended to type, in terminal:
 sudo apt install libgeos-dev

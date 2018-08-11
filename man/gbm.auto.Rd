@@ -5,11 +5,12 @@
 \title{Automated Boosted Regression Tree modelling and mapping suite}
 \usage{
 gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
-  0.005), bf = 0.5, ZI = "CHECK", fam1 = "bernoulli", fam2 = "gaussian",
-  simp = TRUE, gridslat = 2, gridslon = 1, multiplot = TRUE,
-  cols = grey.colors(1, 1, 1), linesfiles = TRUE, smooth = FALSE,
-  savegbm = TRUE, varint = TRUE, map = TRUE, shape = NULL, RSB = TRUE,
-  BnW = TRUE, alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
+  0.005), bf = 0.5, n.trees = 50, ZI = "CHECK", fam1 = "bernoulli",
+  fam2 = "gaussian", simp = TRUE, gridslat = 2, gridslon = 1,
+  multiplot = TRUE, cols = grey.colors(1, 1, 1), linesfiles = TRUE,
+  smooth = FALSE, savegbm = TRUE, varint = TRUE, map = TRUE,
+  shape = NULL, RSB = TRUE, BnW = TRUE, alerts = TRUE,
+  pngtype = "cairo-png", gaus = TRUE, ...)
 }
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
@@ -17,8 +18,8 @@ specify object name. Defaults to NULL (won't predict to grids)}
 
 \item{samples}{Explanatory and response variables to predict from. Keep col
 names short, no odd characters, starting numerals or terminal periods. Spaces
- may be converted to periods in directory names, underscores won't. Can be a
- subset}
+may be converted to periods in directory names, underscores won't. Can be a
+subset}
 
 \item{expvar}{List of column numbers of explanatory variables in 'samples',
 expected e.g. c(1,35,67,etc.). No default}
@@ -39,6 +40,9 @@ list(0.01,c(0.001, 0.0005))}
 
 \item{bf}{Permutations of bag fraction allowed, can be single number, vector
 or list, per tc and lr. Defaults to 0.5}
+
+\item{n.trees}{from gbm.step, number of initial trees to fit. Can be
+single or list but not vector i.e. list(fam1,fam2)}
 
 \item{ZI}{are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
 log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
@@ -91,7 +95,8 @@ omitting the .shp extension}
 \item{gaus}{Do Gaussian runs as well as Bin? Default TRUE.}
 
 \item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
-legend.grid in gbm.map, and gbm.step (dismo)}
+legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
+max.trees, both of which can be added in list(1,2) format to pass to fam1 and 2}
 }
 \value{
 Line, dot and bar plots, a report of all variables used, statistics
@@ -117,7 +122,11 @@ sudo apt install libproj-dev
 sudo apt install libgdal-dev
 
 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
-> Explanatory variables are expected to be numeric
+> Check your variable types are correct, e.g. numerics haven't been imported
+as factors because there's an errant first row of text information before the
+data. Remove NA rows from the response variable if present: convert blank
+cells to NA on import with read.csv(x, na.strings = "") then
+samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
 
 2. At bf=0.5, if nrows <= 42 gbm.step will crash
 > Use gbm.bfcheck to determine optimal viable bf size
@@ -127,8 +136,10 @@ sudo apt install libgdal-dev
 
 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted < max.trees)  :
  missing value where TRUE/FALSE needed
-> Data are expected to contain zeroes (lots of them in zero-inflated cases),
-have you already filtered them out?
+> If running a zero-inflated delta model (bernoilli/bin & gaussian/gaus),
+Data are expected to contain zeroes (lots of them in zero-inflated cases),
+have you already filtered them out, i.e. are only testing the positive cases?
+Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to FALSE
 
 5. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric
 argument to mathematical function
@@ -150,12 +161,17 @@ It may be that you don't have enough positive samples to run BRT modelling
 Run gbm.bfcheck to check recommended minimum BF size
 
 9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
-32:35 degrees but dataset has errant 0 value: plot axis 0:35, 99.99% data
-in the tiny bit at the right. Clean your data well beforehand.
+32:35ppm  but dataset has errant 0 value: plot axis will be 0:35 and 99.99%
+of the data will be in the tiny bit at the right. Clean your data beforehand
 
 10. Error in plot.new() : figure margins too large:
 > In RStudio, adjust plot frame (usually bottom right) to increase its size
 Still fails? Set multiplot=FALSE
+
+11. Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"),
+: can only print from a screen device
+> An earlier failed run (e.g. LR/BF too low) left a plotting device open.
+Close it with: dev.off()
 }
 \examples{
 gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
