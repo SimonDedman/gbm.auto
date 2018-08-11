@@ -303,6 +303,8 @@ gbm.auto <- function(
     # actually not nonzero but 'not -Inf' since zeroes logged to "-Inf"
     # Change this to grv_yes <- samples if using a hurdle model including zeroes
     # need to keep it as log1p in that case?
+    # ">=" same as just ">" since any nonzero in samples will be logged to a
+    # nonzero & any 0 will be logged to -Inf so there'll be no zeroes
 
     ####3. Begin Report####
     #reportcolno = (3 + (5*(length(tc)*length(lr)*length(bf))) + 14)
