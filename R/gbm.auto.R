@@ -59,7 +59,8 @@
 #' omitting the .shp extension
 #' @param RSB Run Unrepresentativeness surface builder? Default TRUE
 #' @param BnW Repeat maps in black and white e.g. for print journals. Default TRUE
-#' @param alerts Play sounds to mark progress steps. Default TRUE
+#' @param alerts Play sounds to mark progress steps. Default TRUE but running
+#' multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash
 #' @param pngtype Filetype for png files, alternatively try "quartz"
 #' @param gaus Do Gaussian runs as well as Bin? Default TRUE.
 #' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
@@ -130,6 +131,8 @@
 #' > An earlier failed run (e.g. LR/BF too low) left a plotting device open.
 #' Close it with: dev.off()
 #'
+#' 12. RStudio crashed: set aLerts=F and pause cloud sync programs if outputting to a synced folder
+#'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 #'
@@ -189,7 +192,8 @@ gbm.auto <- function(
   # which then calls gbm.basemap to download and autogenerate the base map.
   RSB = TRUE,           # run Unrepresentativeness surface builder?
   BnW = TRUE,           # repeat maps in black and white e.g. for print journals
-  alerts = TRUE,        # play sounds to mark progress steps
+  alerts = TRUE,        # play sounds to mark progress steps. Running many small
+  # BRTs e.g. gbm.loop can cause RStudio to crash, if so set this to FALSE
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
   gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
   ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
