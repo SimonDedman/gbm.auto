@@ -288,7 +288,7 @@ gbm.auto <- function(
     if (ZI == "CHECK") if (sum(samples[,i] == 0,na.rm = TRUE)/length(samples[,i]) >= 0.5) ZI = TRUE else ZI = FALSE
 
     # ensure resvar has zeroes (expects mix of successful & unsuccessful samples for bernoulli/binary runs)
-    if (ZI == F) if (min(samples[i]) > 0) print("No zeroes in response variable. Method expects unsuccessful, as well as successful, samples")
+    if (ZI == F) if (min(samples[i]) > 0) print("No zeroes in response variable. If using a zero inflated model, Method expects unsuccessful, as well as successful, samples")
 
     # create binary (0/1) response variable, for bernoulli BRTs
     samples$brv <- ifelse(samples[i] > 0, 1, 0)
