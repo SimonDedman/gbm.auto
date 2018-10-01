@@ -104,6 +104,9 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # See how many loops until things stabilise, i.e. variance decreases, average smooths out, etc, is that even logical?
   # Yes. min max av var should be similar between e.g. 1,000,000 loops & 1,000,001, but less likely between 1 & 2.
   # But based on what though? Just do a line of x:loop# vs y: minmin/maxmax/avav/avvar?
+  # when change in variance from 1:2 to 1:3 to 1:n drops below a percentage threshold?
+  # Fix csvs colnames, see https://github.com/SimonDedman/gbm.auto/issues/37
+  # Fix line plots axes, see https://github.com/SimonDedman/gbm.auto/issues/38
 
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
@@ -157,7 +160,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         #colnames(paste0("binline_", j))[1 + i] <- paste0("Loop_", i) # label newly added column
       } else {
         assign(paste0("binline_", j), cbind(get(paste0("binline_", j)), get(paste0("bintmp_", j))[,2]))
-        #colnames(paste0("binline_", j))[1 + i] <- paste0("Loop_", i)
+        colnames(get(paste0("binline_", j)))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
         }}
 
     if (file.exists("Gaussian BRT Variable contributions.csv")) {
@@ -167,18 +170,14 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     gaus = TRUE} else gaus = FALSE
 
     if (gaus) for (k in colnames(samples)[expvar]) {
-      # if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) { #if variable line csv doesn't exist
-      #   assign(paste0("gaustmp_", k),
       assign(paste0("gaustmp_", k), read.csv(paste0("Gaus_Best_line_", k, ".csv")))
-      ##fails if variable influence is 0 and not plotted or has been removed by simp, goes to read csv but csv not present.
+      #fails if variable influence is 0 and not plotted or has been removed by simp, goes to read csv but csv not present.
       if (i == 1) {assign(paste0("gausline_", k), get(paste0("gaustmp_", k)))
-        #colnames(get(paste0("gausline_", k)))[1 + i] <- paste0("Loop_", i) # label newly added column
-        # target of assignment expands to non-language object
-        # see https://stackoverflow.com/questions/14464442/using-get-with-replacement-functions
         } else {
         assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)), get(paste0("gaustmp_", k))[,2]))
-          #colnames(paste0("gausline_", k))[1 + i] <- paste0("Loop_", i)
-          }}
+          #column cbound but not named so name becomes get(paste0("gaustmp_", k))[,2]
+        colnames(get(paste0("gausline_", k)))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
+        }}
 
     if (!file.exists("Abundance_Preds_only.csv")) calcpreds = FALSE
     if (calcpreds) {predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
@@ -278,38 +277,42 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
 ####plot linesfiles####
   if (bin) for (p in colnames(samples)[expvar]) {
+    yrange <- c(min(get(paste0("binline_", p))[,"MinLine"]), max(get(paste0("binline_", p))[,"MaxLine"]))
     png(filename = paste0("Bin_Loop_lines_", p, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
     plot(get(paste0("binline_", p))[,1],
-       get(paste0("binline_", p))[,"MaxLine"],
+       get(paste0("binline_", p))[,"AvLine"],
        type = "l",
        xlab = colnames(get(paste0("binline_", p)))[1],
        ylab = "",
        main = "",
-       yasx = "r")
+       yasx = "r",
+       ylim = yrange)
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-  lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MinLine"], col = "red")
-  lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"AvLine"], col = "blue")
-  legend("topleft", legend = c("Max","Av.","Min"), col = c("black","blue","red"),
+  lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
+  lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MaxLine"], col = "grey33")
+  legend("topleft", legend = c("Max","Av.","Min"), col = c("black","grey33","grey66"),
          lty = 1, pch = "-")
   dev.off()}
 
   if (gaus) for (q in colnames(samples)[expvar]) {
+    yrange <- c(min(get(paste0("gausline_", p))[,"MinLine"]), max(get(paste0("gausline_", p))[,"MaxLine"]))
     png(filename = paste0("Gaus_Loop_lines_", q, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
     plot(get(paste0("gausline_", q))[,1],
-         get(paste0("gausline_", q))[,"MaxLine"],
+         get(paste0("gausline_", q))[,"AvLine"],
          type = "l",
          xlab = colnames(get(paste0("gausline_", q)))[1],
          ylab = "",
          main = "",
-         yasx = "r")
+         yasx = "r",
+         ylim = yrange)
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MinLine"], col = "red")
-    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"AvLine"], col = "blue")
-    legend("topleft", legend = c("Max","Av.","Min"), col = c("black","blue","red"),
+    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MinLine"], col = "grey66")
+    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MaxLine"], col = "grey33")
+    legend("topleft", legend = c("Max","Av.","Min"), col = c("black","grey33","grey66"),
            lty = 1, pch = "-")
     dev.off()}
   ## for factorial variables, need to change from lines to bars
