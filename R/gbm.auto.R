@@ -687,15 +687,15 @@ gbm.auto <- function(
       par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
       barplot(rev(Bin_Bars[,2]), cex.lab = 1.2, las = 1, # axis labs horizontal
               horiz = TRUE, # make horizontal
-              xlab = "Relative Influence %", col = NA, lwd = 6, border = NA, # no border
+              xlab = "Relative Influence %", col = NA, border = NA, # no border, lwd redundant
               xlim = c(0, 2.5 + ceiling(max(Bin_Bars[,2]))),
               ylim = c(0, length(Bin_Bars[,2])), # figure height as a proportion of nBars
               beside = T) # juxtaposed not stacked
-      points(rev(Bin_Bars[,2]), pointlineseqbin, pch = 20, cex = 1.75, col = "black")
+      #points(rev(Bin_Bars[,2]), pointlineseqbin, pch = 20, cex = 1.75, col = "black") #black dots at line ends
       revseq <- rev(pointlineseqbin)
       for (q in 1:length(Bin_Bars[,2])) {
         lines(c(0, Bin_Bars[q,2]), c(revseq[q], revseq[q]), col = "black", lwd = 8)}
-      text(0.1, pointlineseqbin + (length(Bin_Bars[,2])/55), labels = rev(Bin_Bars[,1]), adj = 0, cex = 0.9)
+      text(0.1, pointlineseqbin + (length(Bin_Bars[,2])/55), labels = rev(Bin_Bars[,1]), adj = 0, cex = 0.8)
       axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
       dev.off()} # close ZI
 
@@ -706,15 +706,15 @@ gbm.auto <- function(
     par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
     barplot(rev(Gaus_Bars[,2]), cex.lab = 1.2, las = 1, # axis labs horizontal
             horiz = TRUE, # make horizontal
-            xlab = "Relative Influence %", col = NA, lwd = 6, border = NA, # no border
+            xlab = "Relative Influence %", col = NA, border = NA, # no border, lwd redundant
             xlim = c(0, 2.5 + ceiling(max(Gaus_Bars[,2]))),
             ylim = c(0, length(Gaus_Bars[,2])), # figure height as a proportion of nBars
             beside = T) # juxtaposed not stacked
-    points(rev(Gaus_Bars[,2]), pointlineseqgaus, pch = 20, cex = 1.75, col = "black")
+    #points(rev(Gaus_Bars[,2]), pointlineseqgaus, pch = 20, cex = 1.75, col = "black")
     revseq <- rev(pointlineseqgaus)
     for (r in 1:length(Gaus_Bars[,2])) {
       lines(c(0, Gaus_Bars[r,2]), c(revseq[r], revseq[r]), col = "black", lwd = 8)}
-    text(0.1, pointlineseqgaus + (length(Gaus_Bars[,2])/55), labels = rev(Gaus_Bars[,1]), adj = 0, cex = 0.9)
+    text(0.1, pointlineseqgaus + (length(Gaus_Bars[,2])/55), labels = rev(Gaus_Bars[,1]), adj = 0, cex = 0.8)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
     dev.off()} #close PNG
     # col = rev(expvarcols[match(Bin_Bars[,1],expvarcols[,2]),1]), #in case I want to colour the bars/points later

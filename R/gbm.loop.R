@@ -96,9 +96,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      alerts = F,        # play sounds to mark progress steps
                      pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
                      ...) {
-
   # Generalised Boosting Model / Boosted Regression Tree process chain automater
-  # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
+  # Simon Dedman, 2012-8 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 
   ####TODO####
   # See how many loops until things stabilise, i.e. variance decreases, average smooths out, etc, is that even logical?
@@ -106,7 +105,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # But based on what though? Just do a line of x:loop# vs y: minmin/maxmax/avav/avvar?
   # when change in variance from 1:2 to 1:3 to 1:n drops below a percentage threshold?
   # Fix csvs colnames, see https://github.com/SimonDedman/gbm.auto/issues/37
-  # Fix line plots axes, see https://github.com/SimonDedman/gbm.auto/issues/38
+  # for factorial variables, need to change from lines to bars
 
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
@@ -155,12 +154,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
     # adding i'th loop's values as new column
     if (bin) for (j in colnames(samples)[expvar]) {
-      assign(paste0("bintmp_", j), read.csv(paste0("Bin_Best_line_", j, ".csv"))) # temp container for bin lines
-      if (i == 1) {assign(paste0("binline_", j), get(paste0("bintmp_", j)))
-        #colnames(paste0("binline_", j))[1 + i] <- paste0("Loop_", i) # label newly added column
+      tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))
+      colnames(tmp)[2] <- paste0("Loop",i)
+      if (i == 1) {assign(paste0("binline_", j), tmp)
       } else {
-        assign(paste0("binline_", j), cbind(get(paste0("binline_", j)), get(paste0("bintmp_", j))[,2]))
-        colnames(get(paste0("binline_", j)))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
+                   assign(paste0("binline_", j), cbind(get(paste0("binline_", j)),
+                                                       tmp[,2]))
         }}
 
     if (file.exists("Gaussian BRT Variable contributions.csv")) {
@@ -170,13 +169,17 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     gaus = TRUE} else gaus = FALSE
 
     if (gaus) for (k in colnames(samples)[expvar]) {
-      assign(paste0("gaustmp_", k), read.csv(paste0("Gaus_Best_line_", k, ".csv")))
+      tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))
+      colnames(tmp)[2] <- paste0("Loop",i)
       #fails if variable influence is 0 and not plotted or has been removed by simp, goes to read csv but csv not present.
-      if (i == 1) {assign(paste0("gausline_", k), get(paste0("gaustmp_", k)))
+      if (i == 1) {assign(paste0("gausline_", k), tmp)
         } else {
-        assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)), get(paste0("gaustmp_", k))[,2]))
-          #column cbound but not named so name becomes get(paste0("gaustmp_", k))[,2]
-        colnames(get(paste0("gausline_", k)))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
+                   assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
+                                                        tmp[,2]))
+          #column cbound but not named. Can name as string "col name" = 1:10, or
+          #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
+          #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]
+        #colnames(paste0("gausline_", k))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
         }}
 
     if (!file.exists("Abundance_Preds_only.csv")) calcpreds = FALSE
@@ -206,6 +209,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
     setwd("../../") # move back up to root folder
     if (cleanup) unlink(i, recursive = T)
+    print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Loop ",i," complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close i loop & go to the next i
 
 ####loops done create dfs####
@@ -274,6 +278,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     if (calcpreds) {write.csv(var.df, file = "VarAll.csv", row.names = F)
     write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}
     write.csv(report.df, file = "Report.csv", row.names = T)}
+  print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      csv files created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
 ####plot linesfiles####
   if (bin) for (p in colnames(samples)[expvar]) {
@@ -292,12 +297,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
   lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
   lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MaxLine"], col = "grey33")
-  legend("topleft", legend = c("Max","Av.","Min"), col = c("black","grey33","grey66"),
+  legend("topleft", legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
          lty = 1, pch = "-")
   dev.off()}
 
   if (gaus) for (q in colnames(samples)[expvar]) {
-    yrange <- c(min(get(paste0("gausline_", p))[,"MinLine"]), max(get(paste0("gausline_", p))[,"MaxLine"]))
+    yrange <- c(min(get(paste0("gausline_", q))[,"MinLine"]), max(get(paste0("gausline_", q))[,"MaxLine"]))
     png(filename = paste0("Gaus_Loop_lines_", q, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
@@ -312,37 +317,47 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
     lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MinLine"], col = "grey66")
     lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MaxLine"], col = "grey33")
-    legend("topleft", legend = c("Max","Av.","Min"), col = c("black","grey33","grey66"),
+    legend("topleft", legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
            lty = 1, pch = "-")
     dev.off()}
-  ## for factorial variables, need to change from lines to bars
-  ## need to fix the y axis range lengths, between minmin & maxmax (not min & max of first plot)
-  ## marginal effect y axis label values are raw values not the +/- from gbm.plot
 
-  # make bin & gaus barplot figures
-  if (bin) {png(filename = "BinBarsLoop.png", width = 4*480, height = 4*480, units = "px",
+  print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+# bin & gaus barplots####
+  if (bin) {
+    pointlineseqbin <- seq(0, length(binbars[,2]) - 1, 1)
+    revseq <- rev(pointlineseqbin)
+    png(filename = "BinBarsLoop.png", width = 4*480, height = 4*480, units = "px",
                 pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
     midpoints <- barplot(rev(binbars[,2]), cex.lab = 1.2, las = 1,
                          horiz = TRUE, cex.names = 0.8, xlab = "Av. Influence %",
-                         col = grey.colors(1,1,1),
+                         col = NA, border = NA,
                          xlim = c(0,2.5 + ceiling(max(binbars[,2]))),
-                         lwd = 4)
-    text(0.1, midpoints, labels = rev(rownames(binbars)), adj = 0, cex = 1.4)
+                         ylim = c(0, length(binbars[,2])))
+    for (r in 1:length(binbars[,2])) {
+      lines(c(0, binbars[r,2]), c(revseq[r], revseq[r]), col = "black", lwd = 8)} #draw lines
+    text(0.1, pointlineseqbin + (length(binbars[,2])/55), labels = rev(rownames(binbars)), adj = 0, cex = 0.8)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
     dev.off()}
 
-  if (gaus) {png(filename = "GausBarsLoop.png", width = 4*480, height = 4*480, units = "px",
+  if (gaus) {
+    pointlineseqgaus <- seq(0, length(gausbars[,2]) - 1, 1)
+    revseq <- rev(pointlineseqgaus)
+    png(filename = "GausBarsLoop.png", width = 4*480, height = 4*480, units = "px",
                  pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
     midpoints <- barplot(rev(gausbars[,2]), cex.lab = 1.2, las = 1,
                          horiz = TRUE, cex.names = 0.8, xlab = "Av. Influence %",
-                         col = grey.colors(1,1,1),
+                         col = NA, border = NA,
                          xlim = c(0,2.5 + ceiling(max(gausbars[,2]))),
-                         lwd = 4)
-    text(0.1, midpoints, labels = rev(rownames(gausbars)), adj = 0, cex = 1.4)
+                         ylim = c(0, length(gausbars[,2])))
+    for (s in 1:length(gausbars[,2])) {
+      lines(c(0, gausbars[s,2]), c(revseq[s], revseq[s]), col = "black", lwd = 8)}
+    text(0.1, pointlineseqgaus + (length(gausbars[,2])/55), labels = rev(rownames(gausbars)), adj = 0, cex = 0.8)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
     dev.off()}
+  print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
 ####map predabund CofVs####
   if (calcpreds) if (varmap) { # if mapping requested,
