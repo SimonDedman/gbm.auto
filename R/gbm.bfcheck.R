@@ -27,14 +27,16 @@ minbfbin <- 21/nrow(samples)
 print(paste0("  binary bag fraction must be at least ", round(minbfbin,3)))
 
 # if user has asked code to check for ZI, check it & set new ZI status
-if (ZI == "CHECK")  if (sum(samples[,resvar] == 0, na.rm = TRUE) / length(samples[,resvar]) >= 0.5) ZI = TRUE else ZI = FALSE
+if (ZI == "CHECK") if (sum(samples[,resvar] == 0, na.rm = TRUE) / length(samples[,resvar]) >= 0.5) ZI = TRUE else ZI = FALSE
 logem <- log1p(samples[,resvar])
 dont  <- samples[,resvar]
 if (ZI) {samples$grv <- logem} else {samples$grv <- dont}
-grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
 grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
 
 # Minimum bag fraction for Gaussian
 minbfgaus <- 21/nrow(grv_yes)
 print(paste0("Gaussian bag fraction must be at least ", round(minbfgaus,3)))
+
+# return bin & gaus min bfs
+return(c(minbfbin,minbfgaus))
 }

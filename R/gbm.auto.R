@@ -14,10 +14,10 @@
 #' names short, no odd characters, starting numerals or terminal periods. Spaces
 #' may be converted to periods in directory names, underscores won't. Can be a
 #' subset
-#' @param expvar List of column numbers of explanatory variables in 'samples',
-#' expected e.g. c(1,35,67,etc.). No default
-#' @param resvar Column number(s) of response variable (e.g. CPUE) in samples.
-#' e.g. 12 or c(4,5,6). No default. Column name should be species name
+#' @param expvar List of names or column numbers of explanatory variables in
+#' 'samples': c(1,3,6) or c("Temp","Sal"). No default
+#' @param resvar Name or column number(s) of response variable in samples: 12,
+#' c(1,4), "Rockfish". No default. Column name is ideally species name
 #' @param tc Permutations of tree complexity allowed, can be vector with
 #' the largest sized number no larger than the number of explanatory variables
 #' e.g. c(2,7), or a list of 2 single numbers or vectors, the first to be passed
