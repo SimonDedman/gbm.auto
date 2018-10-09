@@ -516,14 +516,16 @@ gbm.auto <- function(
           if (Bin_Best_Simp$self.statistics$correlation > Bin_Best_Score[1])
             # then replace Bin_Best score/model values with those from the simplified model
           {Bin_Best_Score <- Bin_Best_Simp$self.statistics$correlation
-          Bin_Best_Name <- paste0(Bin_Best_Model, "_Simp")}} # close ZI
+          Bin_Best_Name <- paste0(Bin_Best_Model, "_Simp")
+          Bin_Best_Model <- Bin_Best_Simp}} # assign simp to best & close ZI
 
       # Same for Gaus:
       if (gaus) {if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0)
         if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1])
         {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
-        Gaus_Best_Name <- paste0(Gaus_Best_Model, "_Simp")}}
-    } # close simp optional
+        Gaus_Best_Name <- paste0(Gaus_Best_Model, "_Simp")
+        Gaus_Best_Model <- Gaus_Best_Simp}}
+          } # close simp optional
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Best models selected     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
