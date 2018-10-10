@@ -524,9 +524,7 @@ gbm.auto <- function(
         if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1])
         {Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
         Gaus_Best_Name <- paste0(Gaus_Best_Model, "_Simp")
-        Gaus_Best_Model <- "Gaus_Best_Simp"
-        print(Gaus_Best_Model)
-        }}
+        Gaus_Best_Model <- "Gaus_Best_Simp"}}
           } # close simp optional
 
     if (alerts) beep(2) # progress printer, right aligned for visibility

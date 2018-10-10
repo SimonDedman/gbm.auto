@@ -147,13 +147,14 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
     if (file.exists("Binary BRT Variable contributions.csv")) {
     binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
+    binvars <- binbarstmp[,1]
     if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
       binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
     bin = TRUE} else bin = FALSE
 
     # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
     # adding i'th loop's values as new column
-    if (bin) for (j in colnames(samples[expvar])) {
+    if (bin) for (j in binvars) {
       tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))
       colnames(tmp)[2] <- paste0("Loop",i)
       if (i == 1) {assign(paste0("binline_", j), tmp)
@@ -164,14 +165,14 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
     if (file.exists("Gaussian BRT Variable contributions.csv")) {
     gausbarstmp <- read.csv("Gaussian BRT Variable contributions.csv") # temp container for Gaus lines
+    gausvars <- gausbarstmp[,1] #vector of expvars actually used i.e. those dumped by simp removed
     if (i == 1) {gausbars.df <- gausbarstmp} else {
       gausbars.df <- rbind(gausbars.df, gausbarstmp)}
     gaus = TRUE} else gaus = FALSE
 
-    if (gaus) for (k in colnames(samples[expvar])) {
+    if (gaus) for (k in gausvars) {
       tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))
       colnames(tmp)[2] <- paste0("Loop",i)
-      #fails if variable influence is 0 and not plotted or has been removed by simp, goes to read csv but csv not present.
       if (i == 1) {assign(paste0("gausline_", k), tmp)
         } else {
                    assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
@@ -229,7 +230,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
              gausbars <- gausbars[order(-gausbars[,"Av.Inf"]),]}
 
   # create linesfiles end-column stats for each variable
-    if (bin) for (l in colnames(samples[expvar])) {
+    if (bin) for (l in binvars) {
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
                                         "MinLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, min)))
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
@@ -239,7 +240,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
                                         "VarLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, var)))}
 
-  if (gaus) for (m in colnames(samples[expvar])) {
+  if (gaus) for (m in gausvars) {
     assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
                                          "MinLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, min)))
     assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
@@ -270,9 +271,9 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     if (bin) write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
     if (gaus) write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
 
-    if (bin) for (n in colnames(samples[expvar])) {
+    if (bin) for (n in binvars) {
       write.csv(get(paste0("binline_", n)), file = paste0("BinLineLoop_", n, ".csv"), row.names = F)}
-    if (gaus) for (o in colnames(samples[expvar])) {
+    if (gaus) for (o in gausvars) {
       write.csv(get(paste0("gausline_", o)), file = paste0("GausLineLoop_", o, ".csv"), row.names = F)}
 
     if (calcpreds) {write.csv(var.df, file = "VarAll.csv", row.names = F)
@@ -281,7 +282,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      csv files created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
 ####plot linesfiles####
-  if (bin) for (p in colnames(samples[expvar])) {
+  if (bin) for (p in binvars) {
     yrange <- c(min(get(paste0("binline_", p))[,"MinLine"]), max(get(paste0("binline_", p))[,"MaxLine"]))
     png(filename = paste0("Bin_Loop_lines_", p, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
@@ -301,7 +302,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          lty = 1, pch = "-")
   dev.off()}
 
-  if (gaus) for (q in colnames(samples[expvar])) {
+  if (gaus) for (q in gausvars) {
     yrange <- c(min(get(paste0("gausline_", q))[,"MinLine"]), max(get(paste0("gausline_", q))[,"MaxLine"]))
     png(filename = paste0("Gaus_Loop_lines_", q, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
