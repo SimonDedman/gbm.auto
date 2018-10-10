@@ -154,7 +154,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
     # adding i'th loop's values as new column
     if (bin) for (j in colnames(samples[expvar])) {
-      if(!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(0,100), y = rep(0,100))}
+      if(!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
       #if file not created because simp, populate with 0s
       if(file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))}
       #else use values
@@ -173,7 +173,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       gaus = TRUE} else gaus = FALSE
 
     if (gaus) for (k in colnames(samples[expvar])) {
-      if(!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(0,100), y = rep(0,100))}
+      if(!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
       if(file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
       colnames(tmp)[2] <- paste0("Loop",i)
       if (i == 1) {assign(paste0("gausline_", k), tmp)
@@ -234,32 +234,32 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # create linesfiles end-column stats for each variable
   if (bin) for (l in colnames(samples[expvar])) {
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
-                                        "MinLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, min)))
+                                        "MinLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, min, na.rm = TRUE)))
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
-                                        "AvLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, mean)))
+                                        "AvLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, mean, na.rm = TRUE)))
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
-                                        "MaxLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, max)))
+                                        "MaxLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, max, na.rm = TRUE)))
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
-                                        "VarLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, var)))}
+                                        "VarLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, var, na.rm = TRUE)))}
 
   if (gaus) for (m in colnames(samples[expvar])) {
     assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
-                                         "MinLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, min)))
+                                         "MinLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, min, na.rm = TRUE)))
     assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
-                                         "AvLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, mean)))
+                                         "AvLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, mean, na.rm = TRUE)))
     assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
-                                         "MaxLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, max)))
+                                         "MaxLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, max, na.rm = TRUE)))
     assign(paste0("gausline_", m), cbind(get(paste0("gausline_", m)),
-                                         "VarLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, var)))}
+                                         "VarLine" = apply(get(paste0("gausline_", m))[, (2:(1 + loops))], MARGIN = 1, var, na.rm = TRUE)))}
 
   # apply variances to a new column at the end of var.df
-  if (calcpreds) var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var)
+  if (calcpreds) var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var, na.rm = TRUE)
 
   # Build CV & AUC stats report by scraping individual loops' reports
-  Minima <- c(min(report.df[,1]), min(report.df[,2]), min(report.df[,3]))
-  Averages <- c(mean(report.df[,1]), mean(report.df[,2]), mean(report.df[,3]))
-  Maxima <- c(max(report.df[,1]), max(report.df[,2]), max(report.df[,3]))
-  Variances <- c(var(report.df[,1]), var(report.df[,2]), var(report.df[,3]))
+  Minima <- c(min(report.df[,1], na.rm = TRUE), min(report.df[,2], na.rm = TRUE), min(report.df[,3], na.rm = TRUE))
+  Averages <- c(mean(report.df[,1], na.rm = TRUE), mean(report.df[,2], na.rm = TRUE), mean(report.df[,3], na.rm = TRUE))
+  Maxima <- c(max(report.df[,1], na.rm = TRUE), max(report.df[,2], na.rm = TRUE), max(report.df[,3], na.rm = TRUE))
+  Variances <- c(var(report.df[,1], na.rm = TRUE), var(report.df[,2], na.rm = TRUE), var(report.df[,3], na.rm = TRUE))
   report.df <- rbind(report.df, Minima, Averages, Maxima, Variances)
   rep.len <- dim(report.df)[1]
   rownames(report.df) <- c((1:(rep.len - 4)), "Minima", "Averages", "Maxima", "Variances")
