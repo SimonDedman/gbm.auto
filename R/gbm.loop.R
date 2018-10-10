@@ -222,14 +222,16 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                                   Max.Inf = with(binbars.df, tapply(rel.inf, var, max)),
                                   Inf.variance = with(binbars.df, tapply(rel.inf, var, var)),
                                   row.names = levels.default(binbars.df$var))
-  binbars <- binbars[order(-binbars[,"Av.Inf"]),]}
+  binbars <- binbars[order(-binbars[,"Av.Inf"]),]
+  binbarsgood <- subset(binbars, Min.Inf > 0)} #also create barplots for nonzero vars
 
   if (gaus) {gausbars <- data.frame(Min.Inf = with(gausbars.df, tapply(rel.inf, var, min)),
                                     Av.Inf = with(gausbars.df, tapply(rel.inf, var, mean)),
                                     Max.Inf = with(gausbars.df, tapply(rel.inf, var, max)),
                                     Inf.variance = with(gausbars.df, tapply(rel.inf, var, var)),
                                     row.names = levels.default(gausbars.df$var))
-  gausbars <- gausbars[order(-gausbars[,"Av.Inf"]),]}
+  gausbars <- gausbars[order(-gausbars[,"Av.Inf"]),]
+  gausbarsgood <- subset(gausbars, Min.Inf > 0)}
 
   # create linesfiles end-column stats for each variable
   if (bin) for (l in colnames(samples[expvar])) {
@@ -260,6 +262,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   Averages <- c(mean(report.df[,1], na.rm = TRUE), mean(report.df[,2], na.rm = TRUE), mean(report.df[,3], na.rm = TRUE))
   Maxima <- c(max(report.df[,1], na.rm = TRUE), max(report.df[,2], na.rm = TRUE), max(report.df[,3], na.rm = TRUE))
   Variances <- c(var(report.df[,1], na.rm = TRUE), var(report.df[,2], na.rm = TRUE), var(report.df[,3], na.rm = TRUE))
+  # if all loops' values are NA (e.g. BinCV & AUC when only gaus), min will be Inf & max -Inf. A bit messy but Unimportant
   report.df <- rbind(report.df, Minima, Averages, Maxima, Variances)
   rep.len <- dim(report.df)[1]
   rownames(report.df) <- c((1:(rep.len - 4)), "Minima", "Averages", "Maxima", "Variances")
@@ -270,8 +273,10 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   setwd(names(samples[resvar]))
 
   if (savecsv) {
-    if (bin) write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
-    if (gaus) write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
+    if (bin) {write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
+              write.csv(binbarsgood, file = "BinBarsGoodLoop.csv", row.names = T)}
+    if (gaus) {write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
+               write.csv(gausbarsgood, file = "GausBarsGoodLoop.csv", row.names = T)}
 
     if (bin) for (n in colnames(samples[expvar])) {
       write.csv(get(paste0("binline_", n)), file = paste0("BinLineLoop_", n, ".csv"), row.names = F)}
