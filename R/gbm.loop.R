@@ -164,6 +164,10 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       } else {
         assign(paste0("binline_", j), cbind(get(paste0("binline_", j)),
                                             tmp[,2]))
+        if(is.na(get(paste0("binline_", j))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+          assign(paste0("binline_", j), #rebuild same obj as df
+                 data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
+                            get(paste0("binline_", j))[,2:i]))} #then add the remainder of the existing obj cols
       }}
 
     if (file.exists("Gaussian BRT Variable contributions.csv")) {
@@ -174,12 +178,18 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
     if (gaus) for (k in colnames(samples[expvar])) {
       if(!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
+      #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
+
       if(file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
       colnames(tmp)[2] <- paste0("Loop",i)
       if (i == 1) {assign(paste0("gausline_", k), tmp)
       } else {
         assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
                                              tmp[,2]))
+        if(is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+          assign(paste0("gausline_", k), #rebuild same obj as df
+                 data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
+                            get(paste0("gausline_", k))[,2:i]))} #then add the remainder of the existing obj cols
         #column cbound but not named. Can name as string "col name" = 1:10, or
         #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
         #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]
@@ -347,6 +357,22 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       lines(c(0, binbars[r,2]), c(revseq[r], revseq[r]), col = "black", lwd = 8)} #draw lines
     text(0.1, pointlineseqbin + (length(binbars[,2])/55), labels = rev(rownames(binbars)), adj = 0, cex = 0.8)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
+    dev.off()
+
+    pointlineseqbin <- seq(0, length(binbarsgood[,2]) - 1, 1)
+    revseq <- rev(pointlineseqbin)
+    png(filename = "BinBarsGoodLoop.png", width = 4*480, height = 4*480, units = "px",
+        pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
+    midpoints <- barplot(rev(binbarsgood[,2]), cex.lab = 1.2, las = 1,
+                         horiz = TRUE, cex.names = 0.8, xlab = "Av. Influence %",
+                         col = NA, border = NA,
+                         xlim = c(0,2.5 + ceiling(max(binbarsgood[,2]))),
+                         ylim = c(0, length(binbarsgood[,2])))
+    for (r in 1:length(binbarsgood[,2])) {
+      lines(c(0, binbarsgood[r,2]), c(revseq[r], revseq[r]), col = "black", lwd = 8)} #draw lines
+    text(0.1, pointlineseqbin + (length(binbarsgood[,2])/55), labels = rev(rownames(binbarsgood)), adj = 0, cex = 0.8)
+    axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
     dev.off()}
 
   if (gaus) {
@@ -363,6 +389,22 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     for (s in 1:length(gausbars[,2])) {
       lines(c(0, gausbars[s,2]), c(revseq[s], revseq[s]), col = "black", lwd = 8)}
     text(0.1, pointlineseqgaus + (length(gausbars[,2])/55), labels = rev(rownames(gausbars)), adj = 0, cex = 0.8)
+    axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
+    dev.off()
+
+    pointlineseqgaus <- seq(0, length(gausbarsgood[,2]) - 1, 1)
+    revseq <- rev(pointlineseqgaus)
+    png(filename = "GausBarsGoodLoop.png", width = 4*480, height = 4*480, units = "px",
+        pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.5,0.3,0,0.5), fig = c(0,1,0,1), cex.lab = 0.5, mgp = c(1.5,0.5,0), cex = 1.3, lwd = 6)
+    midpoints <- barplot(rev(gausbarsgood[,2]), cex.lab = 1.2, las = 1,
+                         horiz = TRUE, cex.names = 0.8, xlab = "Av. Influence %",
+                         col = NA, border = NA,
+                         xlim = c(0,2.5 + ceiling(max(gausbarsgood[,2]))),
+                         ylim = c(0, length(gausbarsgood[,2])))
+    for (s in 1:length(gausbarsgood[,2])) {
+      lines(c(0, gausbarsgood[s,2]), c(revseq[s], revseq[s]), col = "black", lwd = 8)}
+    text(0.1, pointlineseqgaus + (length(gausbarsgood[,2])/55), labels = rev(rownames(gausbarsgood)), adj = 0, cex = 0.8)
     axis(side = 1, lwd = 6, outer = TRUE, xpd = NA)
     dev.off()}
   print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Bar plots plotted      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
