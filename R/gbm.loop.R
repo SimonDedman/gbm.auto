@@ -167,7 +167,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         if(is.na(get(paste0("binline_", j))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
           assign(paste0("binline_", j), #rebuild same obj as df
                  data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
-                            get(paste0("binline_", j))[,2:i]))} #then add the remainder of the existing obj cols
+                            get(paste0("binline_", j))[,2:(i+1)]))} #then add the remainder of the existing obj cols
       }}
 
     if (file.exists("Gaussian BRT Variable contributions.csv")) {
@@ -179,7 +179,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     if (gaus) for (k in colnames(samples[expvar])) {
       if(!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
       #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
-
+      #else use existing csv file, 2 columns
       if(file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
       colnames(tmp)[2] <- paste0("Loop",i)
       if (i == 1) {assign(paste0("gausline_", k), tmp)
@@ -189,7 +189,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         if(is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
           assign(paste0("gausline_", k), #rebuild same obj as df
                  data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
-                            get(paste0("gausline_", k))[,2:i]))} #then add the remainder of the existing obj cols
+                            get(paste0("gausline_", k))[,2:(i+1)]))} #then add the remainder of the existing obj cols
         #column cbound but not named. Can name as string "col name" = 1:10, or
         #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
         #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]
