@@ -3,8 +3,8 @@
 #which should be the optimal place to split the dataset into 2 subsets.
 #
 # loop varnames are BinLineLoop_VAR.csv & GausLineLoop_VAR.csv
-# normal varnames are Bin_Best_line_VAR.csv & Gaus_Best_line_VAR.csv 
-# 
+# normal varnames are Bin_Best_line_VAR.csv & Gaus_Best_line_VAR.csv
+#
 # just use average between the last negative & first positive point
 # unless any points fall on zero
 
@@ -20,9 +20,9 @@ gbm.subset <- function(x, #list of variable names
       } else { #if not loop
         if (file.exists(paste0(j, "_Best_line_", i, ".csv"))) {#if file exists
           tmp <- read.csv(paste0(j, "_Best_line_", i, ".csv"))}} #read in csv file
-      
+
       if(exists("tmp")){ #if csv file was read (x names used in gbm may not have generated files)
-        if(!is.na(match(0,sign(tmp[,2])))) { # if there's an exact 0 value in the Y column, 
+        if(!is.na(match(0,sign(tmp[,2])))) { # if there's an exact 0 value in the Y column,
           subsetsplits[[i]] <- tmp[match(0,sign(tmp[,2])),1] #set the corresponding X value as a list item named i
         } else { # if there isn't (normal)
           row1 <- which(diff(sign(tmp[,2]))!=0) #gives the last row before crossing the Y=0 intercept
