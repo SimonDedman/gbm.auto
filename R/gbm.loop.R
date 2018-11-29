@@ -308,7 +308,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          get(paste0("binline_", p))[,"AvLine"],
          type = "l",
          #xlab = colnames(get(paste0("binline_", p)))[1],
-         xlab = paste0(p, " (", round(binbars[p, "Av.Inf"],1), "%)")
+         xlab = paste0(p, " (", round(binbars[p, "Av.Inf"],1), "%)"),
          ylab = "",
          main = "",
          yasx = "r",
@@ -329,7 +329,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          get(paste0("gausline_", q))[,"AvLine"],
          type = "l",
          #xlab = colnames(get(paste0("gausline_", q)))[1],
-         xlab = paste0(q, " (", round(gausbars[q, "Av.Inf"],1), "%)")
+         xlab = paste0(q, " (", round(gausbars[q, "Av.Inf"],1), "%)"),
          ylab = "",
          main = "",
          yasx = "r",
