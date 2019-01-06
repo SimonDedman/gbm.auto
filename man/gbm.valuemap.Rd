@@ -7,9 +7,9 @@
 gbm.valuemap(dbase, loncolno = 1, latcolno = 2, goodcols, badcols,
   conservecol = NULL, plotthis = c("good", "bad", "both", "close"),
   maploops = c("Combo", "Biomass", "Effort", "Conservation"),
-  savethis = TRUE, HRMSY = NULL, goodweight = NULL, badweight = NULL,
-  m = 1, alerts = TRUE, BnW = TRUE, shape = NULL,
-  pngtype = "cairo-png", ...)
+  savethis = TRUE, HRMSY = NULL, goodweight = NULL,
+  badweight = NULL, m = 1, alerts = TRUE, BnW = TRUE,
+  shape = NULL, pngtype = "cairo-png", ...)
 }
 \arguments{
 \item{dbase}{data.frame to load. Expects Lon, Lat & data columns: predicted

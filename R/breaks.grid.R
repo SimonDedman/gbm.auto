@@ -13,16 +13,13 @@
 #' @param zero logical, should zero be included as a separate category? Defaults to TRUE.
 #'
 #' @return A vector of breakpoints for draw.grid in mapplots
-#' @details
-#' @export
-#' @import
 #' @author Hans Gerritsen, Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' breaks.grid(100,ncol=6)
 #' breaks.grid(100,ncol=5,zero=FALSE)
 #'
 #' # create breaks on the log scale
-exp(breaks.grid(log(10000),ncol=4,zero=FALSE))
+#' exp(breaks.grid(log(10000),ncol=4,zero=FALSE))
 
 breaks.grid <- function (grd, quantile = 0.975, ncol = 12, zero = TRUE)
 {

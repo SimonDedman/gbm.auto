@@ -4,13 +4,13 @@
 \alias{gbm.auto}
 \title{Automated Boosted Regression Tree modelling and mapping suite}
 \usage{
-gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2), lr = c(0.01,
-  0.005), bf = 0.5, n.trees = 50, ZI = "CHECK", fam1 = "bernoulli",
-  fam2 = "gaussian", simp = TRUE, gridslat = 2, gridslon = 1,
-  multiplot = TRUE, cols = grey.colors(1, 1, 1), linesfiles = TRUE,
-  smooth = FALSE, savegbm = TRUE, varint = TRUE, map = TRUE,
-  shape = NULL, RSB = TRUE, BnW = TRUE, alerts = TRUE,
-  pngtype = "cairo-png", gaus = TRUE, ...)
+gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2),
+  lr = c(0.01, 0.005), bf = 0.5, n.trees = 50, ZI = "CHECK",
+  fam1 = "bernoulli", fam2 = "gaussian", simp = TRUE, gridslat = 2,
+  gridslon = 1, multiplot = TRUE, cols = grey.colors(1, 1, 1),
+  linesfiles = TRUE, smooth = FALSE, savegbm = TRUE, varint = TRUE,
+  map = TRUE, shape = NULL, RSB = TRUE, BnW = TRUE,
+  alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
 }
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
@@ -21,11 +21,11 @@ names short, no odd characters, starting numerals or terminal periods. Spaces
 may be converted to periods in directory names, underscores won't. Can be a
 subset}
 
-\item{expvar}{List of column numbers of explanatory variables in 'samples',
-expected e.g. c(1,35,67,etc.). No default}
+\item{expvar}{List of names or column numbers of explanatory variables in
+'samples': c(1,3,6) or c("Temp","Sal"). No default}
 
-\item{resvar}{Column number(s) of response variable (e.g. CPUE) in samples.
-e.g. 12 or c(4,5,6). No default. Column name should be species name}
+\item{resvar}{Name or column number(s) of response variable in samples: 12,
+c(1,4), "Rockfish". No default. Column name is ideally species name}
 
 \item{tc}{Permutations of tree complexity allowed, can be vector with
 the largest sized number no larger than the number of explanatory variables
@@ -88,7 +88,8 @@ omitting the .shp extension}
 
 \item{BnW}{Repeat maps in black and white e.g. for print journals. Default TRUE}
 
-\item{alerts}{Play sounds to mark progress steps. Default TRUE}
+\item{alerts}{Play sounds to mark progress steps. Default TRUE but running
+multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
@@ -172,6 +173,8 @@ Still fails? Set multiplot=FALSE
 : can only print from a screen device
 > An earlier failed run (e.g. LR/BF too low) left a plotting device open.
 Close it with: dev.off()
+
+12. RStudio crashed: set aLerts=F and pause cloud sync programs if outputting to a synced folder
 }
 \examples{
 gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,

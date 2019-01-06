@@ -8,9 +8,9 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
   mapmain = "Predicted CPUE (numbers per hour): ",
   species = "Response Variable", heatcolours = c("white", "yellow",
   "orange", "red", "brown4"), colournumber = 8, shape = NULL,
-  landcol = "grey80", mapback = "lightblue", legendloc = "bottomright",
-  legendtitle = "CPUE", lejback = "white", zero = TRUE, quantile = 1,
-  byxout = FALSE, breaks = NULL, ...)
+  landcol = "grey80", mapback = "lightblue",
+  legendloc = "bottomright", legendtitle = "CPUE", lejback = "white",
+  zero = TRUE, quantile = 1, byxout = FALSE, breaks = NULL, ...)
 }
 \arguments{
 \item{x}{Vector of longitudes, from make.grid in mapplots; x. Order by this (descending) SECOND}
@@ -25,7 +25,7 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{grdfun}{make.grid operand for >=2 values per cell. Default:mean, other options: sum prod min max sd se var}
 
-\item{mapmain}{Output map image response variable title, from basemap in mapplots}
+\item{mapmain}{Plot title, has species value appended. Default "Predicted CPUE (numbers per hour): "}
 
 \item{species}{Response variable name, from basemap in mapplots; names(samples[i]). Defaults to "Response Variable"}
 
@@ -35,19 +35,19 @@ gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
 
 \item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults to NULL which calls gbm.basemap to generate it for you}
 
-\item{landcol}{Colour for 'null' area of map, if appropriate, from draw.shape in mapplots. Was "darkgreen" changed to light grey}
+\item{landcol}{Colour for 'null' area of map (for marine plots, this is land), from draw.shape in mapplots. Default "grey80" (light grey)}
 
-\item{mapback}{Basemap background colour, defaults to lightblue}
+\item{mapback}{Basemap background colour, defaults to lightblue (ocean for marine plots)}
 
-\item{legendloc}{Location on map of legend box, from legend.grid in mapplots}
+\item{legendloc}{Location on map of legend box, from legend.grid in mapplots, default bottomright}
 
-\item{legendtitle}{The metric of abundance, e.g. CPUE for fisheries, from legend.grid in mapplots}
+\item{legendtitle}{The metric of abundance, e.g. CPUE for fisheries, from legend.grid in mapplots. Default "CPUE"}
 
-\item{lejback}{Background colour of legend, from legend.grid in mapplots}
+\item{lejback}{Background colour of legend, from legend.grid in mapplots. Default "white"}
 
-\item{zero}{Allow 0 category in breaks.grid and thus legend? Default TRUE}
+\item{zero}{Force include 0-only bin in breaks.grid and thus legend? Default TRUE}
 
-\item{quantile}{Set max breakpoint; lower this to cutoff outliers}
+\item{quantile}{Set max quantile of data to include in bins, from breaks.grid in mapplots; lower to e.g. 0.975 cutoff outliers; default 1}
 
 \item{byxout}{Export byx to use elsewhere? Default:FALSE}
 

@@ -4,15 +4,17 @@
 \alias{gbm.cons}
 \title{Conservation Area Mapping}
 \usage{
-gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE, resvars,
-  gbmautos = TRUE, expvars, tcs = NULL, lrs = rep(list(c(0.01, 0.005)),
-  length(resvars)), bfs = rep(0.5, length(resvars)), ZIs = rep("CHECK",
-  length(resvars)), colss = rep(list(grey.colors(1, 1, 1)), length(resvars)),
+gbm.cons(mygrids, subsets, alerts = TRUE, map = TRUE, BnW = TRUE,
+  resvars, gbmautos = TRUE, expvars, tcs = NULL,
+  lrs = rep(list(c(0.01, 0.005)), length(resvars)), bfs = rep(0.5,
+  length(resvars)), ZIs = rep("CHECK", length(resvars)),
+  colss = rep(list(grey.colors(1, 1, 1)), length(resvars)),
   linesfiless = rep(FALSE, length(resvars)), savegbms = rep(TRUE,
-  length(resvars)), varints = rep(TRUE, length(resvars)), maps = rep(TRUE,
-  length(resvars)), RSBs = rep(TRUE, length(resvars)), BnWs = rep(TRUE,
-  length(resvars)), zeroes = rep(TRUE, length(resvars)), shape = NULL,
-  pngtype = "cairo-png", gridslat = 2, gridslon = 1)
+  length(resvars)), varints = rep(TRUE, length(resvars)),
+  maps = rep(TRUE, length(resvars)), RSBs = rep(TRUE, length(resvars)),
+  BnWs = rep(TRUE, length(resvars)), zeroes = rep(TRUE,
+  length(resvars)), shape = NULL, pngtype = "cairo-png",
+  gridslat = 2, gridslon = 1)
 }
 \arguments{
 \item{mygrids}{Gridded lat+long+data object to predict to}
