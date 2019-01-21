@@ -131,7 +131,7 @@
 #' > An earlier failed run (e.g. LR/BF too low) left a plotting device open.
 #' Close it with: dev.off()
 #'
-#' 12. RStudio crashed: set aLerts=F and pause cloud sync programs if outputting to a synced folder
+#' 12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder
 #'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)

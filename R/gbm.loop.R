@@ -32,6 +32,7 @@
 #' @param BnW See gbm.auto help
 #' @param alerts See gbm.auto help; default FALSE as frequent use can crash RStudio
 #' @param pngtype See gbm.auto help
+#' @param runautos run gbm.autos, default TRUE, turn off to only collate numbered-folder results
 #' @param ... Additional params for gbm.auto subfunctions inc gbm.step
 #'
 #' @return Returns a data frame of lat, long, 1 predicted abundance per loop,
@@ -95,6 +96,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      BnW = F,           # repeat maps in black and white e.g. for print journals
                      alerts = F,        # play sounds to mark progress steps
                      pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
+                     runautos = T,      # run gbm.autos, default TRUE, turn off to only collate numbered-folder results
                      ...) {
   # Generalised Boosting Model / Boosted Regression Tree process chain automater
   # Simon Dedman, 2012-8 simondedman@gmail.com github.com/SimonDedman/gbm.auto
@@ -117,7 +119,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                           AUC = rep(NA, length(loops)),
                           GausCV = rep(NA, length(loops)))
   if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
-
+  if(runautos) { # run gbm.autos unless turned off
   for (i in 1:loops) { # loop through all gbm.autos
     dir.create(paste0("./", i)) # create i'th folder
     setwd(paste0("./", i)) # move to it
@@ -224,6 +226,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     if (cleanup) unlink(i, recursive = T)
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Loop ",i," complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close i loop & go to the next i
+  } # close runautos if optional
 
   ####loops done create dfs####
   # create bin & Gaus barplot stats data frames

@@ -10,7 +10,7 @@ gbm.loop(loops = 10, savecsv = TRUE, calcpreds = TRUE, varmap = T,
   simp = TRUE, gridslat = 2, gridslon = 1, cols = grey.colors(1, 1,
   1), linesfiles = T, savegbm = F, varint = F, map = T,
   shape = NULL, RSB = F, BnW = F, alerts = F,
-  pngtype = "cairo-png", ...)
+  pngtype = "cairo-png", runautos = T, ...)
 }
 \arguments{
 \item{loops}{The number of loops required, integer}
@@ -66,6 +66,8 @@ gbm.loop(loops = 10, savecsv = TRUE, calcpreds = TRUE, varmap = T,
 \item{alerts}{See gbm.auto help; default FALSE as frequent use can crash RStudio}
 
 \item{pngtype}{See gbm.auto help}
+
+\item{runautos}{run gbm.autos, default TRUE, turn off to only collate numbered-folder results}
 
 \item{...}{Additional params for gbm.auto subfunctions inc gbm.step}
 }
