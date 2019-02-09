@@ -51,22 +51,14 @@
 #' Ensure that your lats and longs are the the right way around
 #'
 gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
-                        grids = NULL, # if bounds unspecified, name your grids
-# database here
-                        gridslat = NULL, # if bounds unspecified, specify which
-# column in grids is latitude
-                        gridslon = NULL, # if bounds unspecified, specify which
-# column in grids is longitude
-                        getzip = TRUE, # download & unpack GSHHS data to WD?
-# "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
-                        zipvers = "2.3.7", # GSHHS version, in case it updates
-# Please email developer if this is incorrect
+                        grids = NULL, # if bounds unspecified, name your grids database here
+                        gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
+                        gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
+                        getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
+                        zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
                         savename = "Crop_Map", #shapefile savename, no extension
-                        res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f
-# (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
-                        extrabounds = FALSE) { # grow bounds 16pct each direction
-# to expand rectangular datasets basemaps over the entire square area created by
-# basemap in mapplots
+                        res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
+                        extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
 
 print(paste("if rgdal install fails in linux try: sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"))
 if (!require(rgdal)) install.packages("rgdal")
@@ -130,6 +122,10 @@ if (extrabounds) { # grow bounds extents if requested
 
 # read in worldmap
 world <- readOGR(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"))
+world <- gBuffer(world, byid = TRUE, width = 0) # fixes problem in input shapefiles:
+# Error in RGEOSBinTopoFunc(spgeom1, spgeom2, byid, id, drop_lower_td, unaryUnion_if_byid_false,
+# TopologyException: Input geom 0 is invalid: Self-intersection at or near point (lists points), see
+# https://gis.stackexchange.com/questions/163445/getting-topologyexception-input-geom-1-is-invalid-which-is-due-to-self-intersec
 cropshp <- crop(world, bounds) # crop to extents
 setwd(startdir)
 dir.create("CroppedMap") # create conservation maps directory
