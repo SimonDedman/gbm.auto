@@ -931,15 +931,16 @@ gbm.auto <- function(
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
         } # close & save plotting device & close BnW optional
 
-        rsbdf_bin2 <- read.csv(file = paste0("./", names(samples[i]), "/RSB.csv"))
+        #rsbdf_bin2 <- read.csv(file = paste0("./", names(samples[i]), "/RSB.csv"))
+        graphics.off()
 
         if (RSB == TRUE) { # if RSB called, plot that surface separately
           png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
               width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
           par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-          gbm.map(x = rsbdf_bin2$Longitude, # add Unrepresentativeness alpha surface
-                  y = rsbdf_bin2$Latitude,
-                  z = rsbdf_bin2[,"Unrepresentativeness"],
+          gbm.map(x = grids[,gridslon],
+                  y = grids[,gridslat],
+                  z = rsbdf_bin[,"Unrepresentativeness"],
                   mapmain = "Unrepresentativeness: ",
                   species = names(samples[i]),
                   legendtitle = "UnRep 0-1",
