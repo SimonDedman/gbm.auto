@@ -927,9 +927,13 @@ gbm.auto <- function(
         } # close & save plotting device & close BnW optional
 
         if (RSB == TRUE) { # if RSB called, plot that surface separately
+
           png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
               width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
           par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+
+          browser()
+
           gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
                   y = grids[,gridslat],
                   z = rsbdf_bin[,"Unrepresentativeness"],
@@ -944,7 +948,7 @@ gbm.auto <- function(
           tmpdf <- data.frame(x = grids[,gridslon], # add Unrepresentativeness alpha surface
                               y = grids[,gridslat],
                               z = rsbdf_bin[,"Unrepresentativeness"])
-          write.csv(tmpdf, file = "tmprsb.csv")
+          write.csv(tmpdf, file = "tmprsb.csv", row.names = FALSE)
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
