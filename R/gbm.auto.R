@@ -931,7 +931,7 @@ gbm.auto <- function(
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
         } # close & save plotting device & close BnW optional
 
-        rsbdf_bin2 <- read.csv(file = paste0("./", names(samples[i]), "/RSB.csv"), row.names = F)
+        rsbdf_bin2 <- read.csv(file = paste0("./", names(samples[i]), "/RSB.csv"))
 
         if (RSB == TRUE) { # if RSB called, plot that surface separately
           png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
