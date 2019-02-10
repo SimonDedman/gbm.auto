@@ -175,6 +175,11 @@ Still fails? Set multiplot=FALSE
 Close it with: dev.off()
 
 12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder
+
+13. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg",
+could not open file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar)
+> Your resvar column name contains an illegal character e.g. / & ' _
+Fix with colnames(samples)[n] <- "BetterName"
 }
 \examples{
 gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,

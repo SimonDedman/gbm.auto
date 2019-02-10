@@ -133,6 +133,11 @@
 #'
 #' 12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder
 #'
+#' 13. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg",
+#' could not open file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar)
+#' > Your resvar column name contains an illegal character e.g. / & ' _
+#' Fix with colnames(samples)[n] <- "BetterName"
+#'
 #' @examples gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 #'
@@ -926,13 +931,15 @@ gbm.auto <- function(
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
         } # close & save plotting device & close BnW optional
 
+        rsbdf_bin2 <- read.csv(file = paste0("./", names(samples[i]), "/RSB.csv"), row.names = F)
+
         if (RSB == TRUE) { # if RSB called, plot that surface separately
           png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
               width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
           par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-          gbm.map(x = grids[,gridslon], # add Unrepresentativeness alpha surface
-                  y = grids[,gridslat],
-                  z = rsbdf_bin[,"Unrepresentativeness"],
+          gbm.map(x = rsbdf_bin2$Longitude, # add Unrepresentativeness alpha surface
+                  y = rsbdf_bin2$Latitude,
+                  z = rsbdf_bin2[,"Unrepresentativeness"],
                   mapmain = "Unrepresentativeness: ",
                   species = names(samples[i]),
                   legendtitle = "UnRep 0-1",
