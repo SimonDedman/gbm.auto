@@ -943,8 +943,7 @@ gbm.auto <- function(
 
           tmpdf <- data.frame(x = grids[,gridslon], # add Unrepresentativeness alpha surface
                               y = grids[,gridslat],
-                              z = rsbdf_bin[,"Unrepresentativeness"],
-                              mapmain = "Unrepresentativeness: ")
+                              z = rsbdf_bin[,"Unrepresentativeness"])
           write.csv(tmpdf, file = "tmprsb.csv")
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
