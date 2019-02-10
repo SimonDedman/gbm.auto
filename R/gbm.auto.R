@@ -940,7 +940,7 @@ gbm.auto <- function(
                   breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = TRUE))/2000)
           dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
           # res there, but high values captures in the last few bins..
-
+print("TEST")
           if (alerts) beep(2) # progress printer, right aligned for visibility
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
