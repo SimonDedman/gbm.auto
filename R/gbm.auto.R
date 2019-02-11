@@ -932,7 +932,7 @@ gbm.auto <- function(
         } # close & save plotting device & close BnW optional
 
         if (RSB == TRUE) { # if RSB called, plot that surface separately
-          linear01seq <- seq(from = 0, to = 1, length.out = 8) #linear sequence from 0:1, 8 bins
+          linear01seq <- seq(from = 0, to = 1, length.out = 9) #linear sequence from 0:1, 9 bins
           exp01seq <- expm1(4*linear01seq)/expm1(4) # exponentiate to change shape then scale back to 1
 
           png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
