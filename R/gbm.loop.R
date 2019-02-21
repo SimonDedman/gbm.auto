@@ -108,6 +108,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # when change in variance from 1:2 to 1:3 to 1:n drops below a percentage threshold?
   # Fix csvs colnames, see https://github.com/SimonDedman/gbm.auto/issues/37
   # for factorial variables, need to change from lines to bars
+  # Runautos doesn't work: binbars.df & gausbars.df are created & incrementally grown within the autos loop then accessed afterwards.
+  # Would need to do this separately somehow, possibly a separate loop to pull these data from a source file csv?
 
   if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   if (alerts) require(beepr)
@@ -227,6 +229,24 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Loop ",i," complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close i loop & go to the next i
   } # close runautos if optional
+
+  #runautos fix####
+  #move runautos binbars.df gausbars.df code to here, in separate loops
+  # binbars.df <- data.frame(var = rep(NA, length(expvar)),
+  #                          rel.inf = rep(NA, length(expvar)))
+  # gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
+  #
+  # if (file.exists("Binary BRT Variable contributions.csv")) {
+  #   binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
+  #   if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
+  #     binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
+  #   bin = TRUE} else bin = FALSE
+  #
+  # if (file.exists("Gaussian BRT Variable contributions.csv")) {
+  #   gausbarstmp <- read.csv("Gaussian BRT Variable contributions.csv") # temp container for Gaus lines
+  #   if (i == 1) {gausbars.df <- gausbarstmp} else {
+  #     gausbars.df <- rbind(gausbars.df, gausbarstmp)}
+  #   gaus = TRUE} else gaus = FALSE
 
   ####loops done create dfs####
   # create bin & Gaus barplot stats data frames

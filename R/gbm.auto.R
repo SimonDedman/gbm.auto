@@ -580,6 +580,7 @@ gbm.auto <- function(
         gbm.plot(get(Bin_Best_Model),
                  variable.no = o, # order of variable.no =! order of get(Bin_Best_Model)$contributions$var
                  n.plots = 1,
+                 common.scale = FALSE, #added to try to get cvs values to match pngs
                  smooth = smooth,
                  rug = TRUE,
                  write.title = FALSE,
@@ -590,6 +591,7 @@ gbm.auto <- function(
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
         # create lines data to export to file. Need to recreate transformations from gbm.plot
+        # Next 6 lines from GNG answer https://stats.stackexchange.com/a/144871/43360 which uses gbm.plot code
         if (linesfiles) {s <- match(get(Bin_Best_Model)$contributions$var[o],
                                     get(Bin_Best_Model)$gbm.call$predictor.names)
 
@@ -597,7 +599,6 @@ gbm.auto <- function(
         plotgrid <- plot.gbm(get(Bin_Best_Model), s, return.grid = TRUE)
 
         #If factor variable
-        # Next 4 lines from GHG answer https://stats.stackexchange.com/a/144871/43360
         if (is.factor(plotgrid[,1])) {
           plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))}
 
@@ -624,6 +625,7 @@ gbm.auto <- function(
       gbm.plot(get(Gaus_Best_Model),
                variable.no = p,
                n.plots = 1,
+               common.scale = FALSE, #added to try to get cvs values to match pngs
                smooth = smooth,
                rug = TRUE,
                write.title = FALSE,
