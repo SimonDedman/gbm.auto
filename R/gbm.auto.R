@@ -254,7 +254,9 @@ gbm.auto <- function(
       shape <- gbm.basemap(bounds = extrabounds)
     }}
 
-  if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
+  wd <- getwd() #store original working directory
+  if (alerts) options(error = function() {beep(9)  # give warning noise if it fails
+                                          setwd(wd)}) # reinstate original working directory
 
   expvarnames <- names(samples[expvar]) # list of explanatory variable names
   expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
@@ -390,7 +392,7 @@ gbm.auto <- function(
             )
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
-
+            print(warnings())
             ####5. Select best bin model####
             if (n == 1)
             {Bin_Best_Score <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
@@ -437,6 +439,7 @@ gbm.auto <- function(
           )
           dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
           print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
+          print(warnings())
           ####9. Select best Gaus model####
           if (m == 1)
           {Gaus_Best_Score <- get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
@@ -1050,5 +1053,7 @@ gbm.auto <- function(
     } #close grids option from above section 22
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close response variable (resvar) loop
+  gc() # Force R to release memory it is no longer using
+  options(error = NULL) # reset error options to default
   if (alerts) beep(8)} # final user notification, then close the function
 ####END####
