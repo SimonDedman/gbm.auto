@@ -743,44 +743,7 @@ gbm.auto <- function(
     if (alerts) beep(2) # progress printer, right aligned for visibility
     if (varint) {print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Variable interactions done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
-    #avoid sections 16-20 if not predicting to grids
-    if (!is.null(grids)) {
-
-      ####17. Binomial predictions####
-      if (ZI) {  # don't do if ZI=FALSE
-        gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
-        grids$Bin_Preds <- Bin_Preds} # close ZI
-
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
-      ####18. Gaussian predictions####
-      if (gaus) gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
-      if (gaus) {if (ZI) {grids$Gaus_Preds <- Gaus_Preds
-
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
-      ####19. Backtransform logged Gaus to unlogged####
-      if (gaus) grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
-
-      ####20. BIN*positive abundance = final abundance####
-      grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
-      } else grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
-      predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
-
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
-      ####21. Final saves####
-      # CSV of Predicted values at each site inc predictor variables' values.
-      write.csv(grids, row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_All.csv"))
-      # CSV of Predicted values at each site without predictor variables' values.
-      write.csv(grids[c(gridslat,gridslon,predabund)], row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_only.csv"))
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-    } #close grids option from above section 16
-
+    ####17. Save model objects####
     if (savegbm) { # Save model objects if switched on
       if (ZI) {Bin_Best_Model_Object <- get(Bin_Best_Model)
       Bin_Best_Model <<- Bin_Best_Model_Object}
@@ -792,7 +755,7 @@ gbm.auto <- function(
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Model objects saved     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
     }
 
-    ####22. Finalise & Write Report####
+    ####18. Finalise & Write Report####
     if (ZI)
     { # only do bin bits if ZI; move 7 cols left if no gaus run
       if (gaus) {Report[1:5,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
@@ -888,9 +851,45 @@ gbm.auto <- function(
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
-    if (!is.null(grids)) { #avoid sections 22&23 if not predicting to grids
+    #avoid sections 19-25 if not predicting to grids
+    if (!is.null(grids)) {
+    # LOAD Bin_Best_Model Gaus_Best_Model HERE
 
-      ####23. Unrepresentativeness surface builder####
+      ####19. Binomial predictions####
+      if (ZI) {  # don't do if ZI=FALSE
+        gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds")
+        grids$Bin_Preds <- Bin_Preds} # close ZI
+
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+      ####20. Gaussian predictions####
+      if (gaus) gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
+      if (gaus) {if (ZI) {grids$Gaus_Preds <- Gaus_Preds
+
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+      ####21. Backtransform logged Gaus to unlogged####
+      if (gaus) grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
+
+      ####22. BIN*positive abundance = final abundance####
+      grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds} else {grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
+      } else grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
+      predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
+
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+      ####23. Final saves####
+      # CSV of Predicted values at each site inc predictor variables' values.
+      write.csv(grids, row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_All.csv"))
+      # CSV of Predicted values at each site without predictor variables' values.
+      write.csv(grids[c(gridslat,gridslon,predabund)], row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_only.csv"))
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+      ####24. Unrepresentativeness surface builder####
       # builds doesn't plot surface. If built, plotted by map maker.
       if (RSB) {
         rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
@@ -901,7 +900,7 @@ gbm.auto <- function(
         } else write.csv(rsbdf_bin, row.names = FALSE, file = paste0("./", names(samples[i]), "/RSB.csv"))
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
-      ####24. Map maker####
+      ####25. Map maker####
       if (map == TRUE) {   # generate output image & set parameters
         png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
             width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
@@ -1051,7 +1050,7 @@ gbm.auto <- function(
           } # close BnW RSBs
         } # close RSB mapper
       } # close Map Maker
-    } #close grids option from above section 22
+    } #close grids option from above section 19
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close response variable (resvar) loop
   gc() # Force R to release memory it is no longer using
