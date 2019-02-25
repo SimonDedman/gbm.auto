@@ -49,6 +49,9 @@
 #' @param smooth Apply a smoother to the line plots? Default FALSE
 #' @param savegbm Save gbm objects and make available in environment after
 #' running? Open with load("Bin_Best_Model") Default TRUE
+#' @param loadgbm relative or absolute location of folder containing
+#' Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
+#' predicted maps and csvs. Default NULL, character vector, "./" for working directory
 #' @param varint Calculate variable interactions? Default:TRUE, FALSE for error:
 #' "contrasts can be applied only to factors with 2 or more levels"
 #' @param map Save abundance map png files?
@@ -190,6 +193,9 @@ gbm.auto <- function(
   linesfiles = TRUE,    # save individual line plots' data as csv's?
   smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
   savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
+  loadgbm = NULL,       # relative or absolute location of folder containing
+  # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
+  # predicted maps and csvs. Default NULL, character vector, "./" for working directory
   varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
   # for error "contrasts can be applied only to factors with 2 or more levels"
   map = TRUE,           # save abundance map png files?
@@ -290,6 +296,7 @@ gbm.auto <- function(
 
   for (i in resvar) { # loop everything for each response variable (e.g. species)
     dir.create(names(samples[i])) # create resvar-named directory for outputs
+    if (is.null(loadgbm)) { #if loadgbm is NULL i.e. you're running BRTs
     m = 1 # Gaus only loop counter to allow best gaus BRT choice
     n = 1   # Print counter for all loops of BRT combos & best bin BRT choice
     if (!is.null(grids)) if (!all(expvarnames %in% names(grids))) {stop("Not all expvar column names found as column names in grids")}
@@ -850,10 +857,19 @@ gbm.auto <- function(
 
     if (alerts) beep(2) # progress printer, right aligned for visibility
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+    } # close loadgbm isnull
 
     #avoid sections 19-25 if not predicting to grids
     if (!is.null(grids)) {
-    # LOAD Bin_Best_Model Gaus_Best_Model HERE
+
+      # Load model objects if loadgbm set
+      if (!is.null(loadgbm)) {
+      if (ZI) {  # don't do if ZI=FALSE
+      load(paste0(loadgbm,"Bin_Best_Model"))
+      Bin_Best_Model <- "Bin_Best_Model_Object"}
+      load(paste0(loadgbm,"Gaus_Best_Model"))
+      Gaus_Best_Model <- "Gaus_Best_Model_Object"
+      } # close loadgbm optional
 
       ####19. Binomial predictions####
       if (ZI) {  # don't do if ZI=FALSE
@@ -1052,7 +1068,7 @@ gbm.auto <- function(
       } # close Map Maker
     } #close grids option from above section 19
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-  } # close response variable (resvar) loop
+    } # close response variable (resvar) loop
   gc() # Force R to release memory it is no longer using
   options(error = NULL) # reset error options to default
   if (alerts) beep(8)} # final user notification, then close the function
