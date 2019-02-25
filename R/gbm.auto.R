@@ -256,6 +256,7 @@ gbm.auto <- function(
 
   wd <- getwd() #store original working directory
   if (alerts) options(error = function() {beep(9)  # give warning noise if it fails
+                                          graphics.off() # kill all graphics devices
                                           setwd(wd)}) # reinstate original working directory
 
   expvarnames <- names(samples[expvar]) # list of explanatory variable names
