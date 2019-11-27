@@ -6,6 +6,7 @@ Description: Automates delta log-normal boosted regression tree abundance
     prediction. Loops through parameters provided (LR, TC, BF), chooses best,
     simplifies, & generates line, dot & bar plots, & outputs these & predictions & a
     report, makes predicted abundance maps, and Unrepresentativeness surfaces.
+    See simondedman.com for published guides and papers using this package.
 Depends:
     R (>= 3.3.1)
 License: AGPL (>= 3)

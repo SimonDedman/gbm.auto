@@ -13,7 +13,7 @@
 #' absolute/relative reference to GSHHS_shp folder, inc that folder
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
 #'  if this is incorrect
-#' @param savename Shapefile savename, no extension, default is "Crop_Map"
+#' @param savename Shapefile savename with .shp extension, default is "Crop_Map"
 #' @param res Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 #' intermediate, high, full) or "CALC" to calculate based on bounds
 #' @param extrabounds Grow bounds 16pct each direction to expand rectangular
@@ -56,11 +56,12 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
                         getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
                         zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
-                        savename = "Crop_Map", #shapefile savename, no extension
+                        savename = "Crop_Map.shp", #shapefile savename
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
                         extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
 
 print(paste("if rgdal install fails in linux try: sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"))
+#if i don't need rgdal etc i won't need this line either####
 if (!require(rgdal)) install.packages("rgdal")
   require(rgdal) # for readOGR
 if (!require(rgeos)) install.packages("rgeos")
@@ -71,6 +72,8 @@ if (!require(maptools)) install.packages("maptools")
   require(maptools) # for WriteSpatialShape
 if (!require(shapefiles)) install.packages("shapefiles")
   require(shapefiles) # for read.shapefile
+if (!require(sf)) install.packages("sf")
+  require(sf) # for everything after sf/st update, can remove the rest?
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
 
@@ -85,7 +88,17 @@ if(is.null(bounds)) {
   if(!is.numeric(gridslat)) stop("gridslat needs to be a number")
   if(!is.numeric(gridslon)) stop("gridslon needs to be a number")
   # construct bounds from gridslat & gridslon ranges in grids
-  bounds <- c(range(grids[,gridslon]), range(grids[,gridslat]))}
+  bounds <- c(range(grids[,gridslon]), range(grids[,gridslat])) #still required later despite sf/st update
+  xmin = min(grids[,gridslon]) #for sf/st upgrade
+  xmax = max(grids[,gridslon])
+  ymin = min(grids[,gridslat])
+  ymax = max(grids[,gridslat])
+} else {
+  xmin = bounds[1] #for sf/st upgrade
+  xmax = bounds[2]
+  ymin = bounds[3]
+  ymax = bounds[4]
+  }
 
 if (res == 1) res <- "c" # If res provided as number convert to letter
 if (res == 2) res <- "l"
@@ -110,28 +123,39 @@ ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
 setwd(paste("./", res, sep = "")) #setwd to res subfolder
 
 if (extrabounds) { # grow bounds extents if requested
-  bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
+  #bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
   xmid <- mean(bounds[1:2])
   ymid <- mean(bounds[3:4])
-  xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-  xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-  yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-  yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-  bounds <- c(xextramin, xextramax, yextramin, yextramax)
+  xmax <- ((bounds[2] - xmid) * 1.6) + xmid #updated for sf/st
+  xmin <- xmid - ((xmid - bounds[1]) * 1.6)
+  ymax <- ((bounds[4] - ymid) * 1.6) + ymid
+  ymin <- ymid - ((ymid - bounds[3]) * 1.6)
+  #bounds <- c(xmin, xmax, ymin, ymax)
 }
 
 # read in worldmap
-world <- readOGR(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"))
-world <- gBuffer(world, byid = TRUE, width = 0) # fixes problem in input shapefiles:
-# Error in RGEOSBinTopoFunc(spgeom1, spgeom2, byid, id, drop_lower_td, unaryUnion_if_byid_false,
-# TopologyException: Input geom 0 is invalid: Self-intersection at or near point (lists points), see
-# https://gis.stackexchange.com/questions/163445/getting-topologyexception-input-geom-1-is-invalid-which-is-due-to-self-intersec
-cropshp <- crop(world, bounds) # crop to extents
+# world <- readOGR(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"))
+# world <- gBuffer(world, byid = TRUE, width = 0) # fixes problem in input shapefiles:
+## Error in RGEOSBinTopoFunc(spgeom1, spgeom2, byid, id, drop_lower_td, unaryUnion_if_byid_false,
+## TopologyException: Input geom 0 is invalid: Self-intersection at or near point (lists points), see
+## https://gis.stackexchange.com/questions/163445/getting-topologyexception-input-geom-1-is-invalid-which-is-due-to-self-intersec
+# cropshp <- crop(world, bounds) # crop to extents
+# setwd(startdir)
+# dir.create("CroppedMap") # create conservation maps directory
+# setwd("CroppedMap")
+# writeSpatialShape(cropshp, savename)
+# print(paste("World map cropped and saved successfully"))
+# cropshp <- read.shapefile(savename) #reads back into env in correct format
+## change to cropshp <- read_sf("./CroppedMap/Crop_Map.shp")? Will work for gbm.map etc etc?
+## st_crs(cropshp) <- 4326 #need to set crs but won't know what that should be. Could do algorithmically somehow?
+## crs will be WGS84 EPSG: 4326 as this is the source worldmap CRS.
+
+world <- read_sf(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1")) # read in worldmap
+cropshp <- st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
 setwd(startdir)
 dir.create("CroppedMap") # create conservation maps directory
 setwd("CroppedMap")
-writeSpatialShape(cropshp, savename)
+st_write(cropshp, dsn = savename)
 print(paste("World map cropped and saved successfully"))
-cropshp <- read.shapefile(savename) #reads back into env in correct format
 setwd("../")
 return(cropshp)}
