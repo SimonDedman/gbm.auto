@@ -4,13 +4,29 @@
 \alias{gbm.map}
 \title{Maps of predicted abundance from Boosted Regression Tree modelling}
 \usage{
-gbm.map(x, y, z, byx = NULL, byy = NULL, grdfun = mean,
+gbm.map(
+  x,
+  y,
+  z,
+  byx = NULL,
+  byy = NULL,
+  grdfun = mean,
   mapmain = "Predicted CPUE (numbers per hour): ",
-  species = "Response Variable", heatcolours = c("white", "yellow",
-  "orange", "red", "brown4"), colournumber = 8, shape = NULL,
-  landcol = "grey80", mapback = "lightblue",
-  legendloc = "bottomright", legendtitle = "CPUE", lejback = "white",
-  zero = TRUE, quantile = 1, byxout = FALSE, breaks = NULL, ...)
+  species = "Response Variable",
+  heatcolours = c("white", "yellow", "orange", "red", "brown4"),
+  colournumber = 8,
+  shape = NULL,
+  landcol = "grey80",
+  mapback = "lightblue",
+  legendloc = "bottomright",
+  legendtitle = "CPUE",
+  lejback = "white",
+  zero = TRUE,
+  quantile = 1,
+  byxout = FALSE,
+  breaks = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{Vector of longitudes, from make.grid in mapplots; x. Order by this (descending) SECOND}

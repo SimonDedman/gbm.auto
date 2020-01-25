@@ -4,13 +4,37 @@
 \alias{gbm.loop}
 \title{Calculate Coefficient Of Variation surfaces for gbm.auto predictions}
 \usage{
-gbm.loop(loops = 10, savecsv = TRUE, calcpreds = TRUE, varmap = T,
-  measure = "CPUE", cleanup = FALSE, grids = NULL, samples, expvar,
-  resvar, tc = c(2), lr = c(0.01), bf = 0.5, ZI = "CHECK",
-  simp = TRUE, gridslat = 2, gridslon = 1, cols = grey.colors(1, 1,
-  1), linesfiles = T, savegbm = F, varint = F, map = T,
-  shape = NULL, RSB = F, BnW = F, alerts = F,
-  pngtype = "cairo-png", runautos = T, ...)
+gbm.loop(
+  loops = 10,
+  savecsv = TRUE,
+  calcpreds = TRUE,
+  varmap = T,
+  measure = "CPUE",
+  cleanup = FALSE,
+  grids = NULL,
+  samples,
+  expvar,
+  resvar,
+  tc = c(2),
+  lr = c(0.01),
+  bf = 0.5,
+  ZI = "CHECK",
+  simp = TRUE,
+  gridslat = 2,
+  gridslon = 1,
+  cols = grey.colors(1, 1, 1),
+  linesfiles = T,
+  savegbm = F,
+  varint = F,
+  map = T,
+  shape = NULL,
+  RSB = F,
+  BnW = F,
+  alerts = F,
+  pngtype = "cairo-png",
+  runautos = T,
+  ...
+)
 }
 \arguments{
 \item{loops}{The number of loops required, integer}

@@ -4,9 +4,17 @@
 \alias{gbm.basemap}
 \title{Creates Basemaps for Gbm.auto mapping from your data range}
 \usage{
-gbm.basemap(bounds = NULL, grids = NULL, gridslat = NULL,
-  gridslon = NULL, getzip = TRUE, zipvers = "2.3.7",
-  savename = "Crop_Map", res = "CALC", extrabounds = FALSE)
+gbm.basemap(
+  bounds = NULL,
+  grids = NULL,
+  gridslat = NULL,
+  gridslon = NULL,
+  getzip = TRUE,
+  zipvers = "2.3.7",
+  savename = "Crop_Map.shp",
+  res = "CALC",
+  extrabounds = FALSE
+)
 }
 \arguments{
 \item{bounds}{Region to crop to: c(xmin,xmax,ymin,ymax)}
@@ -23,7 +31,7 @@ absolute/relative reference to GSHHS_shp folder, inc that folder}
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
 if this is incorrect}
 
-\item{savename}{Shapefile savename, no extension, default is "Crop_Map"}
+\item{savename}{Shapefile savename with .shp extension, default is "Crop_Map"}
 
 \item{res}{Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 intermediate, high, full) or "CALC" to calculate based on bounds}

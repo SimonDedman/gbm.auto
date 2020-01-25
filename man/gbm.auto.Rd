@@ -4,22 +4,46 @@
 \alias{gbm.auto}
 \title{Automated Boosted Regression Tree modelling and mapping suite}
 \usage{
-gbm.auto(grids = NULL, samples, expvar, resvar, tc = c(2),
-  lr = c(0.01, 0.005), bf = 0.5, n.trees = 50, ZI = "CHECK",
-  fam1 = "bernoulli", fam2 = "gaussian", simp = TRUE, gridslat = 2,
-  gridslon = 1, multiplot = TRUE, cols = grey.colors(1, 1, 1),
-  linesfiles = TRUE, smooth = FALSE, savegbm = TRUE, varint = TRUE,
-  map = TRUE, shape = NULL, RSB = TRUE, BnW = TRUE,
-  alerts = TRUE, pngtype = "cairo-png", gaus = TRUE, ...)
+gbm.auto(
+  grids = NULL,
+  samples,
+  expvar,
+  resvar,
+  tc = c(2),
+  lr = c(0.01, 0.005),
+  bf = 0.5,
+  n.trees = 50,
+  ZI = "CHECK",
+  fam1 = "bernoulli",
+  fam2 = "gaussian",
+  simp = TRUE,
+  gridslat = 2,
+  gridslon = 1,
+  multiplot = TRUE,
+  cols = grey.colors(1, 1, 1),
+  linesfiles = TRUE,
+  smooth = FALSE,
+  savegbm = TRUE,
+  loadgbm = NULL,
+  varint = TRUE,
+  map = TRUE,
+  shape = NULL,
+  RSB = TRUE,
+  BnW = TRUE,
+  alerts = TRUE,
+  pngtype = "cairo-png",
+  gaus = TRUE,
+  ...
+)
 }
 \arguments{
 \item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
 specify object name. Defaults to NULL (won't predict to grids)}
 
 \item{samples}{Explanatory and response variables to predict from. Keep col
-names short, no odd characters, starting numerals or terminal periods. Spaces
-may be converted to periods in directory names, underscores won't. Can be a
-subset}
+names short (~17 characters max), no odd characters, spaces, starting
+numerals or terminal periods. Spaces may be converted to periods in directory
+names, underscores won't. Can be a subset of a large dataset.}
 
 \item{expvar}{List of names or column numbers of explanatory variables in
 'samples': c(1,3,6) or c("Temp","Sal"). No default}
@@ -73,6 +97,13 @@ variables. Default 1*white: white bars black borders. '1*' repeats}
 \item{savegbm}{Save gbm objects and make available in environment after
 running? Open with load("Bin_Best_Model") Default TRUE}
 
+\item{loadgbm}{Relative or absolute location of folder containing
+Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
+predicted maps and csvs. Avoids re-running BRT models again (the slow bit),
+can run normally once with savegbm=T then multiple times with new grids &
+loadgbm to predict to multiple grids e.g. different seasons, areas, etc.
+Default NULL, character vector, "./" for working directory}
+
 \item{varint}{Calculate variable interactions? Default:TRUE, FALSE for error:
 "contrasts can be applied only to factors with 2 or more levels"}
 
@@ -110,8 +141,11 @@ Loops through all permutations of parameters provided (learning
 rate, tree complexity, bag fraction), chooses the best, then simplifies it.
 Generates line, dot and bar plots, and outputs these and the predictions
 and a report of all variables used, statistics for tests, variable
-interactions, predictors used and dropped, etc.. If selected, generates
+interactions, predictors used and dropped, etc. If selected, generates
 predicted abundance maps, and Unrepresentativeness surfaces.
+See www.github.com/SimonDedman/gbm.auto for issues, feedback, and development
+suggestions. See SimonDedman.com for links to walkthrough paper, and papers
+and thesis published using this package.
 }
 \details{
 Errors and their origins:
@@ -174,7 +208,8 @@ Still fails? Set multiplot=FALSE
 > An earlier failed run (e.g. LR/BF too low) left a plotting device open.
 Close it with: dev.off()
 
-12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder
+12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting
+to a synced folder
 
 13. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg",
 could not open file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar)
