@@ -24,7 +24,7 @@ gbm.bfcheck <- function(
 
 # Minimum bag fraction for binary
 minbfbin <- 21/nrow(samples)
-print(paste0("  binary bag fraction must be at least ", round(minbfbin,3)))
+print(paste0("  binary bag fraction must be at least ", round(minbfbin,3)), ". n = ", nrow(samples))
 
 # if user has asked code to check for ZI, check it & set new ZI status
 if (ZI == "CHECK") if (sum(samples[,resvar] == 0, na.rm = TRUE) / length(samples[,resvar]) >= 0.5) ZI = TRUE else ZI = FALSE
@@ -35,7 +35,7 @@ grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
 
 # Minimum bag fraction for Gaussian
 minbfgaus <- 21/nrow(grv_yes)
-print(paste0("Gaussian bag fraction must be at least ", round(minbfgaus,3)))
+print(paste0("Gaussian bag fraction must be at least ", round(minbfgaus,3)), ". n = ", nrow(grv_yes))
 
 # return bin & gaus min bfs
 return(c(minbfbin,minbfgaus))
