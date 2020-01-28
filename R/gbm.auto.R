@@ -947,6 +947,7 @@ gbm.auto <- function(
         } else { # close gaus yes zi yes run gaus yes zi no
           grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
       } else grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
+
       predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
 
       if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -956,6 +957,9 @@ gbm.auto <- function(
       # CSV of Predicted values at each site inc predictor variables' values.
       write.csv(grids, row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_All.csv"))
       # CSV of Predicted values at each site without predictor variables' values.
+      # coerce character gridslat/lon into numeric since predabund is given as numeric & you can't mix
+      if (is.character(gridslat)) gridslat <- which(colnames(samples) == gridslat)
+      if (is.character(gridslon)) gridslon <- which(colnames(samples) == gridslon)
       write.csv(grids[c(gridslat,gridslon,predabund)], row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_only.csv"))
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
