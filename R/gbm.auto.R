@@ -1062,7 +1062,7 @@ gbm.auto <- function(
                          "deviance from 2 vecs, obs & pred vals",
                          dev)
       } # close if any bernoulli at top of TSS section
-        MLEval$Value <- round(MLEval$Value, digits = 5)
+        # MLEval$Value <- round(MLEval$Value, digits = 5)
         write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetrics.csv"))
 
         evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
