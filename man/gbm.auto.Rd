@@ -33,6 +33,7 @@ gbm.auto(
   alerts = TRUE,
   pngtype = "cairo-png",
   gaus = TRUE,
+  MLEvaluate = TRUE,
   ...
 )
 }
@@ -124,7 +125,9 @@ multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
-\item{gaus}{Do Gaussian runs as well as Bin? Default TRUE.}
+\item{gaus}{Do Gaussian runs as well as Bin? Default TRUE}
+
+\item{MLEvaluate}{do machine learning evaluation metrics & plots? Default TRUE}
 
 \item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
 legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
