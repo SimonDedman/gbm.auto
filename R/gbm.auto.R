@@ -783,13 +783,13 @@ gbm.auto <- function(
       if (ZI) { # only do bin bits if ZI; move 7 cols left if no gaus run
         if (gaus) {
           Report[1:5,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
-                                              paste0("Model CV score: ", Bin_Best_Score),
+                                              paste0("Training Data Correlation: ", Bin_Best_Score),
                                               paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                               paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
                                               paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))
         } else {
           Report[1:5,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
-                                             paste0("Model CV score: ", Bin_Best_Score),
+                                             paste0("Training Data Correlation: ", Bin_Best_Score),
                                              paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                              paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
                                              paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))
@@ -866,7 +866,7 @@ gbm.auto <- function(
       } # close ZI way further up start of report section
 
       if (gaus) {
-        Report[1:2,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name), paste0("Model CV score: ", Gaus_Best_Score))
+        Report[1:2,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name), paste0("Training Data Correlation: ", Gaus_Best_Score))
         if (simp) {
           Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
           Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
