@@ -782,17 +782,19 @@ gbm.auto <- function(
       ####17. Finalise & Write Report####
       if (ZI) { # only do bin bits if ZI; move 7 cols left if no gaus run
         if (gaus) {
-          Report[1:5,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
+          Report[1:6,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                               paste0("Training Data Correlation: ", Bin_Best_Score),
                                               paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                               paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                              paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))
+                                              paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
+                                              paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
         } else {
-          Report[1:5,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
+          Report[1:6,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                              paste0("Training Data Correlation: ", Bin_Best_Score),
                                              paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                              paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                             paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se))
+                                             paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
+                                             paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
         } # close gaus bin report
 
         if (simp) { # bin & gaus simp stats (or no simp notes)
@@ -804,12 +806,13 @@ gbm.auto <- function(
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             # listing simp predictors dropped.
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-              Report[1:6,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
+              Report[1:7,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
                                                   paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
                                                   paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
                                                   paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
                                                   paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
-                                                  paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se))
+                                                  paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
+                                                  paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
             } else {
               Report[1,(reportcolno - 10)] <- paste0("No simplification benefit")
             } # close min else
@@ -818,12 +821,13 @@ gbm.auto <- function(
             Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 4)] <-
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0)
-            {Report[1:6,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
+            {Report[1:7,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
                                                 paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
                                                 paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
                                                 paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
                                                 paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
-                                                paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se))
+                                                paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
+                                                paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
             } else {Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")} # close min else
           } # close bin half of bin/gaus option. Next line is 2nd half of simp option i.e. not simplified
         } else if (gaus) {
@@ -872,12 +876,13 @@ gbm.auto <- function(
           Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
             as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
-            Report[1:6,(reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
+            Report[1:7,(reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
                                                paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
                                                paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
                                                paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
                                                paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
-                                               paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se))
+                                               paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
+                                               paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
           } else { # close stats where simp benefit true, open note where no simp benefit
             Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
           } # close simp benefit check
