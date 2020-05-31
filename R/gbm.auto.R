@@ -904,415 +904,599 @@ gbm.auto <- function(
       write.csv(Report, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/Report.csv"))
 
       #18. Machine learning evaluation metrics####
-      if (MLEvaluate) { if (any(fam1 == "bernoulli", fam2 == "bernoulli")) {
-        whichbin <- which(c(fam1 == "bernoulli", fam2 == "bernoulli"))
-        if (whichbin == 1) getmodel <- "Bin_Best_Model" else getmodel <- "Gaus_Best_Model"
-        preds <- predict.gbm(get(get(getmodel)),
-                             samples,
-                             n.trees = get(get(getmodel))$gbm.call$best.trees,
-                             type = "response")
-        #If type="response" then gbm converts back to the same scale as the outcome.
-        # Currently the only effect this will have is returning probabilities for
-        # bernoulli and expected counts for poisson. For the other distributions
-        # "response" and "link" return the same. gbm:::predict.gbm
+      if (MLEvaluate) {
+        if (any(fam1 == "bernoulli", fam2 == "bernoulli")) {
+          whichbin <- which(c(fam1 == "bernoulli", fam2 == "bernoulli"))
+          if (whichbin == 1) getmodel <- "Bin_Best_Model" else getmodel <- "Gaus_Best_Model"
 
-        # dev reported later but not used otherwise
-        dev <- calc.deviance(obs = samples[, get(get(getmodel))$gbm.call$gbm.y],
-                             pred = preds,
-                             family = "bernoulli") # change fam if using
-        # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
-        samples <- cbind(samples, preds)
-        pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
-        abs <- samples[samples[, brvcol] == 0, "preds"]
-        e <- evaluate(p = pres,
-                      a = abs)
+          if (exists("Bin_Best_Model")) {
+            getmodel <- "Bin_Best_Model"
+            preds <- predict.gbm(get(get(getmodel)),
+                                 samples,
+                                 n.trees = get(get(getmodel))$gbm.call$best.trees,
+                                 type = "response")
+            #If type="response" then gbm converts back to the same scale as the outcome.
+            # Currently the only effect this will have is returning probabilities for
+            # bernoulli and expected counts for poisson. For the other distributions
+            # "response" and "link" return the same. gbm:::predict.gbm
 
-        # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
-        # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
-        MLEvalLength <- 31
-        # Improve descriptions####
-        MLEval <- data.frame(Statistic = rep(NA, MLEvalLength),
-                             Description = rep(NA, MLEvalLength),
-                             Value = rep(NA, MLEvalLength))
-        MLEval[1,] <- c("Presence",
-                        "n of presence data used",
-                        e@np)
-        MLEval[2,] <- c("Absence",
-                        "n of absence data used",
-                        e@na)
-        MLEval[3,] <- c("AUC",
-                        "Area under the receiver operator (ROC) curve",
-                        e@auc)
-        if (length(e@pauc) == 0) e@pauc <- 0 # pauc may be missing, numeric(0), if so replace with 0
-        MLEval[4,] <- c("pAUC",
-                        "p-value for the AUC (for the Wilcoxon test W statistic)",
-                        e@pauc)
-        MLEval[5,] <- c("Cor",
-                        "Correlation coefficient",
-                        e@cor[[1]])
-        MLEval[6,] <- c("cor",
-                        "p-value for correlation coefficient",
-                        e@pcor)
-        # Steph Brodie's TSS which produces the same result as Allouche
-        # -1 just makes the output range is 0:1 instead of 1:2 I think.
-        # If so this means Sensitivity is e@TPR[which.max(e@TPR + e@TNR)], which doesn't include
-        # (e@TPR + e@FNR) but it's a vector of 1s so is redundant. Same for Specificity
-        MLEval[7,] <- c("TSS",
-                        "True Skill Statistic",
-                        max(e@TPR + e@TNR - 1))
-        # sensitivity: TP/(TP+FN)
-        MLEval[8,] <- c("Sensitivity",
-                        "Sensitivity",
-                        e@TPR[which.max(e@TPR + e@TNR)])
-        # specificity: TN/(FP+TN)
-        Specificity <- e@TNR[which.max(e@TPR + e@TNR)]
-        MLEval[9,] <- c("Specificity",
-                        "Specificity",
-                        Specificity)
-        # Accuracy: TP+TN / TP+TN+FP+FN true false positive negative.
-        # TP+TN is just TSS + 1, TP+TN+FP+FN #Sums to 2, redundant
-        MLEval[10,] <- c("Accuracy",
-                         "Accuracy",
-                         (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2)
-        # Precision: TP/TP+FP. Ignores true negatives. “X% of the predictions are right”
-        Precision <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FPR[which.max(e@TPR + e@TNR)])
-        MLEval[11,] <- c("Precision",
-                         "X% of the predictions are right",
-                         Precision)
-        # Recall: TP/TP+FN: “Y% of actually existing things are captured”.
-        Recall <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FNR[which.max(e@TPR + e@TNR)])
-        MLEval[12,] <- c("Recall",
-                         "Y% of actually existing things are captured",
-                         Recall)
-        # https://www.corvil.com/kb/what-is-a-false-positive-rate
-        # Allouche et al 2006:
-        # overall accuracy: (TP+TN)/n
-        # this seems like a weird metric since the numerator is 0:2 or 1:2 and the divisor could be tiny or huge
-        MLEval[13,] <- c("OverallAccuracy",
-                         "Overall Accuracy",
-                         (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples))
-        # Balanced Accuracy, (Recall + Specificity) / 2
-        MLEval[14,] <- c("BalancedAccuracy",
-                         "Balanced Accuracy",
-                         (Recall + Specificity) / 2)
-        # Number of samples. Useful to include in the list
-        MLEval[15,] <- c("nSamples",
-                         "Number of samples",
-                         nrow(samples))
-        # Balance: precision vs recall curve. Workhorses.
-        # PxR/P+R = F score (P+R = harmonic mean).
-        # F1 score: P & R are equally rated. This is the most common one. F1 score importance depends on the project.
-        MLEval[16,] <- c("F1score",
-                         "P & R equally rated, score importance depends on project",
-                         2 * ((Precision * Recall) / (Precision + Recall)))
-        # F2 score: weighted average of Precision & Recall
-        MLEval[17,] <- c("F2score",
-                         "weighted average of P & R",
-                         5 * ((Precision * Recall) / (4 * Precision + Recall)))
-        # Threshold which produces the best combo of TPR & TNR
-        # t: vector of thresholds used to compute confusion matrices
-        MLEval[18,] <- c("Threshold",
-                         "Threshold which produced best combo of TPR & TNR",
-                         e@t[which.max(e@TPR + e@TNR)])
-        # e@prevalence: Prevalence
-        MLEval[19,] <- c("Prevalence",
-                         "Prevalence",
-                         e@prevalence[which.max(e@TPR + e@TNR)])
-        # e@ODP: Overall diagnostic power
-        MLEval[20,] <- c("ODP",
-                         "Overall diagnostic power",
-                         e@ODP[which.max(e@TPR + e@TNR)])
-        # e@CCR: Correct classification rate
-        MLEval[21,] <- c("CCR",
-                         "Correct classification rate",
-                         e@CCR[which.max(e@TPR + e@TNR)])
-        # e@TPR: True positive rate
-        MLEval[22,] <- c("TPR",
-                         "True positive rate",
-                         e@TPR[which.max(e@TPR + e@TNR)])
-        # e@TNR: True negative rate
-        MLEval[23,] <- c("TNR",
-                         "True negative rate",
-                         e@TNR[which.max(e@TPR + e@TNR)])
-        # e@FPR: False positive rate
-        MLEval[24,] <- c("FPR",
-                         "False positive rate",
-                         e@FPR[which.max(e@TPR + e@TNR)])
-        # e@FNR: False negative rate
-        MLEval[25,] <- c("FNR",
-                         "False negative rate",
-                         e@FNR[which.max(e@TPR + e@TNR)])
-        # e@PPP: Positive predictive power
-        MLEval[26,] <- c("PPP",
-                         "Positive predictive power",
-                         e@PPP[which.max(e@TPR + e@TNR)])
-        # e@NPP: Negative predictive power
-        MLEval[27,] <- c("NPP",
-                         "Negative predictive power",
-                         e@NPP[which.max(e@TPR + e@TNR)])
-        # e@MCR: Misclassification rate
-        MLEval[28,] <- c("MCR",
-                         "Misclassification rate",
-                         e@MCR[which.max(e@TPR + e@TNR)])
-        # e@OR: Odds-ratio
-        MLEval[29,] <- c("OR",
-                         "Odds-ratio",
-                         e@OR[which.max(e@TPR + e@TNR)])
-        # e@kappa: Cohen's kappa
-        MLEval[30,] <- c("kappa",
-                         "Cohen's kappa",
-                         e@kappa[which.max(e@TPR + e@TNR)])
-        # dev from calc.deviance from dismo
-        MLEval[31,] <- c("dev",
-                         "deviance from 2 vecs, obs & pred vals",
-                         dev)
-      } # close if any bernoulli at top of TSS section
-        # MLEval$Value <- round(MLEval$Value, digits = 5)
-        write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetrics.csv"))
+            # dev reported later but not used otherwise
+            dev <- calc.deviance(obs = samples[, get(get(getmodel))$gbm.call$gbm.y],
+                                 pred = preds,
+                                 family = "bernoulli") # change fam if using
+            # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
+            samples <- cbind(samples, preds)
+            pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
+            abs <- samples[samples[, brvcol] == 0, "preds"]
+            e <- evaluate(p = pres,
+                          a = abs)
 
-        evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
-        for (s in evalmetrics) {
-          png(filename = paste0("./",names(samples[i]),"/Eval_", s, ".png"))
-          plot(e, s)
-          dev.off()
-        }
-        # can do calc.deviance for gaus also, ditto poisson
-        if (alerts) beep(2) # progress printer, right aligned for visibility
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXX     Evaluation Metrics Processed     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-      } # close if MLEvaluate
+            # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
+            # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
+            MLEvalLength <- 31
+            # Improve descriptions####
+            MLEval <- data.frame(Statistic = rep(NA, MLEvalLength),
+                                 Description = rep(NA, MLEvalLength),
+                                 Value = rep(NA, MLEvalLength))
+            MLEval[1,] <- c("Presence",
+                            "n of presence data used",
+                            e@np)
+            MLEval[2,] <- c("Absence",
+                            "n of absence data used",
+                            e@na)
+            MLEval[3,] <- c("AUC",
+                            "Area under the receiver operator (ROC) curve",
+                            e@auc)
+            if (length(e@pauc) == 0) e@pauc <- 0 # pauc may be missing, numeric(0), if so replace with 0
+            MLEval[4,] <- c("pAUC",
+                            "p-value for the AUC (for the Wilcoxon test W statistic)",
+                            e@pauc)
+            MLEval[5,] <- c("Cor",
+                            "Correlation coefficient",
+                            e@cor[[1]])
+            MLEval[6,] <- c("cor",
+                            "p-value for correlation coefficient",
+                            e@pcor)
+            # Steph Brodie's TSS which produces the same result as Allouche
+            # -1 just makes the output range is 0:1 instead of 1:2 I think.
+            # If so this means Sensitivity is e@TPR[which.max(e@TPR + e@TNR)], which doesn't include
+            # (e@TPR + e@FNR) but it's a vector of 1s so is redundant. Same for Specificity
+            MLEval[7,] <- c("TSS",
+                            "True Skill Statistic",
+                            max(e@TPR + e@TNR - 1))
+            # sensitivity: TP/(TP+FN)
+            MLEval[8,] <- c("Sensitivity",
+                            "Sensitivity",
+                            e@TPR[which.max(e@TPR + e@TNR)])
+            # specificity: TN/(FP+TN)
+            Specificity <- e@TNR[which.max(e@TPR + e@TNR)]
+            MLEval[9,] <- c("Specificity",
+                            "Specificity",
+                            Specificity)
+            # Accuracy: TP+TN / TP+TN+FP+FN true false positive negative.
+            # TP+TN is just TSS + 1, TP+TN+FP+FN #Sums to 2, redundant
+            MLEval[10,] <- c("Accuracy",
+                             "Accuracy",
+                             (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2)
+            # Precision: TP/TP+FP. Ignores true negatives. “X% of the predictions are right”
+            Precision <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FPR[which.max(e@TPR + e@TNR)])
+            MLEval[11,] <- c("Precision",
+                             "X% of the predictions are right",
+                             Precision)
+            # Recall: TP/TP+FN: “Y% of actually existing things are captured”.
+            Recall <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FNR[which.max(e@TPR + e@TNR)])
+            MLEval[12,] <- c("Recall",
+                             "Y% of actually existing things are captured",
+                             Recall)
+            # https://www.corvil.com/kb/what-is-a-false-positive-rate
+            # Allouche et al 2006:
+            # overall accuracy: (TP+TN)/n
+            # this seems like a weird metric since the numerator is 0:2 or 1:2 and the divisor could be tiny or huge
+            MLEval[13,] <- c("OverallAccuracy",
+                             "Overall Accuracy",
+                             (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples))
+            # Balanced Accuracy, (Recall + Specificity) / 2
+            MLEval[14,] <- c("BalancedAccuracy",
+                             "Balanced Accuracy",
+                             (Recall + Specificity) / 2)
+            # Number of samples. Useful to include in the list
+            MLEval[15,] <- c("nSamples",
+                             "Number of samples",
+                             nrow(samples))
+            # Balance: precision vs recall curve. Workhorses.
+            # PxR/P+R = F score (P+R = harmonic mean).
+            # F1 score: P & R are equally rated. This is the most common one. F1 score importance depends on the project.
+            MLEval[16,] <- c("F1score",
+                             "P & R equally rated, score importance depends on project",
+                             2 * ((Precision * Recall) / (Precision + Recall)))
+            # F2 score: weighted average of Precision & Recall
+            MLEval[17,] <- c("F2score",
+                             "weighted average of P & R",
+                             5 * ((Precision * Recall) / (4 * Precision + Recall)))
+            # Threshold which produces the best combo of TPR & TNR
+            # t: vector of thresholds used to compute confusion matrices
+            MLEval[18,] <- c("Threshold",
+                             "Threshold which produced best combo of TPR & TNR",
+                             e@t[which.max(e@TPR + e@TNR)])
+            # e@prevalence: Prevalence
+            MLEval[19,] <- c("Prevalence",
+                             "Prevalence",
+                             e@prevalence[which.max(e@TPR + e@TNR)])
+            # e@ODP: Overall diagnostic power
+            MLEval[20,] <- c("ODP",
+                             "Overall diagnostic power",
+                             e@ODP[which.max(e@TPR + e@TNR)])
+            # e@CCR: Correct classification rate
+            MLEval[21,] <- c("CCR",
+                             "Correct classification rate",
+                             e@CCR[which.max(e@TPR + e@TNR)])
+            # e@TPR: True positive rate
+            MLEval[22,] <- c("TPR",
+                             "True positive rate",
+                             e@TPR[which.max(e@TPR + e@TNR)])
+            # e@TNR: True negative rate
+            MLEval[23,] <- c("TNR",
+                             "True negative rate",
+                             e@TNR[which.max(e@TPR + e@TNR)])
+            # e@FPR: False positive rate
+            MLEval[24,] <- c("FPR",
+                             "False positive rate",
+                             e@FPR[which.max(e@TPR + e@TNR)])
+            # e@FNR: False negative rate
+            MLEval[25,] <- c("FNR",
+                             "False negative rate",
+                             e@FNR[which.max(e@TPR + e@TNR)])
+            # e@PPP: Positive predictive power
+            MLEval[26,] <- c("PPP",
+                             "Positive predictive power",
+                             e@PPP[which.max(e@TPR + e@TNR)])
+            # e@NPP: Negative predictive power
+            MLEval[27,] <- c("NPP",
+                             "Negative predictive power",
+                             e@NPP[which.max(e@TPR + e@TNR)])
+            # e@MCR: Misclassification rate
+            MLEval[28,] <- c("MCR",
+                             "Misclassification rate",
+                             e@MCR[which.max(e@TPR + e@TNR)])
+            # e@OR: Odds-ratio
+            MLEval[29,] <- c("OR",
+                             "Odds-ratio",
+                             e@OR[which.max(e@TPR + e@TNR)])
+            # e@kappa: Cohen's kappa
+            MLEval[30,] <- c("kappa",
+                             "Cohen's kappa",
+                             e@kappa[which.max(e@TPR + e@TNR)])
+            # dev from calc.deviance from dismo
+            MLEval[31,] <- c("dev",
+                             "deviance from 2 vecs, obs & pred vals",
+                             dev)
 
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-    } # close loadgbm isnull
+            # MLEval$Value <- round(MLEval$Value, digits = 5)
+            write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsBin.csv"))
 
-    #avoid sections 19-25 if not predicting to grids
-    if (!is.null(grids)) {
+            evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
+            for (s in evalmetrics) {
+              png(filename = paste0("./",names(samples[i]),"/Bin_Eval_", s, ".png"))
+              plot(e, s)
+              dev.off()
+            } # close for (s in evalmetrics)
+          } # close if (exists("Bin_Best_Model"))
 
-      # Load model objects if loadgbm set
-      if (!is.null(loadgbm)) {
-        if (ZI) {  # don't do if ZI=FALSE
-          load(paste0(loadgbm,"Bin_Best_Model"))
-          Bin_Best_Model <- "Bin_Best_Model_Object"
-        } # close ZI if
-        if (gaus) {
-          load(paste0(loadgbm,"Gaus_Best_Model"))
-          Gaus_Best_Model <- "Gaus_Best_Model_Object"
-        } # close gaus if
-        dir.create(names(samples[i])) # create resvar-named directory for outputs
-      } # close loadgbm optional
 
-      ####19. Binomial predictions####
-      if (ZI) {  # don't do if ZI=FALSE
-        gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds") #with want.grids=F this is just predict.gbm
-        grids$Bin_Preds <- Bin_Preds
-      } # close ZI
+          # can do calc.deviance for gaus also, ditto poisson
+          #ToFix####
+          #Gaus metrics won't work as is
+          #Also code this better to reduce duplication & allow for bin & gaus runs
+          if (exists("Gaus_Best_Model")) {
+            getmodel <- "Gaus_Best_Model"
+            preds <- predict.gbm(get(get(getmodel)),
+                                 samples,
+                                 n.trees = get(get(getmodel))$gbm.call$best.trees,
+                                 type = "response")
+            #If type="response" then gbm converts back to the same scale as the outcome.
+            # Currently the only effect this will have is returning probabilities for
+            # bernoulli and expected counts for poisson. For the other distributions
+            # "response" and "link" return the same. gbm:::predict.gbm
 
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+            # dev reported later but not used otherwise
+            dev <- calc.deviance(obs = samples[, get(get(getmodel))$gbm.call$gbm.y],
+                                 pred = preds,
+                                 family = "Gaussian") # change fam if using
+            # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
+            samples <- cbind(samples, preds)
+            pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
+            abs <- samples[samples[, brvcol] == 0, "preds"]
+            e <- evaluate(p = pres,
+                          a = abs)
 
-      ####20. Gaussian predictions####
-      if (gaus) gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
-      if (gaus) {
-        if (ZI) {
-          grids$Gaus_Preds <- Gaus_Preds
+            # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
+            # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
+            MLEvalLength <- 31
+            # Improve descriptions####
+            MLEval <- data.frame(Statistic = rep(NA, MLEvalLength),
+                                 Description = rep(NA, MLEvalLength),
+                                 Value = rep(NA, MLEvalLength))
+            MLEval[1,] <- c("Presence",
+                            "n of presence data used",
+                            e@np)
+            MLEval[2,] <- c("Absence",
+                            "n of absence data used",
+                            e@na)
+            MLEval[3,] <- c("AUC",
+                            "Area under the receiver operator (ROC) curve",
+                            e@auc)
+            if (length(e@pauc) == 0) e@pauc <- 0 # pauc may be missing, numeric(0), if so replace with 0
+            MLEval[4,] <- c("pAUC",
+                            "p-value for the AUC (for the Wilcoxon test W statistic)",
+                            e@pauc)
+            MLEval[5,] <- c("Cor",
+                            "Correlation coefficient",
+                            e@cor[[1]])
+            MLEval[6,] <- c("cor",
+                            "p-value for correlation coefficient",
+                            e@pcor)
+            # Steph Brodie's TSS which produces the same result as Allouche
+            # -1 just makes the output range is 0:1 instead of 1:2 I think.
+            # If so this means Sensitivity is e@TPR[which.max(e@TPR + e@TNR)], which doesn't include
+            # (e@TPR + e@FNR) but it's a vector of 1s so is redundant. Same for Specificity
+            MLEval[7,] <- c("TSS",
+                            "True Skill Statistic",
+                            max(e@TPR + e@TNR - 1))
+            # sensitivity: TP/(TP+FN)
+            MLEval[8,] <- c("Sensitivity",
+                            "Sensitivity",
+                            e@TPR[which.max(e@TPR + e@TNR)])
+            # specificity: TN/(FP+TN)
+            Specificity <- e@TNR[which.max(e@TPR + e@TNR)]
+            MLEval[9,] <- c("Specificity",
+                            "Specificity",
+                            Specificity)
+            # Accuracy: TP+TN / TP+TN+FP+FN true false positive negative.
+            # TP+TN is just TSS + 1, TP+TN+FP+FN #Sums to 2, redundant
+            MLEval[10,] <- c("Accuracy",
+                             "Accuracy",
+                             (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2)
+            # Precision: TP/TP+FP. Ignores true negatives. “X% of the predictions are right”
+            Precision <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FPR[which.max(e@TPR + e@TNR)])
+            MLEval[11,] <- c("Precision",
+                             "X% of the predictions are right",
+                             Precision)
+            # Recall: TP/TP+FN: “Y% of actually existing things are captured”.
+            Recall <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FNR[which.max(e@TPR + e@TNR)])
+            MLEval[12,] <- c("Recall",
+                             "Y% of actually existing things are captured",
+                             Recall)
+            # https://www.corvil.com/kb/what-is-a-false-positive-rate
+            # Allouche et al 2006:
+            # overall accuracy: (TP+TN)/n
+            # this seems like a weird metric since the numerator is 0:2 or 1:2 and the divisor could be tiny or huge
+            MLEval[13,] <- c("OverallAccuracy",
+                             "Overall Accuracy",
+                             (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples))
+            # Balanced Accuracy, (Recall + Specificity) / 2
+            MLEval[14,] <- c("BalancedAccuracy",
+                             "Balanced Accuracy",
+                             (Recall + Specificity) / 2)
+            # Number of samples. Useful to include in the list
+            MLEval[15,] <- c("nSamples",
+                             "Number of samples",
+                             nrow(samples))
+            # Balance: precision vs recall curve. Workhorses.
+            # PxR/P+R = F score (P+R = harmonic mean).
+            # F1 score: P & R are equally rated. This is the most common one. F1 score importance depends on the project.
+            MLEval[16,] <- c("F1score",
+                             "P & R equally rated, score importance depends on project",
+                             2 * ((Precision * Recall) / (Precision + Recall)))
+            # F2 score: weighted average of Precision & Recall
+            MLEval[17,] <- c("F2score",
+                             "weighted average of P & R",
+                             5 * ((Precision * Recall) / (4 * Precision + Recall)))
+            # Threshold which produces the best combo of TPR & TNR
+            # t: vector of thresholds used to compute confusion matrices
+            MLEval[18,] <- c("Threshold",
+                             "Threshold which produced best combo of TPR & TNR",
+                             e@t[which.max(e@TPR + e@TNR)])
+            # e@prevalence: Prevalence
+            MLEval[19,] <- c("Prevalence",
+                             "Prevalence",
+                             e@prevalence[which.max(e@TPR + e@TNR)])
+            # e@ODP: Overall diagnostic power
+            MLEval[20,] <- c("ODP",
+                             "Overall diagnostic power",
+                             e@ODP[which.max(e@TPR + e@TNR)])
+            # e@CCR: Correct classification rate
+            MLEval[21,] <- c("CCR",
+                             "Correct classification rate",
+                             e@CCR[which.max(e@TPR + e@TNR)])
+            # e@TPR: True positive rate
+            MLEval[22,] <- c("TPR",
+                             "True positive rate",
+                             e@TPR[which.max(e@TPR + e@TNR)])
+            # e@TNR: True negative rate
+            MLEval[23,] <- c("TNR",
+                             "True negative rate",
+                             e@TNR[which.max(e@TPR + e@TNR)])
+            # e@FPR: False positive rate
+            MLEval[24,] <- c("FPR",
+                             "False positive rate",
+                             e@FPR[which.max(e@TPR + e@TNR)])
+            # e@FNR: False negative rate
+            MLEval[25,] <- c("FNR",
+                             "False negative rate",
+                             e@FNR[which.max(e@TPR + e@TNR)])
+            # e@PPP: Positive predictive power
+            MLEval[26,] <- c("PPP",
+                             "Positive predictive power",
+                             e@PPP[which.max(e@TPR + e@TNR)])
+            # e@NPP: Negative predictive power
+            MLEval[27,] <- c("NPP",
+                             "Negative predictive power",
+                             e@NPP[which.max(e@TPR + e@TNR)])
+            # e@MCR: Misclassification rate
+            MLEval[28,] <- c("MCR",
+                             "Misclassification rate",
+                             e@MCR[which.max(e@TPR + e@TNR)])
+            # e@OR: Odds-ratio
+            MLEval[29,] <- c("OR",
+                             "Odds-ratio",
+                             e@OR[which.max(e@TPR + e@TNR)])
+            # e@kappa: Cohen's kappa
+            MLEval[30,] <- c("kappa",
+                             "Cohen's kappa",
+                             e@kappa[which.max(e@TPR + e@TNR)])
+            # dev from calc.deviance from dismo
+            MLEval[31,] <- c("dev",
+                             "deviance from 2 vecs, obs & pred vals",
+                             dev)
+
+            # MLEval$Value <- round(MLEval$Value, digits = 5)
+            write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsGaus.csv"))
+
+            evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
+            for (s in evalmetrics) {
+              png(filename = paste0("./",names(samples[i]),"/Gaus_Eval_", s, ".png"))
+              plot(e, s)
+              dev.off()
+            } # close for (s in evalmetrics)
+          } # close if (exists("Gaus_Best_Model"))
+
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
-          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
-          ####21. Backtransform logged Gaus to unlogged####
-          if (gaus) grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
-
-          ####22. BIN*positive abundance = final abundance####
-          grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds
-        } else { # close gaus yes zi yes run gaus yes zi no
-          grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
-      } else grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
-
-      predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
-
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
-      ####23. Final saves####
-      # CSV of Predicted values at each site inc predictor variables' values.
-      write.csv(grids, row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_All.csv"))
-      # CSV of Predicted values at each site without predictor variables' values.
-      # coerce character gridslat/lon into numeric since predabund is given as numeric & you can't mix
-      if (is.character(gridslat)) gridslat <- which(colnames(samples) == gridslat)
-      if (is.character(gridslon)) gridslon <- which(colnames(samples) == gridslon)
-      write.csv(grids[c(gridslat,gridslon,predabund)], row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_only.csv"))
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
-      ####24. Unrepresentativeness surface builder####
-      # builds doesn't plot surface. If built, plotted by map maker.
-      if (RSB) {
-        rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
-        pos_samples <- subset(samples, brv > 0)
-        if (gaus) {
-          rsbdf_gaus <- gbm.rsb(pos_samples, grids, expvarnames, gridslat, gridslon)
-          rsbdf_both <- data.frame(rsbdf_bin, "Unrep_Gaus" = rsbdf_gaus[,"Unrepresentativeness"], "Unrep_Both" = (rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"]))
-          write.csv(rsbdf_both, row.names = FALSE, file = paste0("./", names(samples[i]), "/RSB.csv"))
-        } else write.csv(rsbdf_bin, row.names = FALSE, file = paste0("./", names(samples[i]), "/RSB.csv")) # if not gaus
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-      } # close if rsbdf
-
-      ####25. Map maker####
-      if (map == TRUE) {   # generate output image & set parameters
-        png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
-            width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-        par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-        # run gbm.map function with generated parameters
-        gbm.map(x = grids[,gridslon],
-                y = grids[,gridslat],
-                z = grids[,predabund],
-                species = names(samples[i]),
-                shape = shape, #either autogenerated or set by user so never blank
-                ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
-        # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
-        dev.off()
+          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXX     Evaluation Metrics Processed     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        } # close if MLEvaluate
 
         if (alerts) beep(2) # progress printer, right aligned for visibility
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Reticulating splines     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+      } # close loadgbm isnull
 
-        if (BnW) { # if BnW=TRUE, run again in black & white for journal submission
-          png(filename = paste0("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png"),
+      #avoid sections 19-25 if not predicting to grids
+      if (!is.null(grids)) {
+
+        # Load model objects if loadgbm set
+        if (!is.null(loadgbm)) {
+          if (ZI) {  # don't do if ZI=FALSE
+            load(paste0(loadgbm,"Bin_Best_Model"))
+            Bin_Best_Model <- "Bin_Best_Model_Object"
+          } # close ZI if
+          if (gaus) {
+            load(paste0(loadgbm,"Gaus_Best_Model"))
+            Gaus_Best_Model <- "Gaus_Best_Model_Object"
+          } # close gaus if
+          dir.create(names(samples[i])) # create resvar-named directory for outputs
+        } # close loadgbm optional
+
+        ####19. Binomial predictions####
+        if (ZI) {  # don't do if ZI=FALSE
+          gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds") #with want.grids=F this is just predict.gbm
+          grids$Bin_Preds <- Bin_Preds
+        } # close ZI
+
+        if (alerts) beep(2) # progress printer, right aligned for visibility
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+        ####20. Gaussian predictions####
+        if (gaus) gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
+        if (gaus) {
+          if (ZI) {
+            grids$Gaus_Preds <- Gaus_Preds
+
+            if (alerts) beep(2) # progress printer, right aligned for visibility
+            print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+            ####21. Backtransform logged Gaus to unlogged####
+            if (gaus) grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
+
+            ####22. BIN*positive abundance = final abundance####
+            grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds
+          } else { # close gaus yes zi yes run gaus yes zi no
+            grids$PredAbund <- Gaus_Preds} #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
+        } else grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
+
+        predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
+
+        if (alerts) beep(2) # progress printer, right aligned for visibility
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+        ####23. Final saves####
+        # CSV of Predicted values at each site inc predictor variables' values.
+        write.csv(grids, row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_All.csv"))
+        # CSV of Predicted values at each site without predictor variables' values.
+        # coerce character gridslat/lon into numeric since predabund is given as numeric & you can't mix
+        if (is.character(gridslat)) gridslat <- which(colnames(samples) == gridslat)
+        if (is.character(gridslon)) gridslon <- which(colnames(samples) == gridslon)
+        write.csv(grids[c(gridslat,gridslon,predabund)], row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_only.csv"))
+        if (alerts) beep(2) # progress printer, right aligned for visibility
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+        ####24. Unrepresentativeness surface builder####
+        # builds doesn't plot surface. If built, plotted by map maker.
+        if (RSB) {
+          rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
+          pos_samples <- subset(samples, brv > 0)
+          if (gaus) {
+            rsbdf_gaus <- gbm.rsb(pos_samples, grids, expvarnames, gridslat, gridslon)
+            rsbdf_both <- data.frame(rsbdf_bin, "Unrep_Gaus" = rsbdf_gaus[,"Unrepresentativeness"], "Unrep_Both" = (rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"]))
+            write.csv(rsbdf_both, row.names = FALSE, file = paste0("./", names(samples[i]), "/RSB.csv"))
+          } else write.csv(rsbdf_bin, row.names = FALSE, file = paste0("./", names(samples[i]), "/RSB.csv")) # if not gaus
+          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        } # close if rsbdf
+
+        ####25. Map maker####
+        if (map == TRUE) {   # generate output image & set parameters
+          png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
               width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
           par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+          # run gbm.map function with generated parameters
           gbm.map(x = grids[,gridslon],
                   y = grids[,gridslat],
                   z = grids[,predabund],
                   species = names(samples[i]),
                   shape = shape, #either autogenerated or set by user so never blank
-                  landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
-                  mapback = "white",
-                  heatcolours = grey.colors(8, start = 1, end = 0))
+                  ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
+          # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
           dev.off()
-          if (alerts) beep(2)  # progress printer, right aligned for visibility
-          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-        } # close & save plotting device & close BnW optional
-
-        if (RSB) { # if RSB called, plot that surface separately
-          linear01seq <- seq(from = 0, to = 1, length.out = 9) #linear sequence from 0:1, 9 bins
-          exp01seq <- expm1(4*linear01seq)/expm1(4) # exponentiate to change shape then scale back to 1
-
-          png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
-              width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-          par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-          gbm.map(x = grids[,gridslon],
-                  y = grids[,gridslat],
-                  z = rsbdf_bin[,"Unrepresentativeness"],
-                  mapmain = "Unrepresentativeness: ",
-                  species = names(samples[i]),
-                  legendtitle = "UnRep 0-1",
-                  shape = shape, #either autogenerated or set by user so never blank
-                  # breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = TRUE))/2000) #old failing breaks
-                  breaks = exp01seq)
-          dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
-          # res there, but high values captures in the last few bins.
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
-          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Reticulating splines     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+          print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
-          if (gaus) {
-            png(filename = paste0("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png"),
+          if (BnW) { # if BnW=TRUE, run again in black & white for journal submission
+            png(filename = paste0("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png"),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
             gbm.map(x = grids[,gridslon],
                     y = grids[,gridslat],
-                    z = rsbdf_gaus[,"Unrepresentativeness"],
-                    mapmain = "Unrepresentativeness: ",
+                    z = grids[,predabund],
                     species = names(samples[i]),
-                    legendtitle = "UnRep 0-1",
                     shape = shape, #either autogenerated or set by user so never blank
-                    breaks = exp01seq)
+                    landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
+                    mapback = "white",
+                    heatcolours = grey.colors(8, start = 1, end = 0))
             dev.off()
+            if (alerts) beep(2)  # progress printer, right aligned for visibility
+            print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+          } # close & save plotting device & close BnW optional
 
-            if (alerts) beep(2) # progress printer, right aligned for visibility
-            print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+          if (RSB) { # if RSB called, plot that surface separately
+            linear01seq <- seq(from = 0, to = 1, length.out = 9) #linear sequence from 0:1, 9 bins
+            exp01seq <- expm1(4*linear01seq)/expm1(4) # exponentiate to change shape then scale back to 1
 
-            png(filename = paste0("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png"),
-                width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
-            gbm.map(x = grids[,gridslon],
-                    y = grids[,gridslat],
-                    z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
-                    mapmain = "Unrepresentativeness: ",
-                    species = names(samples[i]),
-                    legendtitle = "UnRep 0-2",
-                    shape = shape, #either autogenerated or set by user so never blank
-                    breaks = exp01seq)
-            dev.off()
-
-            if (alerts) beep(2) # progress printer, right aligned for visibility
-            print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
-
-          if (BnW) {     # if BnW=TRUE, do again for b&w
-            png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
+            png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
             gbm.map(x = grids[,gridslon],
                     y = grids[,gridslat],
                     z = rsbdf_bin[,"Unrepresentativeness"],
                     mapmain = "Unrepresentativeness: ",
-                    mapback = "white",
                     species = names(samples[i]),
-                    heatcolours = grey.colors(8, start = 1, end = 0), #default 8 greys
-                    ####BUG:setting heatcolours & colournumber overrides this####
-                    landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
                     legendtitle = "UnRep 0-1",
                     shape = shape, #either autogenerated or set by user so never blank
+                    # breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = TRUE))/2000) #old failing breaks
                     breaks = exp01seq)
-            dev.off()
+            dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
+            # res there, but high values captures in the last few bins.
 
             if (alerts) beep(2) # progress printer, right aligned for visibility
-            print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     B&W RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+            print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
             if (gaus) {
-              png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png"),
+              png(filename = paste0("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
               gbm.map(x = grids[,gridslon],
                       y = grids[,gridslat],
                       z = rsbdf_gaus[,"Unrepresentativeness"],
                       mapmain = "Unrepresentativeness: ",
-                      mapback = "white",
                       species = names(samples[i]),
-                      heatcolours = grey.colors(8, start = 1, end = 0),
-                      landcol = grey.colors(1, start = 0.8, end = 0.8),
                       legendtitle = "UnRep 0-1",
                       shape = shape, #either autogenerated or set by user so never blank
                       breaks = exp01seq)
               dev.off()
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
-              print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+              print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
-              png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png"),
+              png(filename = paste0("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
               gbm.map(x = grids[,gridslon],
                       y = grids[,gridslat],
                       z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
                       mapmain = "Unrepresentativeness: ",
-                      mapback = "white",
                       species = names(samples[i]),
-                      heatcolours = grey.colors(8, start = 1, end = 0),
-                      landcol = grey.colors(1, start = 0.8, end = 0.8),
                       legendtitle = "UnRep 0-2",
                       shape = shape, #either autogenerated or set by user so never blank
                       breaks = exp01seq)
               dev.off()
+
               if (alerts) beep(2) # progress printer, right aligned for visibility
-              print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
-          } # close BnW RSBs
-        } # close RSB mapper
-      } # close Map Maker
-    } #close grids option from above section 19
-    print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-  } # close response variable (resvar) loop
-  gc() # Force R to release memory it is no longer using
-  options(error = NULL) # reset error options to default
-  if (alerts) beep(8)} # final user notification, then close the function
-####END####
+              print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
+
+            if (BnW) {     # if BnW=TRUE, do again for b&w
+              png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
+                  width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+              gbm.map(x = grids[,gridslon],
+                      y = grids[,gridslat],
+                      z = rsbdf_bin[,"Unrepresentativeness"],
+                      mapmain = "Unrepresentativeness: ",
+                      mapback = "white",
+                      species = names(samples[i]),
+                      heatcolours = grey.colors(8, start = 1, end = 0), #default 8 greys
+                      ####BUG:setting heatcolours & colournumber overrides this####
+                      landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
+                      legendtitle = "UnRep 0-1",
+                      shape = shape, #either autogenerated or set by user so never blank
+                      breaks = exp01seq)
+              dev.off()
+
+              if (alerts) beep(2) # progress printer, right aligned for visibility
+              print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     B&W RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+              if (gaus) {
+                png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png"),
+                    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+                par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+                gbm.map(x = grids[,gridslon],
+                        y = grids[,gridslat],
+                        z = rsbdf_gaus[,"Unrepresentativeness"],
+                        mapmain = "Unrepresentativeness: ",
+                        mapback = "white",
+                        species = names(samples[i]),
+                        heatcolours = grey.colors(8, start = 1, end = 0),
+                        landcol = grey.colors(1, start = 0.8, end = 0.8),
+                        legendtitle = "UnRep 0-1",
+                        shape = shape, #either autogenerated or set by user so never blank
+                        breaks = exp01seq)
+                dev.off()
+
+                if (alerts) beep(2) # progress printer, right aligned for visibility
+                print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+                png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png"),
+                    width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+                par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+                gbm.map(x = grids[,gridslon],
+                        y = grids[,gridslat],
+                        z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
+                        mapmain = "Unrepresentativeness: ",
+                        mapback = "white",
+                        species = names(samples[i]),
+                        heatcolours = grey.colors(8, start = 1, end = 0),
+                        landcol = grey.colors(1, start = 0.8, end = 0.8),
+                        legendtitle = "UnRep 0-2",
+                        shape = shape, #either autogenerated or set by user so never blank
+                        breaks = exp01seq)
+                dev.off()
+                if (alerts) beep(2) # progress printer, right aligned for visibility
+                print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
+            } # close BnW RSBs
+          } # close RSB mapper
+        } # close Map Maker
+      } #close grids option from above section 19
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Grids/maps/everything done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+    } # close response variable (resvar) loop
+    gc() # Force R to release memory it is no longer using
+    options(error = NULL) # reset error options to default
+    if (alerts) beep(8)} # final user notification, then close the function
+  ####END####
