@@ -458,3 +458,4 @@ if (alerts) beep(2)} # alert user & end of "close" optional section
 print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX         Saving CSV        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 if (savethis) write.csv(dbase,row.names = FALSE, file = paste0("./ProcessedData.csv"))
 beep(8)} # notify user & close function
+
