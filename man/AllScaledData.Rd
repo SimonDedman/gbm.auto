@@ -4,7 +4,9 @@
 \name{AllScaledData}
 \alias{AllScaledData}
 \title{Data: Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons}
-\format{A data frame with 378570 rows and 3 variables}
+\format{
+A data frame with 378570 rows and 3 variables
+}
 \usage{
 data(AllScaledData)
 }

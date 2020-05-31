@@ -4,7 +4,9 @@
 \name{Adult_Females}
 \alias{Adult_Females}
 \title{Data: Numbers of 4 adult female rays caught in 2137 Irish Sea trawls, 1994 to 2014}
-\format{A data frame with 2137 rows and 13 variables}
+\format{
+A data frame with 2137 rows and 13 variables
+}
 \usage{
 data(Adult_Females)
 }

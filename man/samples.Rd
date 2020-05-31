@@ -4,7 +4,9 @@
 \name{samples}
 \alias{samples}
 \title{Data: Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014}
-\format{A data frame with 2244 rows and 14 variables}
+\format{
+A data frame with 2244 rows and 14 variables
+}
 \usage{
 data(samples)
 }

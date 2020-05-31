@@ -4,7 +4,9 @@
 \name{grids}
 \alias{grids}
 \title{Data: Explanatory variables for rays in the Irish Sea}
-\format{A data frame with 378570 rows and 43 variables}
+\format{
+A data frame with 378570 rows and 43 variables
+}
 \usage{
 data(grids)
 }

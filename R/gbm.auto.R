@@ -312,7 +312,7 @@ gbm.auto <- function(
 
     ####2. ZI check & log####
     # if user has asked code to check for ZI, check it & set new ZI status
-    if (ZI == "CHECK") if (sum(samples[,i] == 0,na.rm = TRUE)/length(samples[,i]) >= 0.5) ZI = TRUE else ZI = FALSE
+    if (ZI == "CHECK") if (sum(samples[,i] == 0, na.rm = TRUE) / length(samples[,i]) >= 0.5) ZI = TRUE else ZI = FALSE
     # ensure resvar has zeroes (expects mix of successful & unsuccessful samples for bernoulli/binary runs)
     if (ZI == F) if (min(samples[i]) > 0) print("No zeroes in response variable. If using a zero inflated model, Method expects unsuccessful, as well as successful, samples")
 
@@ -882,7 +882,7 @@ gbm.auto <- function(
                                                paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
                                                paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
                                                paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
-                                               paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+                                               paste0("Deviance% explain relative to null: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null) * 100, 2)))
           } else { # close stats where simp benefit true, open note where no simp benefit
             Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
           } # close simp benefit check

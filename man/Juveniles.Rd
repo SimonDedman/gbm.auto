@@ -4,7 +4,9 @@
 \name{Juveniles}
 \alias{Juveniles}
 \title{Data: Explanatory and response variables for 4 juvenile rays in the Irish Sea}
-\format{A data frame with 2136 rows and 46 variables}
+\format{
+A data frame with 2136 rows and 46 variables
+}
 \usage{
 data(Juveniles)
 }

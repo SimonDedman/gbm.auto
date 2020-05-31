@@ -4,7 +4,9 @@
 \name{AllPreds_E}
 \alias{AllPreds_E}
 \title{Data: Predicted abundances of 4 ray species generated using gbm.auto}
-\format{A data frame with 378570 rows and 7 variables}
+\format{
+A data frame with 378570 rows and 7 variables
+}
 \usage{
 data(AllPreds_E)
 }
