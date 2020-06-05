@@ -105,12 +105,11 @@ dbasecoln <- ncol(dbase)  # note original number of columns for use later
     colnames(dbase)[dbasecoln + i] <- paste0(names(dbase)[(c(goodcols,badcols))[i]], "_s")} #name them
 
 # If weighting factors given, multiply then sum scaled values & create objects, else sum & create objects
-ifelse(!is.null(goodweight),
-         gooddata <- as.matrix(dbase[,dbasecoln + seq(1,length(goodcols))]) %*% diag(goodweight,ncol = length(goodcols)), #diag converts vector to matrix
-         gooddata <- dbase[,dbasecoln + seq(1,length(goodcols))])
-ifelse(!is.null(badweight), # assuming there's only going to be one baddata column.
-         baddata <- as.matrix(dbase[,dbasecoln + length(goodcols) + seq(1,length(badcols))]) %*% diag(badweight, ncol = length(badcols)), #is matrix
-         baddata <- dbase[,dbasecoln + length(goodcols) + seq(1, length(badcols))])  #is numeric
+if (!is.null(goodweight)) gooddata <- as.matrix(dbase[,dbasecoln + seq(1, length(goodcols))]) %*% diag(goodweight, ncol = length(goodcols)) #diag converts vector to matrix
+if (is.null(goodweight)) gooddata = dbase[,dbasecoln + seq(1,length(goodcols))]
+# assuming there's only going to be one baddata column.
+if (!is.null(badweight)) baddata = as.matrix(dbase[,dbasecoln + length(goodcols) + seq(1,length(badcols))]) %*% diag(badweight, ncol = length(badcols)) #is matrix
+if (is.null(badweight)) baddata = dbase[,dbasecoln + length(goodcols) + seq(1, length(badcols))]  #is numeric
 
 ####map baddata####
 if ("bad" %in% plotthis) {
@@ -458,4 +457,3 @@ if (alerts) beep(2)} # alert user & end of "close" optional section
 print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX         Saving CSV        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 if (savethis) write.csv(dbase,row.names = FALSE, file = paste0("./ProcessedData.csv"))
 beep(8)} # notify user & close function
-
