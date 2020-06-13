@@ -468,6 +468,5 @@ gbm.valuemap <- function(
   ####Save csvs####
   print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX         Saving CSV        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   if (savethis) write.csv(dbase,row.names = FALSE, file = paste0("./ProcessedData.csv"))
-  # notify user & close function
-  beep(8)
+  beep(8) # notify user & close function
 }
