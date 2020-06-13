@@ -470,5 +470,4 @@ gbm.valuemap <- function(
   if (savethis) write.csv(dbase,row.names = FALSE, file = paste0("./ProcessedData.csv"))
   # notify user & close function
   beep(8)
-
 }
