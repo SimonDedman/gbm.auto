@@ -939,11 +939,10 @@ gbm.auto <- function(
         #   if (whichbin == 1) getmodel <- "Bin_Best_Model" else getmodel <- "Gaus_Best_Model"
         # } # close if any fam 1
 
-          if (exists("Bin_Best_Model")) {
-            getmodel <- "Bin_Best_Model"
-            preds <- predict.gbm(get(get(getmodel)),
+          if (ZI) { # only do if bin exists, previously was: exists("Bin_Best_Model")
+            preds <- predict.gbm(Bin_Best_Model,
                                  samples,
-                                 n.trees = get(get(getmodel))$gbm.call$best.trees,
+                                 n.trees = Bin_Best_Model$gbm.call$best.trees,
                                  type = "response")
             #If type="response" then gbm converts back to the same scale as the outcome.
             # Currently the only effect this will have is returning probabilities for
@@ -951,7 +950,7 @@ gbm.auto <- function(
             # "response" and "link" return the same. gbm:::predict.gbm
 
             # dev reported later but not used otherwise
-            dev <- calc.deviance(obs = samples[, get(get(getmodel))$gbm.call$gbm.y],
+            dev <- calc.deviance(obs = samples[, Bin_Best_Model$gbm.call$gbm.y],
                                  pred = preds,
                                  family = "bernoulli") # change fam if using
             # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
@@ -1110,185 +1109,187 @@ gbm.auto <- function(
               plot(e, s)
               dev.off()
             } # close for (s in evalmetrics)
-          } # close if (exists("Bin_Best_Model"))
+          } # close if (ZI)
 
 
-          # can do calc.deviance for gaus also, ditto poisson
-          #ToFix####
-          #Gaus metrics won't work as is
-          #Also code this better to reduce duplication & allow for bin & gaus runs
-          if (exists("Gaus_Best_Model")) {
-            getmodel <- "Gaus_Best_Model"
-            preds <- predict.gbm(get(get(getmodel)),
-                                 samples,
-                                 n.trees = get(get(getmodel))$gbm.call$best.trees,
-                                 type = "response")
-            #If type="response" then gbm converts back to the same scale as the outcome.
-            # Currently the only effect this will have is returning probabilities for
-            # bernoulli and expected counts for poisson. For the other distributions
-            # "response" and "link" return the same. gbm:::predict.gbm
-
-            # dev reported later but not used otherwise
-            dev <- calc.deviance(obs = samples[, get(get(getmodel))$gbm.call$gbm.y],
-                                 pred = preds,
-                                 family = "Gaussian") # change fam if using
-            # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
-            samples <- cbind(samples, preds)
-            pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
-            abs <- samples[samples[, brvcol] == 0, "preds"]
-            e <- evaluate(p = pres,
-                          a = abs)
-
-            # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
-            # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
-            MLEvalLength <- 31
-            # Improve descriptions####
-            MLEval <- data.frame(Statistic = rep(NA, MLEvalLength),
-                                 Description = rep(NA, MLEvalLength),
-                                 Value = rep(NA, MLEvalLength))
-            MLEval[1,] <- c("Presence",
-                            "n of presence data used",
-                            e@np)
-            MLEval[2,] <- c("Absence",
-                            "n of absence data used",
-                            e@na)
-            MLEval[3,] <- c("AUC",
-                            "Area under the receiver operator (ROC) curve",
-                            e@auc)
-            if (length(e@pauc) == 0) e@pauc <- 0 # pauc may be missing, numeric(0), if so replace with 0
-            MLEval[4,] <- c("pAUC",
-                            "p-value for the AUC (for the Wilcoxon test W statistic)",
-                            e@pauc)
-            MLEval[5,] <- c("Cor",
-                            "Correlation coefficient",
-                            e@cor[[1]])
-            MLEval[6,] <- c("cor",
-                            "p-value for correlation coefficient",
-                            e@pcor)
-            # Steph Brodie's TSS which produces the same result as Allouche
-            # -1 just makes the output range is 0:1 instead of 1:2 I think.
-            # If so this means Sensitivity is e@TPR[which.max(e@TPR + e@TNR)], which doesn't include
-            # (e@TPR + e@FNR) but it's a vector of 1s so is redundant. Same for Specificity
-            MLEval[7,] <- c("TSS",
-                            "True Skill Statistic",
-                            max(e@TPR + e@TNR - 1))
-            # sensitivity: TP/(TP+FN)
-            MLEval[8,] <- c("Sensitivity",
-                            "Sensitivity",
-                            e@TPR[which.max(e@TPR + e@TNR)])
-            # specificity: TN/(FP+TN)
-            Specificity <- e@TNR[which.max(e@TPR + e@TNR)]
-            MLEval[9,] <- c("Specificity",
-                            "Specificity",
-                            Specificity)
-            # Accuracy: TP+TN / TP+TN+FP+FN true false positive negative.
-            # TP+TN is just TSS + 1, TP+TN+FP+FN #Sums to 2, redundant
-            MLEval[10,] <- c("Accuracy",
-                             "Accuracy",
-                             (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2)
-            # Precision: TP/TP+FP. Ignores true negatives. “X% of the predictions are right”
-            Precision <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FPR[which.max(e@TPR + e@TNR)])
-            MLEval[11,] <- c("Precision",
-                             "X% of the predictions are right",
-                             Precision)
-            # Recall: TP/TP+FN: “Y% of actually existing things are captured”.
-            Recall <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FNR[which.max(e@TPR + e@TNR)])
-            MLEval[12,] <- c("Recall",
-                             "Y% of actually existing things are captured",
-                             Recall)
-            # https://www.corvil.com/kb/what-is-a-false-positive-rate
-            # Allouche et al 2006:
-            # overall accuracy: (TP+TN)/n
-            # this seems like a weird metric since the numerator is 0:2 or 1:2 and the divisor could be tiny or huge
-            MLEval[13,] <- c("OverallAccuracy",
-                             "Overall Accuracy",
-                             (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples))
-            # Balanced Accuracy, (Recall + Specificity) / 2
-            MLEval[14,] <- c("BalancedAccuracy",
-                             "Balanced Accuracy",
-                             (Recall + Specificity) / 2)
-            # Number of samples. Useful to include in the list
-            MLEval[15,] <- c("nSamples",
-                             "Number of samples",
-                             nrow(samples))
-            # Balance: precision vs recall curve. Workhorses.
-            # PxR/P+R = F score (P+R = harmonic mean).
-            # F1 score: P & R are equally rated. This is the most common one. F1 score importance depends on the project.
-            MLEval[16,] <- c("F1score",
-                             "P & R equally rated, score importance depends on project",
-                             2 * ((Precision * Recall) / (Precision + Recall)))
-            # F2 score: weighted average of Precision & Recall
-            MLEval[17,] <- c("F2score",
-                             "weighted average of P & R",
-                             5 * ((Precision * Recall) / (4 * Precision + Recall)))
-            # Threshold which produces the best combo of TPR & TNR
-            # t: vector of thresholds used to compute confusion matrices
-            MLEval[18,] <- c("Threshold",
-                             "Threshold which produced best combo of TPR & TNR",
-                             e@t[which.max(e@TPR + e@TNR)])
-            # e@prevalence: Prevalence
-            MLEval[19,] <- c("Prevalence",
-                             "Prevalence",
-                             e@prevalence[which.max(e@TPR + e@TNR)])
-            # e@ODP: Overall diagnostic power
-            MLEval[20,] <- c("ODP",
-                             "Overall diagnostic power",
-                             e@ODP[which.max(e@TPR + e@TNR)])
-            # e@CCR: Correct classification rate
-            MLEval[21,] <- c("CCR",
-                             "Correct classification rate",
-                             e@CCR[which.max(e@TPR + e@TNR)])
-            # e@TPR: True positive rate
-            MLEval[22,] <- c("TPR",
-                             "True positive rate",
-                             e@TPR[which.max(e@TPR + e@TNR)])
-            # e@TNR: True negative rate
-            MLEval[23,] <- c("TNR",
-                             "True negative rate",
-                             e@TNR[which.max(e@TPR + e@TNR)])
-            # e@FPR: False positive rate
-            MLEval[24,] <- c("FPR",
-                             "False positive rate",
-                             e@FPR[which.max(e@TPR + e@TNR)])
-            # e@FNR: False negative rate
-            MLEval[25,] <- c("FNR",
-                             "False negative rate",
-                             e@FNR[which.max(e@TPR + e@TNR)])
-            # e@PPP: Positive predictive power
-            MLEval[26,] <- c("PPP",
-                             "Positive predictive power",
-                             e@PPP[which.max(e@TPR + e@TNR)])
-            # e@NPP: Negative predictive power
-            MLEval[27,] <- c("NPP",
-                             "Negative predictive power",
-                             e@NPP[which.max(e@TPR + e@TNR)])
-            # e@MCR: Misclassification rate
-            MLEval[28,] <- c("MCR",
-                             "Misclassification rate",
-                             e@MCR[which.max(e@TPR + e@TNR)])
-            # e@OR: Odds-ratio
-            MLEval[29,] <- c("OR",
-                             "Odds-ratio",
-                             e@OR[which.max(e@TPR + e@TNR)])
-            # e@kappa: Cohen's kappa
-            MLEval[30,] <- c("kappa",
-                             "Cohen's kappa",
-                             e@kappa[which.max(e@TPR + e@TNR)])
-            # dev from calc.deviance from dismo
-            MLEval[31,] <- c("dev",
-                             "deviance from 2 vecs, obs & pred vals",
-                             dev)
-
-            # MLEval$Value <- round(MLEval$Value, digits = 5)
-            write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsGaus.csv"))
-
-            evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
-            for (s in evalmetrics) {
-              png(filename = paste0("./",names(samples[i]),"/Gaus_Eval_", s, ".png"))
-              plot(e, s)
-              dev.off()
-            } # close for (s in evalmetrics)
-          } # close if (exists("Gaus_Best_Model"))
+          # # can do calc.deviance for gaus also, ditto poisson
+          # #ToFix####
+          # #Gaus metrics won't work as is
+          # #Also code this better to reduce duplication & allow for bin & gaus runs
+          # if (gaus) { #
+          #   preds <- predict.gbm(Gaus_Best_Model,
+          #                        samples,
+          #                        n.trees = Gaus_Best_Model$gbm.call$best.trees,
+          #                        type = "response")
+          #   #If type="response" then gbm converts back to the same scale as the outcome.
+          #   # Currently the only effect this will have is returning probabilities for
+          #   # bernoulli and expected counts for poisson. For the other distributions
+          #   # "response" and "link" return the same. gbm:::predict.gbm
+          #
+          #   # dev reported later but not used otherwise
+          #   dev <- calc.deviance(obs = samples[, Gaus_Best_Model$gbm.call$gbm.y],
+          #                        pred = preds,
+          #                        family = "Gaussian") # change fam if using
+          #   # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
+          #   samples <- cbind(samples, preds)
+          #   pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
+          #   abs <- samples[samples[, brvcol] == 0, "preds"]
+          #   # FAILS HERE ####
+          #   # THERE MAY NOT BE ANY ABSENCES IN A GAUSSIAN DISTRIBUTION
+          #   # means abs = numeric(0) & evaluate() fails.
+          #   e <- evaluate(p = pres,
+          #                 a = abs)
+          #
+          #   # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
+          #   # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
+          #   MLEvalLength <- 31
+          #   # Improve descriptions####
+          #   MLEval <- data.frame(Statistic = rep(NA, MLEvalLength),
+          #                        Description = rep(NA, MLEvalLength),
+          #                        Value = rep(NA, MLEvalLength))
+          #   MLEval[1,] <- c("Presence",
+          #                   "n of presence data used",
+          #                   e@np)
+          #   MLEval[2,] <- c("Absence",
+          #                   "n of absence data used",
+          #                   e@na)
+          #   MLEval[3,] <- c("AUC",
+          #                   "Area under the receiver operator (ROC) curve",
+          #                   e@auc)
+          #   if (length(e@pauc) == 0) e@pauc <- 0 # pauc may be missing, numeric(0), if so replace with 0
+          #   MLEval[4,] <- c("pAUC",
+          #                   "p-value for the AUC (for the Wilcoxon test W statistic)",
+          #                   e@pauc)
+          #   MLEval[5,] <- c("Cor",
+          #                   "Correlation coefficient",
+          #                   e@cor[[1]])
+          #   MLEval[6,] <- c("cor",
+          #                   "p-value for correlation coefficient",
+          #                   e@pcor)
+          #   # Steph Brodie's TSS which produces the same result as Allouche
+          #   # -1 just makes the output range is 0:1 instead of 1:2 I think.
+          #   # If so this means Sensitivity is e@TPR[which.max(e@TPR + e@TNR)], which doesn't include
+          #   # (e@TPR + e@FNR) but it's a vector of 1s so is redundant. Same for Specificity
+          #   MLEval[7,] <- c("TSS",
+          #                   "True Skill Statistic",
+          #                   max(e@TPR + e@TNR - 1))
+          #   # sensitivity: TP/(TP+FN)
+          #   MLEval[8,] <- c("Sensitivity",
+          #                   "Sensitivity",
+          #                   e@TPR[which.max(e@TPR + e@TNR)])
+          #   # specificity: TN/(FP+TN)
+          #   Specificity <- e@TNR[which.max(e@TPR + e@TNR)]
+          #   MLEval[9,] <- c("Specificity",
+          #                   "Specificity",
+          #                   Specificity)
+          #   # Accuracy: TP+TN / TP+TN+FP+FN true false positive negative.
+          #   # TP+TN is just TSS + 1, TP+TN+FP+FN #Sums to 2, redundant
+          #   MLEval[10,] <- c("Accuracy",
+          #                    "Accuracy",
+          #                    (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2)
+          #   # Precision: TP/TP+FP. Ignores true negatives. “X% of the predictions are right”
+          #   Precision <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FPR[which.max(e@TPR + e@TNR)])
+          #   MLEval[11,] <- c("Precision",
+          #                    "X% of the predictions are right",
+          #                    Precision)
+          #   # Recall: TP/TP+FN: “Y% of actually existing things are captured”.
+          #   Recall <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FNR[which.max(e@TPR + e@TNR)])
+          #   MLEval[12,] <- c("Recall",
+          #                    "Y% of actually existing things are captured",
+          #                    Recall)
+          #   # https://www.corvil.com/kb/what-is-a-false-positive-rate
+          #   # Allouche et al 2006:
+          #   # overall accuracy: (TP+TN)/n
+          #   # this seems like a weird metric since the numerator is 0:2 or 1:2 and the divisor could be tiny or huge
+          #   MLEval[13,] <- c("OverallAccuracy",
+          #                    "Overall Accuracy",
+          #                    (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples))
+          #   # Balanced Accuracy, (Recall + Specificity) / 2
+          #   MLEval[14,] <- c("BalancedAccuracy",
+          #                    "Balanced Accuracy",
+          #                    (Recall + Specificity) / 2)
+          #   # Number of samples. Useful to include in the list
+          #   MLEval[15,] <- c("nSamples",
+          #                    "Number of samples",
+          #                    nrow(samples))
+          #   # Balance: precision vs recall curve. Workhorses.
+          #   # PxR/P+R = F score (P+R = harmonic mean).
+          #   # F1 score: P & R are equally rated. This is the most common one. F1 score importance depends on the project.
+          #   MLEval[16,] <- c("F1score",
+          #                    "P & R equally rated, score importance depends on project",
+          #                    2 * ((Precision * Recall) / (Precision + Recall)))
+          #   # F2 score: weighted average of Precision & Recall
+          #   MLEval[17,] <- c("F2score",
+          #                    "weighted average of P & R",
+          #                    5 * ((Precision * Recall) / (4 * Precision + Recall)))
+          #   # Threshold which produces the best combo of TPR & TNR
+          #   # t: vector of thresholds used to compute confusion matrices
+          #   MLEval[18,] <- c("Threshold",
+          #                    "Threshold which produced best combo of TPR & TNR",
+          #                    e@t[which.max(e@TPR + e@TNR)])
+          #   # e@prevalence: Prevalence
+          #   MLEval[19,] <- c("Prevalence",
+          #                    "Prevalence",
+          #                    e@prevalence[which.max(e@TPR + e@TNR)])
+          #   # e@ODP: Overall diagnostic power
+          #   MLEval[20,] <- c("ODP",
+          #                    "Overall diagnostic power",
+          #                    e@ODP[which.max(e@TPR + e@TNR)])
+          #   # e@CCR: Correct classification rate
+          #   MLEval[21,] <- c("CCR",
+          #                    "Correct classification rate",
+          #                    e@CCR[which.max(e@TPR + e@TNR)])
+          #   # e@TPR: True positive rate
+          #   MLEval[22,] <- c("TPR",
+          #                    "True positive rate",
+          #                    e@TPR[which.max(e@TPR + e@TNR)])
+          #   # e@TNR: True negative rate
+          #   MLEval[23,] <- c("TNR",
+          #                    "True negative rate",
+          #                    e@TNR[which.max(e@TPR + e@TNR)])
+          #   # e@FPR: False positive rate
+          #   MLEval[24,] <- c("FPR",
+          #                    "False positive rate",
+          #                    e@FPR[which.max(e@TPR + e@TNR)])
+          #   # e@FNR: False negative rate
+          #   MLEval[25,] <- c("FNR",
+          #                    "False negative rate",
+          #                    e@FNR[which.max(e@TPR + e@TNR)])
+          #   # e@PPP: Positive predictive power
+          #   MLEval[26,] <- c("PPP",
+          #                    "Positive predictive power",
+          #                    e@PPP[which.max(e@TPR + e@TNR)])
+          #   # e@NPP: Negative predictive power
+          #   MLEval[27,] <- c("NPP",
+          #                    "Negative predictive power",
+          #                    e@NPP[which.max(e@TPR + e@TNR)])
+          #   # e@MCR: Misclassification rate
+          #   MLEval[28,] <- c("MCR",
+          #                    "Misclassification rate",
+          #                    e@MCR[which.max(e@TPR + e@TNR)])
+          #   # e@OR: Odds-ratio
+          #   MLEval[29,] <- c("OR",
+          #                    "Odds-ratio",
+          #                    e@OR[which.max(e@TPR + e@TNR)])
+          #   # e@kappa: Cohen's kappa
+          #   MLEval[30,] <- c("kappa",
+          #                    "Cohen's kappa",
+          #                    e@kappa[which.max(e@TPR + e@TNR)])
+          #   # dev from calc.deviance from dismo
+          #   MLEval[31,] <- c("dev",
+          #                    "deviance from 2 vecs, obs & pred vals",
+          #                    dev)
+          #
+          #   # MLEval$Value <- round(MLEval$Value, digits = 5)
+          #   write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsGaus.csv"))
+          #
+          #   evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
+          #   for (s in evalmetrics) {
+          #     png(filename = paste0("./",names(samples[i]),"/Gaus_Eval_", s, ".png"))
+          #     plot(e, s)
+          #     dev.off()
+          #   } # close for (s in evalmetrics)
+          # } # close if (gaus)
 
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
