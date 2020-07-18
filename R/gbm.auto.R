@@ -337,7 +337,7 @@ gbm.auto <- function(
     # nonzero & any 0 will be logged to -Inf so there'll be no zeroes
 
     if (is.null(loadgbm)) { #if loadgbm is NULL i.e. you're running BRTs not
-      # predicting from existing models. Skip to L863
+      # predicting from existing models. Skip to L1302
 
       ####3. Begin Report####
       #reportcolno = (3 + (5*(length(tc)*length(lr)*length(bf))) + 14)
@@ -792,15 +792,15 @@ gbm.auto <- function(
       if (savegbm) { # Save model objects if switched on
         if (ZI) {
           Bin_Best_Model_Object <- get(Bin_Best_Model)
-        Bin_Best_Model <<- Bin_Best_Model_Object
+        # Bin_Best_Model <<- Bin_Best_Model_Object # this causes Bin_Best_Model to BE the model not the name of the original
         } # close if ZI
         if (gaus) {
           Gaus_Best_Model_Object <- get(Gaus_Best_Model)
-        Gaus_Best_Model <<- Gaus_Best_Model_Object
-        save(Gaus_Best_Model_Object,file = paste0("./",names(samples[i]),"/Gaus_Best_Model"))
+        # Gaus_Best_Model <<- Gaus_Best_Model_Object
+        save(Gaus_Best_Model_Object, file = paste0("./",names(samples[i]),"/Gaus_Best_Model"))
         } # close if gaus
         if (ZI) {
-          save(Bin_Best_Model_Object,file = paste0("./",names(samples[i]),"/Bin_Best_Model")) #only save bin if ZI=TRUE
+          save(Bin_Best_Model_Object, file = paste0("./",names(samples[i]),"/Bin_Best_Model")) #only save bin if ZI=TRUE
           } # close if ZI
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Model objects saved     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -941,9 +941,9 @@ gbm.auto <- function(
         # } # close if any fam 1
 
           if (ZI) { # only do if bin exists, previously was: exists("Bin_Best_Model")
-            preds <- predict.gbm(Bin_Best_Model,
+            preds <- predict.gbm(get(Bin_Best_Model),
                                  samples,
-                                 n.trees = Bin_Best_Model$gbm.call$best.trees,
+                                 n.trees = get(Bin_Best_Model)$gbm.call$best.trees,
                                  type = "response")
             #If type="response" then gbm converts back to the same scale as the outcome.
             # Currently the only effect this will have is returning probabilities for
@@ -951,7 +951,7 @@ gbm.auto <- function(
             # "response" and "link" return the same. gbm:::predict.gbm
 
             # dev reported later but not used otherwise
-            dev <- calc.deviance(obs = samples[, Bin_Best_Model$gbm.call$gbm.y],
+            dev <- calc.deviance(obs = samples[, get(Bin_Best_Model)$gbm.call$gbm.y],
                                  pred = preds,
                                  family = "bernoulli") # change fam if using
             # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
@@ -1118,9 +1118,9 @@ gbm.auto <- function(
           # #Gaus metrics won't work as is
           # #Also code this better to reduce duplication & allow for bin & gaus runs
           # if (gaus) { #
-          #   preds <- predict.gbm(Gaus_Best_Model,
+          #   preds <- predict.gbm(get(Gaus_Best_Model),
           #                        samples,
-          #                        n.trees = Gaus_Best_Model$gbm.call$best.trees,
+          #                        n.trees = get(Gaus_Best_Model)$gbm.call$best.trees,
           #                        type = "response")
           #   #If type="response" then gbm converts back to the same scale as the outcome.
           #   # Currently the only effect this will have is returning probabilities for
@@ -1128,7 +1128,7 @@ gbm.auto <- function(
           #   # "response" and "link" return the same. gbm:::predict.gbm
           #
           #   # dev reported later but not used otherwise
-          #   dev <- calc.deviance(obs = samples[, Gaus_Best_Model$gbm.call$gbm.y],
+          #   dev <- calc.deviance(obs = samples[, get(Gaus_Best_Model)$gbm.call$gbm.y],
           #                        pred = preds,
           #                        family = "Gaussian") # change fam if using
           #   # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
@@ -1307,11 +1307,11 @@ gbm.auto <- function(
         # Load model objects if loadgbm set
         if (!is.null(loadgbm)) {
           if (ZI) {  # don't do if ZI=FALSE
-            load(paste0(loadgbm,"Bin_Best_Model"))
+            load(paste0(loadgbm, "Bin_Best_Model"))
             Bin_Best_Model <- "Bin_Best_Model_Object"
           } # close ZI if
           if (gaus) {
-            load(paste0(loadgbm,"Gaus_Best_Model"))
+            load(paste0(loadgbm, "Gaus_Best_Model"))
             Gaus_Best_Model <- "Gaus_Best_Model_Object"
           } # close gaus if
           dir.create(names(samples[i])) # create resvar-named directory for outputs
