@@ -5,7 +5,13 @@
 \alias{AllScaledData}
 \title{Data: Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons}
 \format{
-A data frame with 378570 rows and 3 variables
+A data frame with 378570 rows and 3 variables:
+\describe{
+  \item{Longitude}{Decimal longitudes in the Irish Sea}
+  \item{Latitude}{Decimal latitudes in the Irish Sea}
+  \item{allscaled}{Relative abundance. Each juvenile and adult female
+  cuckoo, blonde, thornback and spotted ray scaled to 1 and added together}
+}
 }
 \usage{
 data(AllScaledData)
@@ -14,14 +20,6 @@ data(AllScaledData)
 A dataset containing the output of the gbm.cons example run, conservation
 priority areas within the Irish Sea for juvenile and adult female cuckoo,
 blonde, thornback and spotted rays.
-}
-\details{
-\itemize{
-  \item Longitude. Decimal longitudes in the Irish Sea
-  \item Latitude. Decimal latitudes in the Irish Sea
-  \item allscaled. Relative abundance. Each juvenile and adult female
-  cuckoo, blonde, thornback and spotted ray scaled to 1 and added together.
-}
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

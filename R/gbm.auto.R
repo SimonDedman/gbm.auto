@@ -400,7 +400,7 @@ gbm.auto <- function(
       Gaus_Best_Model <- 0
 
       # Begin bin loops
-      if(fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+      if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         for (j in tc) {   # list permutations of tree complexity allowed
           for (k in lr) {   # list permutations of learning rate allowed
             for (l in bf) {   # list permutations of bag fraction allowed
@@ -430,7 +430,7 @@ gbm.auto <- function(
               } # close if else n==1
 
               ####6. Add bin stats to report####
-              if(fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
+              if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
                                                                                                                 paste0("Training Data Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
                                                                                                                 paste0("CV Mean Deviance: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
                                                                                                                 paste0("CV Deviance SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
@@ -543,6 +543,10 @@ gbm.auto <- function(
             assign("Gaus_Best_Simp",
                    gbm.step(data = grv_yes,
                             gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
+                            # does the above line return ALL vars or just the simp predictors kept?####
+                            # code from report Gaus_BRT_simp predictors kept column, can potentially drop in place:
+                            # as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
+                            # if this works do the same for bin
                             gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
                             tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
                             learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
@@ -555,7 +559,7 @@ gbm.auto <- function(
         } # close gaus if
 
         ## Select final best models
-        if(fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI. If Bin_Best has a simplified model:
+        if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI. If Bin_Best has a simplified model:
           if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
             # & if the simplified model has better correlation than Bin_Best itself
             if (Bin_Best_Simp$self.statistics$correlation > Bin_Best_Score[1]) {

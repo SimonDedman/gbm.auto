@@ -5,7 +5,25 @@
 \alias{Adult_Females}
 \title{Data: Numbers of 4 adult female rays caught in 2137 Irish Sea trawls, 1994 to 2014}
 \format{
-A data frame with 2137 rows and 13 variables
+A data frame with 2137 rows and 13 variables:
+\describe{
+  \item{Longitude}{Decimal longitudes in the Irish Sea}
+  \item{Latitude}{Decimal latitudes in the Irish Sea}
+  \item{Haul_Index}{ICES IBTS area, survey, station, and year}
+  \item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
+  \item{Depth}{Metres, decimal}
+  \item{Temperature}{Degrees, decimal}
+  \item{Salinity}{PPM}
+  \item{Distance_to_Shore}{Metres, decimal}
+  \item{Current_Speed}{Metres per second at the seabed}
+  \item{Cuckoo}{Numbers of cuckoo rays caught, standardised to 1 hour}
+  \item{Thornback}{Numbers of thornback rays caught, standardised to 1 hour}
+  \item{Blonde}{Numbers of blonde rays caught, standardised to 1 hour}
+  \item{Spotted}{Numbers of spotted rays caught, standardised to 1 hour}
+}
+}
+\source{
+\url{http://datras.ices.dk}
 }
 \usage{
 data(Adult_Females)
@@ -16,26 +34,6 @@ rays in the Irish Sea from 1994 to 2014 by the ICES IBTS, including
 explanatory variables: Length Per Unit Effort in that area by the commercial
 fishery, depth, temperature, distance to shore, and current speed at the
 bottom.
-}
-\details{
-\itemize{
-  \item Longitude. Decimal longitudes in the Irish Sea
-  \item Latitude. Decimal latitudes in the Irish Sea
-  \item Haul_Index. ICES IBTS area, survey, station, and year
-  \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-  \item Depth. Metres, decimal.
-  \item Temperature. Degrees, decimal.
-  \item Salinity. PPM.
-  \item Distance_to_Shore. Metres, decimal.
-  \item Current_Speed. Metres per second at the seabed.
-  \item Cuckoo. Numbers of cuckoo rays caught, standardised to 1 hour
-  \item Thornback. Numbers of thornback rays caught, standardised to 1 hour
-  \item Blonde. Numbers of blonde rays caught, standardised to 1 hour
-  \item Spotted. Numbers of spotted rays caught, standardised to 1 hour
-}
-}
-\references{
-\url{http://datras.ices.dk}
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

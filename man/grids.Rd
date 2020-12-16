@@ -5,7 +5,58 @@
 \alias{grids}
 \title{Data: Explanatory variables for rays in the Irish Sea}
 \format{
-A data frame with 378570 rows and 43 variables
+A data frame with 378570 rows and 43 variables:
+\describe{
+  \item{Longitude}{Decimal longitudes in the Irish Sea}
+  \item{Latitude}{Decimal latitudes in the Irish Sea}
+  \item{Depth}{Metres, decimal}
+  \item{Temperature}{Degrees, decimal}
+  \item{Salinity}{PPM}
+  \item{Current_Speed}{Metres per second at the seabed}
+  \item{Distance_to_Shore}{Metres, decimal}
+  \item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
+  \item{Scallop}{Average KwH Scallop effort from logbooks, Marine Institute and MMO combined}
+  \item{MI_Av_E_Hr}{Average effort hours, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14}
+  \item{MI_Av_LPUE}{Average scallop CPUE, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14}
+  \item{MI_Sum_Liv}{Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
+  0.03*0.02 rectangles, all Irish Sea, 2006-14}
+  \item{Whelk}{MMO Whelk LPUE 2009-12, pivot, polygons to points}
+  \item{MmoAvScKwh}{MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles}
+  \item{HubDist}{map calc, distance of grid point to nearest datras point representing it (for preds)}
+  \item{Cod_C}{ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays}
+  \item{Cod_T}{As Cod_C for yr1 thornback rays}
+  \item{Cod_B}{As Cod_C for yr1 blonde rays}
+  \item{Cod_S}{As Cod_C for yr1 spotted rays}
+  \item{Haddock_C}{As Cod_C, haddock predating upon cuckoo rays}
+  \item{Haddock_T}{As Cod_C, haddock predating upon thornback rays}
+  \item{Haddock_B}{As Cod_C, haddock predating upon blonde rays}
+  \item{Haddock_S}{As Cod_C, haddock predating upon spotted rays}
+  \item{Plaice_C}{As Cod_C, plaice predating upon cuckoo rays}
+  \item{Plaice_T}{As Cod_C, plaice predating upon thornback rays}
+  \item{Plaice_B}{As Cod_C, plaice predating upon blonde rays}
+  \item{Plaice_S}{As Cod_C, plaice predating upon spotted rays}
+  \item{Whiting_C}{As Cod_C, whiting predating upon cuckoo rays}
+  \item{Whiting_T}{As Cod_C, whiting predating upon thornback rays}
+  \item{Whiting_B}{As Cod_C, whiting predating upon blonde rays}
+  \item{Whiting_S}{As Cod_C, whiting predating upon spotted rays}
+  \item{ComSkt_C}{As Cod_C, common skate predating upon cuckoo rays}
+  \item{ComSkt_T}{As Cod_C, common skate predating upon thornback rays}
+  \item{ComSkt_B}{As Cod_C, common skate predating upon blonde rays}
+  \item{ComSkt_S}{As Cod_C, common skate predating upon spotted rays}
+  \item{Blonde_C}{As Cod_C, blonde ray predating upon cuckoo rays}
+  \item{Blonde_T}{As Cod_C, blonde ray predating upon thornback rays}
+  \item{Blonde_S}{As Cod_C, blonde ray predating upon spotted rays}
+  \item{C_Preds}{All predator CPUEs combined for cuckoo rays}
+  \item{T_Preds}{All predator CPUEs combined for thornback rays}
+  \item{B_Preds}{All predator CPUEs combined for blonde rays}
+  \item{S_Preds}{All predator CPUEs combined for spotted rays}
+  \item{Effort}{Irish commercial beam trawler effort 2012}
+}
+}
+\source{
+\url{http://oar.marine.ie/handle/10793/958}
 }
 \usage{
 data(grids)
@@ -13,59 +64,6 @@ data(grids)
 \description{
 A dataset containing explanatory variables for environment, fishery and
 predators of rays including juveniles in the Irish Sea.
-}
-\details{
-\itemize{
-  \item Longitude. Decimal longitudes in the Irish Sea
-  \item Latitude. Decimal latitudes in the Irish Sea
-  \item Depth. Metres, decimal.
-  \item Temperature. Degrees, decimal.
-  \item Salinity. PPM.
-  \item Current_Speed. Metres per second at the seabed.
-  \item Distance_to_Shore. Metres, decimal.
-  \item F_LPUE. Commercial fishery LPUE in Kg/Hr
-  \item Scallop. Average KwH Scallop effort from logbooks, Marine Institute and MMO combined
-  \item MI_Av_E_Hr. Average effort hours, Marine Institute Scallop VMS,
-  0.03*0.02 rectangles, all Irish Sea, 2006-14
-  \item MI_Av_LPUE. Average scallop CPUE, Marine Institute Scallop VMS,
-  0.03*0.02 rectangles, all Irish Sea, 2006-14
-  \item MI_Sum_Liv. Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
-  0.03*0.02 rectangles, all Irish Sea, 2006-14
-  \item Whelk. MMO Whelk LPUE 2009-12, pivot, polygons to points
-  \item MmoAvScKwh. MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles.
-  \item HubDist. map calc, distance of grid point to nearest datras point representing it (for preds)
-  \item Cod_C. ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays.
-  \item Cod_T. As Cod_C for yr1 thornback rays.
-  \item Cod_B. As Cod_C for yr1 blonde rays.
-  \item Cod_S. As Cod_C for yr1 spotted rays.
-  \item Haddock_C. As Cod_C, haddock predating upon cuckoo rays
-  \item Haddock_T. As Cod_C, haddock predating upon thornback rays
-  \item Haddock_B. As Cod_C, haddock predating upon blonde rays
-  \item Haddock_S. As Cod_C, haddock predating upon spotted rays
-  \item Plaice_C. As Cod_C, plaice predating upon cuckoo rays
-  \item Plaice_T. As Cod_C, plaice predating upon thornback rays
-  \item Plaice_B. As Cod_C, plaice predating upon blonde rays
-  \item Plaice_S. As Cod_C, plaice predating upon spotted rays
-  \item Whiting_C. As Cod_C, whiting predating upon cuckoo rays
-  \item Whiting_T. As Cod_C, whiting predating upon thornback rays
-  \item Whiting_B. As Cod_C, whiting predating upon blonde rays
-  \item Whiting_S. As Cod_C, whiting predating upon spotted rays
-  \item ComSkt_C. As Cod_C, common skate predating upon cuckoo rays
-  \item ComSkt_T. As Cod_C, common skate predating upon thornback rays
-  \item ComSkt_B. As Cod_C, common skate predating upon blonde rays
-  \item ComSkt_S. As Cod_C, common skate predating upon spotted rays
-  \item Blonde_C. As Cod_C, blonde ray predating upon cuckoo rays
-  \item Blonde_T. As Cod_C, blonde ray predating upon thornback rays
-  \item Blonde_S. As Cod_C, blonde ray predating upon spotted rays
-  \item C_Preds. All predator CPUEs combined for cuckoo rays.
-  \item T_Preds. All predator CPUEs combined for thornback rays.
-  \item B_Preds. All predator CPUEs combined for blonde rays.
-  \item S_Preds. All predator CPUEs combined for spotted rays.
-  \item Effort.  Irish commercial beam trawler effort 2012
-}
-}
-\references{
-\url{http://oar.marine.ie/handle/10793/958}
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

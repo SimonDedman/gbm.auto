@@ -5,7 +5,16 @@
 \alias{AllPreds_E}
 \title{Data: Predicted abundances of 4 ray species generated using gbm.auto}
 \format{
-A data frame with 378570 rows and 7 variables
+A data frame with 378570 rows and 7 variables:
+\describe{
+  \item{Latitude}{Decimal latitudes in the Irish Sea}
+  \item{Longitude}{Decimal longitudes in the Irish Sea}
+  \item{Cuckoo}{Predicted abundances of cuckoo rays in the Irish Sea, generated using gbm.auto}
+  \item{Thornback}{Predicted abundances of thornback rays in the Irish Sea, generated using gbm.auto}
+  \item{Blonde}{Predicted abundances of blonde rays in the Irish Sea, generated using gbm.auto}
+  \item{Spotted}{Predicted abundances of spotted rays in the Irish Sea, generated using gbm.auto}
+  \item{Effort}{Irish commercial beam trawler effort 2012}
+}
 }
 \usage{
 data(AllPreds_E)
@@ -13,17 +22,6 @@ data(AllPreds_E)
 \description{
 Predicted abundances of 4 ray species generated using gbm.auto, and
 Irish commercial beam trawler effort 2012.
-}
-\details{
-\itemize{
-  \item Latitude. Decimal latitudes in the Irish Sea
-  \item Longitude. Decimal longitudes in the Irish Sea
-  \item Cuckoo. Predicted abundances of cuckoo rays in the Irish Sea, generated using gbm.auto
-  \item Thornback. Predicted abundances of thornback rays in the Irish Sea, generated using gbm.auto
-  \item Blonde. Predicted abundances of blonde rays in the Irish Sea, generated using gbm.auto
-  \item Spotted. Predicted abundances of spotted rays in the Irish Sea, generated using gbm.auto
-  \item Effort. Irish commercial beam trawler effort 2012
-}
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

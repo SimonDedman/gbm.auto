@@ -125,7 +125,7 @@ multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz"}
 
-\item{gaus}{Do Gaussian runs as well as Bin? Default TRUE}
+\item{gaus}{Do family2 (typically Gaussian) runs as well as family1 (typically Bin)? Default TRUE}
 
 \item{MLEvaluate}{do machine learning evaluation metrics & plots? Default TRUE}
 
