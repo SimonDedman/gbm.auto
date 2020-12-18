@@ -220,7 +220,10 @@ could not open file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar)
 Fix with colnames(samples)[n] <- "BetterName"
 }
 \examples{
-gbm.auto(expvar = c(4:8, 10), resvar = 11, grids = mygrids,
+library(gbm.auto)
+data(grids)
+data(samples)
+gbm.auto(grids = grids, samples = samples, expvar = c(4:8, 10), resvar = 11,
 tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
 
 }
