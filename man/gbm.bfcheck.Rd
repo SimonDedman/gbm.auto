@@ -4,14 +4,16 @@
 \alias{gbm.bfcheck}
 \title{Calculates minimum Bag Fraction size for gbm.auto}
 \usage{
-gbm.bfcheck(samples, resvar, ZI = "CHECK")
+gbm.bfcheck(samples, resvar, ZI = "CHECK", grv = NULL)
 }
 \arguments{
-\item{samples}{Samples dataset, same as gbm.auto}
+\item{samples}{Samples dataset, same as gbm.auto.}
 
-\item{resvar}{Response variable column in samples}
+\item{resvar}{Response variable column in samples.}
 
-\item{ZI}{Are samples zero-inflated? TRUE/FALSE/"CHECK"}
+\item{ZI}{Are samples zero-inflated? TRUE/FALSE/"CHECK".}
+
+\item{grv}{Dummy param for package testing for CRAN, ignore.}
 }
 \value{
 Prints minimum Bag Fraction size.

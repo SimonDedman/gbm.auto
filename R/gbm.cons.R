@@ -6,37 +6,43 @@
 #' using juvenile and adult female subsets to locate candidate nursery grounds
 #' and spawning areas respectively.
 #'
-#' @param mygrids Gridded lat+long+data object to predict to
+#' @param mygrids Gridded lat+long+data object to predict to.
 #' @param subsets Subset name(s): character; single or vector, corresponding to
-#' matching-named dataset objects e.g. read in by read.csv()
-#' @param alerts Play sounds to mark progress steps
-#' @param map Produce maps
+#' matching-named dataset objects e.g. read in by read.csv().
+#' @param alerts Play sounds to mark progress steps.
+#' @param map Produce maps.
 #' @param BnW Also produce B&W maps?
-#' @param resvars Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default
+#' @param resvars Vector of resvars cols from dataset objects for gbm.autos,
+#' length(subsets)*species, no default.
 #' @param gbmautos Do gbm.auto runs for species? Default TRUE, set FALSE if
-#' already run and output files in expected directories
-#' @param expvars List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default
-#' @param tcs Gbm.auto parameters, autocalculated below if not provided by user
-#' @param lrs Gbm.auto parameter, uses defaults if not provided by user
-#' @param bfs Gbm.auto parameter, uses defaults if not provided by user
-#' @param ZIs Gbm.auto parameter, autocalculated below if not provided by user
-#' @param colss Gbm.auto parameter, uses defaults if not provided by user
-#' @param linesfiless Gbm.auto parameter, uses defaults if not provided by user
-#' @param savegbms Gbm.auto parameter, uses defaults if not provided by user
-#' @param varints Gbm.auto parameter, uses defaults if not provided by user
-#' @param maps Gbm.auto parameter, uses defaults if not provided by user
-#' @param RSBs Gbm.auto parameter, uses defaults if not provided by user
-#' @param BnWs Gbm.auto parameter, uses defaults if not provided by user
+#' already run and output files in expected directories.
+#' @param expvars List object of expvar vectors for gbm.autos, length = no. of
+#' subsets * no. of species. No default.
+#' @param tcs Gbm.auto parameters, autocalculated below if not provided by user.
+#' @param lrs Gbm.auto parameter, uses defaults if not provided by user.
+#' @param bfs Gbm.auto parameter, uses defaults if not provided by user.
+#' @param ZIs Gbm.auto parameter, autocalculated below if not provided by user.
+#' @param colss Gbm.auto parameter, uses defaults if not provided by user.
+#' @param linesfiless Gbm.auto parameter, uses defaults if not provided by user.
+#' @param savegbms Gbm.auto parameter, uses defaults if not provided by user.
+#' @param varints Gbm.auto parameter, uses defaults if not provided by user.
+#' @param maps Gbm.auto parameter, uses defaults if not provided by user.
+#' @param RSBs Gbm.auto parameter, uses defaults if not provided by user.
+#' @param BnWs Gbm.auto parameter, uses defaults if not provided by user.
 #' @param zeroes For breaks.grid, include zero-only category in colour
-#' breakpoints and subsequent legend. Defaults to TRUE
-#' @param shape Coastline file for gbm.map
-#' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param gridslat per Gbm.auto defaults to 2
-#' @param gridslon per Gbm.auto defaults to 1
+#' breakpoints and subsequent legend. Defaults to TRUE.
+#' @param shape Coastline file for gbm.map.
+#' @param pngtype Filetype for png files, alternatively try "quartz".
+#' @param gridslat Per Gbm.auto defaults to 2.
+#' @param gridslon Per Gbm.auto defaults to 1.
+#' @param grids Dummy param for package testing for CRAN, ignore.
 #'
 #' @return  Maps via gbm.map & saved data as csv file
 #' @export
 #' @importFrom beepr beep
+#' @importFrom grDevices dev.off grey.colors png
+#' @importFrom graphics legend lines par
+#' @importFrom utils read.csv write.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
@@ -46,7 +52,8 @@
 #'                         c(4:11,15,19,23,27,31),
 #'                         c(4:11,15,20,24,28,32,39),
 #'                         4:10, 4:10, 4:10, 4:10),
-#'          tcs = list(c(2,14), c(2,14), 13, c(2,14), c(2,6), c(2,6), 6, c(2,6)),
+#'          tcs = list(c(2,14), c(2,14), 13, c(2,14), c(2,6), c(2,6), 6,
+#'          c(2,6)),
 #'          lrs = list(c(0.01,0.005), c(0.01,0.005), 0.005, c(0.01,0.005),
 #'                0.005, 0.005, 0.001, 0.005),
 #'          ZIs = rep(TRUE, 8),
@@ -82,7 +89,8 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      shape = NULL, # coastline file for gbm.map
                      pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
                      gridslat = 2, #per Gbm.auto defaults to 2
-                     gridslon = 1) #per Gbm.auto defaults to 1
+                     gridslon = 1, #per Gbm.auto defaults to 1
+                     grids = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 {
   ####todo: make running gbm.auto optional####
   # if they've already been run.
@@ -92,8 +100,8 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
 ####Load functions & data####
 if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
 if (is.null(shape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
-if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  if (alerts) require(beepr)
+# if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+#   if (alerts) require(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
 if (gbmautos) {if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length
 for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}

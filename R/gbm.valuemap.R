@@ -1,4 +1,5 @@
-#' Decision Support Tool that generates (Marine) Protected Area options using species predicted abundance maps
+#' Decision Support Tool that generates (Marine) Protected Area options using
+#' species predicted abundance maps
 #'
 #' Scales response variable data, maps a user-defined explanatory variable to be
 #' avoided, e.g. fishing effort, combines them into a map showing areas to
@@ -9,30 +10,32 @@
 #' All maps list the percentage of the avoidvariables total that is overlapped
 #' by the MPA in the map legend.
 #'
-#' @param dbase data.frame to load. Expects Lon, Lat & data columns: predicted
-#' abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
-#' @param loncolno Column number in dbase which has longitudes
-#' @param latcolno Column number in dbase which has latitudes
+#' @param dbase Data.frame to load. Expects Lon, Lat & data columns: predicted
+#' abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto.
+#' @param loncolno Column number in dbase which has longitudes.
+#' @param latcolno Column number in dbase which has latitudes.
 #' @param goodcols Which column numbers are abundances (where higher = better)?
-#' List them in order of highest conservation importance first e.g. c(3,1,2,4)
-#' @param badcols Which col no.s are 'negative' e.g. fishing (where higher = worse)?
-#' @param conservecol Conservation column, from gbm.cons
-#' @param plotthis To plot? delete any,or all w/ NULL
-#' @param maploops Sort loops to run
+#' List them in order of highest conservation importance first e.g. c(3,1,2,4).
+#' @param badcols Which col no.s are 'negative' e.g. fishing (where higher =
+#' worse)?
+#' @param conservecol Conservation column, from gbm.cons.
+#' @param plotthis To plot? delete any,or all w/ NULL.
+#' @param maploops Sort loops to run.
 #' @param savethis Export all data as csv?
 #' @param HRMSY Maximum percent of each goodcols stock which can be removed
 #' yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
-#' number or vector. Same order as goodcols
-#' @param goodweight Single/vector weighting multiple(s) for goodcols array
-#' @param badweight Ditto for badcols array
+#' number or vector. Same order as goodcols.
+#' @param goodweight Single/vector weighting multiple(s) for goodcols array.
+#' @param badweight Ditto for badcols array.
 #' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to
 #' kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.
-#' @param alerts Play sounds to mark progress steps
-#' @param BnW Also produce greyscale images for print publications
+#' @param alerts Play sounds to mark progress steps.
+#' @param BnW Also produce greyscale images for print publications.
 #' @param shape Set coastline shapefile, else uses British Isles. Generate your
-#' own with gbm.basemap
-#' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param ... Optional terms for gbm.map
+#' own with gbm.basemap.
+#' @param pngtype Filetype for png files, alternatively try "quartz".
+#' @param byxport Dummy param for package testing for CRAN, ignore.
+#' @param ... Optional terms for gbm.map.
 #'
 #' @return Species abundance, abundance vs avoid variable, and MPA maps per
 #' species and sort type, in b&w if set. CSVs of all maps if set.
@@ -40,6 +43,9 @@
 #' @export
 #' @import mapplots
 #' @importFrom beepr beep
+#' @importFrom grDevices colorRampPalette dev.off grey.colors png rainbow
+#' @importFrom graphics image legend par
+#' @importFrom utils write.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
 #'
@@ -67,13 +73,14 @@ gbm.valuemap <- function(
   shape = NULL, #  set coastline shapefile, else
   # uses British Isles. Generate your own with gbm.basemap
   pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
+  byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   ...) {  # optional terms for gbm.map
 
   # Check & load gbm.map
   if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
   #require(gbm.map) #for mapping; can't use require on non-CRAN?
-  if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  if (alerts) require(beepr) #for progress noises
+  # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+  # if (alerts) require(beepr) #for progress noises
   if (alerts) options(error = function() {beep(9)})  # warn for fails
 
   if (is.null(shape)) {

@@ -11,14 +11,18 @@
 #' Can be called directly, and choosing a subset of expvars allows one to see
 #' their individual / collective representativeness.
 #'
-#' @param samples Data frame with response and explanatory variables
-#' @param grids Data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids
-#' @param expvarnames Vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.
-#' @param gridslat Column number for latitude in 'grids'
-#' @param gridslon Column number for longitude in 'grids'
+#' @param samples Data frame with response and explanatory variables.
+#' @param grids Data frame of (more/different) explanatory variables and no
+#' response variable, to be predicted to by gbm.predict.grids.
+#' @param expvarnames Vector of column names of explanatory variables being
+#' tested. Can be length 1. Names must match in samples and grids.
+#' @param gridslat Column number for latitude in 'grids'.
+#' @param gridslon Column number for longitude in 'grids'.
 #'
-#' @return Gridded data table of representativeness values which is then mapped with gbm.map and also saved as a csv
+#' @return Gridded data table of representativeness values which is then mapped
+#' with gbm.map and also saved as a csv
 #' @export
+#' @importFrom graphics hist
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples None
 #'
@@ -63,8 +67,9 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
     # create a vector for the modulus lookup results: from that expvar's dataframe, get the modulus value (col5) for the bin range number corresponding to the expvar value in grids
     assign(paste0(expvarnames[q],"_hist_diff_mod"),get(paste0("hist_diff_mod_", expvarnames[q]))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
     # put those 2 vectors in a dafa frame (first expvar) or add them to the existing one (latter expvars)
-    ifelse(q == 1, rsbdf <- data.frame(get(paste0(expvarnames[q],"_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))),
-                   rsbdf <- data.frame(rsbdf, get(paste0(expvarnames[q], "_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))))
+    ifelse(q == 1,
+           rsbdf <- data.frame(get(paste0(expvarnames[q],"_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))),
+           rsbdf <- data.frame(rsbdf, get(paste0(expvarnames[q], "_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))))
     # name those columns
     colnames(rsbdf)[(length(rsbdf) - 1):length(rsbdf)] <- c(paste0(expvarnames[q],"_hist_diff"), paste0(expvarnames[q], "_hist_diff_mod"))
   }  # close expvar loop

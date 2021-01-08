@@ -7,16 +7,17 @@
 roc(obsdat, preddat)
 }
 \arguments{
-\item{obsdat}{Observed data}
+\item{obsdat}{Observed data.}
 
-\item{preddat}{Predicted data}
+\item{preddat}{Predicted data.}
 }
 \value{
-roc & calibration stats internally within gbm runs e.g. in gbm.auto; gbm.predict.grids powers the predictive mapping element of gbm.map
+roc & calibration stats internally within gbm runs e.g. in gbm.auto;
+gbm.predict.grids powers the predictive mapping element of gbm.map
 }
 \description{
-[Note: Man page named after 1st function in script i.e. roc but script
-contains 3. Should be no need for users to interact with these directly]
+Note: Man page named after 1st function in script i.e. roc but script
+contains 3. Should be no need for users to interact with these directly
 }
 \details{
 roc: adapted from Ferrier, Pearce and Watson's code, by J.Elith, see: Hanley,
@@ -47,4 +48,8 @@ None
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
+
+Jane Elith
+
+John Leathwick
 }

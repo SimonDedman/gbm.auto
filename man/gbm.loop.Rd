@@ -33,67 +33,72 @@ gbm.loop(
   alerts = F,
   pngtype = "cairo-png",
   runautos = T,
+  Min.Inf = NULL,
   ...
 )
 }
 \arguments{
-\item{loops}{The number of loops required, integer}
+\item{loops}{The number of loops required, integer.}
 
-\item{savecsv}{Save the coefficients of variation in simple & extended format}
+\item{savecsv}{Save coefficients of variation in simple & extended format.}
 
 \item{calcpreds}{Calculate coefficients of variation of predicted abundance?}
 
 \item{varmap}{Create a map of the coefficients of variation outputs?}
 
-\item{measure}{Map legend, coefficients of variation of what? Default CPUE}
+\item{measure}{Map legend, coefficients of variation of what? Default CPUE.}
 
-\item{cleanup}{Remove gbm.auto-generated directory each loop? Default FALSE}
+\item{cleanup}{Remove gbm.auto-generated directory each loop? Default FALSE.}
 
-\item{grids}{See gbm.auto help for all subsequent params}
+\item{grids}{See gbm.auto help for all subsequent params.}
 
-\item{samples}{See gbm.auto help}
+\item{samples}{See gbm.auto help.}
 
-\item{expvar}{See gbm.auto help}
+\item{expvar}{See gbm.auto help.}
 
-\item{resvar}{See gbm.auto help}
+\item{resvar}{See gbm.auto help.}
 
-\item{tc}{See gbm.auto help}
+\item{tc}{See gbm.auto help.}
 
-\item{lr}{See gbm.auto help}
+\item{lr}{See gbm.auto help.}
 
-\item{bf}{See gbm.auto help}
+\item{bf}{See gbm.auto help.}
 
-\item{ZI}{See gbm.auto help}
+\item{ZI}{See gbm.auto help.}
 
-\item{simp}{See gbm.auto help}
+\item{simp}{See gbm.auto help.}
 
-\item{gridslat}{See gbm.auto help}
+\item{gridslat}{See gbm.auto help.}
 
-\item{gridslon}{See gbm.auto help}
+\item{gridslon}{See gbm.auto help.}
 
-\item{cols}{See gbm.auto help}
+\item{cols}{See gbm.auto help.}
 
-\item{linesfiles}{See gbm.auto help; TRUE else linesfiles calcs will fail}
+\item{linesfiles}{See gbm.auto help; TRUE else linesfiles calcs will fail.}
 
-\item{savegbm}{See gbm.auto help}
+\item{savegbm}{See gbm.auto help.}
 
-\item{varint}{See gbm.auto help}
+\item{varint}{See gbm.auto help.}
 
-\item{map}{See gbm.auto help}
+\item{map}{See gbm.auto help.}
 
-\item{shape}{See gbm.auto help}
+\item{shape}{See gbm.auto help.}
 
-\item{RSB}{See gbm.auto help}
+\item{RSB}{See gbm.auto help.}
 
-\item{BnW}{See gbm.auto help}
+\item{BnW}{See gbm.auto help.}
 
-\item{alerts}{See gbm.auto help; default FALSE as frequent use can crash RStudio}
+\item{alerts}{See gbm.auto help; default FALSE as frequent use can crash
+RStudio.}
 
-\item{pngtype}{See gbm.auto help}
+\item{pngtype}{See gbm.auto help.}
 
-\item{runautos}{run gbm.autos, default TRUE, turn off to only collate numbered-folder results}
+\item{runautos}{Run gbm.autos, default TRUE, turn off to only collate
+numbered-folder results.}
 
-\item{...}{Additional params for gbm.auto subfunctions inc gbm.step}
+\item{Min.Inf}{Dummy param for package testing for CRAN, ignore.}
+
+\item{...}{Additional params for gbm.auto subfunctions inc gbm.step.}
 }
 \value{
 Returns a data frame of lat, long, 1 predicted abundance per loop,

@@ -7,15 +7,19 @@
 breaks.grid(grd, quantile = 0.975, ncol = 12, zero = TRUE)
 }
 \arguments{
-\item{grd}{an array produced by make.grid or a list produced by make.multigrid or a vector of positive values.}
+\item{grd}{An array produced by make.grid or a list produced by
+make.multigrid or a vector of positive values.}
 
-\item{quantile}{the maximum value of the breaks will be determined by the quantile given here.
-This can be used to deal with outlying values in grd.
-If quantile = 1 then the maximum value of the breaks will be the same as the maximum value in grd.}
+\item{quantile}{The maximum value of the breaks will be determined by the
+quantile given here. This can be used to deal with outlying values in grd.
+If quantile = 1 then the maximum value of the breaks will be the same as the
+maximum value in grd.}
 
-\item{ncol}{number of colours to be used, always one more than the number of breakpoints. Defaults to 12.}
+\item{ncol}{Number of colours to be used, always one more than the number of
+breakpoints. Defaults to 12.}
 
-\item{zero}{logical, should zero be included as a separate category? Defaults to TRUE.}
+\item{zero}{Logical, should zero be included as a separate category? Defaults
+to TRUE.}
 }
 \value{
 A vector of breakpoints for draw.grid in mapplots

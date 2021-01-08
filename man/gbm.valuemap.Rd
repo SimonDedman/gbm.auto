@@ -2,7 +2,8 @@
 % Please edit documentation in R/gbm.valuemap.R
 \name{gbm.valuemap}
 \alias{gbm.valuemap}
-\title{Decision Support Tool that generates (Marine) Protected Area options using species predicted abundance maps}
+\title{Decision Support Tool that generates (Marine) Protected Area options using
+species predicted abundance maps}
 \usage{
 gbm.valuemap(
   dbase,
@@ -22,51 +23,55 @@ gbm.valuemap(
   BnW = TRUE,
   shape = NULL,
   pngtype = "cairo-png",
+  byxport = NULL,
   ...
 )
 }
 \arguments{
-\item{dbase}{data.frame to load. Expects Lon, Lat & data columns: predicted
-abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto}
+\item{dbase}{Data.frame to load. Expects Lon, Lat & data columns: predicted
+abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto.}
 
-\item{loncolno}{Column number in dbase which has longitudes}
+\item{loncolno}{Column number in dbase which has longitudes.}
 
-\item{latcolno}{Column number in dbase which has latitudes}
+\item{latcolno}{Column number in dbase which has latitudes.}
 
 \item{goodcols}{Which column numbers are abundances (where higher = better)?
-List them in order of highest conservation importance first e.g. c(3,1,2,4)}
+List them in order of highest conservation importance first e.g. c(3,1,2,4).}
 
-\item{badcols}{Which col no.s are 'negative' e.g. fishing (where higher = worse)?}
+\item{badcols}{Which col no.s are 'negative' e.g. fishing (where higher =
+worse)?}
 
-\item{conservecol}{Conservation column, from gbm.cons}
+\item{conservecol}{Conservation column, from gbm.cons.}
 
-\item{plotthis}{To plot? delete any,or all w/ NULL}
+\item{plotthis}{To plot? delete any,or all w/ NULL.}
 
-\item{maploops}{Sort loops to run}
+\item{maploops}{Sort loops to run.}
 
 \item{savethis}{Export all data as csv?}
 
 \item{HRMSY}{Maximum percent of each goodcols stock which can be removed
 yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
-number or vector. Same order as goodcols}
+number or vector. Same order as goodcols.}
 
-\item{goodweight}{Single/vector weighting multiple(s) for goodcols array}
+\item{goodweight}{Single/vector weighting multiple(s) for goodcols array.}
 
-\item{badweight}{Ditto for badcols array}
+\item{badweight}{Ditto for badcols array.}
 
 \item{m}{Multiplication factor for Bpa units. 1000 to convert tonnes to
 kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.}
 
-\item{alerts}{Play sounds to mark progress steps}
+\item{alerts}{Play sounds to mark progress steps.}
 
-\item{BnW}{Also produce greyscale images for print publications}
+\item{BnW}{Also produce greyscale images for print publications.}
 
 \item{shape}{Set coastline shapefile, else uses British Isles. Generate your
-own with gbm.basemap}
+own with gbm.basemap.}
 
-\item{pngtype}{Filetype for png files, alternatively try "quartz"}
+\item{pngtype}{Filetype for png files, alternatively try "quartz".}
 
-\item{...}{Optional terms for gbm.map}
+\item{byxport}{Dummy param for package testing for CRAN, ignore.}
+
+\item{...}{Optional terms for gbm.map.}
 }
 \value{
 Species abundance, abundance vs avoid variable, and MPA maps per

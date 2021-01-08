@@ -17,27 +17,29 @@ gbm.basemap(
 )
 }
 \arguments{
-\item{bounds}{Region to crop to: c(xmin,xmax,ymin,ymax)}
+\item{bounds}{Region to crop to: c(xmin,xmax,ymin,ymax).}
 
-\item{grids}{if bounds unspecified, name your grids database here}
+\item{grids}{If bounds unspecified, name your grids database here.}
 
-\item{gridslat}{if bounds unspecified, specify which column in grids is latitude}
+\item{gridslat}{If bounds unspecified, specify which column in grids is
+latitude.}
 
-\item{gridslon}{if bounds unspecified, specify which column in grids is longitude}
+\item{gridslon}{If bounds unspecified, specify which column in grids is
+longitude.}
 
 \item{getzip}{Download & unpack GSHHS data to WD? "TRUE" else
-absolute/relative reference to GSHHS_shp folder, inc that folder}
+absolute/relative reference to GSHHS_shp folder, inc that folder.}
 
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
-if this is incorrect}
+if this is incorrect.}
 
 \item{savename}{Shapefile savename with .shp extension, default is "Crop_Map"}
 
 \item{res}{Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
-intermediate, high, full) or "CALC" to calculate based on bounds}
+intermediate, high, full) or "CALC" to calculate based on bounds.}
 
 \item{extrabounds}{Grow bounds 16pct each direction to expand rectangular
-datasets basemaps over the entire square area created by basemap in mapplots}
+datasets basemaps over the entire square area created by basemap in mapplots.}
 }
 \value{
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
@@ -65,10 +67,10 @@ Ensure that your lats and longs are the the right way around
 }
 \examples{
 mybounds <- c(range(samples[,3]),range(samples[,2]))
-gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename =
-"My_Crop_Map", res = "f")
-In this example GSHHS folder already downloaded to the working directory
-hence I pointed getzip at that rather than having it download the zip again.
+gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
+savename = "My_Crop_Map", res = "f")
+# In this example GSHHS folder already downloaded to the working directory
+# hence I pointed getzip at that rather than having it download the zip again
 
 }
 \author{

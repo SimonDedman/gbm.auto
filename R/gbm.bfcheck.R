@@ -4,9 +4,10 @@
 #' due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
 #' github.com/SimonDedman/gbm.auto
 #'
-#' @param samples Samples dataset, same as gbm.auto
-#' @param resvar Response variable column in samples
-#' @param ZI Are samples zero-inflated? TRUE/FALSE/"CHECK"
+#' @param samples Samples dataset, same as gbm.auto.
+#' @param resvar Response variable column in samples.
+#' @param ZI Are samples zero-inflated? TRUE/FALSE/"CHECK".
+#' @param grv Dummy param for package testing for CRAN, ignore.
 #'
 #' @return Prints minimum Bag Fraction size.
 #' @export
@@ -15,7 +16,8 @@
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
   resvar, # response variable column in samples
-  ZI = "CHECK") # are samples zero-inflated? TRUE/FALSE/"CHECK"
+  ZI = "CHECK", # are samples zero-inflated? TRUE/FALSE/"CHECK"
+  grv = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 {
 
 # gbm.bfcheck: provides minimum bag fractions for gbm.auto,

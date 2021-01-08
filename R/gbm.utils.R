@@ -1,7 +1,7 @@
 #' gbm.utils: roc, calibration & gbm.predict.grids functions bundle
 #'
-#' [Note: Man page named after 1st function in script i.e. roc but script
-#' contains 3. Should be no need for users to interact with these directly]
+#' Note: Man page named after 1st function in script i.e. roc but script
+#' contains 3. Should be no need for users to interact with these directly
 #'
 #' roc: adapted from Ferrier, Pearce and Watson's code, by J.Elith, see: Hanley,
 #' J.A. & McNeil, B.J. (1982) The meaning and use of the area under a Receiver
@@ -26,12 +26,19 @@
 #' without nodata values excluded).filepath must specify the whole path as a
 #' character vector,but without the final file name - eg "c:/gbm/"
 #'
-#' @param obsdat Observed data
-#' @param preddat Predicted data
+#' @param obsdat Observed data.
+#' @param preddat Predicted data.
 #'
-#' @return roc & calibration stats internally within gbm runs e.g. in gbm.auto; gbm.predict.grids powers the predictive mapping element of gbm.map
+#' @return roc & calibration stats internally within gbm runs e.g. in gbm.auto;
+#' gbm.predict.grids powers the predictive mapping element of gbm.map
 #' @importFrom gbm predict.gbm
+#' @importFrom grDevices topo.colors
+#' @importFrom graphics image
+#' @importFrom stats binomial glm pchisq poisson
+#' @importFrom utils write.table
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
+#' @author Jane Elith
+#' @author John Leathwick
 #' @examples None
 roc <- function(obsdat, preddat) {
 # code adapted from Ferrier, Pearce and Watson's code, by J.Elith

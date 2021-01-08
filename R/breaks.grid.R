@@ -5,14 +5,20 @@
 #' Forked by SD 05/01/2019 to add 'lo', else bins always begin at 0, killing
 #' plotting when all data are in a tight range at high values e.g. 600:610
 #'
-#' @param grd an array produced by make.grid or a list produced by make.multigrid or a vector of positive values.
-#' @param quantile the maximum value of the breaks will be determined by the quantile given here.
-#' This can be used to deal with outlying values in grd.
-#' If quantile = 1 then the maximum value of the breaks will be the same as the maximum value in grd.
-#' @param ncol number of colours to be used, always one more than the number of breakpoints. Defaults to 12.
-#' @param zero logical, should zero be included as a separate category? Defaults to TRUE.
+#' @param grd An array produced by make.grid or a list produced by
+#'  make.multigrid or a vector of positive values.
+#' @param quantile The maximum value of the breaks will be determined by the
+#' quantile given here. This can be used to deal with outlying values in grd.
+#' If quantile = 1 then the maximum value of the breaks will be the same as the
+#' maximum value in grd.
+#' @param ncol Number of colours to be used, always one more than the number of
+#' breakpoints. Defaults to 12.
+#' @param zero Logical, should zero be included as a separate category? Defaults
+#'  to TRUE.
 #'
+#' @export
 #' @return A vector of breakpoints for draw.grid in mapplots
+#' @importFrom graphics legend
 #' @author Hans Gerritsen, Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' breaks.grid(100,ncol=6)
@@ -21,7 +27,7 @@
 #' # create breaks on the log scale
 #' exp(breaks.grid(log(10000),ncol=4,zero=FALSE))
 
-breaks.grid <- function (grd, quantile = 0.975, ncol = 12, zero = TRUE)
+breaks.grid <- function(grd, quantile = 0.975, ncol = 12, zero = TRUE)
 {
   if (is.list(grd) == F)
     grd <- list(grd)

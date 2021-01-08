@@ -12,70 +12,78 @@
 #' and thesis published using this package.
 #'
 #' @param grids Explantory data to predict to. Import with (e.g.) read.csv and
-#' specify object name. Defaults to NULL (won't predict to grids)
+#' specify object name. Defaults to NULL (won't predict to grids).
 #' @param samples Explanatory and response variables to predict from. Keep col
 #' names short (~17 characters max), no odd characters, spaces, starting
 #' numerals or terminal periods. Spaces may be converted to periods in directory
 #' names, underscores won't. Can be a subset of a large dataset.
 #' @param expvar List of names or column numbers of explanatory variables in
-#' 'samples': c(1,3,6) or c("Temp","Sal"). No default
+#' 'samples': c(1,3,6) or c("Temp","Sal"). No default.
 #' @param resvar Name or column number(s) of response variable in samples: 12,
-#' c(1,4), "Rockfish". No default. Column name is ideally species name
+#' c(1,4), "Rockfish". No default. Column name is ideally species name.
 #' @param tc Permutations of tree complexity allowed, can be vector with
 #' the largest sized number no larger than the number of explanatory variables
 #' e.g. c(2,7), or a list of 2 single numbers or vectors, the first to be passed
 #' to the binary BRT, the second to the Gaussian, e.g. tc = list(c(2,6), 2) or
-#' list(6, c(2,6))
+#' list(6, c(2,6)).
 #' @param lr Permutations of learning rate allowed. Can be a vector or a list of
 #' 2 single numbers or vectors, the first to be passed to the binary BRT, the
 #' second to the Gaussian, e.g. lr = list(c(0.01,0.02),0.0001) or
-#' list(0.01,c(0.001, 0.0005))
+#' list(0.01,c(0.001, 0.0005)).
 #' @param bf Permutations of bag fraction allowed, can be single number, vector
-#' or list, per tc and lr. Defaults to 0.5
-#' @param n.trees from gbm.step, number of initial trees to fit. Can be
-#' single or list but not vector i.e. list(fam1,fam2)
-#' @param ZI are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
+#' or list, per tc and lr. Defaults to 0.5.
+#' @param n.trees From gbm.step, number of initial trees to fit. Can be
+#' single or list but not vector i.e. list(fam1,fam2).
+#' @param ZI Are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
 #' log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
 #' only, no log-normalisation. CHECK: Tests data for you. Default is CHECK.
-#' @param fam1 probability distribution family for 1st part of delta process,
-#' defaults to "bernoulli"
-#' @param fam2 probability distribution family for 2nd part of delta process,
-#' defaults to "gaussian"
+#' @param fam1 Probability distribution family for 1st part of delta process,
+#' defaults to "bernoulli".
+#' @param fam2 Probability distribution family for 2nd part of delta process,
+#' defaults to "gaussian".
 #' @param simp Try simplfying best BRTs?
-#' @param gridslat Column number for latitude in 'grids'
-#' @param gridslon Column number for longitude in 'grids'
-#' @param multiplot create matrix plot of all line files? Default true
+#' @param gridslat Column number for latitude in 'grids'.
+#' @param gridslon Column number for longitude in 'grids'.
+#' @param multiplot Create matrix plot of all line files? Default true.
 #' turn off if big n of exp vars causes an error due to margin size problems.
 #' @param cols Barplot colour vector. Assignment in order of explanatory
-#' variables. Default 1*white: white bars black borders. '1*' repeats
-#' @param linesfiles Save individual line plots' data as csv's? Default TRUE
-#' @param smooth Apply a smoother to the line plots? Default FALSE
+#' variables. Default 1*white: white bars black borders. '1*' repeats.
+#' @param linesfiles Save individual line plots' data as csv's? Default TRUE.
+#' @param smooth Apply a smoother to the line plots? Default FALSE.
 #' @param savegbm Save gbm objects and make available in environment after
-#' running? Open with load("Bin_Best_Model") Default TRUE
+#' running? Open with load("Bin_Best_Model") Default TRUE.
 #' @param loadgbm Relative or absolute location of folder containing
 #' Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
 #' predicted maps and csvs. Avoids re-running BRT models again (the slow bit),
 #' can run normally once with savegbm=T then multiple times with new grids &
 #' loadgbm to predict to multiple grids e.g. different seasons, areas, etc.
-#' Default NULL, character vector, "./" for working directory
+#' Default NULL, character vector, "./" for working directory.
 #' @param varint Calculate variable interactions? Default:TRUE, FALSE for error:
-#' "contrasts can be applied only to factors with 2 or more levels"
+#' "contrasts can be applied only to factors with 2 or more levels".
 #' @param map Save abundance map png files?
 #' @param shape Set coast shapefile, else bounds calculated by gbm.map which
 #' then calls gbm.basemap to download and autogenerate the base map. Read in
 #' existing files by installing the shapefiles package then
 #' DesiredMapName <- read.shapefile("ShapeFileName")
-#' omitting the .shp extension
-#' @param RSB Run Unrepresentativeness surface builder? Default TRUE
-#' @param BnW Repeat maps in black and white e.g. for print journals. Default TRUE
+#' omitting the .shp extension.
+#' @param RSB Run Unrepresentativeness surface builder? Default TRUE.
+#' @param BnW Repeat maps in black and white e.g. for print journals. Default
+#' TRUE.
 #' @param alerts Play sounds to mark progress steps. Default TRUE but running
-#' multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash
-#' @param pngtype Filetype for png files, alternatively try "quartz"
-#' @param gaus Do family2 (typically Gaussian) runs as well as family1 (typically Bin)? Default TRUE
-#' @param MLEvaluate do machine learning evaluation metrics & plots? Default TRUE
+#' multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash.
+#' @param pngtype Filetype for png files, alternatively try "quartz".
+#' @param gaus Do family2 (typically Gaussian) runs as well as family1
+#' (typically Bin)? Default TRUE.
+#' @param MLEvaluate do machine learning evaluation metrics & plots? Default
+#' TRUE.
+#' @param brv Dummy param for package testing for CRAN, ignore.
+#' @param grv Dummy param for package testing for CRAN, ignore.
+#' @param Bin_Preds Dummy param for package testing for CRAN, ignore.
+#' @param Gaus_Preds Dummy param for package testing for CRAN, ignore.
 #' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
 #' legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
-#' max.trees, both of which can be added in list(1,2) format to pass to fam1 and 2
+#' max.trees, both of which can be added in list(1,2) format to pass to fam1 and
+#'  2.
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics
 #' for tests, variable interactions, predictors used and dropped, etc. If
@@ -83,13 +91,15 @@
 #'
 #' @details Errors and their origins:
 #'
-#' 0. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package ‘gbm.auto’
-#' for linux/*buntu systems, in terminal, type
+#' 0. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package
+#'  ‘gbm.auto’
+#' For linux/*buntu systems, in terminal, type
 #' sudo apt install libgeos-dev
 #' sudo apt install libproj-dev
 #' sudo apt install libgdal-dev
 #'
-#' 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric variables
+#' 1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric
+#' variables
 #' > Check your variable types are correct, e.g. numerics haven't been imported
 #' as factors because there's an errant first row of text information before the
 #' data. Remove NA rows from the response variable if present: convert blank
@@ -102,29 +112,35 @@
 #' 3. Maps/plots dont work/output
 #' > If on a Mac, try changing pngtype to "quartz"
 #'
-#' 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted < max.trees)  :
-#'  missing value where TRUE/FALSE needed
+#' 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
+#' max.trees): missing value where TRUE/FALSE needed
 #' > If running a zero-inflated delta model (bernoilli/bin & gaussian/gaus),
 #' Data are expected to contain zeroes (lots of them in zero-inflated cases),
 #' have you already filtered them out, i.e. are only testing the positive cases?
-#' Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to FALSE
+#' Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to
+#'  FALSE
 #'
 #' 5. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric
 #' argument to mathematical function
-#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest
+#' TC)
 #'
 #' 6. Error in if (n.trees > x$n.trees) { : argument is of length zero}
-#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest
+#' TC)
 #'
-#' 7. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w)
+#' 7. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w =
+#' w)
 #' The dataset size is too small or subsampling rate is too large:
 #' nTrain*bag.fraction <= n.minobsinnode
-#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest
+#' TC)
 #' It may be that you don't have enough positive samples to run BRT modelling
 #' Run gbm.bfcheck to check recommended minimum BF size
 #'
 #' 8. Warning message: In cor(y_i, u_i) : the standard deviation is zero
-#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest TC)
+#' > LR or BF probably too low in earlier BRT (normally Gaus run with highest
+#' TC)
 #' It may be that you don't have enough positive samples to run BRT modelling
 #' Run gbm.bfcheck to check recommended minimum BF size
 #'
@@ -136,16 +152,17 @@
 #' > In RStudio, adjust plot frame (usually bottom right) to increase its size
 #' Still fails? Set multiplot=FALSE
 #'
-#' 11. Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"),
-#' : can only print from a screen device
+#' 11. Error in dev.print(file = paste0("./", names(samples[i]),
+#' "/pred_dev_bin.jpeg"): can only print from a screen device
 #' > An earlier failed run (e.g. LR/BF too low) left a plotting device open.
 #' Close it with: dev.off()
 #'
 #' 12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting
 #' to a synced folder
 #'
-#' 13. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg",
-#' could not open file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar)
+#' 13. Error in grDevices::dev.copy(device = function (filename =
+#' "Rplot%03d.jpeg", could not open file './P_PECTINATA..../pred_dev_bin.jpeg'
+#' (or similar)
 #' > Your resvar column name contains an illegal character e.g. / & ' _
 #' Fix with colnames(samples)[n] <- "BetterName"
 #'
@@ -162,6 +179,10 @@
 #' @import dismo
 #' @importFrom beepr beep
 #' @importFrom gbm plot.gbm
+#' @importFrom grDevices dev.off dev.print graphics.off grey.colors jpeg png
+#' @importFrom graphics axis barplot image legend lines mtext par text
+#' @importFrom stats sd
+#' @importFrom utils read.csv write.csv
 #'
 gbm.auto <- function(
   grids = NULL,         # explantory data to predict to. Import with (e.g.)
@@ -220,6 +241,10 @@ gbm.auto <- function(
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
   gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
   MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
+  brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
 # legend in legend.grid in gbm.map, mapmain in gbm.map
 # (default = "Predicted CPUE (numbers per hour): ") and gbm.step (dismo package)
@@ -243,19 +268,19 @@ gbm.auto <- function(
   # gbm.rsb, gbm.valuemap, gbm.cons, gbm.basemap
 
   ####1. Check packages, start loop####
-  if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
-  if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
-  if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
+  # if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
+  # if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
+  # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+  # if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
   if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
   if (RSB) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
   if (RSB) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
   if (!is.null(grids)) if (!exists("gbm.predict.grids")) {stop("you need to install the gbm.predict.grids function from gbm.utils.R to run this function")}
   if (!exists("roc")) {stop("you need to install the roc function from gbm.utils.R to run this function")}
   if (!exists("calibration")) {stop("you need to install the calibration function from gbm.utils.R to run this function")}
-  require(gbm)
-  require(dismo)
-  if (alerts) require(beepr)
+  # require(gbm)
+  # require(dismo)
+  # if (alerts) require(beepr)
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
@@ -451,9 +476,9 @@ gbm.auto <- function(
                 print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)), "     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
               } # else if gaus
               n <- n + 1   # Add to print counter
-            } # close bf
-          } # close lr
-        } # close tc
+            } # close bf l
+          } # close lr k
+        } # close tc j
       } # close ZI option, making all bin BRT objects & continuing through model selection
 
       # Begin Gaus loops
@@ -1371,7 +1396,7 @@ gbm.auto <- function(
           grids$Gaus_Preds <- Gaus_Preds
 
           ####21. Backtransform logged Gaus to unlogged####
-          if (gaus) grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
+          grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
 
           ####22. BIN*positive abundance = final abundance####
           grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds

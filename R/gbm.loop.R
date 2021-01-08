@@ -5,41 +5,48 @@
 #' predicted abundance scores for each site aka cell. This can be mapped to
 #' spatially demonstrate the output variance range.
 #'
-#' @param loops The number of loops required, integer
-#' @param savecsv Save the coefficients of variation in simple & extended format
+#' @param loops The number of loops required, integer.
+#' @param savecsv Save coefficients of variation in simple & extended format.
 #' @param calcpreds Calculate coefficients of variation of predicted abundance?
 #' @param varmap Create a map of the coefficients of variation outputs?
-#' @param measure Map legend, coefficients of variation of what? Default CPUE
-#' @param cleanup Remove gbm.auto-generated directory each loop? Default FALSE
-#' @param grids See gbm.auto help for all subsequent params
-#' @param samples See gbm.auto help
-#' @param expvar See gbm.auto help
-#' @param resvar See gbm.auto help
-#' @param tc See gbm.auto help
-#' @param lr See gbm.auto help
-#' @param bf See gbm.auto help
-#' @param ZI See gbm.auto help
-#' @param simp See gbm.auto help
-#' @param gridslat See gbm.auto help
-#' @param gridslon See gbm.auto help
-#' @param cols See gbm.auto help
-#' @param linesfiles See gbm.auto help; TRUE else linesfiles calcs will fail
-#' @param savegbm See gbm.auto help
-#' @param varint See gbm.auto help
-#' @param map See gbm.auto help
-#' @param shape See gbm.auto help
-#' @param RSB See gbm.auto help
-#' @param BnW See gbm.auto help
-#' @param alerts See gbm.auto help; default FALSE as frequent use can crash RStudio
-#' @param pngtype See gbm.auto help
-#' @param runautos run gbm.autos, default TRUE, turn off to only collate numbered-folder results
-#' @param ... Additional params for gbm.auto subfunctions inc gbm.step
+#' @param measure Map legend, coefficients of variation of what? Default CPUE.
+#' @param cleanup Remove gbm.auto-generated directory each loop? Default FALSE.
+#' @param grids See gbm.auto help for all subsequent params.
+#' @param samples See gbm.auto help.
+#' @param expvar See gbm.auto help.
+#' @param resvar See gbm.auto help.
+#' @param tc See gbm.auto help.
+#' @param lr See gbm.auto help.
+#' @param bf See gbm.auto help.
+#' @param ZI See gbm.auto help.
+#' @param simp See gbm.auto help.
+#' @param gridslat See gbm.auto help.
+#' @param gridslon See gbm.auto help.
+#' @param cols See gbm.auto help.
+#' @param linesfiles See gbm.auto help; TRUE else linesfiles calcs will fail.
+#' @param savegbm See gbm.auto help.
+#' @param varint See gbm.auto help.
+#' @param map See gbm.auto help.
+#' @param shape See gbm.auto help.
+#' @param RSB See gbm.auto help.
+#' @param BnW See gbm.auto help.
+#' @param alerts See gbm.auto help; default FALSE as frequent use can crash
+#' RStudio.
+#' @param pngtype See gbm.auto help.
+#' @param runautos Run gbm.autos, default TRUE, turn off to only collate
+#' numbered-folder results.
+#' @param Min.Inf Dummy param for package testing for CRAN, ignore.
+#' @param ... Additional params for gbm.auto subfunctions inc gbm.step.
 #'
 #' @return Returns a data frame of lat, long, 1 predicted abundance per loop,
 #' and a final variance score per cell.
 #'
 #' @export
 #' @importFrom beepr beep
+#' @importFrom grDevices dev.off grey.colors png
+#' @importFrom graphics axis barplot legend lines mtext par text
+#' @importFrom stats var
+#' @importFrom utils read.csv write.csv
 #'
 #' @examples
 #' library("gbm.auto")
@@ -97,6 +104,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      alerts = F,        # play sounds to mark progress steps
                      pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
                      runautos = T,      # run gbm.autos, default TRUE, turn off to only collate numbered-folder results
+                     Min.Inf = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
                      ...) {
   # Generalised Boosting Model / Boosted Regression Tree process chain automater
   # Simon Dedman, 2012-8 simondedman@gmail.com github.com/SimonDedman/gbm.auto
@@ -111,8 +119,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # Runautos doesn't work: binbars.df & gausbars.df are created & incrementally grown within the autos loop then accessed afterwards.
   # Would need to do this separately somehow, possibly a separate loop to pull these data from a source file csv?
 
-  if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  if (alerts) require(beepr)
+  # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
+  # if (alerts) require(beepr)
 
   binbars.df <- data.frame(var = rep(NA, length(expvar)),
                            rel.inf = rep(NA, length(expvar)))
@@ -121,7 +129,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                           AUC = rep(NA, length(loops)),
                           GausCV = rep(NA, length(loops)))
   if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
-  if(runautos) { # run gbm.autos unless turned off
+  if (runautos) { # run gbm.autos unless turned off
     for (i in 1:loops) { # loop through all gbm.autos
       dir.create(paste0("./", i)) # create i'th folder
       setwd(paste0("./", i)) # move to it
@@ -158,9 +166,9 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
       # adding i'th loop's values as new column
       if (bin) for (j in colnames(samples[expvar])) {
-        if(!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
+        if (!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
         #if file not created because simp, populate with 0s
-        if(file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))}
+        if (file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))}
         #else use values
 
         colnames(tmp)[2] <- paste0("Loop",i)
@@ -168,10 +176,10 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         } else {
           assign(paste0("binline_", j), cbind(get(paste0("binline_", j)),
                                               tmp[,2]))
-          if(is.na(get(paste0("binline_", j))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+          if (is.na(get(paste0("binline_", j))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
             assign(paste0("binline_", j), #rebuild same obj as df
                    data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
-                              get(paste0("binline_", j))[,2:(i+1)]))} #then add the remainder of the existing obj cols
+                              get(paste0("binline_", j))[,2:(i + 1)]))} #then add the remainder of the existing obj cols
         }}
 
       if (file.exists("Gaussian BRT Variable contributions.csv")) {
@@ -181,19 +189,19 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         gaus = TRUE} else gaus = FALSE
 
       if (gaus) for (k in colnames(samples[expvar])) {
-        if(!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
+        if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
         #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
         #else use existing csv file, 2 columns
-        if(file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
+        if (file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
         colnames(tmp)[2] <- paste0("Loop",i)
         if (i == 1) {assign(paste0("gausline_", k), tmp)
         } else {
           assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
                                                tmp[,2]))
-          if(is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+          if (is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
             assign(paste0("gausline_", k), #rebuild same obj as df
                    data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
-                              get(paste0("gausline_", k))[,2:(i+1)]))} #then add the remainder of the existing obj cols
+                              get(paste0("gausline_", k))[,2:(i + 1)]))} #then add the remainder of the existing obj cols
           #column cbound but not named. Can name as string "col name" = 1:10, or
           #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
           #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]

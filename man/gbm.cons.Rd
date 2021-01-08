@@ -28,60 +28,65 @@ gbm.cons(
   shape = NULL,
   pngtype = "cairo-png",
   gridslat = 2,
-  gridslon = 1
+  gridslon = 1,
+  grids = NULL
 )
 }
 \arguments{
-\item{mygrids}{Gridded lat+long+data object to predict to}
+\item{mygrids}{Gridded lat+long+data object to predict to.}
 
 \item{subsets}{Subset name(s): character; single or vector, corresponding to
-matching-named dataset objects e.g. read in by read.csv()}
+matching-named dataset objects e.g. read in by read.csv().}
 
-\item{alerts}{Play sounds to mark progress steps}
+\item{alerts}{Play sounds to mark progress steps.}
 
-\item{map}{Produce maps}
+\item{map}{Produce maps.}
 
 \item{BnW}{Also produce B&W maps?}
 
-\item{resvars}{Vector of resvars cols from dataset objects for gbm.autos, length(subsets)*species, no default}
+\item{resvars}{Vector of resvars cols from dataset objects for gbm.autos,
+length(subsets)*species, no default.}
 
 \item{gbmautos}{Do gbm.auto runs for species? Default TRUE, set FALSE if
-already run and output files in expected directories}
+already run and output files in expected directories.}
 
-\item{expvars}{List object of expvar vectors for gbm.autos, length = no. of subsets * no. of species. No default}
+\item{expvars}{List object of expvar vectors for gbm.autos, length = no. of
+subsets * no. of species. No default.}
 
-\item{tcs}{Gbm.auto parameters, autocalculated below if not provided by user}
+\item{tcs}{Gbm.auto parameters, autocalculated below if not provided by user.}
 
-\item{lrs}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{lrs}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{bfs}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{bfs}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{ZIs}{Gbm.auto parameter, autocalculated below if not provided by user}
+\item{ZIs}{Gbm.auto parameter, autocalculated below if not provided by user.}
 
-\item{colss}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{colss}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{linesfiless}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{linesfiless}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{savegbms}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{savegbms}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{varints}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{varints}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{maps}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{maps}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{RSBs}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{RSBs}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{BnWs}{Gbm.auto parameter, uses defaults if not provided by user}
+\item{BnWs}{Gbm.auto parameter, uses defaults if not provided by user.}
 
 \item{zeroes}{For breaks.grid, include zero-only category in colour
-breakpoints and subsequent legend. Defaults to TRUE}
+breakpoints and subsequent legend. Defaults to TRUE.}
 
-\item{shape}{Coastline file for gbm.map}
+\item{shape}{Coastline file for gbm.map.}
 
-\item{pngtype}{Filetype for png files, alternatively try "quartz"}
+\item{pngtype}{Filetype for png files, alternatively try "quartz".}
 
-\item{gridslat}{per Gbm.auto defaults to 2}
+\item{gridslat}{Per Gbm.auto defaults to 2.}
 
-\item{gridslon}{per Gbm.auto defaults to 1}
+\item{gridslon}{Per Gbm.auto defaults to 1.}
+
+\item{grids}{Dummy param for package testing for CRAN, ignore.}
 }
 \value{
 Maps via gbm.map & saved data as csv file
@@ -101,7 +106,8 @@ gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
                         c(4:11,15,19,23,27,31),
                         c(4:11,15,20,24,28,32,39),
                         4:10, 4:10, 4:10, 4:10),
-         tcs = list(c(2,14), c(2,14), 13, c(2,14), c(2,6), c(2,6), 6, c(2,6)),
+         tcs = list(c(2,14), c(2,14), 13, c(2,14), c(2,6), c(2,6), 6,
+         c(2,6)),
          lrs = list(c(0.01,0.005), c(0.01,0.005), 0.005, c(0.01,0.005),
                0.005, 0.005, 0.001, 0.005),
          ZIs = rep(TRUE, 8),

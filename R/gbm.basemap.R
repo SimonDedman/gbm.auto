@@ -5,19 +5,21 @@
 #' "Use secure download method for HTTP" in Tools > Global Options > Packages.
 #' Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 #'
-#' @param bounds Region to crop to: c(xmin,xmax,ymin,ymax)
-#' @param grids if bounds unspecified, name your grids database here
-#' @param gridslat if bounds unspecified, specify which column in grids is latitude
-#' @param gridslon if bounds unspecified, specify which column in grids is longitude
+#' @param bounds Region to crop to: c(xmin,xmax,ymin,ymax).
+#' @param grids If bounds unspecified, name your grids database here.
+#' @param gridslat If bounds unspecified, specify which column in grids is
+#' latitude.
+#' @param gridslon If bounds unspecified, specify which column in grids is
+#' longitude.
 #' @param getzip Download & unpack GSHHS data to WD? "TRUE" else
-#' absolute/relative reference to GSHHS_shp folder, inc that folder
+#' absolute/relative reference to GSHHS_shp folder, inc that folder.
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
-#'  if this is incorrect
+#'  if this is incorrect.
 #' @param savename Shapefile savename with .shp extension, default is "Crop_Map"
 #' @param res Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
-#' intermediate, high, full) or "CALC" to calculate based on bounds
+#' intermediate, high, full) or "CALC" to calculate based on bounds.
 #' @param extrabounds Grow bounds 16pct each direction to expand rectangular
-#' datasets basemaps over the entire square area created by basemap in mapplots
+#' datasets basemaps over the entire square area created by basemap in mapplots.
 
 #'
 #' @return basemap coastline file for gbm.map in gbm.auto. "cropshp"
@@ -31,13 +33,16 @@
 #' @importFrom maptools writeSpatialShape
 #' @importFrom raster crop
 #' @importFrom shapefiles read.shapefile
+#' @importFrom graphics lines par
+#' @importFrom utils download.file unzip
+#' @importFrom sf read_sf st_crop st_write
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' mybounds <- c(range(samples[,3]),range(samples[,2]))
-#' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/", savename =
-#' "My_Crop_Map", res = "f")
-#' In this example GSHHS folder already downloaded to the working directory
-#' hence I pointed getzip at that rather than having it download the zip again.
+#' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
+#' savename = "My_Crop_Map", res = "f")
+#' # In this example GSHHS folder already downloaded to the working directory
+#' # hence I pointed getzip at that rather than having it download the zip again
 #'
 #' @details errors and their origins:
 #'
@@ -50,6 +55,9 @@
 #' compatible Spatial*DataFrame.
 #' Ensure that your lats and longs are the the right way around
 #'
+#' 3. If rgdal install fails in linux try:
+#' sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
+#'
 gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
                         grids = NULL, # if bounds unspecified, name your grids database here
                         gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
@@ -60,33 +68,32 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
                         extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
 
-print(paste("if rgdal install fails in linux try: sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"))
 #if i don't need rgdal etc i won't need this line either####
-if (!require(rgdal)) install.packages("rgdal")
-  require(rgdal) # for readOGR
-if (!require(rgeos)) install.packages("rgeos")
-  require(rgeos) # subfunctions for rgdal & others
-if (!require(raster)) install.packages("raster")
-  require(raster) # for crop
-if (!require(maptools)) install.packages("maptools")
-  require(maptools) # for WriteSpatialShape
-if (!require(shapefiles)) install.packages("shapefiles")
-  require(shapefiles) # for read.shapefile
-if (!require(sf)) install.packages("sf")
-  require(sf) # for everything after sf/st update, can remove the rest?
+# if (!require(rgdal)) install.packages("rgdal")
+#   require(rgdal) # for readOGR
+# if (!require(rgeos)) install.packages("rgeos")
+#   require(rgeos) # subfunctions for rgdal & others
+# if (!require(raster)) install.packages("raster")
+#   require(raster) # for crop
+# if (!require(maptools)) install.packages("maptools")
+#   require(maptools) # for WriteSpatialShape
+# if (!require(shapefiles)) install.packages("shapefiles")
+#   require(shapefiles) # for read.shapefile
+# if (!require(sf)) install.packages("sf")
+#   require(sf) # for everything after sf/st update, can remove the rest?
   ###improve these: check if installed, install if not else library####
 startdir <- getwd() # record original directory
 
 # if bounds is entered it's user below, else check grids & gridslat & gridslon
-if(is.null(bounds)) {
+if (is.null(bounds)) {
   #check none of grids & gridslat & gridslon is null, if any are print message
-  if(is.null(grids)) stop("if bounds is NULL grids needs to be specified")
-  if(is.null(gridslat)) stop("if bounds is NULL gridslat needs to be specified")
-  if(is.null(gridslon)) stop("if bounds is NULL gridslon needs to be specified")
+  if (is.null(grids)) stop("if bounds is NULL grids needs to be specified")
+  if (is.null(gridslat)) stop("if bounds is NULL gridslat needs to be specified")
+  if (is.null(gridslon)) stop("if bounds is NULL gridslon needs to be specified")
   #check they're all the correct format
-  if(!is.data.frame(grids)) stop("grids needs to be a data frame")
-  if(!is.numeric(gridslat)) stop("gridslat needs to be a number")
-  if(!is.numeric(gridslon)) stop("gridslon needs to be a number")
+  if (!is.data.frame(grids)) stop("grids needs to be a data frame")
+  if (!is.numeric(gridslat)) stop("gridslat needs to be a number")
+  if (!is.numeric(gridslon)) stop("gridslon needs to be a number")
   # construct bounds from gridslat & gridslon ranges in grids
   bounds <- c(range(grids[,gridslon]), range(grids[,gridslat])) #still required later despite sf/st update
   xmin = min(grids[,gridslon]) #for sf/st upgrade
@@ -114,7 +121,7 @@ if (res == "CALC") { # Calculate res based on size of bounds
   if (29 > scope & scope >= 9) res <- "h"
   if (9 > scope) res <- "f"}
 
-ifelse(getzip == TRUE, { # download & unzip GSHGG if getzip = TRUE
+ifelse(getzip == TRUE, {# download & unzip GSHGG if getzip = TRUE
   download.file(paste0("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip"), "GSHHG.zip")
   unzip("GSHHG.zip")
   setwd("./GSHHS_shp")}

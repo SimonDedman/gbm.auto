@@ -7,18 +7,21 @@
 gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
 }
 \arguments{
-\item{samples}{Data frame with response and explanatory variables}
+\item{samples}{Data frame with response and explanatory variables.}
 
-\item{grids}{Data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids}
+\item{grids}{Data frame of (more/different) explanatory variables and no
+response variable, to be predicted to by gbm.predict.grids.}
 
-\item{expvarnames}{Vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.}
+\item{expvarnames}{Vector of column names of explanatory variables being
+tested. Can be length 1. Names must match in samples and grids.}
 
-\item{gridslat}{Column number for latitude in 'grids'}
+\item{gridslat}{Column number for latitude in 'grids'.}
 
-\item{gridslon}{Column number for longitude in 'grids'}
+\item{gridslon}{Column number for longitude in 'grids'.}
 }
 \value{
-Gridded data table of representativeness values which is then mapped with gbm.map and also saved as a csv
+Gridded data table of representativeness values which is then mapped
+with gbm.map and also saved as a csv
 }
 \description{
 Loops through explanatory variables comparing their histogram in 'samples' to

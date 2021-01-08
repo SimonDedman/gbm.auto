@@ -1,7 +1,11 @@
 Package: gbm.auto
 Title: Automated Boosted Regression Tree Modelling and Mapping Suite
-Version: 1.2.4
-Authors@R: person("Simon", "Dedman", email = "simondedman@gmail.com", role = c("aut", "cre"))
+Version: 1.3.0
+Authors@R: c(
+    person("Simon", "Dedman", email = "simondedman@gmail.com", role = c("aut", "cre")),
+    person("Jane", "Elith", role = "aut"),
+    person("John", "Leathwick", role = "aut"),
+    person("Hans", "Gerritsen", role = "aut"))
 Description: Automates delta log-normal boosted regression tree abundance
     prediction. Loops through parameters provided (LR, TC, BF), chooses best,
     simplifies, & generates line, dot & bar plots, & outputs these & predictions & a
@@ -9,7 +13,7 @@ Description: Automates delta log-normal boosted regression tree abundance
     See simondedman.com for published guides and papers using this package.
 Depends:
     R (>= 3.3.1)
-License: AGPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -21,6 +25,7 @@ Imports:
     rgdal (>= 1.1-10),
     rgeos (>= 0.3-19),
     raster (>= 2.5-8),
+    sf (>= 0.9-7),
     shapefiles (>= 0.7),
     stats (>= 3.3.1)
 RoxygenNote: 7.1.1
