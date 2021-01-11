@@ -111,14 +111,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   if (is.null(shape)) { # if no map shape entered, generate bounds and call gbm.basemap
     bounds = c(range(x),range(y))
     #create standard bounds from data, and extra bounds for map aesthetic
-    xmid <- mean(bounds[1:2])
-    ymid <- mean(bounds[3:4])
-    xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-    xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-    yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-    yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-    extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-    shape <- gbm.basemap(bounds = extrabounds)
+    shape <- gbm.basemap(bounds = bounds, extrabounds = TRUE)
   }
 
   # if user hasn't entered byx or byy values, generate them from the data
@@ -133,7 +126,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
     cells[2:(length(x) - 1),"bydist"] <-
       ifelse(round(cells[2:(length(x) - 1),1] - cells[1:(length(x) - 2),1], digits = 5)
              ==
-             round(cells[3:length(x),1] - cells[2:(length(x) - 1),1], digits = 5),
+               round(cells[3:length(x),1] - cells[2:(length(x) - 1),1], digits = 5),
              round(cells[2:(length(x) - 1),1] - cells[1:(length(x) - 2),1], digits = 5),
              NA)
     # Take an average of those distances, they should all be identical anyway. Apply it to byx & byy.
@@ -162,4 +155,4 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
   # Could potentially write out the whole of legend.grid (it's small) then call
   # legend with R.utils::doCall("legend" x, y, legend = legend, col = col[ncol:1], pch = pch,
   ## pt.cex = pt.cex, bg = bg, ..., .ignoreUnusedArgs=TRUE))
-  }
+}

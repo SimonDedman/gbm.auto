@@ -15,7 +15,7 @@
 #' absolute/relative reference to GSHHS_shp folder, inc that folder.
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
 #'  if this is incorrect.
-#' @param savename Shapefile savename with .shp extension, default is "Crop_Map"
+#' @param savename Shapefile savename, no shp extension, default is "Crop_Map"
 #' @param res Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 #' intermediate, high, full) or "CALC" to calculate based on bounds.
 #' @param extrabounds Grow bounds 16pct each direction to expand rectangular
@@ -65,7 +65,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
                         getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, inc that folder
                         zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
-                        savename = "Crop_Map.shp", #shapefile savename
+                        savename = "Crop_Map", #shapefile savename without the .shp
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
                         extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
 
@@ -163,7 +163,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   setwd(startdir)
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
-  st_write(cropshp, dsn = savename)
+  st_write(cropshp, dsn = paste0(savename, ".shp"))
+  cropshp <- read.shapefile(savename) # read it back in with read.shapefile which results in the expected format for draw.shape in mapplots, used in gbm.map
   print(paste("World map cropped and saved successfully"))
   setwd("../")
   return(cropshp)}
