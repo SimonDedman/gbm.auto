@@ -1391,7 +1391,6 @@ gbm.auto <- function(
 
       ####20. Gaussian predictions####
       if (gaus) {
-        browser() # 2021-01-10 debug
         Gaus_Preds <- gbm.predict.grids(model = get(Gaus_Best_Model),
                                         new.dat = grids,
                                         want.grids = F,
