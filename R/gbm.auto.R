@@ -167,11 +167,14 @@
 #' Fix with colnames(samples)[n] <- "BetterName"
 #'
 #' @examples
+#' \dontrun{
+#' # Not run
 #' library(gbm.auto)
 #' data(grids)
 #' data(samples)
+#' # setwd() # I recommend you set your working directory
 #' gbm.auto(grids = grids, samples = samples, expvar = c(4:8, 10), resvar = 11,
-#' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)
+#' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)}
 #'
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'

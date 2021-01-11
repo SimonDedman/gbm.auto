@@ -24,7 +24,8 @@
 #' @export
 #' @importFrom graphics hist
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @examples None
+#' @examples
+#' rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
 #'
 gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
 # Generalised Boosting Models, Representativeness Surface Builder. Simon Dedman, 2014, simondedman@gmail.com

@@ -37,7 +37,7 @@
 #' @param gridslon Per Gbm.auto defaults to 1.
 #' @param grids Dummy param for package testing for CRAN, ignore.
 #'
-#' @return  Maps via gbm.map & saved data as csv file
+#' @return  Maps via gbm.map & saved data as csv file.
 #' @export
 #' @importFrom beepr beep
 #' @importFrom grDevices dev.off grey.colors png
@@ -45,7 +45,8 @@
 #' @importFrom utils read.csv write.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
-#' gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
+#' data(grids)
+#' gbm.cons(mygrids = grids, subsets = c("Juveniles","Adult_Females"),
 #'          resvars = c(44:47,11:14),
 #'          expvars = list(c(4:11,15,17,21,25,29,37),
 #'                         c(4:11,15,18,22,26,30,38),
@@ -65,16 +66,17 @@
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector
-                     # corresponding to matching-named dataset objects e.g. read in by read.csv()
-                     alerts = TRUE, # play sounds to mark progress steps
-                     map = TRUE,    # produce maps
-                     BnW = TRUE,    # also produce B&W maps
+                     # corresponding to matching-named dataset objects in the
+                     # environment e.g. read in by read.csv.
+                     alerts = TRUE, # play sounds to mark progress steps.
+                     map = TRUE,    # produce maps.
+                     BnW = TRUE,    # also produce B&W maps.
                      resvars,  # vector of resvars cols from dataset objects for
-                     # gbm.autos, length(subsets)*species, no default
+                     # gbm.autos, length(subsets)*species, no default.
                      gbmautos = TRUE, # do gbm.auto runs for species?
                      expvars,  # list object of expvar vectors for gbm.autos,
-                     # length = no. of subsets * no. of species. No default
-                     tcs = NULL, # autocalculated below if not provided by user
+                     # length = no. of subsets * no. of species. No default.
+                     tcs = NULL, # autocalculated below if not provided by user.
                      lrs = rep(list(c(0.01,0.005)),length(resvars)),
                      bfs = rep(0.5, length(resvars)),
                      ZIs = rep("CHECK", length(resvars)),
@@ -115,14 +117,7 @@ for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
     if (is.null(shape)) {
       bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
       #create standard bounds from data, and extra bounds for map aesthetic
-      xmid <- mean(bounds[1:2])
-      ymid <- mean(bounds[3:4])
-      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-      shape <- gbm.basemap(bounds = extrabounds)
+      shape <- gbm.basemap(bounds = bounds, extrabounds = TRUE)
     } else {shape <- shape}} # use user-defined otherwise; close map section
 
 # create a list of response variables for name ranges

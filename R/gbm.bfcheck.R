@@ -9,10 +9,12 @@
 #' @param ZI Are samples zero-inflated? TRUE/FALSE/"CHECK".
 #' @param grv Dummy param for package testing for CRAN, ignore.
 #'
-#' @return Prints minimum Bag Fraction size.
+#' @return Prints minimum Bag Fraction size for gbm.auto.
 #' @export
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @examples None
+#' @examples
+#' data(samples)
+#' gbm.bfcheck(samples = samples, resvar = "Cuckoo")
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
   resvar, # response variable column in samples

@@ -1,18 +1,21 @@
-#' Subset data into two groups
+#' Subset gbm.auto input datasets to 2 groups using the partial deviance plots
 #'
-#' Returns the variable value corresponding to the 0 value on the lineplots,
-#' which should be the optimal place to split the dataset into 2 subsets.
+#' Set your working directory to the output folder of a gbm.auto/gbm.loop run.
+#' This function returns the variable value corresponding to the 0 value on the
+#' lineplots, which should be the optimal place to split the dataset into 2
+#' subsets (low and high).
 #'
-#'  loop varnames are BinLineLoop_VAR.csv & GausLineLoop_VAR.csv
-#'  normal varnames are Bin_Best_line_VAR.csv & Gaus_Best_line_VAR.csv
+#' loop varnames are BinLineLoop_VAR.csv & GausLineLoop_VAR.csv
+#' normal varnames are Bin_Best_line_VAR.csv & Gaus_Best_line_VAR.csv
 #'
-#'  just use average between the last negative & first positive point
-#'  unless any points fall on zero
+#' Just use average between the last negative & first positive point
+#' unless any points fall on zero
 
 #' @param x Vector of variable names.
 #' @param fams statistical data distribution family names to be modelled by gbm.
 #' @param loop Is the folder a gbm.loop output?
 #'
+#' @return a list of breakpoint values which datsets can be subsetted using.
 #' @export
 #' @importFrom utils read.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
@@ -30,7 +33,6 @@ gbm.subset <- function(x, #Vector of variable names
       } else {#if not loop
         if (file.exists(paste0(j, "_Best_line_", i, ".csv"))) {#if file exists
           tmp <- read.csv(paste0(j, "_Best_line_", i, ".csv"))}} #read in csv file
-
       if (exists("tmp")) { #if csv file was read (x names used in gbm may not have generated files)
         if (!is.na(match(0,sign(tmp[,2])))) { # if there's an exact 0 value in the Y column,
           subsetsplits[[i]] <- tmp[match(0,sign(tmp[,2])),1] #set the corresponding X value as a list item named i

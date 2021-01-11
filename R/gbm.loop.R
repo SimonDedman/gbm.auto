@@ -1,9 +1,11 @@
 #' Calculate Coefficient Of Variation surfaces for gbm.auto predictions
 #'
-#' Processes a user-specified number of loops through the same gbm.auto
-#' parameter combinations and calculates the Coefficient Of Variation in the
-#' predicted abundance scores for each site aka cell. This can be mapped to
-#' spatially demonstrate the output variance range.
+#' Bagging introduces stochasticity which can result in sizeable variance in
+#' output predictions by gbm.auto for small datasets. This function runs a user-
+#' specified number of loops through the same gbm.auto parameter combinations
+#' and calculates the Coefficient Of Variation in the predicted abundance scores
+#'  for each site aka cell. This can be mapped, to spatially demonstrate the
+#'  output variance range.
 #'
 #' @param loops The number of loops required, integer.
 #' @param savecsv Save coefficients of variation in simple & extended format.
@@ -50,10 +52,10 @@
 #'
 #' @examples
 #' library("gbm.auto")
-#' mygrids <- gbm.auto::grids # load grids
-#' mysamples <- gbm.auto::samples # load samples
-#' gbmloopexample <- gbm.loop(loops = 2, samples = mysamples,
-#' grids = mygrids, expvar = c(4:10), resvar = 11, simp = F)
+#' data(grids) # load grids
+#' data(samples) # load samples
+#' gbmloopexample <- gbm.loop(loops = 2, samples = samples,
+#' grids = grids, expvar = c(4:10), resvar = 11, simp = F)
 #'
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'

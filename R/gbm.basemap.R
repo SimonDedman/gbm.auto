@@ -38,6 +38,7 @@
 #' @importFrom sf st_crop st_read st_write
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
+#' data(samples)
 #' mybounds <- c(range(samples[,3]),range(samples[,2]))
 #' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
 #' savename = "My_Crop_Map", res = "f")
