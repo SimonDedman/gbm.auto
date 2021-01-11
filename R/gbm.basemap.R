@@ -83,6 +83,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # if (!require(sf)) install.packages("sf")
   #   require(sf) # for everything after sf/st update, can remove the rest?
   ###improve these: check if installed, install if not else library####
+
+  attachNamespace("shapefiles") # else Error in as.environment(pos): no item called "package:shapefiles" on the search list
   startdir <- getwd() # record original directory
 
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
