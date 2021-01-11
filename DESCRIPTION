@@ -12,7 +12,7 @@ Description: Automates delta log-normal boosted regression tree abundance
     report, makes predicted abundance maps, and Unrepresentativeness surfaces.
     See simondedman.com for published guides and papers using this package.
 Depends:
-    R (>= 3.3.1)
+    R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

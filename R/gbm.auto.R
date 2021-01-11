@@ -1354,7 +1354,6 @@ gbm.auto <- function(
         #   } # close for (s in evalmetrics)
         # } # close if (gaus)
 
-
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXX     Evaluation Metrics Processed     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       } # close if MLEvaluate
@@ -1396,6 +1395,7 @@ gbm.auto <- function(
           grids$Gaus_Preds <- Gaus_Preds
 
           ####21. Backtransform logged Gaus to unlogged####
+          browser() # 2021-01-10 debug
           grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
 
           ####22. BIN*positive abundance = final abundance####
@@ -1604,3 +1604,4 @@ gbm.auto <- function(
   options(error = NULL) # reset error options to default
   if (alerts) beep(8)  # final user notification, then close the function
 }
+
