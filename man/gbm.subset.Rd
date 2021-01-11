@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.subset.R
 \name{gbm.subset}
 \alias{gbm.subset}
-\title{Subset data into two groups}
+\title{Subset gbm.auto input datasets to 2 groups using the partial deviance plots}
 \usage{
 gbm.subset(x, fams = c("Bin", "Gaus"), loop = FALSE)
 }
@@ -13,16 +13,21 @@ gbm.subset(x, fams = c("Bin", "Gaus"), loop = FALSE)
 
 \item{loop}{Is the folder a gbm.loop output?}
 }
+\value{
+a list of breakpoint values which datsets can be subsetted using.
+}
 \description{
-Returns the variable value corresponding to the 0 value on the lineplots,
-which should be the optimal place to split the dataset into 2 subsets.
+Set your working directory to the output folder of a gbm.auto/gbm.loop run.
+This function returns the variable value corresponding to the 0 value on the
+lineplots, which should be the optimal place to split the dataset into 2
+subsets (low and high).
 }
 \details{
 loop varnames are BinLineLoop_VAR.csv & GausLineLoop_VAR.csv
- normal varnames are Bin_Best_line_VAR.csv & Gaus_Best_line_VAR.csv
+normal varnames are Bin_Best_line_VAR.csv & Gaus_Best_line_VAR.csv
 
- just use average between the last negative & first positive point
- unless any points fall on zero
+Just use average between the last negative & first positive point
+unless any points fall on zero
 }
 \examples{
 None

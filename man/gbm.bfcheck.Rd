@@ -16,7 +16,7 @@ gbm.bfcheck(samples, resvar, ZI = "CHECK", grv = NULL)
 \item{grv}{Dummy param for package testing for CRAN, ignore.}
 }
 \value{
-Prints minimum Bag Fraction size.
+Prints minimum Bag Fraction size for gbm.auto.
 }
 \description{
 Provides minimum bag fractions for gbm.auto, preventing failure
@@ -24,7 +24,8 @@ due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
 github.com/SimonDedman/gbm.auto
 }
 \examples{
-None
+data(samples)
+gbm.bfcheck(samples = samples, resvar = "Cuckoo")
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

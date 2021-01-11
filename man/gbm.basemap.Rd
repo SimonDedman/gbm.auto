@@ -11,7 +11,7 @@ gbm.basemap(
   gridslon = NULL,
   getzip = TRUE,
   zipvers = "2.3.7",
-  savename = "Crop_Map.shp",
+  savename = "Crop_Map",
   res = "CALC",
   extrabounds = FALSE
 )
@@ -33,7 +33,7 @@ absolute/relative reference to GSHHS_shp folder, inc that folder.}
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
 if this is incorrect.}
 
-\item{savename}{Shapefile savename with .shp extension, default is "Crop_Map"}
+\item{savename}{Shapefile savename, no shp extension, default is "Crop_Map"}
 
 \item{res}{Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 intermediate, high, full) or "CALC" to calculate based on bounds.}
@@ -69,6 +69,7 @@ Ensure that your lats and longs are the the right way around
 sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 }
 \examples{
+data(samples)
 mybounds <- c(range(samples[,3]),range(samples[,2]))
 gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
 savename = "My_Crop_Map", res = "f")

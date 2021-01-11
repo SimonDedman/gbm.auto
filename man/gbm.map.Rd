@@ -108,19 +108,24 @@ Errors and their origins:
 Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
 Check that your lat & long columns are the right way around. Ensure grids
 data are gridded.
-}
-\examples{
-# Suggested code for outputting to e.g. png:
-png(...)
-par(...)
-gbm.map(x = grids[,gridslon], y = grids[,gridslat], z = grids[,predabund],
-species = "species")
-dev.off()
-
-# Suggested parameter values for use with gbm.rsb:
+Suggested parameter values:
 z = rsbdf[,"Unrepresentativeness"]
 mapmain = "Unrepresentativeness: "
 legendtitle = "UnRep 0-1"
+}
+\examples{
+\dontrun{
+# Not run
+# Suggested code for outputting to png:
+data(grids)
+# setwd() # set working directory somewhere suitable
+png(filename = "gbmmap.png", width = 7680, height = 7680, units = "px",
+pointsize = 192, bg = "white", res = NA, family = "", type = "cairo-png")
+par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+gbm.map(x = grids[,"Longitude"], y = grids[,"Latitude"], z = grids[,"Effort"]
+, species = "Effort")
+dev.off()
+}
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

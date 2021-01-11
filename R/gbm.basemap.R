@@ -32,7 +32,7 @@
 #' @importFrom rgdal readOGR
 #' @importFrom maptools writeSpatialShape
 #' @importFrom raster crop
-#' @importFrom shapefiles read.shapefile
+#' @importFrom shapefiles read.dbf read.shapefile read.shp read.shx
 #' @importFrom graphics lines par
 #' @importFrom utils download.file unzip
 #' @importFrom sf st_crop st_read st_write

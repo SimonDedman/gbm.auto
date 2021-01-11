@@ -89,7 +89,7 @@ breakpoints and subsequent legend. Defaults to TRUE.}
 \item{grids}{Dummy param for package testing for CRAN, ignore.}
 }
 \value{
-Maps via gbm.map & saved data as csv file
+Maps via gbm.map & saved data as csv file.
 }
 \description{
 Runs gbm.auto for multiple subsets of the same overall dataset and
@@ -99,7 +99,8 @@ using juvenile and adult female subsets to locate candidate nursery grounds
 and spawning areas respectively.
 }
 \examples{
-gbm.cons(grids = mygrids, subsets = c("Juveniles","Adult_Females"),
+data(grids)
+gbm.cons(mygrids = grids, subsets = c("Juveniles","Adult_Females"),
          resvars = c(44:47,11:14),
          expvars = list(c(4:11,15,17,21,25,29,37),
                         c(4:11,15,18,22,26,30,38),
