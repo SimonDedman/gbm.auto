@@ -244,7 +244,7 @@ gbm.auto <- function(
   brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  # Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
 # legend in legend.grid in gbm.map, mapmain in gbm.map
 # (default = "Predicted CPUE (numbers per hour): ") and gbm.step (dismo package)
@@ -405,12 +405,12 @@ gbm.auto <- function(
       } else {
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
-                                                                                                                                             "Bin_BRT_simp predictors dropped",
-                                                                                                                                             "Bin_BRT_simp predictors kept",
-                                                                                                                                             "Simplified Binary BRT stats",
-                                                                                                                                             "Best Binary BRT variables",
-                                                                                                                                             "Relative Influence (Bin)",
-                                                                                                                                             "Biggest Interactions (Bin)")}
+                                                                                                                                              "Bin_BRT_simp predictors dropped",
+                                                                                                                                              "Bin_BRT_simp predictors kept",
+                                                                                                                                              "Simplified Binary BRT stats",
+                                                                                                                                              "Best Binary BRT variables",
+                                                                                                                                              "Relative Influence (Bin)",
+                                                                                                                                              "Biggest Interactions (Bin)")}
         colnames(Report)[(reportcolno - 6):reportcolno] <- c("Best Gaussian BRT",
                                                              "Gaus_BRT_simp predictors dropped",
                                                              "Gaus_BRT_simp predictors kept",
@@ -460,11 +460,11 @@ gbm.auto <- function(
 
               ####6. Add bin stats to report####
               if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
-                                                                                                                paste0("Training Data Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
-                                                                                                                paste0("CV Mean Deviance: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
-                                                                                                                paste0("CV Deviance SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
-                                                                                                                paste0("CV Mean Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
-                                                                                                                paste0("CV Correlation SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
+                                                                                                                 paste0("Training Data Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
+                                                                                                                 paste0("CV Mean Deviance: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
+                                                                                                                 paste0("CV Deviance SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
+                                                                                                                 paste0("CV Mean Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
+                                                                                                                 paste0("CV Correlation SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
               # bin BRT name
               colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
               } # close ZI if
@@ -587,7 +587,7 @@ gbm.auto <- function(
                             family = get(Gaus_Best_Model)$gbm.call$family,
                             bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
                             ...))
-          dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus_simp.jpeg"), device = jpeg, width = 600)
+            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus_simp.jpeg"), device = jpeg, width = 600)
           } # close if min gaus best simp
           if (alerts) beep(2)
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -1380,7 +1380,10 @@ gbm.auto <- function(
 
       ####19. Binomial predictions####
       if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-        gbm.predict.grids(get(Bin_Best_Model), grids, want.grids = F, sp.name = "Bin_Preds") #with want.grids=F this is just predict.gbm
+        Bin_Preds <- gbm.predict.grids(model = get(Bin_Best_Model),
+                                       new.dat = grids,
+                                       want.grids = F,
+                                       sp.name = "Bin_Preds") #with want.grids=F this is just predict.gbm
         grids$Bin_Preds <- Bin_Preds
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -1389,11 +1392,14 @@ gbm.auto <- function(
       ####20. Gaussian predictions####
       if (gaus) {
         browser() # 2021-01-10 debug
-        gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
+        Gaus_Preds <- gbm.predict.grids(model = get(Gaus_Best_Model),
+                                        new.dat = grids,
+                                        want.grids = F,
+                                        sp.name = "Gaus_Preds")
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
         if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {
-          grids$Gaus_Preds <- Gaus_Preds
+          grids$Gaus_Preds <- Gaus_Preds # Gaus_Preds is NULL, 2021-01-10, not generated by gbm.predict.grids? Since adding "Gaus_Preds = NULL" to top?
 
           ####21. Backtransform logged Gaus to unlogged####
           grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
