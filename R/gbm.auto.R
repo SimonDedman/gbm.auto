@@ -1388,6 +1388,7 @@ gbm.auto <- function(
 
       ####20. Gaussian predictions####
       if (gaus) {
+        browser() # 2021-01-10 debug
         gbm.predict.grids(get(Gaus_Best_Model), grids, want.grids = F, sp.name = "Gaus_Preds")
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -1395,7 +1396,6 @@ gbm.auto <- function(
           grids$Gaus_Preds <- Gaus_Preds
 
           ####21. Backtransform logged Gaus to unlogged####
-          browser() # 2021-01-10 debug
           grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
 
           ####22. BIN*positive abundance = final abundance####
