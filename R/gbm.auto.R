@@ -288,14 +288,15 @@ gbm.auto <- function(
       if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
       bounds = c(range(grids[,gridslon]),range(grids[,gridslat]))
       #create standard bounds from data, and extra bounds for map aesthetic
-      xmid <- mean(bounds[1:2])
-      ymid <- mean(bounds[3:4])
-      xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-      xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-      yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-      yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-      extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-      shape <- gbm.basemap(bounds = extrabounds)
+      # xmid <- mean(bounds[1:2])
+      # ymid <- mean(bounds[3:4])
+      # xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
+      # xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
+      # yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
+      # yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
+      # extrabounds <- c(xextramin, xextramax, yextramin, yextramax) # identical code to what's in basemap
+      shape <- gbm.basemap(bounds = bounds,
+                           extrabounds = TRUE)
     } # close isnull shape
   } # close isnull grids
 
@@ -1355,7 +1356,7 @@ gbm.auto <- function(
         # } # close if (gaus)
 
         if (alerts) beep(2) # progress printer, right aligned for visibility
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXX     Evaluation Metrics Processed     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXEvaluation Metrics Processed XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       } # close if MLEvaluate
 
       if (alerts) beep(2) # progress printer, right aligned for visibility

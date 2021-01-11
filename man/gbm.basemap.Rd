@@ -64,6 +64,9 @@ folder and couldnt find it.
 2. Error in writeSpatialShape(cropshp, savename) x is aNULLobject, not a
 compatible Spatial*DataFrame.
 Ensure that your lats and longs are the the right way around
+
+3. If rgdal install fails in linux try:
+sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 }
 \examples{
 mybounds <- c(range(samples[,3]),range(samples[,2]))

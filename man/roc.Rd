@@ -34,7 +34,7 @@ statistics for either binomial or count data but the family argument must be
 specified for the latter a conditional test for the latter will catch most
 failures to specify the family
 
-Gbm.predict.grids: J.Elith / J.Leathwick, March 07. To make predictions to
+gbm.predict.grids: J.Elith / J.Leathwick, March 07. To make predictions to
 sites or grids. If to sites, the predictions are written to the R workspace.
 If to grid, the grids are written to a nominated directory and optionally
 also plotted in R. New data (new.dat) must be a data frame with column names
