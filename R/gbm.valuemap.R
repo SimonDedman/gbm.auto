@@ -86,7 +86,7 @@ gbm.valuemap <- function(
   if ("Conservation" %in% maploops & is.null(conservecol)) stop("conservecol must be specified if Conservation presesent in maploops")
 
   if (is.null(shape)) {
-    if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
+    # if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
     bounds = c(range(dbase[,loncolno]),range(dbase[,latcolno]))
     #create standard bounds from data, and extra bounds for map aesthetic
     shape <- gbm.basemap(bounds = bounds, extrabounds = TRUE)

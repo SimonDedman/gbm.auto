@@ -100,8 +100,8 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
   # test this. Changes default requirement of grids. And samples? And loads of stuff.
 
 ####Load functions & data####
-if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-if (is.null(shape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
+# if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
+# if (is.null(shape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
 # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
 #   if (alerts) require(beepr)
 if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails

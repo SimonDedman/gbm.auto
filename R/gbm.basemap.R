@@ -38,15 +38,16 @@
 #' @importFrom sf st_crop st_read st_write
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
+#' \dontrun{
 #' data(samples)
 #' mybounds <- c(range(samples[,3]),range(samples[,2]))
 #' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
 #' savename = "My_Crop_Map", res = "f")
 #' # In this example GSHHS folder already downloaded to the working directory
 #' # hence I pointed getzip at that rather than having it download the zip again
+#' }
 #'
 #' @details errors and their origins:
-#'
 #' 1. Error in setwd(getzip) : cannot change working directory
 #' If youve specified the location of the local GSHHS_shp folder, ensure youre
 #' in the correct directory relative to it. This error means it looked for the

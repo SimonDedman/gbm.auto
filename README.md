@@ -64,7 +64,9 @@ Processes a user-specified number of loops through the same gbm.auto parameter c
 
 ***
 
-### gbm.utils.R: roc, calibration & gbm.predict.grids functions bundle
+### gbm.utils.R: roc, calibration & gbm.predict.grids functions bundle.
+
+Now separated into individual functions.
 
 ***
 

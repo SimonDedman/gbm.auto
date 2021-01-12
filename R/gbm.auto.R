@@ -275,12 +275,12 @@ gbm.auto <- function(
   # if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
   # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   # if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
-  if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-  if (RSB) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
-  if (RSB) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-  if (!is.null(grids)) if (!exists("gbm.predict.grids")) {stop("you need to install the gbm.predict.grids function from gbm.utils.R to run this function")}
-  if (!exists("roc")) {stop("you need to install the roc function from gbm.utils.R to run this function")}
-  if (!exists("calibration")) {stop("you need to install the calibration function from gbm.utils.R to run this function")}
+  # if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
+  # if (RSB) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
+  # if (RSB) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
+  # if (!is.null(grids)) if (!exists("gbm.predict.grids")) {stop("you need to install the gbm.predict.grids function from gbm.utils.R to run this function")}
+  # if (!exists("roc")) {stop("you need to install the roc function from gbm.utils.R to run this function")}
+  # if (!exists("calibration")) {stop("you need to install the calibration function from gbm.utils.R to run this function")}
   # require(gbm)
   # require(dismo)
   # if (alerts) require(beepr)

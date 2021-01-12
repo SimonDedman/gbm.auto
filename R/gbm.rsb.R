@@ -27,7 +27,8 @@
 #' @examples
 #' data(samples)
 #' data(grids)
-#' rsbdf_bin <- gbm.rsb(samples, grids, expvarnames = names(samples[c(4:8, 10)]), gridslat = 2, gridslon = 1)
+#' rsbdf_bin <- gbm.rsb(samples, grids, expvarnames = names(samples[c(4:8, 10)])
+#' , gridslat = 2, gridslon = 1)
 #'
 gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
 # Generalised Boosting Models, Representativeness Surface Builder. Simon Dedman, 2014, simondedman@gmail.com
