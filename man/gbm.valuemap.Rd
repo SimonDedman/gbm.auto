@@ -15,7 +15,7 @@ gbm.valuemap(
   plotthis = c("good", "bad", "both", "close"),
   maploops = c("Combo", "Biomass", "Effort", "Conservation"),
   savethis = TRUE,
-  HRMSY,
+  HRMSY = 0.15,
   goodweight = NULL,
   badweight = NULL,
   m = 1,
@@ -51,7 +51,7 @@ worse)?}
 
 \item{HRMSY}{Maximum percent of each goodcols stock which can be removed
 yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
-number or vector. If vector, same order as goodcols.}
+number or vector. If vector, same order as goodcols. Required.}
 
 \item{goodweight}{Single/vector weighting multiple(s) for goodcols array.}
 

@@ -24,7 +24,7 @@
 #' @param savethis Export all data as csv?
 #' @param HRMSY Maximum percent of each goodcols stock which can be removed
 #' yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
-#' number or vector. If vector, same order as goodcols.
+#' number or vector. If vector, same order as goodcols. Required.
 #' @param goodweight Single/vector weighting multiple(s) for goodcols array.
 #' @param badweight Ditto for badcols array.
 #' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to
@@ -61,7 +61,7 @@ gbm.valuemap <- function(
   plotthis = c("good","bad","both","close"), #to plot? delete any,or all w/ NULL
   maploops = c("Combo","Biomass","Effort","Conservation"), # sort loops to run
   savethis = TRUE, # export all data as csv?
-  HRMSY, # maximum % of each goodcols stock which can be removed yearly,
+  HRMSY = 0.15, # maximum % of each goodcols stock which can be removed yearly,
   # as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or
   # vector. If vector, same order as goodcols. Required.
   goodweight = NULL,  # single/vector weighting multiple(s) for goodcols array
@@ -87,14 +87,7 @@ gbm.valuemap <- function(
     if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
     bounds = c(range(dbase[,loncolno]),range(dbase[,latcolno]))
     #create standard bounds from data, and extra bounds for map aesthetic
-    xmid <- mean(bounds[1:2])
-    ymid <- mean(bounds[3:4])
-    xextramax <- ((bounds[2] - xmid) * 1.6) + xmid
-    xextramin <- xmid - ((xmid - bounds[1]) * 1.6)
-    yextramax <- ((bounds[4] - ymid) * 1.6) + ymid
-    yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
-    extrabounds <- c(xextramin, xextramax, yextramin, yextramax)
-    shape <- gbm.basemap(bounds = extrabounds)
+    shape <- gbm.basemap(bounds = bounds, extrabounds = TRUE)
   } # close isnull shape
 
   goodname = colnames(dbase)[goodcols] #the response varible(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
@@ -199,8 +192,9 @@ gbm.valuemap <- function(
               legendtitle = "0 - 2", byxout = TRUE,
               shape = shape)
       dev.off()
-      byx <- byxport # byxport exported <<- from gbm.map
-      byy <- byx
+      # byx <- byxport # byxport exported <<- from gbm.map
+      # byy <- byx
+      # if byxport is null, these create null byx byy causing issues later. Code later is copied from gbm.map to do this anyway
 
       if (BnW) {
         png(filename = paste0("./",goodname[j]," plus ",badname,"_Map_BnW.png"),
@@ -277,6 +271,7 @@ gbm.valuemap <- function(
         quantile = 1 # set max breakpoint; lower this to cutoff outliers
 
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length(maploopcodes)) + j," of ",length(goodcols)*length(maploopcodes),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
         if (!exists("byx")) {    # if users hasn't entered byx or byy values, generate them from the data
           bydist <- rep(NA,length(x))   # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
           cells <- data.frame(LONGITUDE = x, bydist = bydist, stringsAsFactors = FALSE)   # and attach it to grids
