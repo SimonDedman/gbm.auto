@@ -442,7 +442,7 @@ gbm.valuemap <- function(
       colnames(dbase)[ncol(dbase)] <- paste0("SpeciesGrow_", maploopnames[o]) # Name the column
 
       ####Per species closed area maps####
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(goodcols)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(goodcols)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       png(filename = paste0("./PerSpeciesClosedArea",maploopnames[o],"Map.png"),
           width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
       par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
@@ -472,6 +472,7 @@ gbm.valuemap <- function(
         dev.off()
       } # close BnW
       if (alerts) beep(2) # alert user
+      browser()
     } # close "for (o in 1:length(maploopnames)"
   } # close "if ("close" %in% plotthis)" end o loop through combination, goodcols & badcols
 
