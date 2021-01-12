@@ -223,12 +223,12 @@ gbm.valuemap <- function(
     # 3: min to max baddata value (universal) THEN max to min gooddata value for that species, i.e. lowest effort THEN highest biomass
     # 4: max to min conserve value (universal), i.e. max conservation value (all species)
     maploopcodes <- c("dbase[order(-dbase[,bothdatarange[1]-1+j]),]","dbase[order(-dbase[,goodcols[j]]),]","dbase[order(dbase[,badcols],-dbase[,goodcols[j]]),]","dbase[order(-dbase[,conservecol]),]")
-    loopindex <- which(maploopnames == maploops) # which loops to run? set by user
+    loopindex <- which(maploopnames %in% maploops) # which loops to run? set by user
     maploopnames <- maploopnames[loopindex] # update names for only those loops
     maploopcodes <- maploopcodes[loopindex] # update codes for only those loops
 
     for (o in 1:length(maploopnames)) { # start o loop through maploops
-      j <- 1 # set / reset J so it restarts the loops at 1 rather than max
+      j <- 1 # set / reset J so it restarts the loops at 1 rather than max(length(goodcols))
 
       ####Start Species Loop 2####
       for (j in 1:length(goodcols)) {  # j loop through gooddata (species) columns
