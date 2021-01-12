@@ -69,7 +69,7 @@
 #' # Not run
 #' # Suggested code for outputting to png:
 #' data(grids)
-#' # setwd() # set working directory somewhere suitable
+#' # set working directory somewhere suitable
 #' png(filename = "gbmmap.png", width = 7680, height = 7680, units = "px",
 #' pointsize = 192, bg = "white", res = NA, family = "", type = "cairo-png")
 #' par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)

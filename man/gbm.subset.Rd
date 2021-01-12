@@ -34,7 +34,7 @@ unless any points fall on zero
 }
 \examples{
 \dontrun{
-# having run gbm.auto (with linesfiles=TRUE), setwd() to that directory
+# having run gbm.auto (with linesfiles=TRUE), set working directory there
 data(samples)
 gbm.subset(x = names(samples[c(4:8, 10)]), fams = c("Bin", "Gaus"))
 }
