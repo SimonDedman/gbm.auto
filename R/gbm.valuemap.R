@@ -77,11 +77,13 @@ gbm.valuemap <- function(
   ...) {  # optional terms for gbm.map
 
   # Check & load gbm.map
-  if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
+  # if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
   #require(gbm.map) #for mapping; can't use require on non-CRAN?
   # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   # if (alerts) require(beepr) #for progress noises
   if (alerts) options(error = function() {beep(9)})  # warn for fails
+
+  if ("Conservation" %in% maploops & is.null(conservecol)) stop("conservecol must be specified if Conservation presesent in maploops")
 
   if (is.null(shape)) {
     if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
@@ -90,7 +92,7 @@ gbm.valuemap <- function(
     shape <- gbm.basemap(bounds = bounds, extrabounds = TRUE)
   } # close isnull shape
 
-  goodname = colnames(dbase)[goodcols] #the response varible(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
+  goodname = colnames(dbase)[goodcols] #the response variable(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
   badname = colnames(dbase)[badcols] #ditto for badcols. Both of these moved out of function parameters list to foce user to specify in colnames
 
   # Check goodweight & badweight are the same length as goodcols & badcols
@@ -222,11 +224,15 @@ gbm.valuemap <- function(
     # 2: max to min gooddata value for that species, i.e. highest biomass.
     # 3: min to max baddata value (universal) THEN max to min gooddata value for that species, i.e. lowest effort THEN highest biomass
     # 4: max to min conserve value (universal), i.e. max conservation value (all species)
-    maploopcodes <- c("dbase[order(-dbase[,bothdatarange[1]-1+j]),]","dbase[order(-dbase[,goodcols[j]]),]","dbase[order(dbase[,badcols],-dbase[,goodcols[j]]),]","dbase[order(-dbase[,conservecol]),]")
+    maploopcodes <- c("dbase[order(-dbase[,bothdatarange[1]-1+j]),]",
+                      "dbase[order(-dbase[,goodcols[j]]),]",
+                      "dbase[order(dbase[,badcols],-dbase[,goodcols[j]]),]",
+                      "dbase[order(-dbase[,conservecol]),]")
     loopindex <- which(maploopnames %in% maploops) # which loops to run? set by user
     maploopnames <- maploopnames[loopindex] # update names for only those loops
     maploopcodes <- maploopcodes[loopindex] # update codes for only those loops
-
+    counterA <- 1 # counter for overlay map plots
+    counterB <- 1 # counter for cumulative closed area map plots
     for (o in 1:length(maploopnames)) { # start o loop through maploops
       j <- 1 # set / reset J so it restarts the loops at 1 rather than max(length(goodcols))
 
@@ -270,8 +276,9 @@ gbm.valuemap <- function(
         zero = TRUE # allow 0 category in breaks.grid & thus legend?
         quantile = 1 # set max breakpoint; lower this to cutoff outliers
 
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length(maploopcodes)) + j," of ",length(goodcols)*length(maploopcodes),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-
+        # print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ",((o - 1)*length(maploopcodes)) + j," of ",length(goodcols)*length(maploopcodes),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Overlay Map ", counterA," of ",length(goodcols)*length(maploopcodes),"    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        counterA <- counterA + 1 # increment counter
         if (!exists("byx")) {    # if users hasn't entered byx or byy values, generate them from the data
           bydist <- rep(NA,length(x))   # work out cell size for uniform square gridded data: Create blank vector for grid length calcs
           cells <- data.frame(LONGITUDE = x, bydist = bydist, stringsAsFactors = FALSE)   # and attach it to grids
@@ -402,6 +409,7 @@ gbm.valuemap <- function(
       } # lose for (r in 1:length(goodcols))
 
       dbase <- cbind(dbase, MPAgrow[,2:ncol(MPAgrow)]) # bind to dbase, removing zeroes
+      for (r in 1:length(goodcols)) {colnames(dbase)[ncol(dbase) - length(goodcols) + r] <- paste0("Closure_", goodname[r], "_", maploopnames[o])} # Name the column(s)
 
       # loop through final length(goodcols) cols of dbase & map them: cumulative CPUEMSY limit maps
       for (l in 1:length(goodcols)) {
@@ -412,7 +420,10 @@ gbm.valuemap <- function(
         badpct2 <- round((badcut2/badall) * 100, 1) # badcols percent
 
         ####Cumulative closed area maps####
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ",((o - 1) * length(maploopcodes)) + l," of ",length(goodcols)*length(maploopcodes)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        # print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ",((o - 1) * length(maploopcodes)) + l," of ",length(goodcols)*length(maploopcodes)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Cumulative Closed Area Map ", counterB," of ",length(goodcols)*length(maploopcodes)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        counterB <- counterB + 1 # increment counter
+
         png(filename = paste0("./CumulativeClosedArea",maploopnames[o],"Map_",goodname[l],".png"),
             width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
         par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -442,7 +453,7 @@ gbm.valuemap <- function(
       colnames(dbase)[ncol(dbase)] <- paste0("SpeciesGrow_", maploopnames[o]) # Name the column
 
       ####Per species closed area maps####
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(goodcols)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(maploopnames)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       png(filename = paste0("./PerSpeciesClosedArea",maploopnames[o],"Map.png"),
           width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
       par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
@@ -472,7 +483,6 @@ gbm.valuemap <- function(
         dev.off()
       } # close BnW
       if (alerts) beep(2) # alert user
-      browser()
     } # close "for (o in 1:length(maploopnames)"
   } # close "if ("close" %in% plotthis)" end o loop through combination, goodcols & badcols
 
