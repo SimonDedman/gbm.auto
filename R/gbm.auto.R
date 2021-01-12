@@ -1359,7 +1359,7 @@ gbm.auto <- function(
         # } # close if (gaus)
 
         if (alerts) beep(2) # progress printer, right aligned for visibility
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXEvaluation Metrics Processed XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Evaluation Metrics ProcessedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       } # close if MLEvaluate
 
       if (alerts) beep(2) # progress printer, right aligned for visibility

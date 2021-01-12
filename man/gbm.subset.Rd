@@ -20,7 +20,10 @@ a list of breakpoint values which datsets can be subsetted using.
 Set your working directory to the output folder of a gbm.auto/gbm.loop run.
 This function returns the variable value corresponding to the 0 value on the
 lineplots, which should be the optimal place to split the dataset into 2
-subsets (low and high).
+subsets, low and high, IF the relationship doesn't cross 0 more than once.
+Function is similarly useful to quickly get the 0-point value in these cases,
+ i.e. where values below are detrimental, values above beneficial (check
+ plots though)
 }
 \details{
 loop varnames are BinLineLoop_VAR.csv & GausLineLoop_VAR.csv
@@ -30,7 +33,11 @@ Just use average between the last negative & first positive point
 unless any points fall on zero
 }
 \examples{
-None
+\dontrun{
+# having run gbm.auto (with linesfiles=TRUE), setwd() to that directory
+data(samples)
+gbm.subset(x = names(samples[c(4:8, 10)]), fams = c("Bin", "Gaus"))
+}
 
 }
 \author{

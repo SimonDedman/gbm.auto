@@ -36,7 +36,9 @@ Can be called directly, and choosing a subset of expvars allows one to see
 their individual / collective representativeness.
 }
 \examples{
-rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
+data(samples)
+data(grids)
+rsbdf_bin <- gbm.rsb(samples, grids, expvarnames = names(samples[c(4:8, 10)]), gridslat = 2, gridslon = 1)
 
 }
 \author{

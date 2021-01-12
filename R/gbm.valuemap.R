@@ -24,7 +24,7 @@
 #' @param savethis Export all data as csv?
 #' @param HRMSY Maximum percent of each goodcols stock which can be removed
 #' yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
-#' number or vector. Same order as goodcols.
+#' number or vector. If vector, same order as goodcols.
 #' @param goodweight Single/vector weighting multiple(s) for goodcols array.
 #' @param badweight Ditto for badcols array.
 #' @param m Multiplication factor for Bpa units. 1000 to convert tonnes to
@@ -61,9 +61,9 @@ gbm.valuemap <- function(
   plotthis = c("good","bad","both","close"), #to plot? delete any,or all w/ NULL
   maploops = c("Combo","Biomass","Effort","Conservation"), # sort loops to run
   savethis = TRUE, # export all data as csv?
-  HRMSY = NULL, # maximum % of each goodcols stock which can be removed yearly,
-  # as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY.
-  # Single number or vector. Same order as goodcols
+  HRMSY, # maximum % of each goodcols stock which can be removed yearly,
+  # as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or
+  # vector. If vector, same order as goodcols. Required.
   goodweight = NULL,  # single/vector weighting multiple(s) for goodcols array
   badweight = NULL,  # ditto for badcols array
   m = 1, # multiplication factor for Bpa units. 1000 to convert tonnes to kilos,
@@ -199,7 +199,7 @@ gbm.valuemap <- function(
               legendtitle = "0 - 2", byxout = TRUE,
               shape = shape)
       dev.off()
-      byx <- byxport
+      byx <- byxport # byxport exported <<- from gbm.map
       byy <- byx
 
       if (BnW) {
@@ -374,15 +374,23 @@ gbm.valuemap <- function(
       for (q in length(goodcols):1) {dbase <- dbase[order(-dbase[,SortCol0 + q]),]}
 
       # then add a column which is max(k:n). This will be 1s and 0s and will be the full extent (try append)
-      assign(paste0("AllClosed_", maploopnames[o]),
-             do.call(pmax, dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
+      if (length(goodcols) == 1) { # if only 1 goodcol then do.call fails since it wants a list
+        assign(paste0("AllClosed_", maploopnames[o]), dbase[,(SortCol0 + q)])
+      } else {
+        assign(paste0("AllClosed_", maploopnames[o]),
+               do.call(pmax, dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
+      }
       # do.call allows df format for pmax
       dbase <- cbind(dbase, get(paste0("AllClosed_", maploopnames[o])))
       # reinstate its name (lost because bound with get())
       colnames(dbase)[ncol(dbase)] <- paste0("AllClosed_", maploopnames[o])
 
       # then add a column which is sum(k:n). This will be 0:length(goodcols) and will be the full extent. Both are similar
-      assign(paste0("SumClosed_", maploopnames[o]), rowSums(dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
+      if (length(goodcols) == 1) { # if only 1 goodcol then rowSums fails since it wants a list
+        assign(paste0("SumClosed_", maploopnames[o]), dbase[,(SortCol0 + q)])
+      } else {
+        assign(paste0("SumClosed_", maploopnames[o]), rowSums(dbase[,(SortCol0 + 1):(SortCol0 + length(goodcols))]))
+      }
       dbase <- cbind(dbase,get(paste0("SumClosed_", maploopnames[o])))
       colnames(dbase)[ncol(dbase)] <- paste0("SumClosed_", maploopnames[o])
 
