@@ -33,6 +33,7 @@ gbm.loop(
   alerts = F,
   pngtype = "cairo-png",
   runautos = T,
+  Min.Inf = NULL,
   ...
 )
 }
@@ -95,9 +96,9 @@ RStudio.}
 \item{runautos}{Run gbm.autos, default TRUE, turn off to only collate
 numbered-folder results.}
 
-\item{...}{Additional params for gbm.auto subfunctions inc gbm.step.}
-
 \item{Min.Inf}{Dummy param for package testing for CRAN, ignore.}
+
+\item{...}{Additional params for gbm.auto subfunctions inc gbm.step.}
 }
 \value{
 Returns a data frame of lat, long, 1 predicted abundance per loop,

@@ -97,7 +97,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     quantile = 1, # set max quantile of data to include in bins, from breaks.grid in mapplots; lower to e.g. 0.975 cutoff outliers; default 1
                     byxout = FALSE, # export byx to use elsewhere? Default:FALSE
                     breaks = NULL, # vector of breakpoints for colour scales; default blank, generated automatically
-                    # byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+                    byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
                     ...) # additional arguments for legend.grid's ... which passes to legend
 
 # Generalised Boosting Models, automated map generator. Simon Dedman, 2014-2016, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
@@ -107,7 +107,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
 # mapmain = "Unrepresentativeness: ",legendtitle = "UnRep 0-1"). Suggested code for outputting to e.g. png:
 # png(...); par(...); gbm.map(...); dev.off()
 {
-  utils::globalVariables("byxport") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  # utils::globalVariables("byxport") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
   # require(mapplots)
   if (is.null(shape)) { # if no map shape entered, generate bounds and call gbm.basemap

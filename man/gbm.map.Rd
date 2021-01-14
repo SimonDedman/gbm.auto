@@ -25,6 +25,7 @@ gbm.map(
   quantile = 1,
   byxout = FALSE,
   breaks = NULL,
+  byxport = NULL,
   ...
 )
 }
@@ -88,9 +89,9 @@ in mapplots; lower to e.g. 0.975 cutoff outliers; default 1.}
 \item{breaks}{Vector of breakpoints for colour scales; default blank,
 generated automatically.}
 
-\item{...}{Additional arguments for legend.grid's ... which passes to legend.}
-
 \item{byxport}{Dummy param for package testing for CRAN, ignore.}
+
+\item{...}{Additional arguments for legend.grid's ... which passes to legend.}
 }
 \value{
 Species abundance maps using data provided by gbm.auto, and

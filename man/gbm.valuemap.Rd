@@ -23,6 +23,7 @@ gbm.valuemap(
   BnW = TRUE,
   shape = NULL,
   pngtype = "cairo-png",
+  byxport = NULL,
   ...
 )
 }
@@ -68,9 +69,9 @@ own with gbm.basemap.}
 
 \item{pngtype}{Filetype for png files, alternatively try "quartz".}
 
-\item{...}{Optional terms for gbm.map.}
-
 \item{byxport}{Dummy param for package testing for CRAN, ignore.}
+
+\item{...}{Optional terms for gbm.map.}
 }
 \value{
 Species abundance, abundance vs avoid variable, and MPA maps per

@@ -18,15 +18,15 @@
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
   resvar, # response variable column in samples
-  ZI = "CHECK") # are samples zero-inflated? TRUE/FALSE/"CHECK"
-  # grv = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  ZI = "CHECK", # are samples zero-inflated? TRUE/FALSE/"CHECK"
+  grv = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 {
 
 # gbm.bfcheck: provides minimum bag fractions for gbm.auto,
 # preventing failure due to bf & samples rows limit
 # Simon Dedman, 2016, simondedman@gmail.com, github.com/SimonDedman/gbm.auto
 
-utils::globalVariables("grv") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+# utils::globalVariables("grv") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
 # Minimum bag fraction for binary
 minbfbin <- 21/nrow(samples)
