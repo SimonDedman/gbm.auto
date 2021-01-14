@@ -109,7 +109,6 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
 {
   utils::globalVariables("byxport") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
-
   # require(mapplots)
   if (is.null(shape)) { # if no map shape entered, generate bounds and call gbm.basemap
     bounds = c(range(x),range(y))

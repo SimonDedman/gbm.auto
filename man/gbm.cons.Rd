@@ -28,8 +28,7 @@ gbm.cons(
   shape = NULL,
   pngtype = "cairo-png",
   gridslat = 2,
-  gridslon = 1,
-  grids = NULL
+  gridslon = 1
 )
 }
 \arguments{

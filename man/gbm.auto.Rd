@@ -34,10 +34,6 @@ gbm.auto(
   pngtype = "cairo-png",
   gaus = TRUE,
   MLEvaluate = TRUE,
-  brv = NULL,
-  grv = NULL,
-  Bin_Preds = NULL,
-  Gaus_Preds = NULL,
   ...
 )
 }
@@ -136,6 +132,11 @@ multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash.}
 \item{MLEvaluate}{do machine learning evaluation metrics & plots? Default
 TRUE.}
 
+\item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
+legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
+max.trees, both of which can be added in list(1,2) format to pass to fam1 and
+ 2.}
+
 \item{brv}{Dummy param for package testing for CRAN, ignore.}
 
 \item{grv}{Dummy param for package testing for CRAN, ignore.}
@@ -143,11 +144,6 @@ TRUE.}
 \item{Bin_Preds}{Dummy param for package testing for CRAN, ignore.}
 
 \item{Gaus_Preds}{Dummy param for package testing for CRAN, ignore.}
-
-\item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
-legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
-max.trees, both of which can be added in list(1,2) format to pass to fam1 and
- 2.}
 }
 \value{
 Line, dot and bar plots, a report of all variables used, statistics
