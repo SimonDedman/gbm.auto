@@ -244,10 +244,10 @@ gbm.auto <- function(
   pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
   gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
   MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
-  brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  # brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  # grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  # Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  # Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
 # legend in legend.grid in gbm.map, mapmain in gbm.map
 # (default = "Predicted CPUE (numbers per hour): ") and gbm.step (dismo package)
@@ -284,6 +284,8 @@ gbm.auto <- function(
   # require(gbm)
   # require(dismo)
   # if (alerts) require(beepr)
+
+  utils::globalVariables(c("brv", "grv", "Bin_Preds", "Gaus_Preds")) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided

@@ -91,13 +91,15 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      shape = NULL, # coastline file for gbm.map
                      pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
                      gridslat = 2, #per Gbm.auto defaults to 2
-                     gridslon = 1, #per Gbm.auto defaults to 1
-                     grids = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+                     gridslon = 1) #per Gbm.auto defaults to 1
+                     # grids = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 {
   ####todo: make running gbm.auto optional####
   # if they've already been run.
   # Have to have subset folders & species folder names correct.
   # test this. Changes default requirement of grids. And samples? And loads of stuff.
+
+  utils::globalVariables("grids") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
 ####Load functions & data####
 # if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}

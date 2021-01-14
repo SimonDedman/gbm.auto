@@ -1,0 +1,39 @@
+── R CMD check results ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── gbm.auto 1.3.0 ────
+Duration: 2m 40.1s
+
+> checking examples ... WARNING
+  Found the following significant warnings:
+    Warning: working directory was changed to ‘/tmp/RtmpmjXKiR/gbm.auto.Rcheck/GSHHS_shp/f’, resetting
+    Warning: working directory was changed to ‘/tmp/RtmpmjXKiR/gbm.auto.Rcheck/1’, resetting
+
+> checking installed package size ... NOTE
+    installed size is 16.5Mb
+    sub-directories of 1Mb or more:
+      data  16.2Mb
+
+> checking top-level files ... NOTE
+  Non-standard files/directories found at top level:
+    ‘Gbm.auto_extras’ ‘README.html’ ‘cran-comments.Rmd’
+
+> checking R code for possible problems ... NOTE
+  Found the following assignments to the global environment:
+  File ‘gbm.auto/R/gbm.predict.grids.R’:
+    assign(sp.name, temp, pos = 1)
+    assign(paste0(sp.name, part.number), temp, pos = 1)
+    assign(sp.name, temp, pos = 1)
+
+> checking for non-standard things in the check directory ... NOTE
+  Found the following files/directories:
+    ‘1’ ‘COPYING.LESSERv3’ ‘GSHHG.zip’ ‘GSHHS_shp’ ‘LICENSE.TXT’
+    ‘README.TXT’ ‘SHAPEFILES.TXT’ ‘WDBII_shp’
+
+0 errors ✓ | 1 warning x | 4 notes x
+
+
+- clean up notes/comments in scripts. move to github issues as necessary.
+- hans as author, see email
+- tools::undoc("gbm.auto") undoc code multiple, 3 data, undoc data: all 6.
+- basemap: check whether download already exists & skip if in same place
+- swap NULLs in function calls for utils:: namespace thing
+- nonstandard things in check directory: is from example basemap download? don't run that? already aren't?
+- assign in gbm.predict.grids: can swap for simple <- ?

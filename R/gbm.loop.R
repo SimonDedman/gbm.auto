@@ -106,7 +106,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      alerts = F,        # play sounds to mark progress steps
                      pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
                      runautos = T,      # run gbm.autos, default TRUE, turn off to only collate numbered-folder results
-                     Min.Inf = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+                     # Min.Inf = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
                      ...) {
   # Generalised Boosting Model / Boosted Regression Tree process chain automater
   # Simon Dedman, 2012-8 simondedman@gmail.com github.com/SimonDedman/gbm.auto
@@ -120,6 +120,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # for factorial variables, need to change from lines to bars
   # Runautos doesn't work: binbars.df & gausbars.df are created & incrementally grown within the autos loop then accessed afterwards.
   # Would need to do this separately somehow, possibly a separate loop to pull these data from a source file csv?
+
+  utils::globalVariables("Min.Inf") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
   # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   # if (alerts) require(beepr)

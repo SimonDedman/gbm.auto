@@ -73,8 +73,10 @@ gbm.valuemap <- function(
   shape = NULL, #  set coastline shapefile, else
   # uses British Isles. Generate your own with gbm.basemap
   pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
-  byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+  # byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   ...) {  # optional terms for gbm.map
+
+  utils::globalVariables("byxport") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
   # Check & load gbm.map
   # if (!exists("gbm.map")) {stop("you need to install gbm.map to run this function")}
