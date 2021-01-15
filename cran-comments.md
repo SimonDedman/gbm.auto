@@ -9,21 +9,21 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+***
+
 ## Test environments
-* local linux install, xubuntu 20.10, R 4.0.3
+* local R installation, R 4.0.3, xubuntu 20.10
 * win-builder (devel and release)
-* 
 
 ***
 
 ## R CMD check results
-There were no ERRORs or WARNINGs. 
 
-There was 1 NOTE:
+0 errors | 0 warnings | 0 notes
 
-* checking top-level files ... NOTE
-  Non-standard file/directory found at top level: ‘cran-comments.md’
-  ./Rbuildignore contains "^cran-comments\.Rmd$" but this still appears and I can't figure out why.
+* This is a new release.
+
+***
 
 ## Downstream dependencies
 

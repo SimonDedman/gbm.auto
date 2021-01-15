@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^cran-comments\.md$ # Comments for CRAN submission
-^cran-comments\.Rmd$ # Comments for CRAN submission
 ^LICENSE\.md$
 ^Gbm\.auto_extras$
 ^README\.Rmd$
+^cran-comments\.md$
