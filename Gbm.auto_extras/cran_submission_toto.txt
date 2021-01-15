@@ -1,26 +1,13 @@
-> checking installed package size ... NOTE
-    installed size is 16.5Mb
-    sub-directories of 1Mb or more:
-      data  16.2Mb
-
 > checking top-level files ... NOTE
   Non-standard files/directories found at top level:
-    ‘Gbm.auto_extras’ ‘README.html’ ‘cran-comments.Rmd’
+    ‘cran-comments.Rmd’
 
-0 errors ✓ | 0 warnings ✓ | 2 notes x
+0 errors ✓ | 0 warnings ✓ | 1 note x
 
 
 - clean up notes/comments in scripts. move to github issues as necessary.
 - tools::undoc("gbm.auto") undoc code multiple, 3 data, undoc data: all 6.
 - basemap: check whether download already exists & skip if in same place
-- nonstandard things in check directory: is from example basemap download? don't run that? already aren't?
-
-
-all.equal(AllPreds_E$Latitude, AllScaledData$Latitude)
-[1] TRUE
-> all.equal(AllPreds_E$Latitude, AllScaledData$Latitude, grids$Latitude)
-[1] TRUE
-> all.equal(AllPreds_E$Longitude, AllScaledData$Longitude, grids$Longitude)
-[1] TRUE
-> all.equal(AllPreds_E$Effort, grids$Effort)
-[1] "Mean relative difference: 1.638035"
+- badges in readme.rmd https://github.com/RMHogervorst/badgecreatr/issues/56
+- Rbuildignore cran-comments.md won't ignore it
+- pdflatex not found! Not building PDF manual
