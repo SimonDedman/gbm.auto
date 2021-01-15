@@ -45,6 +45,7 @@
 #' @importFrom utils read.csv write.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
+#' \dontrun{
 #' data(grids)
 #' gbm.cons(mygrids = grids, subsets = c("Juveniles","Adult_Females"),
 #'          resvars = c(44:47,11:14),
@@ -63,6 +64,7 @@
 #'          RSBs = rep(FALSE, 8),
 #'          BnWs = rep(FALSE, 8),
 #'          zeroes = rep(FALSE,8))
+#'          }
 #'
 gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      subsets,       # Subset name(s): character; single or vector

@@ -22,7 +22,7 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @author Jane Elith
 #' @author John Leathwick
-#' @examples None
+#'
 roc <- function(obsdat, preddat) {
   # code adapted from Ferrier, Pearce and Watson's code, by J.Elith
   # see: Hanley, J.A. & McNeil, B.J. (1982) The meaning and use of the area

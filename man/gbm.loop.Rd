@@ -113,11 +113,13 @@ and calculates the Coefficient Of Variation in the predicted abundance scores
  output variance range.
 }
 \examples{
+\dontrun{
 library("gbm.auto")
 data(grids) # load grids
 data(samples) # load samples
 gbmloopexample <- gbm.loop(loops = 2, samples = samples,
 grids = grids, expvar = c(4:10), resvar = 11, simp = F)
+}
 
 }
 \author{

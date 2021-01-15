@@ -51,11 +51,13 @@
 #' @importFrom utils read.csv write.csv
 #'
 #' @examples
+#' \dontrun{
 #' library("gbm.auto")
 #' data(grids) # load grids
 #' data(samples) # load samples
 #' gbmloopexample <- gbm.loop(loops = 2, samples = samples,
 #' grids = grids, expvar = c(4:10), resvar = 11, simp = F)
+#' }
 #'
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'

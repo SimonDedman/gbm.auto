@@ -87,10 +87,6 @@ resulting in one MPA map per species, and a multicolour MPA map of all.
 All maps list the percentage of the avoidvariables total that is overlapped
 by the MPA in the map legend.
 }
-\examples{
-None
-
-}
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 }

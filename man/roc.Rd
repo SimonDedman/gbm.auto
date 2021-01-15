@@ -25,9 +25,6 @@ Also Pearce, J. & Ferrier, S. (2000) Evaluating the predictive performance of
  the area. In dismo, this is used in the gbm routines, but not elsewhere (see
  evaluate).
 }
-\examples{
-None
-}
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 
