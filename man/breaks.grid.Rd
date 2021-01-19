@@ -38,5 +38,7 @@ breaks.grid(100,ncol=5,zero=FALSE)
 exp(breaks.grid(log(10000),ncol=4,zero=FALSE))
 }
 \author{
-Hans Gerritsen, Simon Dedman, \email{simondedman@gmail.com}
+Simon Dedman, \email{simondedman@gmail.com}
+
+Hans Gerritsen
 }

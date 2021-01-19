@@ -20,8 +20,6 @@
 #' @importFrom stats binomial glm pchisq poisson
 #' @importFrom utils write.table
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @author Jane Elith
-#' @author John Leathwick
 #'
 roc <- function(obsdat, preddat) {
   # code adapted from Ferrier, Pearce and Watson's code, by J.Elith

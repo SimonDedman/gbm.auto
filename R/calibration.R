@@ -11,8 +11,6 @@
 #'
 #' @return roc & calibration stats internally within gbm runs e.g. in gbm.auto.
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @author Jane Elith
-#' @author John Leathwick
 #'
 calibration <- function(obs, preds, family = "binomial")  {
   # j elith/j leathwick 17th March 2005

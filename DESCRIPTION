@@ -3,8 +3,6 @@ Title: Automated Boosted Regression Tree Modelling and Mapping Suite
 Version: 1.4.0
 Authors@R: c(
     person("Simon", "Dedman", email = "simondedman@gmail.com", role = c("aut", "cre")),
-    person("Jane", "Elith", role = "aut"),
-    person("John", "Leathwick", role = "aut"),
     person("Hans", "Gerritsen", role = "aut"))
 Description: Automates delta log-normal boosted regression tree abundance
     prediction. Loops through parameters provided (LR, TC, BF), chooses best,

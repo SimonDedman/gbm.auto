@@ -24,8 +24,4 @@ will catch most failures to specify the family.
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
-
-Jane Elith
-
-John Leathwick
 }

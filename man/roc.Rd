@@ -27,8 +27,4 @@ Also Pearce, J. & Ferrier, S. (2000) Evaluating the predictive performance of
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
-
-Jane Elith
-
-John Leathwick
 }

@@ -19,7 +19,8 @@
 #' @export
 #' @return A vector of breakpoints for draw.grid in mapplots
 #' @importFrom graphics legend
-#' @author Hans Gerritsen, Simon Dedman, \email{simondedman@@gmail.com}
+#' @author Simon Dedman, \email{simondedman@@gmail.com}
+#' @author Hans Gerritsen
 #' @examples
 #' breaks.grid(100,ncol=6)
 #' breaks.grid(100,ncol=5,zero=FALSE)
