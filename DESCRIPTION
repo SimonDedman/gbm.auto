@@ -11,9 +11,9 @@ Description: Automates delta log-normal boosted regression tree abundance
     Package core built around 'gbm' functions in 'dismo' (Hijmans, Phillips, 
     Leathwick & Jane Elith, 2020 & ongoing), itself built around 'gbm' (Greenwell, 
     Boehmke, Cunningham & Metcalfe, 2020 & ongoing, originally by Ridgeway).
-    Indebted to Elith/Leathwick/Hastie 2008 'Working Guide'; workflow follows 
-    Appendix S3. See simondedman.com for published guides and papers using this 
-    package.
+    Indebted to Elith/Leathwick/Hastie 2008 'Working Guide' 
+    (doi:10.1111/j.1365-2656.2008.01390.x); workflow follows Appendix S3. See 
+    simondedman.com for published guides and papers using this package.
 Depends:
     R (>= 3.5.0)
 License: MIT + file LICENSE
