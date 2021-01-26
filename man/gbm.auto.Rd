@@ -83,7 +83,7 @@ defaults to "bernoulli".}
 \item{fam2}{Probability distribution family for 2nd part of delta process,
 defaults to "gaussian".}
 
-\item{simp}{Try simplfying best BRTs?}
+\item{simp}{Try simplifying best BRTs?}
 
 \item{gridslat}{Column number for latitude in 'grids'.}
 
@@ -115,7 +115,7 @@ Default NULL, character vector, "./" for working directory.}
 \item{map}{Save abundance map png files?}
 
 \item{shape}{Set coast shapefile, else bounds calculated by gbm.map which
-then calls gbm.basemap to download and autogenerate the base map. Read in
+then calls gbm.basemap to download and auto-generate the base map. Read in
 existing files by installing the shapefiles package then
 DesiredMapName <- read.shapefile("ShapeFileName")
 omitting the .shp extension.}
@@ -162,7 +162,7 @@ Generates line, dot and bar plots, and outputs these and the predictions
 and a report of all variables used, statistics for tests, variable
 interactions, predictors used and dropped, etc. If selected, generates
 predicted abundance maps, and Unrepresentativeness surfaces.
-See www.github.com/SimonDedman/gbm.auto for issues, feedback, and development
+See www.GitHub.com/SimonDedman/gbm.auto for issues, feedback, and development
 suggestions. See SimonDedman.com for links to walkthrough paper, and papers
 and thesis published using this package.
 }
@@ -171,7 +171,7 @@ Errors and their origins:
 
 0. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package
  ‘gbm.auto’
-For linux/*buntu systems, in terminal, type
+For Linux/*buntu systems, in terminal, type
 sudo apt install libgeos-dev
 sudo apt install libproj-dev
 sudo apt install libgdal-dev
@@ -187,12 +187,12 @@ samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
 2. At bf=0.5, if nrows <= 42 gbm.step will crash
 > Use gbm.bfcheck to determine optimal viable bf size
 
-3. Maps/plots dont work/output
+3. Maps/plots don't work/output
 > If on a Mac, try changing pngtype to "quartz"
 
 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
 max.trees): missing value where TRUE/FALSE needed
-> If running a zero-inflated delta model (bernoilli/bin & gaussian/gaus),
+> If running a zero-inflated delta model (bernoulli/bin & gaussian/gaus),
 Data are expected to contain zeroes (lots of them in zero-inflated cases),
 have you already filtered them out, i.e. are only testing the positive cases?
 Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to

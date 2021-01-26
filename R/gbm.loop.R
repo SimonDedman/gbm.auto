@@ -25,7 +25,7 @@
 #' @param gridslat See gbm.auto help.
 #' @param gridslon See gbm.auto help.
 #' @param cols See gbm.auto help.
-#' @param linesfiles See gbm.auto help; TRUE else linesfiles calcs will fail.
+#' @param linesfiles See gbm.auto help; TRUE or linesfiles calculations fail.
 #' @param savegbm See gbm.auto help.
 #' @param varint See gbm.auto help.
 #' @param map See gbm.auto help.
@@ -38,7 +38,7 @@
 #' @param runautos Run gbm.autos, default TRUE, turn off to only collate
 #' numbered-folder results.
 #' @param Min.Inf Dummy param for package testing for CRAN, ignore.
-#' @param ... Additional params for gbm.auto subfunctions inc gbm.step.
+#' @param ... Additional params for gbm.auto sub-functions including gbm.step.
 #'
 #' @return Returns a data frame of lat, long, 1 predicted abundance per loop,
 #' and a final variance score per cell.

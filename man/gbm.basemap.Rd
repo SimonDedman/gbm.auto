@@ -28,12 +28,12 @@ latitude.}
 longitude.}
 
 \item{getzip}{Download & unpack GSHHS data to WD? "TRUE" else
-absolute/relative reference to GSHHS_shp folder, inc that folder.}
+absolute/relative reference to GSHHS_shp folder, including that folder.}
 
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
 if this is incorrect.}
 
-\item{savename}{Shapefile savename, no shp extension, default is "Crop_Map"}
+\item{savename}{Shapefile save-name, no shp extension, default is "Crop_Map"}
 
 \item{res}{Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 intermediate, high, full) or "CALC" to calculate based on bounds.}
@@ -51,20 +51,20 @@ MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set
 box. Use for 'shape' in gbm.map. If downloading in RStudio uncheck
 "Use secure download method for HTTP" in Tools > Global Options > Packages.
-Simon Dedman, 2015/6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
+Simon Dedman, 2015/6 simondedman@gmail.com GitHub.com/SimonDedman/gbm.auto
 }
 \details{
 errors and their origins:
 1. Error in setwd(getzip) : cannot change working directory
-If youve specified the location of the local GSHHS_shp folder, ensure youre
+If you've specified the location of the local GSHHS_shp folder, ensure you're
 in the correct directory relative to it. This error means it looked for the
-folder and couldnt find it.
+folder and couldn't find it.
 
-2. Error in writeSpatialShape(cropshp, savename) x is aNULLobject, not a
+2. Error in writeSpatialShape(cropshp, savename) x is a NULL object, not a
 compatible Spatial*DataFrame.
 Ensure that your lats and longs are the the right way around
 
-3. If rgdal install fails in linux try:
+3. If rgdal install fails in Linux try:
 sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 }
 \examples{

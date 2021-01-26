@@ -74,7 +74,7 @@ gbm.loop(
 
 \item{cols}{See gbm.auto help.}
 
-\item{linesfiles}{See gbm.auto help; TRUE else linesfiles calcs will fail.}
+\item{linesfiles}{See gbm.auto help; TRUE or linesfiles calculations fail.}
 
 \item{savegbm}{See gbm.auto help.}
 
@@ -98,7 +98,7 @@ numbered-folder results.}
 
 \item{Min.Inf}{Dummy param for package testing for CRAN, ignore.}
 
-\item{...}{Additional params for gbm.auto subfunctions inc gbm.step.}
+\item{...}{Additional params for gbm.auto sub-functions including gbm.step.}
 }
 \value{
 Returns a data frame of lat, long, 1 predicted abundance per loop,

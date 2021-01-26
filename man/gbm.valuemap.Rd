@@ -84,7 +84,7 @@ preferentially close. Bpa, the precautionary biomass required to protect the
 spawning stock, is used to calculate MPA size. MPA is then grown to add
 subsequent species starting from the most conservationally at-risk species,
 resulting in one MPA map per species, and a multicolour MPA map of all.
-All maps list the percentage of the avoidvariables total that is overlapped
+All maps list the percentage of the avoid-variables total that is overlapped
 by the MPA in the map legend.
 }
 \author{

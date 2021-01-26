@@ -7,7 +7,7 @@
 #' spawning stock, is used to calculate MPA size. MPA is then grown to add
 #' subsequent species starting from the most conservationally at-risk species,
 #' resulting in one MPA map per species, and a multicolour MPA map of all.
-#' All maps list the percentage of the avoidvariables total that is overlapped
+#' All maps list the percentage of the avoid-variables total that is overlapped
 #' by the MPA in the map legend.
 #'
 #' @param dbase Data.frame to load. Expects Lon, Lat & data columns: predicted
@@ -51,8 +51,8 @@
 gbm.valuemap <- function(
   dbase,  # data.frame to load. Expects Lon, Lat & data columns: predicted
   # abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
-  loncolno = 1, # column number in dbase which has longitudes
-  latcolno = 2, # column number in dbase which has latitudes
+  loncolno = 1, # column number in database which has longitudes
+  latcolno = 2, # column number in database which has latitudes
   goodcols,  # which column numbers are abundances (where higher = better)? List
   # them in order of highest conservation importance first e.g. c(3,1,2,4)
   badcols,  # which col no.s are 'negative' e.g. fishing (where higher = worse)?

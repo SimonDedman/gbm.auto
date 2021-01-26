@@ -18,7 +18,7 @@
 #' @param fams statistical data distribution family names to be modelled by gbm.
 #' @param loop Is the folder a gbm.loop output?
 #'
-#' @return a list of breakpoint values which datsets can be subsetted using.
+#' @return a list of breakpoint values which datasets can be subsetted using.
 #' @export
 #' @importFrom utils read.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}

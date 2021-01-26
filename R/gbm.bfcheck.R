@@ -2,7 +2,7 @@
 #'
 #' Provides minimum bag fractions for gbm.auto, preventing failure
 #' due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
-#' github.com/SimonDedman/gbm.auto
+#' GitHub.com/SimonDedman/gbm.auto
 #'
 #' @param samples Samples dataset, same as gbm.auto.
 #' @param resvar Response variable column in samples.
@@ -24,7 +24,7 @@ gbm.bfcheck <- function(
 
 # gbm.bfcheck: provides minimum bag fractions for gbm.auto,
 # preventing failure due to bf & samples rows limit
-# Simon Dedman, 2016, simondedman@gmail.com, github.com/SimonDedman/gbm.auto
+# Simon Dedman, 2016, simondedman@gmail.com, GitHub.com/SimonDedman/gbm.auto
 
 # utils::globalVariables("grv") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 

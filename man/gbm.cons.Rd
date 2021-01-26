@@ -53,7 +53,7 @@ already run and output files in expected directories.}
 \item{expvars}{List object of expvar vectors for gbm.autos, length = no. of
 subsets * no. of species. No default.}
 
-\item{tcs}{Gbm.auto parameters, autocalculated below if not provided by user.}
+\item{tcs}{Gbm.auto parameters, auto-calculated below if not provided by user.}
 
 \item{lrs}{Gbm.auto parameter, uses defaults if not provided by user.}
 

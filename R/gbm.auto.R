@@ -7,7 +7,7 @@
 #' and a report of all variables used, statistics for tests, variable
 #' interactions, predictors used and dropped, etc. If selected, generates
 #' predicted abundance maps, and Unrepresentativeness surfaces.
-#' See www.github.com/SimonDedman/gbm.auto for issues, feedback, and development
+#' See www.GitHub.com/SimonDedman/gbm.auto for issues, feedback, and development
 #' suggestions. See SimonDedman.com for links to walkthrough paper, and papers
 #' and thesis published using this package.
 #'
@@ -41,7 +41,7 @@
 #' defaults to "bernoulli".
 #' @param fam2 Probability distribution family for 2nd part of delta process,
 #' defaults to "gaussian".
-#' @param simp Try simplfying best BRTs?
+#' @param simp Try simplifying best BRTs?
 #' @param gridslat Column number for latitude in 'grids'.
 #' @param gridslon Column number for longitude in 'grids'.
 #' @param multiplot Create matrix plot of all line files? Default true.
@@ -62,7 +62,7 @@
 #' "contrasts can be applied only to factors with 2 or more levels".
 #' @param map Save abundance map png files?
 #' @param shape Set coast shapefile, else bounds calculated by gbm.map which
-#' then calls gbm.basemap to download and autogenerate the base map. Read in
+#' then calls gbm.basemap to download and auto-generate the base map. Read in
 #' existing files by installing the shapefiles package then
 #' DesiredMapName <- read.shapefile("ShapeFileName")
 #' omitting the .shp extension.
@@ -93,7 +93,7 @@
 #'
 #' 0. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package
 #'  ‘gbm.auto’
-#' For linux/*buntu systems, in terminal, type
+#' For Linux/*buntu systems, in terminal, type
 #' sudo apt install libgeos-dev
 #' sudo apt install libproj-dev
 #' sudo apt install libgdal-dev
@@ -109,12 +109,12 @@
 #' 2. At bf=0.5, if nrows <= 42 gbm.step will crash
 #' > Use gbm.bfcheck to determine optimal viable bf size
 #'
-#' 3. Maps/plots dont work/output
+#' 3. Maps/plots don't work/output
 #' > If on a Mac, try changing pngtype to "quartz"
 #'
 #' 4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
 #' max.trees): missing value where TRUE/FALSE needed
-#' > If running a zero-inflated delta model (bernoilli/bin & gaussian/gaus),
+#' > If running a zero-inflated delta model (bernoulli/bin & gaussian/gaus),
 #' Data are expected to contain zeroes (lots of them in zero-inflated cases),
 #' have you already filtered them out, i.e. are only testing the positive cases?
 #' Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to
@@ -192,7 +192,7 @@
 #' @importFrom utils read.csv write.csv
 #'
 gbm.auto <- function(
-  grids = NULL,         # explantory data to predict to. Import with (e.g.)
+  grids = NULL,         # explanatory data to predict to. Import with (e.g.)
   # read.csv and specify object name. Defaults to NULL (won't predict to grids)
   samples,  # explanatory and response variables to predict from.
   # Keep col names short, no odd characters, starting numerals or terminal periods
@@ -221,31 +221,31 @@ gbm.auto <- function(
   # CHECK: Tests data for you. Default is TRUE.
   fam1 = "bernoulli",   # probability distribution family for 1st part of delta
   # process, defaults to "bernoulli",
-  fam2 = "gaussian",   # probability distribution family for 2nd part of delta
-  # process, defaults to "gaussian",
-  simp = TRUE,          # try simplfying best BRTs?
+  fam2 = "gaussian",   # probability distribution family for second part of
+  # delta process, defaults to "gaussian",
+  simp = TRUE,          # try simplifying best BRTs?
   gridslat = 2,         # column number for latitude in 'grids'
   gridslon = 1,         # column number for longitude in 'grids'
   multiplot = TRUE,     # create matrix plot of all line files? Default true
-  # turn off if big n of exp vars causes an error due to margin size problems.
-  cols = grey.colors(1,1,1), # barplot colour vector. Assignment in order of
+  # turn off if large number of expvars causes an error due to margin size problems.
+  cols = grey.colors(1,1,1), # bar-plot colour vector. Assignment in order of
   # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
-  linesfiles = TRUE,    # save individual line plots' data as csv's?
+  linesfiles = TRUE,    # save individual line plots' data as CSVs?
   smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
   savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
   loadgbm = NULL,       # relative or absolute location of folder containing
   # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
-  # predicted maps and csvs. Default NULL, character vector, "./" for working directory
+  # predicted maps and CSVs. Default NULL, character vector, "./" for working directory
   varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
   # for error "contrasts can be applied only to factors with 2 or more levels"
   map = TRUE,           # save abundance map png files?
   shape = NULL,         # set coast shapefile, else bounds calculated by gbm.map
-  # which then calls gbm.basemap to download and autogenerate the base map.
+  # which then calls gbm.basemap to download and auto-generate the base map.
   RSB = TRUE,           # run Unrepresentativeness surface builder?
   BnW = TRUE,           # repeat maps in black and white e.g. for print journals
   alerts = TRUE,        # play sounds to mark progress steps. Running many small
   # BRTs e.g. gbm.loop can cause RStudio to crash, if so set this to FALSE
-  pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
+  pngtype = "cairo-png",# file-type for png files, alternatively try "quartz"
   gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
   MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
   brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
@@ -258,7 +258,7 @@ gbm.auto <- function(
 # arguments max.trees and others.
 {
   # Generalised Boosting Model / Boosted Regression Tree process chain automater.
-  # Simon Dedman, 2012-6 simondedman@gmail.com github.com/SimonDedman/gbm.auto
+  # Simon Dedman, 2012-6 simondedman@gmail.com GitHub.com/SimonDedman/gbm.auto
 
   # Function to automate the many steps required to use boosted regression trees
   # to predict abundances in a delta process, i.e. binary (0/1) proportion

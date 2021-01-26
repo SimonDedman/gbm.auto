@@ -21,7 +21,7 @@ Prints minimum Bag Fraction size for gbm.auto.
 \description{
 Provides minimum bag fractions for gbm.auto, preventing failure
 due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
-github.com/SimonDedman/gbm.auto
+GitHub.com/SimonDedman/gbm.auto
 }
 \examples{
 data(samples)

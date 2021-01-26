@@ -25,7 +25,7 @@ Especially on Linux systems it is recommended to type, in terminal:
 sudo apt install libgeos-dev
 sudo apt install libproj-dev
 sudo apt install libgdal-dev
-then manually install rgeos and rgdal in R/Rstudio.
+then manually install rgeos and rgdal in R/RStudio.
 
 Also see each script's Details section in the manual pages, as these frequently contain tips or common bugfixes.
 
@@ -86,7 +86,7 @@ Runs gbm.auto for multiple subsets of the same overall dataset and scales the co
 
 Decision Support Tool that generates (Marine) Protected Area options using species predicted abundance maps
 
-Scales response variable data, maps a user-defined explanatory variable to be avoided, e.g. fishing effort, combines them into a map showing areas to preferentially close. Bpa, the precautionary biomass required to protect the spawning stock, is used to calculate MPA size. MPA is then grown to add subsequent species starting from the most conservationally at-risk species, resulting in one MPA map per species, and a multicolour MPA map of all. All maps list the percentage of the avoidvariables total that is overlapped by the MPA in the map legend.  
+Scales response variable data, maps a user-defined explanatory variable to be avoided, e.g. fishing effort, combines them into a map showing areas to preferentially close. Bpa, the precautionary biomass required to protect the spawning stock, is used to calculate MPA size. MPA is then grown to add subsequent species starting from the most conservationally at-risk species, resulting in one MPA map per species, and a multicolour MPA map of all. All maps list the percentage of the avoid-variables total that is overlapped by the MPA in the map legend.  
 
 ***
 

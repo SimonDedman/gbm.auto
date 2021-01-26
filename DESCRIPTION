@@ -18,6 +18,7 @@ Depends:
     R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 Imports:
     gbm (>= 2.1.1),

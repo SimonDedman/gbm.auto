@@ -14,7 +14,7 @@ gbm.subset(x, fams = c("Bin", "Gaus"), loop = FALSE)
 \item{loop}{Is the folder a gbm.loop output?}
 }
 \value{
-a list of breakpoint values which datsets can be subsetted using.
+a list of breakpoint values which datasets can be subsetted using.
 }
 \description{
 Set your working directory to the output folder of a gbm.auto/gbm.loop run.
