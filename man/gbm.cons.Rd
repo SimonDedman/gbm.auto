@@ -12,6 +12,7 @@ gbm.cons(
   BnW = TRUE,
   resvars,
   gbmautos = TRUE,
+  savedir = tempdir(),
   expvars,
   tcs = NULL,
   lrs = rep(list(c(0.01, 0.005)), length(resvars)),
@@ -49,6 +50,9 @@ length(subsets)*species, no default.}
 
 \item{gbmautos}{Do gbm.auto runs for species? Default TRUE, set FALSE if
 already run and output files in expected directories.}
+
+\item{savedir}{Save outputs to a temporary directory (default) else change to
+current directory with getwd() or elsewhere e.g. "/home/me/folder"}
 
 \item{expvars}{List object of expvar vectors for gbm.autos, length = no. of
 subsets * no. of species. No default.}

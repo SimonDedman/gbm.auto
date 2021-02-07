@@ -50,6 +50,8 @@
 #' variables. Default 1*white: white bars black borders. '1*' repeats.
 #' @param linesfiles Save individual line plots' data as csv's? Default TRUE.
 #' @param smooth Apply a smoother to the line plots? Default FALSE.
+#' @param savedir Save outputs to a temporary directory (default) else change to
+#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
 #' @param savegbm Save gbm objects and make available in environment after
 #' running? Open with load("Bin_Best_Model") Default TRUE.
 #' @param loadgbm Relative or absolute location of folder containing
@@ -232,6 +234,8 @@ gbm.auto <- function(
   # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
   linesfiles = TRUE,    # save individual line plots' data as CSVs?
   smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
+  savedir = tempdir(),  # save outputs to a temporary directory (default) else
+  # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
   savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
   loadgbm = NULL,       # relative or absolute location of folder containing
   # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
@@ -297,44 +301,11 @@ gbm.auto <- function(
   on.exit(par(oldpar))
   on.exit(setwd(oldwd), add = TRUE)
   on.exit(options(oldoptions), add = TRUE)
-
-  # user save file choice menu. Await Gregor reply ####
-  switch(menu(title = "Save resulting csv report, map & plot image files, and model objects (if so requested), to user's local filesystem?",
-              choices = c("YES, as a subfolder within my current working directory", # answer1, + 1, = 2
-                          "Yes, but to a temporary folder", # answer2, + 1, = 3
-                          "NO")) + 1,  # answer3, + 1, = 4
-         cat("Nothing done\n"), # switch1 = answer0 + 1 = 1. Need to exit function? STOP?
-         print(paste0("Files will be saved to a subfolder named per your response variable(s), in the current folder ", getwd())), # switch2 = answer1. Change nothing.
-         {setwd(tempdir()) # switch3 = answer2. Change WD. on.exit will take user hone anyway.
-           print("Files will be saved to a temporary folder")},
-         print("Nothing will be saved") # switch4 = answer3. Need to do something here. Turn off plots? And report? What would even be produced? Find out.
-  )
-
-
-  #add param 'savedir'
-  # let the user specify the directory. ## add  insert answer 2? Or add param 'savedir'?
-  # If you want to write by default, i.e. without the user having to specify an arguments, then write to tempdir(). ##I'm fine having the user specify defaults
-  # new param: savedir = tempdir(). User option to change it, inform them that using getwd() will put files in their current working directory.
-  # And in examples, you can of course write to files / directories within tempdir().
-
-  #DOTHIS####
-  # add function parameter:
-  # savedir = tempdir(),
-  # And added that to all plots (filename = paste0(savedir, etc)),
-  # that would mean:
-  #   - writing by default goes to tempdir
-  # AND
-  # - the user can specify the directory
-  # AND
-  # - No awkward menu() usage
-  # AND
-  # - in the examples it will write to tempdir by default
-
-
+  setwd(savedir)
   if (alerts) options(error = function() {
     beep(9)# give warning noise if it fails
     graphics.off()# kill all graphics devices
-    setwd(oldwd) # reinstate original working directory
+    setwd(oldwd) # reinstate original working directory. Probably redundant given on.exit
   } # close options subcurly
   ) # close options
 
@@ -345,6 +316,7 @@ gbm.auto <- function(
   # "function () \n{\n    .rs.recordTraceback(TRUE, 5, .rs.enqueueError)\n}"
   # "function () \n{\n    beep(9)\n    graphics.off()\n}"
   # class(options("error")[[1]])
+  # https://stackoverflow.com/questions/66003747/r-replace-optionserror-with-existing-contents-if-present-plus-additional
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided

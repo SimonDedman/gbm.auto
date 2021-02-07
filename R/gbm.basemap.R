@@ -15,6 +15,8 @@
 #' absolute/relative reference to GSHHS_shp folder, including that folder.
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
 #'  if this is incorrect.
+#' @param savedir Save outputs to a temporary directory (default) else change to
+#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
 #' @param savename Shapefile save-name, no shp extension, default is "Crop_Map"
 #' @param res Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 #' intermediate, high, full) or "CALC" to calculate based on bounds.
@@ -67,6 +69,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
                         getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, including that folder
                         zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
+                        savedir = tempdir(), # save outputs to a temporary directory (default) else
+                        # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
                         savename = "Crop_Map", #shapefile save-name without the .shp
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
                         extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
@@ -91,8 +95,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # despite shapefiles being in imports here, in namespace, & in description. Doesn't do this for any other package.
   # But if I include this the line can get run twice, giving the error: "namespace(shapefiles) was already taken."
 
-  startdir <- getwd() # record original directory
-  on.exit(setwd(startdir), add = TRUE) # defensive block, thanks to Gregor Sayer
+  oldwd <- getwd() # record original directory
+  on.exit(setwd(oldwd), add = TRUE) # defensive block, thanks to Gregor Sayer
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
   if (is.null(bounds)) {
     #check none of grids & gridslat & gridslon is null, if any are print message
@@ -154,7 +158,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   ## TopologyException: Input geom 0 is invalid: Self-intersection at or near point (lists points), see
   ## https://gis.stackexchange.com/questions/163445/getting-topologyexception-input-geom-1-is-invalid-which-is-due-to-self-intersec
   # cropshp <- crop(world, bounds) # crop to extents
-  # setwd(startdir)
+  # setwd(savedir)
   # dir.create("CroppedMap") # create conservation maps directory
   # setwd("CroppedMap")
   # writeSpatialShape(cropshp, savename)
@@ -168,7 +172,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # read_sf results in a sf tibble which needs tibble installed. st_read is a sf dataframe. Changed also in @importFrom
   world <- st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
   cropshp <- st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
-  setwd(startdir)
+  setwd(savedir)
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
   st_write(cropshp, dsn = paste0(savename, ".shp"))

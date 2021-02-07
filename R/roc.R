@@ -19,6 +19,7 @@
 #' @importFrom graphics image
 #' @importFrom stats binomial glm pchisq poisson
 #' @importFrom utils write.table
+#' @export
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' roc(obsdat = rbinom(100,size = 1, prob = 0.5), preddat = runif(100))

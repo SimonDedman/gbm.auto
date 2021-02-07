@@ -8,6 +8,8 @@
 #'  output variance range.
 #'
 #' @param loops The number of loops required, integer.
+#' @param savedir Save outputs to a temporary directory (default) else change to
+#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
 #' @param savecsv Save coefficients of variation in simple & extended format.
 #' @param calcpreds Calculate coefficients of variation of predicted abundance?
 #' @param varmap Create a map of the coefficients of variation outputs?
@@ -63,6 +65,8 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
 gbm.loop <- function(loops = 10, # the number of loops required, integer
+                     savedir = tempdir(), # save outputs to a temporary directory (default) else
+                     # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
                      savecsv = TRUE, # save the coefficients of variation in simple & extended format
                      calcpreds = TRUE, # calculate coefficients of variation of predicted abundance?
                      varmap = TRUE, # create a map of the coefficients of variation outputs?
@@ -134,6 +138,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   on.exit(par(oldpar))
   on.exit(setwd(oldwd), add = TRUE)
   on.exit(options(oldoptions), add = TRUE)
+  setwd(savedir)
   if (alerts) options(error = function() {
     beep(9)
     graphics.off()})  # give warning noise if it fails

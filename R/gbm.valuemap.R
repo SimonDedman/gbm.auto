@@ -21,6 +21,8 @@
 #' @param conservecol Conservation column, from gbm.cons.
 #' @param plotthis To plot? delete any,or all w/ NULL.
 #' @param maploops Sort loops to run.
+#' @param savedir Save outputs to a temporary directory (default) else change to
+#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
 #' @param savethis Export all data as csv?
 #' @param HRMSY Maximum percent of each goodcols stock which can be removed
 #' yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
@@ -59,6 +61,8 @@ gbm.valuemap <- function(
   conservecol = NULL, # conservation column, from gbm.cons
   plotthis = c("good","bad","both","close"), #to plot? delete any,or all w/ NULL
   maploops = c("Combo","Biomass","Effort","Conservation"), # sort loops to run
+  savedir = tempdir(), # save outputs to a temporary directory (default) else
+  # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
   savethis = TRUE, # export all data as csv?
   HRMSY = 0.15, # maximum % of each goodcols stock which can be removed yearly,
   # as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or
@@ -83,9 +87,12 @@ gbm.valuemap <- function(
   # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   # if (alerts) require(beepr) #for progress noises
   oldpar <- par(no.readonly = TRUE) # defensive block, thanks to Gregor Sayer
+  oldwd <- getwd()
   oldoptions <- options()
   on.exit(par(oldpar))
+  on.exit(setwd(oldwd), add = TRUE)
   on.exit(options(oldoptions), add = TRUE)
+  setwd(savedir)
   if (alerts) options(error = function() {
     beep(9)
     graphics.off()})  # give warning noise if it fails

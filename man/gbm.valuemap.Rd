@@ -14,6 +14,7 @@ gbm.valuemap(
   conservecol = NULL,
   plotthis = c("good", "bad", "both", "close"),
   maploops = c("Combo", "Biomass", "Effort", "Conservation"),
+  savedir = tempdir(),
   savethis = TRUE,
   HRMSY = 0.15,
   goodweight = NULL,
@@ -46,6 +47,9 @@ worse)?}
 \item{plotthis}{To plot? delete any,or all w/ NULL.}
 
 \item{maploops}{Sort loops to run.}
+
+\item{savedir}{Save outputs to a temporary directory (default) else change to
+current directory with getwd() or elsewhere e.g. "/home/me/folder"}
 
 \item{savethis}{Export all data as csv?}
 

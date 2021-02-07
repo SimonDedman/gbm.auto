@@ -19,7 +19,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+"checking for non-standard things in the check directory ... NOTE
+  Found the following files/directories:
+    ‘COPYING.LESSERv3’ ‘GSHHG.zip’ ‘GSHHS_shp’ ‘LICENSE.TXT’ ‘README.TXT’
+    ‘SHAPEFILES.TXT’ ‘WDBII_shp’"
+These are shapefiles downloaded for the basemap function, into a tmp folder.
+They are not present in the check directory after the check has finished.
 
 * This is a new release.
 

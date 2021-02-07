@@ -11,6 +11,7 @@ gbm.basemap(
   gridslon = NULL,
   getzip = TRUE,
   zipvers = "2.3.7",
+  savedir = tempdir(),
   savename = "Crop_Map",
   res = "CALC",
   extrabounds = FALSE
@@ -32,6 +33,9 @@ absolute/relative reference to GSHHS_shp folder, including that folder.}
 
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
 if this is incorrect.}
+
+\item{savedir}{Save outputs to a temporary directory (default) else change to
+current directory with getwd() or elsewhere e.g. "/home/me/folder"}
 
 \item{savename}{Shapefile save-name, no shp extension, default is "Crop_Map"}
 

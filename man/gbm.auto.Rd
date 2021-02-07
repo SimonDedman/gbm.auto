@@ -23,6 +23,7 @@ gbm.auto(
   cols = grey.colors(1, 1, 1),
   linesfiles = TRUE,
   smooth = FALSE,
+  savedir = tempdir(),
   savegbm = TRUE,
   loadgbm = NULL,
   varint = TRUE,
@@ -98,6 +99,9 @@ variables. Default 1*white: white bars black borders. '1*' repeats.}
 \item{linesfiles}{Save individual line plots' data as csv's? Default TRUE.}
 
 \item{smooth}{Apply a smoother to the line plots? Default FALSE.}
+
+\item{savedir}{Save outputs to a temporary directory (default) else change to
+current directory with getwd() or elsewhere e.g. "/home/me/folder"}
 
 \item{savegbm}{Save gbm objects and make available in environment after
 running? Open with load("Bin_Best_Model") Default TRUE.}

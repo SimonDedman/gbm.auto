@@ -6,6 +6,7 @@
 \usage{
 gbm.loop(
   loops = 10,
+  savedir = tempdir(),
   savecsv = TRUE,
   calcpreds = TRUE,
   varmap = TRUE,
@@ -39,6 +40,9 @@ gbm.loop(
 }
 \arguments{
 \item{loops}{The number of loops required, integer.}
+
+\item{savedir}{Save outputs to a temporary directory (default) else change to
+current directory with getwd() or elsewhere e.g. "/home/me/folder"}
 
 \item{savecsv}{Save coefficients of variation in simple & extended format.}
 

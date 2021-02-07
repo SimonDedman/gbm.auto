@@ -16,6 +16,8 @@
 #' length(subsets)*species, no default.
 #' @param gbmautos Do gbm.auto runs for species? Default TRUE, set FALSE if
 #' already run and output files in expected directories.
+#' @param savedir Save outputs to a temporary directory (default) else change to
+#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
 #' @param expvars List object of expvar vectors for gbm.autos, length = no. of
 #' subsets * no. of species. No default.
 #' @param tcs Gbm.auto parameters, auto-calculated below if not provided by user.
@@ -77,6 +79,8 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      resvars,  # vector of resvars cols from dataset objects for
                      # gbm.autos, length(subsets)*species, no default.
                      gbmautos = TRUE, # do gbm.auto runs for species?
+                     savedir = tempdir(), # save outputs to a temporary directory (default) else
+                     # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
                      expvars,  # list object of expvar vectors for gbm.autos,
                      # length = no. of subsets * no. of species. No default.
                      tcs = NULL, # autocalculated below if not provided by user.
@@ -115,6 +119,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
   on.exit(par(oldpar))
   on.exit(setwd(oldwd), add = TRUE)
   on.exit(options(oldoptions), add = TRUE)
+  setwd(savedir)
 
 if (alerts) options(error = function() {
   beep(9)
@@ -297,8 +302,8 @@ for (k in names(mysamples)[(resvars)[resvarrange[[length(subsets)]]]]) {
   } # close mapping IF
 
   setwd("../") # go back up to ConservationMaps
-  setwd("../")
-} # go back up to Maps & end/reloop k for next species
+  setwd("../") # go back up to Maps
+} # end/reloop k for next species
 
 ####Add scaled outputs, all species####
 dir.create(paste0("./ConservationMaps/Combo/"))
