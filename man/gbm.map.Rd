@@ -114,8 +114,8 @@ mapmain = "Unrepresentativeness: "
 legendtitle = "UnRep 0-1"
 }
 \examples{
-\dontrun{
-# Not run
+\donttest{
+# Not run: downloads and saves external data.
 # Suggested code for outputting to png:
 data(grids)
 # set working directory somewhere suitable

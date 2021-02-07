@@ -82,7 +82,13 @@ gbm.valuemap <- function(
   #require(gbm.map) #for mapping; can't use require on non-CRAN?
   # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
   # if (alerts) require(beepr) #for progress noises
-  if (alerts) options(error = function() {beep(9)})  # warn for fails
+  oldpar <- par(no.readonly = TRUE) # defensive block, thanks to Gregor Sayer
+  oldoptions <- options()
+  on.exit(par(oldpar))
+  on.exit(options(oldoptions), add = TRUE)
+  if (alerts) options(error = function() {
+    beep(9)
+    graphics.off()})  # give warning noise if it fails
 
   if ("Conservation" %in% maploops & is.null(conservecol)) stop("conservecol must be specified if Conservation presesent in maploops")
 
@@ -457,7 +463,7 @@ gbm.valuemap <- function(
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX Per Species Closed Area Map ",o," of ",length(maploopnames)," XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       png(filename = paste0("./PerSpeciesClosedArea",maploopnames[o],"Map.png"),
           width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-      par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+      par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
 
       gbm.map(x = dbase[,loncolno], y = dbase[,latcolno], z = dbase[,ncol(dbase)],
               mapmain = "Per Species Closed Area: ", species = maploopnames[o],

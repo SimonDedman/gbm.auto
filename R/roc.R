@@ -20,6 +20,8 @@
 #' @importFrom stats binomial glm pchisq poisson
 #' @importFrom utils write.table
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
+#' @examples
+#' roc(obsdat = rbinom(100,size = 1, prob = 0.5), preddat = runif(100))
 #'
 roc <- function(obsdat, preddat) {
   # code adapted from Ferrier, Pearce and Watson's code, by J.Elith

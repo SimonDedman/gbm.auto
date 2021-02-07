@@ -70,7 +70,7 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
     assign(paste0(expvarnames[q],"_hist_diff"),get(paste0("hist_diff_", expvarnames[q]))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
     # create a vector for the modulus lookup results: from that expvar's dataframe, get the modulus value (col5) for the bin range number corresponding to the expvar value in grids
     assign(paste0(expvarnames[q],"_hist_diff_mod"),get(paste0("hist_diff_mod_", expvarnames[q]))[findInterval(as.numeric(unlist(grids[expvarnames[q]])), binbreaks)])
-    # put those 2 vectors in a dafa frame (first expvar) or add them to the existing one (latter expvars)
+    # put those 2 vectors in a data frame (first expvar) or add them to the existing one (latter expvars)
     ifelse(q == 1,
            rsbdf <- data.frame(get(paste0(expvarnames[q],"_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))),
            rsbdf <- data.frame(rsbdf, get(paste0(expvarnames[q], "_hist_diff")), get(paste0(expvarnames[q], "_hist_diff_mod"))))

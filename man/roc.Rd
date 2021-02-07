@@ -25,6 +25,10 @@ Also Pearce, J. & Ferrier, S. (2000) Evaluating the predictive performance of
  the area. In dismo, this is used in the gbm routines, but not elsewhere (see
  evaluate).
 }
+\examples{
+roc(obsdat = rbinom(100,size = 1, prob = 0.5), preddat = runif(100))
+
+}
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
 }

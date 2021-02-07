@@ -33,7 +33,8 @@ Just use average between the last negative & first positive point
 unless any points fall on zero
 }
 \examples{
-\dontrun{
+\donttest{
+# Not run: requires completed gbm.auto run.
 # having run gbm.auto (with linesfiles=TRUE), set working directory there
 data(samples)
 gbm.subset(x = names(samples[c(4:8, 10)]), fams = c("Bin", "Gaus"))

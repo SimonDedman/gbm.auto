@@ -167,12 +167,12 @@
 #' Fix with colnames(samples)[n] <- "BetterName"
 #'
 #' @examples
-#' \dontrun{
-#' # Not run. Note: grids file was havily cropped for CRAN upload so output map
-#' predictions only cover patchy chunks of the Irish Sea, not the whole area.
-#' Full versions of these files:
-#' https://drive.google.com/file/d/1WHYpftP3roozVKwi_R_IpW7tlZIhZA7r
-#' /view?usp=sharing
+#' \donttest{
+#' # Not run. Note: grids file was heavily cropped for CRAN upload so output map
+#' # predictions only cover patchy chunks of the Irish Sea, not the whole area.
+#' # Full versions of these files:
+#' # https://drive.google.com/file/d/1WHYpftP3roozVKwi_R_IpW7tlZIhZA7r
+#' # /view?usp=sharing
 #' library(gbm.auto)
 #' data(grids)
 #' data(samples)
@@ -291,6 +291,61 @@ gbm.auto <- function(
 
   # utils::globalVariables(c("brv", "grv", "Bin_Preds", "Gaus_Preds")) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
+  oldpar <- par(no.readonly = TRUE) # defensive block, thanks to Gregor Sayer
+  oldwd <- getwd()
+  oldoptions <- options()
+  on.exit(par(oldpar))
+  on.exit(setwd(oldwd), add = TRUE)
+  on.exit(options(oldoptions), add = TRUE)
+
+  # user save file choice menu. Await Gregor reply ####
+  switch(menu(title = "Save resulting csv report, map & plot image files, and model objects (if so requested), to user's local filesystem?",
+              choices = c("YES, as a subfolder within my current working directory", # answer1, + 1, = 2
+                          "Yes, but to a temporary folder", # answer2, + 1, = 3
+                          "NO")) + 1,  # answer3, + 1, = 4
+         cat("Nothing done\n"), # switch1 = answer0 + 1 = 1. Need to exit function? STOP?
+         print(paste0("Files will be saved to a subfolder named per your response variable(s), in the current folder ", getwd())), # switch2 = answer1. Change nothing.
+         {setwd(tempdir()) # switch3 = answer2. Change WD. on.exit will take user hone anyway.
+           print("Files will be saved to a temporary folder")},
+         print("Nothing will be saved") # switch4 = answer3. Need to do something here. Turn off plots? And report? What would even be produced? Find out.
+  )
+
+
+  #add param 'savedir'
+  # let the user specify the directory. ## add  insert answer 2? Or add param 'savedir'?
+  # If you want to write by default, i.e. without the user having to specify an arguments, then write to tempdir(). ##I'm fine having the user specify defaults
+  # new param: savedir = tempdir(). User option to change it, inform them that using getwd() will put files in their current working directory.
+  # And in examples, you can of course write to files / directories within tempdir().
+
+  #DOTHIS####
+  # add function parameter:
+  # savedir = tempdir(),
+  # And added that to all plots (filename = paste0(savedir, etc)),
+  # that would mean:
+  #   - writing by default goes to tempdir
+  # AND
+  # - the user can specify the directory
+  # AND
+  # - No awkward menu() usage
+  # AND
+  # - in the examples it will write to tempdir by default
+
+
+  if (alerts) options(error = function() {
+    beep(9)# give warning noise if it fails
+    graphics.off()# kill all graphics devices
+    setwd(oldwd) # reinstate original working directory
+  } # close options subcurly
+  ) # close options
+
+  # ToDo: add to existing options(error) if present####
+  # options(error = function() {.rs.recordTraceback(TRUE, 5, .rs.enqueueError)})
+  # as.character(getOption("error"))  # (function() {.rs.recordTraceback(TRUE, 5, .rs.enqueueError)})()
+  # class: call
+  # "function () \n{\n    .rs.recordTraceback(TRUE, 5, .rs.enqueueError)\n}"
+  # "function () \n{\n    beep(9)\n    graphics.off()\n}"
+  # class(options("error")[[1]])
+
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
     if (is.null(shape)) {
@@ -308,14 +363,6 @@ gbm.auto <- function(
                            extrabounds = TRUE)
     } # close isnull shape
   } # close isnull grids
-
-  wd <- getwd() #store original working directory
-  if (alerts) options(error = function() {
-    beep(9)  # give warning noise if it fails
-    graphics.off() # kill all graphics devices
-    setwd(wd) # reinstate original working directory
-  } # close options subcurly
-  ) # close options
 
   expvarnames <- names(samples[expvar]) # list of explanatory variable names
   expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
@@ -1457,7 +1504,7 @@ gbm.auto <- function(
       if (map) {   # generate output image & set parameters
         png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
             width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-        par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+        par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
         # run gbm.map function with generated parameters
         gbm.map(x = grids[,gridslon],
                 y = grids[,gridslat],
@@ -1475,7 +1522,7 @@ gbm.auto <- function(
         if (BnW) { # if BnW=TRUE, run again in black & white for journal submission
           png(filename = paste0("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png"),
               width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-          par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+          par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
           gbm.map(x = grids[,gridslon],
                   y = grids[,gridslat],
                   z = grids[,predabund],
@@ -1498,7 +1545,7 @@ gbm.auto <- function(
           if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {
             png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
             gbm.map(x = grids[,gridslon],
                     y = grids[,gridslat],
                     z = rsbdf_bin[,"Unrepresentativeness"],
@@ -1517,7 +1564,7 @@ gbm.auto <- function(
           if (gaus) {
             png(filename = paste0("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png"),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
             gbm.map(x = grids[,gridslon],
                     y = grids[,gridslat],
                     z = rsbdf_gaus[,"Unrepresentativeness"],
@@ -1534,7 +1581,7 @@ gbm.auto <- function(
           if (ZI & gaus) {
             png(filename = paste0("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png"),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
             gbm.map(x = grids[,gridslon],
                     y = grids[,gridslat],
                     z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
@@ -1552,7 +1599,7 @@ gbm.auto <- function(
             if (fam1 == "bernoulli" & (gaus == FALSE | (gaus == TRUE & ZI == TRUE))) {
               png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
               gbm.map(x = grids[,gridslon],
                       y = grids[,gridslat],
                       z = rsbdf_bin[,"Unrepresentativeness"],
@@ -1573,7 +1620,7 @@ gbm.auto <- function(
             if (gaus) {
               png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
               gbm.map(x = grids[,gridslon],
                       y = grids[,gridslat],
                       z = rsbdf_gaus[,"Unrepresentativeness"],
@@ -1593,7 +1640,7 @@ gbm.auto <- function(
             if (ZI & gaus) {
               png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
               gbm.map(x = grids[,gridslon],
                       y = grids[,gridslat],
                       z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],

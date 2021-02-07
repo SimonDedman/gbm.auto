@@ -20,8 +20,8 @@ calibration <- function(obs, preds, family = "binomial")  {
   if (family == "bernoulli") family <- "binomial"
   pred.range <- max(preds) - min(preds)
   if (pred.range > 1.2 & family == "binomial") {
-    print(paste0("range of response variable is ", round(pred.range, 2)), quote = F)
-    print("check family specification", quote = F)
+    print(paste0("range of response variable is ", round(pred.range, 2)), quote = FALSE)
+    print("check family specification", quote = FALSE)
     return()
   }
   if (family == "binomial") {

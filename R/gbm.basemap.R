@@ -38,7 +38,8 @@
 #' @importFrom sf st_crop st_read st_write
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # Not run: downloads and saves external data.
 #' data(samples)
 #' mybounds <- c(range(samples[,3]),range(samples[,2]))
 #' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
@@ -89,8 +90,9 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # or Error during wrapup: no item called "package:shapefiles" on the search list
   # despite shapefiles being in imports here, in namespace, & in description. Doesn't do this for any other package.
   # But if I include this the line can get run twice, giving the error: "namespace(shapefiles) was already taken."
-  startdir <- getwd() # record original directory
 
+  startdir <- getwd() # record original directory
+  on.exit(setwd(startdir), add = TRUE) # defensive block, thanks to Gregor Sayer
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
   if (is.null(bounds)) {
     #check none of grids & gridslat & gridslon is null, if any are print message

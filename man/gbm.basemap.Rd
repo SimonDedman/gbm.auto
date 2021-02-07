@@ -68,7 +68,8 @@ Ensure that your lats and longs are the the right way around
 sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 }
 \examples{
-\dontrun{
+\donttest{
+# Not run: downloads and saves external data.
 data(samples)
 mybounds <- c(range(samples[,3]),range(samples[,2]))
 gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",

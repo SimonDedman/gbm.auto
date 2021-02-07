@@ -30,10 +30,10 @@
 
 breaks.grid <- function(grd, quantile = 0.975, ncol = 12, zero = TRUE)
 {
-  if (is.list(grd) == F)
+  if (is.list(grd) == FALSE)
     grd <- list(grd)
   qua <- max(c(unlist(lapply(grd, quantile, probs = quantile,
-                             na.rm = T)), 0), na.rm = T)
+                             na.rm = TRUE)), 0), na.rm = T)
   if (qua > 0)
     grd <- lapply(grd, function(x) ifelse(x > qua, qua, x))
   hi <- max(unlist(lapply(grd, max, na.rm = T)))

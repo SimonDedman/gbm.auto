@@ -45,7 +45,8 @@
 #' @importFrom utils read.csv write.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # Not run: downloads and saves external data.
 #' data(grids)
 #' gbm.cons(mygrids = grids, subsets = c("Juveniles","Adult_Females"),
 #'          resvars = c(44:47,11:14),
@@ -108,7 +109,16 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
 # if (is.null(shape)) {if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}}
 # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
 #   if (alerts) require(beepr)
-if (alerts) options(error = function() {beep(9)})  # give warning noise if it fails
+  oldpar <- par(no.readonly = TRUE) # defensive block, thanks to Gregor Sayer
+  oldwd <- getwd()
+  oldoptions <- options()
+  on.exit(par(oldpar))
+  on.exit(setwd(oldwd), add = TRUE)
+  on.exit(options(oldoptions), add = TRUE)
+
+if (alerts) options(error = function() {
+  beep(9)
+  graphics.off()})  # give warning noise if it fails
 if (gbmautos) {if (is.null(tcs)) {tcs = list() #make blank then loop populate w/ 2 & expvar length
 for (g in 1:length(resvars)) {tcs[[g]] <- c(2,length(expvars[[g]]))}}}
 

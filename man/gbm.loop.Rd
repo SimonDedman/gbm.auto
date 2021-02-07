@@ -8,7 +8,7 @@ gbm.loop(
   loops = 10,
   savecsv = TRUE,
   calcpreds = TRUE,
-  varmap = T,
+  varmap = TRUE,
   measure = "CPUE",
   cleanup = FALSE,
   grids = NULL,
@@ -23,16 +23,16 @@ gbm.loop(
   gridslat = 2,
   gridslon = 1,
   cols = grey.colors(1, 1, 1),
-  linesfiles = T,
-  savegbm = F,
-  varint = F,
-  map = T,
+  linesfiles = TRUE,
+  savegbm = FALSE,
+  varint = FALSE,
+  map = TRUE,
   shape = NULL,
-  RSB = F,
-  BnW = F,
-  alerts = F,
+  RSB = FALSE,
+  BnW = FALSE,
+  alerts = FALSE,
   pngtype = "cairo-png",
-  runautos = T,
+  runautos = TRUE,
   Min.Inf = NULL,
   ...
 )
@@ -113,7 +113,8 @@ and calculates the Coefficient Of Variation in the predicted abundance scores
  output variance range.
 }
 \examples{
-\dontrun{
+\donttest{
+# Not run: downloads and saves external data.
 library("gbm.auto")
 data(grids) # load grids
 data(samples) # load samples

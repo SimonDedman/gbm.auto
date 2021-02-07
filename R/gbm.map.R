@@ -65,8 +65,8 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @author Hans Gerritsen
 #' @examples
-#' \dontrun{
-#' # Not run
+#' \donttest{
+#' # Not run: downloads and saves external data.
 #' # Suggested code for outputting to png:
 #' data(grids)
 #' # set working directory somewhere suitable

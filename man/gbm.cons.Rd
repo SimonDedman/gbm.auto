@@ -99,7 +99,8 @@ using juvenile and adult female subsets to locate candidate nursery grounds
 and spawning areas respectively.
 }
 \examples{
-\dontrun{
+\donttest{
+# Not run: downloads and saves external data.
 data(grids)
 gbm.cons(mygrids = grids, subsets = c("Juveniles","Adult_Females"),
          resvars = c(44:47,11:14),

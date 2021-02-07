@@ -245,12 +245,12 @@ to a synced folder
 Fix with colnames(samples)[n] <- "BetterName"
 }
 \examples{
-\dontrun{
-# Not run. Note: grids file was havily cropped for CRAN upload so output map
-predictions only cover patchy chunks of the Irish Sea, not the whole area.
-Full versions of these files:
-https://drive.google.com/file/d/1WHYpftP3roozVKwi_R_IpW7tlZIhZA7r
-/view?usp=sharing
+\donttest{
+# Not run. Note: grids file was heavily cropped for CRAN upload so output map
+# predictions only cover patchy chunks of the Irish Sea, not the whole area.
+# Full versions of these files:
+# https://drive.google.com/file/d/1WHYpftP3roozVKwi_R_IpW7tlZIhZA7r
+# /view?usp=sharing
 library(gbm.auto)
 data(grids)
 data(samples)
