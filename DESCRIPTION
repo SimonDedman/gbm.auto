@@ -14,7 +14,7 @@ Description: Automates delta log-normal boosted regression tree abundance
     built around 'gbm' (Greenwell, Boehmke, Cunningham & Metcalfe, 2020 & 
     ongoing, originally by Ridgeway). Indebted to Elith/Leathwick/Hastie 2008 
     'Working Guide' <doi:10.1111/j.1365-2656.2008.01390.x>; workflow follows 
-    Appendix S3. See <http://www.simondedman.com> for published guides and 
+    Appendix S3. See <http://www.simondedman.com/> for published guides and 
     papers using this package.
 Depends:
     R (>= 3.5.0)
