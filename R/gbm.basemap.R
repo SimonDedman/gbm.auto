@@ -97,6 +97,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
 
   oldwd <- getwd() # record original directory
   on.exit(setwd(oldwd), add = TRUE) # defensive block, thanks to Gregor Sayer
+  setwd(savedir)
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
   if (is.null(bounds)) {
     #check none of grids & gridslat & gridslon is null, if any are print message
@@ -172,7 +173,6 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # read_sf results in a sf tibble which needs tibble installed. st_read is a sf dataframe. Changed also in @importFrom
   world <- st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
   cropshp <- st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
-  setwd(savedir)
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
   st_write(cropshp, dsn = paste0(savename, ".shp"))
