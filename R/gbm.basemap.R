@@ -16,7 +16,7 @@
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
 #'  if this is incorrect.
 #' @param savedir Save outputs to a temporary directory (default) else change to
-#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
+#'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param savename Shapefile save-name, no shp extension, default is "Crop_Map"
 #' @param res Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
 #' intermediate, high, full) or "CALC" to calculate based on bounds.
@@ -63,6 +63,10 @@
 #' 3. If rgdal install fails in Linux try:
 #' sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 #'
+#' 4. Error in as.environment(pos):no item called "package:shapefiles" on the
+#' search list: strange error occurring despite shapefiles being coded like all
+#' other packages. Correct output produced regardless.
+#'
 gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
                         grids = NULL, # if bounds unspecified, name your grids database here
                         gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
@@ -70,7 +74,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, including that folder
                         zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
                         savedir = tempdir(), # save outputs to a temporary directory (default) else
-                        # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
+                        # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
                         savename = "Crop_Map", #shapefile save-name without the .shp
                         res = "CALC", # resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds
                         extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots

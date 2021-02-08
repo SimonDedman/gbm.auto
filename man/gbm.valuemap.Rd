@@ -49,7 +49,7 @@ worse)?}
 \item{maploops}{Sort loops to run.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
-current directory with getwd() or elsewhere e.g. "/home/me/folder"}
+current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{savethis}{Export all data as csv?}
 

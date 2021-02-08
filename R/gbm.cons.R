@@ -17,7 +17,7 @@
 #' @param gbmautos Do gbm.auto runs for species? Default TRUE, set FALSE if
 #' already run and output files in expected directories.
 #' @param savedir Save outputs to a temporary directory (default) else change to
-#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
+#'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param expvars List object of expvar vectors for gbm.autos, length = no. of
 #' subsets * no. of species. No default.
 #' @param tcs Gbm.auto parameters, auto-calculated below if not provided by user.
@@ -80,7 +80,7 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      # gbm.autos, length(subsets)*species, no default.
                      gbmautos = TRUE, # do gbm.auto runs for species?
                      savedir = tempdir(), # save outputs to a temporary directory (default) else
-                     # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
+                     # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
                      expvars,  # list object of expvar vectors for gbm.autos,
                      # length = no. of subsets * no. of species. No default.
                      tcs = NULL, # autocalculated below if not provided by user.

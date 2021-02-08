@@ -22,7 +22,7 @@
 #' @param plotthis To plot? delete any,or all w/ NULL.
 #' @param maploops Sort loops to run.
 #' @param savedir Save outputs to a temporary directory (default) else change to
-#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
+#'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param savethis Export all data as csv?
 #' @param HRMSY Maximum percent of each goodcols stock which can be removed
 #' yearly, as decimal (0.15 = 15 pct). Must protect remainder: 1-HRMSY. Single
@@ -62,7 +62,7 @@ gbm.valuemap <- function(
   plotthis = c("good","bad","both","close"), #to plot? delete any,or all w/ NULL
   maploops = c("Combo","Biomass","Effort","Conservation"), # sort loops to run
   savedir = tempdir(), # save outputs to a temporary directory (default) else
-  # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
+  # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
   savethis = TRUE, # export all data as csv?
   HRMSY = 0.15, # maximum % of each goodcols stock which can be removed yearly,
   # as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or

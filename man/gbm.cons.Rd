@@ -52,7 +52,7 @@ length(subsets)*species, no default.}
 already run and output files in expected directories.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
-current directory with getwd() or elsewhere e.g. "/home/me/folder"}
+current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{expvars}{List object of expvar vectors for gbm.autos, length = no. of
 subsets * no. of species. No default.}

@@ -51,7 +51,7 @@
 #' @param linesfiles Save individual line plots' data as csv's? Default TRUE.
 #' @param smooth Apply a smoother to the line plots? Default FALSE.
 #' @param savedir Save outputs to a temporary directory (default) else change to
-#'  current directory with getwd() or elsewhere e.g. "/home/me/folder"
+#'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param savegbm Save gbm objects and make available in environment after
 #' running? Open with load("Bin_Best_Model") Default TRUE.
 #' @param loadgbm Relative or absolute location of folder containing
@@ -235,7 +235,7 @@ gbm.auto <- function(
   linesfiles = TRUE,    # save individual line plots' data as CSVs?
   smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
   savedir = tempdir(),  # save outputs to a temporary directory (default) else
-  # change to current directory with getwd() or elsewhere e.g. "/home/me/folder"
+  # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
   savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
   loadgbm = NULL,       # relative or absolute location of folder containing
   # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do

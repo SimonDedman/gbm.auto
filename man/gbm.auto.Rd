@@ -101,7 +101,7 @@ variables. Default 1*white: white bars black borders. '1*' repeats.}
 \item{smooth}{Apply a smoother to the line plots? Default FALSE.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
-current directory with getwd() or elsewhere e.g. "/home/me/folder"}
+current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{savegbm}{Save gbm objects and make available in environment after
 running? Open with load("Bin_Best_Model") Default TRUE.}

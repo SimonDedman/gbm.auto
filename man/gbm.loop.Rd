@@ -42,7 +42,7 @@ gbm.loop(
 \item{loops}{The number of loops required, integer.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
-current directory with getwd() or elsewhere e.g. "/home/me/folder"}
+current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{savecsv}{Save coefficients of variation in simple & extended format.}
 

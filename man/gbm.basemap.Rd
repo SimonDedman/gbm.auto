@@ -35,7 +35,7 @@ absolute/relative reference to GSHHS_shp folder, including that folder.}
 if this is incorrect.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
-current directory with getwd() or elsewhere e.g. "/home/me/folder"}
+current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{savename}{Shapefile save-name, no shp extension, default is "Crop_Map"}
 
@@ -70,6 +70,10 @@ Ensure that your lats and longs are the the right way around
 
 3. If rgdal install fails in Linux try:
 sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
+
+4. Error in as.environment(pos):no item called "package:shapefiles" on the
+search list: strange error occurring despite shapefiles being coded like all
+other packages. Correct output produced regardless.
 }
 \examples{
 \donttest{
