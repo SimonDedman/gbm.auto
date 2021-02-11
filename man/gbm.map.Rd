@@ -10,7 +10,7 @@ gbm.map(
   z,
   byx = NULL,
   byy = NULL,
-  grdfun = c(mean, sum, prod, min, max, sd, se, var),
+  grdfun = mean,
   mapmain = "Predicted CPUE (numbers per hour): ",
   species = "Response Variable",
   heatcolours = c("white", "yellow", "orange", "red", "brown4"),
