@@ -22,7 +22,7 @@
 #' @param tc See gbm.auto help.
 #' @param lr See gbm.auto help.
 #' @param bf See gbm.auto help.
-#' @param ZI See gbm.auto help.
+#' @param ZI See gbm.auto help. Choose one.
 #' @param simp See gbm.auto help.
 #' @param gridslat See gbm.auto help.
 #' @param gridslon See gbm.auto help.
@@ -36,7 +36,7 @@
 #' @param BnW See gbm.auto help.
 #' @param alerts See gbm.auto help; default FALSE as frequent use can crash
 #' RStudio.
-#' @param pngtype See gbm.auto help.
+#' @param pngtype See gbm.auto help. Choose one.
 #' @param runautos Run gbm.autos, default TRUE, turn off to only collate
 #' numbered-folder results.
 #' @param Min.Inf Dummy param for package testing for CRAN, ignore.
@@ -93,7 +93,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
                      bf = 0.5,             # permutations of bag fraction allowed, can be single
                      # number, vector or list, per tc and lr
-                     ZI = "CHECK",         # are data zero-inflated? TRUE/FALSE/"CHECK".
+                     ZI = c("CHECK", FALSE, TRUE), # Are data zero-inflated? "CHECK"/FALSE/TRUE.
+                     # Choose one.
                      # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
                      # FALSE: do Gaussian only, no log-normalisation.
                      # CHECK: Tests data for you. Default is TRUE.
@@ -111,7 +112,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      RSB = FALSE,           # run Unrepresentativeness surface builder?
                      BnW = FALSE,           # repeat maps in black and white e.g. for print journals
                      alerts = FALSE,        # play sounds to mark progress steps
-                     pngtype = "cairo-png",# filetype for png files, alternatively try "quartz"
+                     pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
+                     # alternatively try "quartz" on Mac. Choose one.
                      runautos = TRUE,      # run gbm.autos, default TRUE, turn off to only collate numbered-folder results
                      Min.Inf = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
                      ...) {
@@ -143,6 +145,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     beep(9)
     graphics.off()})  # give warning noise if it fails
 
+  ZI <- match.arg(ZI) # populate object from function argument in proper way
+  pngtype <- match.arg(pngtype)
 
   binbars.df <- data.frame(var = rep(NA, length(expvar)),
                            rel.inf = rep(NA, length(expvar)))
@@ -482,7 +486,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
     png(filename = "CofVMap.png", width = 4*1920, height = 4*1920, units = "px",
         pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-    par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0),xpd = FALSE)
+    par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
     gbm.map(x = var.df[,gridslon], # add Unrepresentativeness alpha surface
             y = var.df[,gridslat],
             z = var.df[,"C of V"],

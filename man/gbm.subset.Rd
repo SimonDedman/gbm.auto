@@ -9,7 +9,7 @@ gbm.subset(x, fams = c("Bin", "Gaus"), loop = FALSE)
 \arguments{
 \item{x}{Vector of variable names.}
 
-\item{fams}{statistical data distribution family names to be modelled by gbm.}
+\item{fams}{Vector of statistical data distribution family names to be modelled by gbm.}
 
 \item{loop}{Is the folder a gbm.loop output?}
 }

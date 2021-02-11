@@ -49,9 +49,9 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
   # loop through explanatory variables
   for (q in seq(from = 1, to = length(expvarnames))) {
     # range min = lowest value per variable
-    nmin <- min(grids[,expvarnames[q]],samples[,expvarnames[q]],na.rm = TRUE)
+    nmin <- min(grids[,expvarnames[q]], samples[,expvarnames[q]], na.rm = TRUE)
     # ditto for max
-    nmax <- max(grids[,expvarnames[q]],samples[,expvarnames[q]],na.rm = TRUE)
+    nmax <- max(grids[,expvarnames[q]], samples[,expvarnames[q]], na.rm = TRUE)
     # bin range is the length between the two
     binrange <- nmax - nmin
     # 10 bins. Length of one bin = binrange/10

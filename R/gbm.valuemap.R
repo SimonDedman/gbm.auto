@@ -19,8 +19,8 @@
 #' @param badcols Which col no.s are 'negative' e.g. fishing (where higher =
 #' worse)?
 #' @param conservecol Conservation column, from gbm.cons.
-#' @param plotthis To plot? delete any,or all w/ NULL.
-#' @param maploops Sort loops to run.
+#' @param plotthis Vector of variable types to plot. Delete any,or all w/ NULL.
+#' @param maploops Vector of sort loops to run.
 #' @param savedir Save outputs to a temporary directory (default) else change to
 #'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param savethis Export all data as csv?
@@ -35,7 +35,8 @@
 #' @param BnW Also produce greyscale images for print publications.
 #' @param shape Set coastline shapefile, else uses British Isles. Generate your
 #' own with gbm.basemap.
-#' @param pngtype Filetype for png files, alternatively try "quartz".
+#' @param pngtype File-type for png files, alternatively try "quartz" on Mac.
+#' Choose one.
 #' @param byxport Dummy param for package testing for CRAN, ignore.
 #' @param ... Optional terms for gbm.map.
 #'
@@ -52,30 +53,33 @@
 #'
 gbm.valuemap <- function(
   dbase,  # data.frame to load. Expects Lon, Lat & data columns: predicted
-  # abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto
-  loncolno = 1, # column number in database which has longitudes
-  latcolno = 2, # column number in database which has latitudes
+  # abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto.
+  loncolno = 1, # column number in database which has longitudes.
+  latcolno = 2, # column number in database which has latitudes.
   goodcols,  # which column numbers are abundances (where higher = better)? List
-  # them in order of highest conservation importance first e.g. c(3,1,2,4)
+  # them in order of highest conservation importance first e.g. c(3,1,2,4).
   badcols,  # which col no.s are 'negative' e.g. fishing (where higher = worse)?
-  conservecol = NULL, # conservation column, from gbm.cons
-  plotthis = c("good","bad","both","close"), #to plot? delete any,or all w/ NULL
-  maploops = c("Combo","Biomass","Effort","Conservation"), # sort loops to run
+  conservecol = NULL, # conservation column, from gbm.cons.
+  plotthis = c("good","bad","both","close"), # Vector of variable types to
+  # plot. Delete any, or all w/ NULL.
+  maploops = c("Combo","Biomass","Effort","Conservation"), # Vector of sort
+  # loops to run.
   savedir = tempdir(), # save outputs to a temporary directory (default) else
   # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
   savethis = TRUE, # export all data as csv?
   HRMSY = 0.15, # maximum % of each goodcols stock which can be removed yearly,
   # as decimal (0.15 = 15%). Must protect remainder: 1-HRMSY. Single number or
   # vector. If vector, same order as goodcols. Required.
-  goodweight = NULL,  # single/vector weighting multiple(s) for goodcols array
-  badweight = NULL,  # ditto for badcols array
+  goodweight = NULL,  # single/vector weighting multiple(s) for goodcols array.
+  badweight = NULL,  # ditto for badcols array.
   m = 1, # multiplication factor for Bpa units. 1000 to convert tonnes to kilos,
   # 0.001 kilos to tonnes. Assumedly the same for all goodcols.
-  alerts = TRUE,  # play sounds to mark progress steps
-  BnW = TRUE,  # also produce greyscale images for print publications
+  alerts = TRUE,  # play sounds to mark progress steps.
+  BnW = TRUE,  # also produce greyscale images for print publications.
   shape = NULL, #  set coastline shapefile, else
-  # uses British Isles. Generate your own with gbm.basemap
-  pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
+  # uses British Isles. Generate your own with gbm.basemap.
+  pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
+  # alternatively try "quartz" on Mac. Choose one.
   byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
   ...) {  # optional terms for gbm.map
 
@@ -96,6 +100,8 @@ gbm.valuemap <- function(
   if (alerts) options(error = function() {
     beep(9)
     graphics.off()})  # give warning noise if it fails
+  pngtype <- match.arg(pngtype) # populate object from function argument in proper way
+
 
   if ("Conservation" %in% maploops & is.null(conservecol)) stop("conservecol must be specified if Conservation presesent in maploops")
 
@@ -117,7 +123,7 @@ gbm.valuemap <- function(
 
   # Scale values to 1 and add as columns at end of 'data' then name them, in goodcols order NOT original order.
   for (i in 1:length(c(goodcols,badcols))) {
-    dbase[,dbasecoln + i] <- dbase[,(c(goodcols,badcols))[i]]/max(dbase[,(c(goodcols,badcols))[i]],na.rm = TRUE)  # for each column to scale (i), bind a column to data with i/max(i)
+    dbase[,dbasecoln + i] <- dbase[,(c(goodcols,badcols))[i]]/max(dbase[,(c(goodcols,badcols))[i]], na.rm = TRUE)  # for each column to scale (i), bind a column to data with i/max(i)
     colnames(dbase)[dbasecoln + i] <- paste0(names(dbase)[(c(goodcols,badcols))[i]], "_s")} #name them
 
   # If weighting factors given, multiply then sum scaled values & create objects, else sum & create objects

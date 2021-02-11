@@ -13,7 +13,7 @@ gbm.basemap(
   zipvers = "2.3.7",
   savedir = tempdir(),
   savename = "Crop_Map",
-  res = "CALC",
+  res = c("CALC", 1, 2, 3, 4, 5),
   extrabounds = FALSE
 )
 }
@@ -40,7 +40,7 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 \item{savename}{Shapefile save-name, no shp extension, default is "Crop_Map"}
 
 \item{res}{Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low,
-intermediate, high, full) or "CALC" to calculate based on bounds.}
+intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.}
 
 \item{extrabounds}{Grow bounds 16pct each direction to expand rectangular
 datasets basemaps over the entire square area created by basemap in mapplots.}

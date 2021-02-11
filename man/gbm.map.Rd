@@ -10,7 +10,7 @@ gbm.map(
   z,
   byx = NULL,
   byy = NULL,
-  grdfun = mean,
+  grdfun = c(mean, sum, prod, min, max, sd, se, var),
   mapmain = "Predicted CPUE (numbers per hour): ",
   species = "Response Variable",
   heatcolours = c("white", "yellow", "orange", "red", "brown4"),
@@ -54,7 +54,7 @@ CPUE (numbers per hour): ".}
 \item{species}{Response variable name, from basemap in mapplots;
 names(samples[i]). Defaults to "Response Variable".}
 
-\item{heatcolours}{Abundance colour scale, defaults to the heatcol from
+\item{heatcolours}{Vector for abundance colour scale, defaults to the heatcol from
 legend.grid and draw.grid in mapplots which is c("white", "yellow", "orange"
 , "red", "brown4").}
 

@@ -19,7 +19,7 @@ gbm.loop(
   tc = c(2),
   lr = c(0.01),
   bf = 0.5,
-  ZI = "CHECK",
+  ZI = c("CHECK", FALSE, TRUE),
   simp = TRUE,
   gridslat = 2,
   gridslon = 1,
@@ -32,7 +32,7 @@ gbm.loop(
   RSB = FALSE,
   BnW = FALSE,
   alerts = FALSE,
-  pngtype = "cairo-png",
+  pngtype = c("cairo-png", "quartz", "Xlib"),
   runautos = TRUE,
   Min.Inf = NULL,
   ...
@@ -68,7 +68,7 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{bf}{See gbm.auto help.}
 
-\item{ZI}{See gbm.auto help.}
+\item{ZI}{See gbm.auto help. Choose one.}
 
 \item{simp}{See gbm.auto help.}
 
@@ -95,7 +95,7 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 \item{alerts}{See gbm.auto help; default FALSE as frequent use can crash
 RStudio.}
 
-\item{pngtype}{See gbm.auto help.}
+\item{pngtype}{See gbm.auto help. Choose one.}
 
 \item{runautos}{Run gbm.autos, default TRUE, turn off to only collate
 numbered-folder results.}

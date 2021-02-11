@@ -23,7 +23,7 @@ gbm.valuemap(
   alerts = TRUE,
   BnW = TRUE,
   shape = NULL,
-  pngtype = "cairo-png",
+  pngtype = c("cairo-png", "quartz", "Xlib"),
   byxport = NULL,
   ...
 )
@@ -44,9 +44,9 @@ worse)?}
 
 \item{conservecol}{Conservation column, from gbm.cons.}
 
-\item{plotthis}{To plot? delete any,or all w/ NULL.}
+\item{plotthis}{Vector of variable types to plot. Delete any,or all w/ NULL.}
 
-\item{maploops}{Sort loops to run.}
+\item{maploops}{Vector of sort loops to run.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
 current directory e.g. "/home/me/folder". Do not use getwd() here.}
@@ -71,7 +71,8 @@ kilos, 0.001 kilos to tonnes. Assumedly the same for all goodcols.}
 \item{shape}{Set coastline shapefile, else uses British Isles. Generate your
 own with gbm.basemap.}
 
-\item{pngtype}{Filetype for png files, alternatively try "quartz".}
+\item{pngtype}{File-type for png files, alternatively try "quartz" on Mac.
+Choose one.}
 
 \item{byxport}{Dummy param for package testing for CRAN, ignore.}
 

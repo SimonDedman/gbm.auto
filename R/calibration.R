@@ -7,16 +7,18 @@
 #'
 #' @param obs Observed data.
 #' @param preds Predicted data.
-#' @param family Statistical distribution family.
+#' @param family Statistical distribution family. Choose one.
 #'
 #' @return roc & calibration stats internally within gbm runs e.g. in gbm.auto.
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
-calibration <- function(obs, preds, family = "binomial")  {
+calibration <- function(obs,
+                        preds,
+                        family = c("binomial", "bernoulli", "poisson")) {
   # j elith/j leathwick 17th March 2005
   # calculates calibration statistics for either binomial or count data but the family argument must be specified for the latter
   # a conditional test for the latter will catch most failures to specify the family
-
+  family <- match.arg(family) # populate object from function argument in proper way
   if (family == "bernoulli") family <- "binomial"
   pred.range <- max(preds) - min(preds)
   if (pred.range > 1.2 & family == "binomial") {

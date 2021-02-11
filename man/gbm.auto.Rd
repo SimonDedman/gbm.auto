@@ -13,9 +13,9 @@ gbm.auto(
   lr = c(0.01, 0.005),
   bf = 0.5,
   n.trees = 50,
-  ZI = "CHECK",
-  fam1 = "bernoulli",
-  fam2 = "gaussian",
+  ZI = c("CHECK", FALSE, TRUE),
+  fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
+  fam2 = c("gaussian", "bernoulli", "binomial", "poisson", "laplace"),
   simp = TRUE,
   gridslat = 2,
   gridslon = 1,
@@ -32,7 +32,7 @@ gbm.auto(
   RSB = TRUE,
   BnW = TRUE,
   alerts = TRUE,
-  pngtype = "cairo-png",
+  pngtype = c("cairo-png", "quartz", "Xlib"),
   gaus = TRUE,
   MLEvaluate = TRUE,
   brv = NULL,
@@ -74,15 +74,16 @@ or list, per tc and lr. Defaults to 0.5.}
 \item{n.trees}{From gbm.step, number of initial trees to fit. Can be
 single or list but not vector i.e. list(fam1,fam2).}
 
-\item{ZI}{Are data zero-inflated? TRUE FALSE "CHECK". TRUE: delta BRT,
-log-normalised Gaus, reverse log-norm and bias corrected. FALSE: do Gaussian
-only, no log-normalisation. CHECK: Tests data for you. Default is CHECK.}
+\item{ZI}{Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
+delta BRT, log-normalised Gaus, reverse log-norm and bias corrected. FALSE:
+do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is
+ CHECK.}
 
 \item{fam1}{Probability distribution family for 1st part of delta process,
-defaults to "bernoulli".}
+defaults to "bernoulli". Choose one.}
 
 \item{fam2}{Probability distribution family for 2nd part of delta process,
-defaults to "gaussian".}
+defaults to "gaussian". Choose one.}
 
 \item{simp}{Try simplifying best BRTs?}
 
@@ -132,7 +133,8 @@ TRUE.}
 \item{alerts}{Play sounds to mark progress steps. Default TRUE but running
 multiple small BRTs in a row (e.g. gbm.loop) can cause RStudio to crash.}
 
-\item{pngtype}{Filetype for png files, alternatively try "quartz".}
+\item{pngtype}{Filetype for png files, alternatively try "quartz" on Mac.
+Choose one.}
 
 \item{gaus}{Do family2 (typically Gaussian) runs as well as family1
 (typically Bin)? Default TRUE.}

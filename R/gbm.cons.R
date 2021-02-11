@@ -24,6 +24,7 @@
 #' @param lrs Gbm.auto parameter, uses defaults if not provided by user.
 #' @param bfs Gbm.auto parameter, uses defaults if not provided by user.
 #' @param ZIs Gbm.auto parameter, autocalculated below if not provided by user.
+#' Choose one entry.
 #' @param colss Gbm.auto parameter, uses defaults if not provided by user.
 #' @param linesfiless Gbm.auto parameter, uses defaults if not provided by user.
 #' @param savegbms Gbm.auto parameter, uses defaults if not provided by user.
@@ -34,7 +35,8 @@
 #' @param zeroes For breaks.grid, include zero-only category in colour
 #' breakpoints and subsequent legend. Defaults to TRUE.
 #' @param shape Coastline file for gbm.map.
-#' @param pngtype Filetype for png files, alternatively try "quartz".
+#' @param pngtype File-type for png files, alternatively try "quartz" on Mac.
+#' Choose one.
 #' @param gridslat Per Gbm.auto defaults to 2.
 #' @param gridslon Per Gbm.auto defaults to 1.
 #' @param grids Dummy param for package testing for CRAN, ignore.
@@ -84,10 +86,12 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      expvars,  # list object of expvar vectors for gbm.autos,
                      # length = no. of subsets * no. of species. No default.
                      tcs = NULL, # autocalculated below if not provided by user.
-                     lrs = rep(list(c(0.01,0.005)),length(resvars)),
+                     lrs = rep(list(c(0.01, 0.005)), length(resvars)),
                      bfs = rep(0.5, length(resvars)),
-                     ZIs = rep("CHECK", length(resvars)),
-                     colss = rep(list(grey.colors(1,1,1)),length(resvars)),
+                     ZIs = c(rep("CHECK", length(resvars)),
+                             rep(FALSE, length(resvars)),
+                             rep(TRUE, length(resvars))), # Choose one.
+                     colss = rep(list(grey.colors(1,1,1)), length(resvars)),
                      linesfiless = rep(FALSE, length(resvars)),
                      savegbms = rep(TRUE, length(resvars)),
                      varints = rep(TRUE, length(resvars)),
@@ -96,7 +100,8 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
                      BnWs = rep(TRUE, length(resvars)),
                      zeroes = rep(TRUE, length(resvars)),
                      shape = NULL, # coastline file for gbm.map
-                     pngtype = "cairo-png", # filetype for png files, alternatively try "quartz"
+                     pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
+                     # alternatively try "quartz" on Mac. Choose one.
                      gridslat = 2, #per Gbm.auto defaults to 2
                      gridslon = 1, #per Gbm.auto defaults to 1
                      grids = NULL) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
@@ -107,6 +112,9 @@ gbm.cons <- function(mygrids,       # gridded lat+long+data object to predict to
   # test this. Changes default requirement of grids. And samples? And loads of stuff.
 
   # utils::globalVariables("grids") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+
+  pngtype <- match.arg(pngtype) # populate object from function argument in proper way
+  ZIs <- match.arg(ZIs)
 
 ####Load functions & data####
 # if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}

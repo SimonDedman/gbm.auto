@@ -28,16 +28,19 @@
 #' # create breaks on the log scale
 #' exp(breaks.grid(log(10000),ncol=4,zero=FALSE))
 
-breaks.grid <- function(grd, quantile = 0.975, ncol = 12, zero = TRUE)
+breaks.grid <- function(grd,
+                        quantile = 0.975,
+                        ncol = 12,
+                        zero = TRUE)
 {
-  if (is.list(grd) == FALSE)
+  if (!is.list(grd))
     grd <- list(grd)
   qua <- max(c(unlist(lapply(grd, quantile, probs = quantile,
-                             na.rm = TRUE)), 0), na.rm = T)
+                             na.rm = TRUE)), 0), na.rm = TRUE)
   if (qua > 0)
     grd <- lapply(grd, function(x) ifelse(x > qua, qua, x))
-  hi <- max(unlist(lapply(grd, max, na.rm = T)))
-  lo <- min(unlist(lapply(grd, min, na.rm = T))) #added by SD
+  hi <- max(unlist(lapply(grd, max, na.rm = TRUE)))
+  lo <- min(unlist(lapply(grd, min, na.rm = TRUE))) #added by SD
   if (zero) {
     len <- ncol
     breaks <- c(0, seq(lo, hi, length = len)) #lo replaces 0

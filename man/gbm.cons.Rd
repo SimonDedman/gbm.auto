@@ -17,7 +17,8 @@ gbm.cons(
   tcs = NULL,
   lrs = rep(list(c(0.01, 0.005)), length(resvars)),
   bfs = rep(0.5, length(resvars)),
-  ZIs = rep("CHECK", length(resvars)),
+  ZIs = c(rep("CHECK", length(resvars)), rep(FALSE, length(resvars)), rep(TRUE,
+    length(resvars))),
   colss = rep(list(grey.colors(1, 1, 1)), length(resvars)),
   linesfiless = rep(FALSE, length(resvars)),
   savegbms = rep(TRUE, length(resvars)),
@@ -27,7 +28,7 @@ gbm.cons(
   BnWs = rep(TRUE, length(resvars)),
   zeroes = rep(TRUE, length(resvars)),
   shape = NULL,
-  pngtype = "cairo-png",
+  pngtype = c("cairo-png", "quartz", "Xlib"),
   gridslat = 2,
   gridslon = 1,
   grids = NULL
@@ -63,7 +64,8 @@ subsets * no. of species. No default.}
 
 \item{bfs}{Gbm.auto parameter, uses defaults if not provided by user.}
 
-\item{ZIs}{Gbm.auto parameter, autocalculated below if not provided by user.}
+\item{ZIs}{Gbm.auto parameter, autocalculated below if not provided by user.
+Choose one entry.}
 
 \item{colss}{Gbm.auto parameter, uses defaults if not provided by user.}
 
@@ -84,7 +86,8 @@ breakpoints and subsequent legend. Defaults to TRUE.}
 
 \item{shape}{Coastline file for gbm.map.}
 
-\item{pngtype}{Filetype for png files, alternatively try "quartz".}
+\item{pngtype}{File-type for png files, alternatively try "quartz" on Mac.
+Choose one.}
 
 \item{gridslat}{Per Gbm.auto defaults to 2.}
 

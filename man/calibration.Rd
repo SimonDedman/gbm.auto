@@ -4,14 +4,14 @@
 \alias{calibration}
 \title{calibration}
 \usage{
-calibration(obs, preds, family = "binomial")
+calibration(obs, preds, family = c("binomial", "bernoulli", "poisson"))
 }
 \arguments{
 \item{obs}{Observed data.}
 
 \item{preds}{Predicted data.}
 
-\item{family}{Statistical distribution family.}
+\item{family}{Statistical distribution family. Choose one.}
 }
 \value{
 roc & calibration stats internally within gbm runs e.g. in gbm.auto.
