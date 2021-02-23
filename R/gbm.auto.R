@@ -219,7 +219,7 @@ gbm.auto <- function(
   # number, vector or list, per tc and lr
   n.trees = 50,         # from gbm.step, number of initial trees to fit. Can be
   # single or list but not vector i.e. list(fam1, fam2)
-  ZI = c("CHECK", FALSE, TRUE), # are data zero-inflated? "CHECK"/FALSE/TRUE.
+  ZI = "CHECK", # are data zero-inflated? "CHECK"/FALSE/TRUE.
   # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
   # FALSE: do Gaussian only, no log-normalisation.
   # CHECK: Tests data for you. Default is TRUE.
@@ -325,7 +325,6 @@ gbm.auto <- function(
 
   fam1 <- match.arg(fam1) # populate object from function argument in proper way
   fam2 <- match.arg(fam2)
-  ZI <- match.arg(ZI)
   pngtype <- match.arg(pngtype)
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map

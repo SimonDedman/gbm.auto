@@ -5,6 +5,9 @@ date: "2021-01-14"
 output: html_document
 ---
 
+# v1.4.1, 2021-02-23
+* match.arg removed for ZI and res in basemap and elsewhere. Function can't have mixed inputs i.e. character and logical/numeric (#​65)
+
 # v1.4, 2021-01-14: CRAN release
 * Reduced large datasets to 75000 rows for CRAN size constraints.
 * gbm.utils split into roc calibration & gbm.predict.grids. g.p.g. merged into gbm.auto and removed.

@@ -76,7 +76,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         savedir = tempdir(), # save outputs to a temporary directory (default) else
                         # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
                         savename = "Crop_Map", #shapefile save-name without the .shp
-                        res = c("CALC", 1, 2, 3, 4, 5), # Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
+                        res = "CALC", # Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
                         extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
 
   #if i don't need rgdal etc i won't need this line either####
@@ -102,7 +102,6 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   oldwd <- getwd() # record original directory
   on.exit(setwd(oldwd), add = TRUE) # defensive block, thanks to Gregor Sayer
   setwd(savedir)
-  res <- match.arg(res) # populate object from function argument in proper way
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
   if (is.null(bounds)) {
     #check none of grids & gridslat & gridslon is null, if any are print message

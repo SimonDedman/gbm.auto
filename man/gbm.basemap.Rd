@@ -13,7 +13,7 @@ gbm.basemap(
   zipvers = "2.3.7",
   savedir = tempdir(),
   savename = "Crop_Map",
-  res = c("CALC", 1, 2, 3, 4, 5),
+  res = "CALC",
   extrabounds = FALSE
 )
 }

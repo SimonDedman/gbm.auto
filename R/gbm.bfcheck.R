@@ -18,8 +18,7 @@
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
   resvar, # response variable column in samples
-  ZI = c("CHECK", FALSE, TRUE), # are data zero-inflated? "CHECK"/FALSE/TRUE.
-  # Choose one.
+  ZI = "CHECK", # are data zero-inflated? "CHECK"/FALSE/TRUE. Choose one.
   # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
   # FALSE: do Gaussian only, no log-normalisation.
   # CHECK: Tests data for you. Default is TRUE.
@@ -29,8 +28,6 @@ gbm.bfcheck <- function(
 # gbm.bfcheck: provides minimum bag fractions for gbm.auto,
 # preventing failure due to bf & samples rows limit
 # Simon Dedman, 2016, simondedman@gmail.com, GitHub.com/SimonDedman/gbm.auto
-
-  ZI <- match.arg(ZI) # populate object from function argument in proper way
 
 # utils::globalVariables("grv") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 

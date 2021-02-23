@@ -93,7 +93,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
                      bf = 0.5,             # permutations of bag fraction allowed, can be single
                      # number, vector or list, per tc and lr
-                     ZI = c("CHECK", FALSE, TRUE), # Are data zero-inflated? "CHECK"/FALSE/TRUE.
+                     ZI = "CHECK", # Are data zero-inflated? "CHECK"/FALSE/TRUE.
                      # Choose one.
                      # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
                      # FALSE: do Gaussian only, no log-normalisation.
@@ -145,7 +145,6 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     beep(9)
     graphics.off()})  # give warning noise if it fails
 
-  ZI <- match.arg(ZI) # populate object from function argument in proper way
   pngtype <- match.arg(pngtype)
 
   binbars.df <- data.frame(var = rep(NA, length(expvar)),

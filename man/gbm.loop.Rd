@@ -19,7 +19,7 @@ gbm.loop(
   tc = c(2),
   lr = c(0.01),
   bf = 0.5,
-  ZI = c("CHECK", FALSE, TRUE),
+  ZI = "CHECK",
   simp = TRUE,
   gridslat = 2,
   gridslon = 1,

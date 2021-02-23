@@ -13,7 +13,7 @@ gbm.auto(
   lr = c(0.01, 0.005),
   bf = 0.5,
   n.trees = 50,
-  ZI = c("CHECK", FALSE, TRUE),
+  ZI = "CHECK",
   fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
   fam2 = c("gaussian", "bernoulli", "binomial", "poisson", "laplace"),
   simp = TRUE,
