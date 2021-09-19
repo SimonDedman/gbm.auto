@@ -396,12 +396,7 @@ gbm.auto <- function(
     dont  <- samples[,i]
     if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {samples$grv <- logem} else {samples$grv <- dont} # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
-    grv_yes <- subset(samples, grv >= 0) # nonzero subset for gaussian BRTs
-    # actually not nonzero but 'not -Inf' since zeroes logged to "-Inf"
-    # Change this to grv_yes <- samples if using a hurdle model including zeroes
-    # need to keep it as log1p in that case?
-    # ">=" same as just ">" since any nonzero in samples will be logged to a
-    # nonzero & any 0 will be logged to -Inf so there'll be no zeroes
+    grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
 
     if (is.null(loadgbm)) { #if loadgbm is NULL i.e. you're running BRTs not
       # predicting from existing models. Skip to L1404
