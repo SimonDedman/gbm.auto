@@ -392,7 +392,7 @@ gbm.auto <- function(
     brvcol <- which(colnames(samples) == "brv") # brv column number for BRT
 
     # create logged response variable, for gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
-    logem <- log(samples[,i]) # logs resvar i.e. containing zeroes
+    logem <- log1p(samples[,i]) # logs resvar i.e. containing zeroes
     dont  <- samples[,i]
     if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {samples$grv <- logem} else {samples$grv <- dont} # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
@@ -404,7 +404,7 @@ gbm.auto <- function(
     # nonzero & any 0 will be logged to -Inf so there'll be no zeroes
 
     if (is.null(loadgbm)) { #if loadgbm is NULL i.e. you're running BRTs not
-      # predicting from existing models. Skip to L1302
+      # predicting from existing models. Skip to L1404
 
       ####3. Begin Report####
       if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
@@ -1032,6 +1032,8 @@ gbm.auto <- function(
       } # close gaus if
 
       write.csv(Report, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/Report.csv"))
+      if (alerts) beep(2) # progress printer, right aligned for visibility
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
       #18. Machine learning evaluation metrics####
       if (MLEvaluate) { # if user wants ML evaluation
@@ -1396,8 +1398,6 @@ gbm.auto <- function(
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Evaluation Metrics ProcessedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       } # close if MLEvaluate
 
-      if (alerts) beep(2) # progress printer, right aligned for visibility
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
     } # close loadgbm isnull
 
     #avoid sections 19-25 if not predicting to grids
@@ -1439,7 +1439,8 @@ gbm.auto <- function(
           grids$Gaus_Preds <- Gaus_Preds
 
           ####21. Backtransform logged Gaus to unlogged####
-          grids$Gaus_Preds_Unlog <- exp(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
+          grids$Gaus_Preds_Unlog <- expm1(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
+          # exp for log, expm1 for log1p, L395
 
           ####22. BIN*positive abundance = final abundance####
           grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds
