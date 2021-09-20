@@ -324,7 +324,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
   ####loops done create dfs####
   # create bin & Gaus barplot stats data frames
-  if (fam1 = "bernoulli") {binbars <- data.frame(Min.Inf = with(binbars.df, tapply(rel.inf, var, min)),
+  if (fam1 == "bernoulli") {binbars <- data.frame(Min.Inf = with(binbars.df, tapply(rel.inf, var, min)),
                                   Av.Inf = with(binbars.df, tapply(rel.inf, var, mean)),
                                   Max.Inf = with(binbars.df, tapply(rel.inf, var, max)),
                                   Inf.variance = with(binbars.df, tapply(rel.inf, var, var)),
@@ -341,7 +341,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   gausbarsgood <- subset(gausbars, Min.Inf > 0)}
 
   # create linesfiles end-column stats for each variable
-  if (fam1 = "bernoulli") for (l in colnames(samples[expvar])) {
+  if (fam1 == "bernoulli") for (l in colnames(samples[expvar])) {
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
                                         "MinLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, min, na.rm = TRUE)))
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
@@ -380,12 +380,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   setwd(names(samples[resvar]))
 
   if (savecsv) {
-    if (fam1 = "bernoulli") {write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
+    if (fam1 == "bernoulli") {write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
       write.csv(binbarsgood, file = "BinBarsGoodLoop.csv", row.names = T)}
     if (gaus) {write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
       write.csv(gausbarsgood, file = "GausBarsGoodLoop.csv", row.names = T)}
 
-    if (fam1 = "bernoulli") for (n in colnames(samples[expvar])) {
+    if (fam1 == "bernoulli") for (n in colnames(samples[expvar])) {
       write.csv(get(paste0("binline_", n)), file = paste0("BinLineLoop_", n, ".csv"), row.names = F)}
     if (gaus) for (o in colnames(samples[expvar])) {
       write.csv(get(paste0("gausline_", o)), file = paste0("GausLineLoop_", o, ".csv"), row.names = F)}
@@ -396,7 +396,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      csv files created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
   ####plot linesfiles####
-  if (fam1 = "bernoulli") for (p in colnames(samples[expvar])) {
+  if (fam1 == "bernoulli") for (p in colnames(samples[expvar])) {
     yrange <- c(min(get(paste0("binline_", p))[,"MinLine"]), max(get(paste0("binline_", p))[,"MaxLine"]))
     png(filename = paste0("Bin_Loop_lines_", p, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
@@ -441,7 +441,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
   # bin & gaus barplots####
-  if (fam1 = "bernoulli") {
+  if (fam1 == "bernoulli") {
     pointlineseqbin <- seq(0, length(binbars[,2]) - 1, 1)
     revseq <- rev(pointlineseqbin)
     png(filename = "BinBarsLoop.png", width = 4*480, height = 4*480, units = "px",
