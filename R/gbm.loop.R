@@ -189,7 +189,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     for (i in 1:loops) { # loop through all gbm.autos
       subsavedir <- paste0("./", i)
       dir.create(subsavedir) # create i'th folder
-      setwd(subsavedir) # move to it
+      setwd(paste0("./", i)) # move to it
       gbm.auto(grids = grids, # run i'th gbm.auto
                samples = samples,
                expvar = expvar,
