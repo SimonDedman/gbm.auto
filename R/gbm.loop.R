@@ -187,10 +187,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
   if (runautos) { # run gbm.autos unless turned off
     for (i in 1:loops) { # loop through all gbm.autos
-      # subsavedir <- paste0("./", i)
-      subsavedir <- paste0(savedir, "/", i)
-      dir.create(subsavedir) # create i'th folder
-      setwd(subsavedir) # move to it
+      dir.create(paste0("./", i)) # create i'th folder
+      setwd(paste0("./", i)) # move to it
       gbm.auto(grids = grids, # run i'th gbm.auto
                samples = samples,
                expvar = expvar,
@@ -209,7 +207,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                cols = cols,
                linesfiles = linesfiles,
                smooth = smooth,
-               savedir = subsavedir,
+               savedir = "./", # current directory created & moved to above
                savegbm = savegbm,
                loadgbm = loadgbm,
                varint = varint,
