@@ -22,13 +22,20 @@
 #' @param tc See gbm.auto help.
 #' @param lr See gbm.auto help.
 #' @param bf See gbm.auto help.
+#' @param n.trees See gbm.auto help.
 #' @param ZI See gbm.auto help. Choose one.
+#' @param fam1 See gbm.auto help. Choose one.
+#' @param fam2 See gbm.auto help. Choose one.
 #' @param simp See gbm.auto help.
 #' @param gridslat See gbm.auto help.
 #' @param gridslon See gbm.auto help.
+#' @param multiplot See gbm.auto help. Default False
 #' @param cols See gbm.auto help.
 #' @param linesfiles See gbm.auto help; TRUE or linesfiles calculations fail.
+#' @param smooth See gbm.auto help.
+#' @param savedir See gbm.auto help.
 #' @param savegbm See gbm.auto help.
+#' @param loadgbm See gbm.auto help.
 #' @param varint See gbm.auto help.
 #' @param map See gbm.auto help.
 #' @param shape See gbm.auto help.
@@ -37,6 +44,8 @@
 #' @param alerts See gbm.auto help; default FALSE as frequent use can crash
 #' RStudio.
 #' @param pngtype See gbm.auto help. Choose one.
+#' @param gaus See gbm.auto help.
+#' @param MLEvaluate See gbm.auto help.
 #' @param runautos Run gbm.autos, default TRUE, turn off to only collate
 #' numbered-folder results.
 #' @param Min.Inf Dummy param for package testing for CRAN, ignore.
@@ -93,18 +102,34 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
                      bf = 0.5,             # permutations of bag fraction allowed, can be single
                      # number, vector or list, per tc and lr
+                     n.trees = 50,         # from gbm.step, number of initial trees to fit. Can be
+                     # single or list but not vector i.e. list(fam1, fam2)
                      ZI = "CHECK", # Are data zero-inflated? "CHECK"/FALSE/TRUE.
                      # Choose one.
                      # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
                      # FALSE: do Gaussian only, no log-normalisation.
                      # CHECK: Tests data for you. Default is TRUE.
+                     fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
+                     # probability distribution family for 1st part of delta process, defaults to
+                     # "bernoulli",
+                     fam2 = c("gaussian", "bernoulli", "binomial", "poisson", "laplace"),
+                     # probability distribution family for 2nd part of delta process, defaults to
+                     # "gaussian",
                      simp = TRUE,          # try simplfying best BRTs?
                      gridslat = 2,         # column number for latitude in 'grids'
                      gridslon = 1,         # column number for longitude in 'grids'
+                     multiplot = FALSE,     # create matrix plot of all line files? Default false
+                     # turn off if large number of expvars causes an error due to margin size problems.
                      cols = grey.colors(1,1,1), # barplot colour vector. Assignment in order of
                      # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
                      linesfiles = TRUE,   # save individual line plots' data as csv's?
+                     smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
+                     savedir = tempdir(),  # save outputs to a temporary directory (default) else
+                     # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
                      savegbm = FALSE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
+                     loadgbm = NULL,       # relative or absolute location of folder containing
+                     # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
+                     # predicted maps and CSVs. Default NULL, character vector, "./" for working directory
                      varint = FALSE,        # calculate variable interactions? Default:TRUE, FALSE
                      # for error "contrasts can be applied only to factors with 2 or more levels"
                      map = TRUE,           # save abundance map png files?
@@ -114,9 +139,16 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      alerts = FALSE,        # play sounds to mark progress steps
                      pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
                      # alternatively try "quartz" on Mac. Choose one.
+                     gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
+                     MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
+                     # brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+                     # grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+                     # Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+                     # Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
                      runautos = TRUE,      # run gbm.autos, default TRUE, turn off to only collate numbered-folder results
                      Min.Inf = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
                      ...) {
+
   # Generalised Boosting Model / Boosted Regression Tree process chain automater
   # Simon Dedman, 2012-8 simondedman@gmail.com github.com/SimonDedman/gbm.auto
 
@@ -145,6 +177,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     beep(9)
     graphics.off()})  # give warning noise if it fails
 
+  fam1 <- match.arg(fam1) # populate object from function argument in proper way
+  fam2 <- match.arg(fam2)
   pngtype <- match.arg(pngtype)
 
   binbars.df <- data.frame(var = rep(NA, length(expvar)),
@@ -165,13 +199,20 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                tc = tc,
                lr = lr,
                bf = bf,
+               n.trees = n.trees,
                ZI = ZI,
+               fam1 = fam1,
+               fam2 = fam2,
                simp = simp,
                gridslat = gridslat,
                gridslon = gridslon,
+               multiplot = multiplot,
                cols = cols,
                linesfiles = linesfiles,
+               smooth = smooth,
+               savedir = savedir,
                savegbm = savegbm,
+               loadgbm = loadgbm,
                varint = varint,
                map = map,
                shape = shape,
@@ -179,7 +220,10 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                BnW = BnW,
                alerts = alerts,
                pngtype = pngtype,
+               gaus = gaus,
+               MLEvaluate = MLEvaluate,
                ...) # accept other gbm.auto values than these basics
+
       setwd(paste0("./", colnames(samples[resvar]))) # set wd to species named subfolder
 
       if (file.exists("Binary BRT Variable contributions.csv")) {
