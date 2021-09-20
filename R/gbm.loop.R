@@ -33,7 +33,6 @@
 #' @param cols See gbm.auto help.
 #' @param linesfiles See gbm.auto help; TRUE or linesfiles calculations fail.
 #' @param smooth See gbm.auto help.
-#' @param savedir See gbm.auto help.
 #' @param savegbm See gbm.auto help.
 #' @param loadgbm See gbm.auto help.
 #' @param varint See gbm.auto help.
@@ -124,8 +123,6 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
                      linesfiles = TRUE,   # save individual line plots' data as csv's?
                      smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
-                     savedir = tempdir(),  # save outputs to a temporary directory (default) else
-                     # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
                      savegbm = FALSE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
                      loadgbm = NULL,       # relative or absolute location of folder containing
                      # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
@@ -190,8 +187,9 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
   if (runautos) { # run gbm.autos unless turned off
     for (i in 1:loops) { # loop through all gbm.autos
-      dir.create(paste0("./", i)) # create i'th folder
-      setwd(paste0("./", i)) # move to it
+      subsavedir <- paste0("./", i)
+      dir.create(subsavedir) # create i'th folder
+      setwd(subsavedir) # move to it
       gbm.auto(grids = grids, # run i'th gbm.auto
                samples = samples,
                expvar = expvar,
@@ -210,7 +208,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                cols = cols,
                linesfiles = linesfiles,
                smooth = smooth,
-               savedir = savedir,
+               savedir = subsavedir,
                savegbm = savegbm,
                loadgbm = loadgbm,
                varint = varint,
