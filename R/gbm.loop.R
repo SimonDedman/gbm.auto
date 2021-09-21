@@ -302,7 +302,6 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     } # close i loop & go to the next i
   } # close runautos if optional
 
-
   binbars.df <- data.frame(var = rep(NA, length(expvar)),
                            rel.inf = rep(NA, length(expvar)))
   gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
@@ -406,7 +405,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
           # gauscvtmp <- as.character(reporttmp$Best.Gaussian.BRT[2])
           # gauscvspltmp <- strsplit(gauscvtmp, "Model CV score: ")
           # gauscvsplnumtmp <- as.numeric(gauscvspltmp[[1]][2])
-          # report.df[i,3] <- gauscvsplnumtmp} # copy GausCV score from this loop's report to allreport
+          # report.df[i,3] <- gauscvsplnumtmp
+        } # copy GausCV score from this loop's report to allreport
 
         setwd("../../") # move back up to root folder
         # if (cleanup) unlink(i, recursive = TRUE)
