@@ -422,16 +422,14 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   if (bin) {binbars <- data.frame(Min.Inf = with(binbars.df, tapply(rel.inf, var, min)),
                                   Av.Inf = with(binbars.df, tapply(rel.inf, var, mean)),
                                   Max.Inf = with(binbars.df, tapply(rel.inf, var, max)),
-                                  Inf.variance = with(binbars.df, tapply(rel.inf, var, var)),
-                                  row.names = levels.default(binbars.df$var))
+                                  Inf.variance = with(binbars.df, tapply(rel.inf, var, var)))
   binbars <- binbars[order(-binbars[,"Av.Inf"]),]
   binbarsgood <- subset(binbars, Min.Inf > 0)} #also create barplots for nonzero vars
 
   if (gaus) {gausbars <- data.frame(Min.Inf = with(gausbars.df, tapply(rel.inf, var, min)),
                                     Av.Inf = with(gausbars.df, tapply(rel.inf, var, mean)),
                                     Max.Inf = with(gausbars.df, tapply(rel.inf, var, max)),
-                                    Inf.variance = with(gausbars.df, tapply(rel.inf, var, var)),
-                                    row.names = levels.default(gausbars.df$var))
+                                    Inf.variance = with(gausbars.df, tapply(rel.inf, var, var)))
   gausbars <- gausbars[order(-gausbars[,"Av.Inf"]),]
   gausbarsgood <- subset(gausbars, Min.Inf > 0)}
 
@@ -494,42 +492,58 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   if (bin) for (p in colnames(samples[expvar])) {
     yrange <- c(min(get(paste0("binline_", p))[,"MinLine"]), max(get(paste0("binline_", p))[,"MaxLine"]))
     png(filename = paste0("Bin_Loop_lines_", p, ".png"),
-        width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
-    par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
-    plot(get(paste0("binline_", p))[,1],
-         get(paste0("binline_", p))[,"AvLine"],
+        width = 4*480, height = 4*480, units = "px", pointsize = 40, bg = "white", res = NA, family = "", type = pngtype)
+    par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25, 0.5, 0), xpd = NA)
+    plot(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
+         # x doesn't work if it's a factor variable
+         y = get(paste0("binline_", p))[,"AvLine"],
          type = "l",
-         #xlab = colnames(get(paste0("binline_", p)))[1],
          xlab = paste0(p, " (", round(binbars[p, "Av.Inf"],1), "%)"),
          ylab = "",
          main = "",
-         yasx = "r",
-         ylim = yrange)
+         yaxs = "r",
+         ylim = yrange,
+         axes = FALSE)
+
+    # x axis labels
+    if (class(get(paste0("binline_", p))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("binline_", p))[,1])), lab = get(paste0("binline_", p))[,1])} else axis(1)
+    axis(2) # y axis default
+
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-    lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
-    lines(get(paste0("binline_", p))[,1], get(paste0("binline_", p))[,"MaxLine"], col = "grey33")
-    legend("topleft", legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
-           lty = 1, pch = "-")
+    lines(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
+          y = get(paste0("binline_", p))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
+    lines(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
+          y = get(paste0("binline_", p))[,"MaxLine"], col = "grey33")
+    legend("top", # Need to shrink & move this, but where/how to move? if() based on values?
+           legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
+           lty = 1,
+           pch = "-")
     dev.off()}
 
   if (gaus) for (q in colnames(samples[expvar])) {
     yrange <- c(min(get(paste0("gausline_", q))[,"MinLine"]), max(get(paste0("gausline_", q))[,"MaxLine"]))
     png(filename = paste0("Gaus_Loop_lines_", q, ".png"),
-        width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
+        width = 4*480, height = 4*480, units = "px", pointsize = 40, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
-    plot(get(paste0("gausline_", q))[,1],
-         get(paste0("gausline_", q))[,"AvLine"],
+    plot(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
+         y = get(paste0("gausline_", q))[,"AvLine"],
          type = "l",
-         #xlab = colnames(get(paste0("gausline_", q)))[1],
          xlab = paste0(q, " (", round(gausbars[q, "Av.Inf"],1), "%)"),
          ylab = "",
          main = "",
-         yasx = "r",
-         ylim = yrange)
+         yaxs = "r",
+         ylim = yrange,
+         axes = FALSE)
+    # x axis labels
+    if (class(get(paste0("gausline_", q))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("gausline_", q))[,1])), lab = get(paste0("gausline_", q))[,1])} else axis(1)
+    axis(2) # y axis default
+
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MinLine"], col = "grey66")
-    lines(get(paste0("gausline_", q))[,1], get(paste0("gausline_", q))[,"MaxLine"], col = "grey33")
-    legend("topleft", legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
+    lines(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
+          y = get(paste0("gausline_", q))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
+    lines(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
+          y = get(paste0("gausline_", q))[,"MaxLine"], col = "grey33")
+    legend("top", legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
            lty = 1, pch = "-")
     dev.off()}
 
