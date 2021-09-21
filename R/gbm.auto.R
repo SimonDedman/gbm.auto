@@ -493,11 +493,11 @@ gbm.auto <- function(
 
               ####6. Add bin stats to report####
               if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
-                                                                                                                 paste0("Training Data Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
-                                                                                                                 paste0("CV Mean Deviance: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
-                                                                                                                 paste0("CV Deviance SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
-                                                                                                                 paste0("CV Mean Correlation: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
-                                                                                                                 paste0("CV Correlation SE: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
+                                                                                         paste0("Training Data Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
+                                                                                         paste0("CV Mean Deviance: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
+                                                                                         paste0("CV Deviance SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
+                                                                                         paste0("CV Mean Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
+                                                                                         paste0("CV Correlation SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
               # bin BRT name
               colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
               } # close ZI if

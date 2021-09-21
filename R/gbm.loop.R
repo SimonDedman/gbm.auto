@@ -156,8 +156,6 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   # when change in variance from 1:2 to 1:3 to 1:n drops below a percentage threshold?
   # Fix csvs colnames, see https://github.com/SimonDedman/gbm.auto/issues/37
   # for factorial variables, need to change from lines to bars
-  # Runautos doesn't work: binbars.df & gausbars.df are created & incrementally grown within the autos loop then accessed afterwards.
-  # Would need to do this separately somehow, possibly a separate loop to pull these data from a source file csv?
 
   # utils::globalVariables("Min.Inf") # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
 
@@ -178,13 +176,13 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   fam2 <- match.arg(fam2)
   pngtype <- match.arg(pngtype)
 
-  binbars.df <- data.frame(var = rep(NA, length(expvar)),
-                           rel.inf = rep(NA, length(expvar)))
-  gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
-  report.df <- data.frame(BinCV = rep(NA, length(loops)),
-                          AUC = rep(NA, length(loops)),
-                          GausCV = rep(NA, length(loops)))
-  if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
+  # binbars.df <- data.frame(var = rep(NA, length(expvar)),
+  #                          rel.inf = rep(NA, length(expvar)))
+  # gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
+  # report.df <- data.frame(BinCV = rep(NA, length(loops)),
+  #                         AUC = rep(NA, length(loops)),
+  #                         GausCV = rep(NA, length(loops)))
+
   if (runautos) { # run gbm.autos unless turned off
     for (i in 1:loops) { # loop through all gbm.autos
       dir.create(paste0("./", i)) # create i'th folder
@@ -222,18 +220,113 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                ...) # accept other gbm.auto values than these basics
 
       setwd(paste0("./", colnames(samples[resvar]))) # set wd to species named subfolder
+      #
+      # if (file.exists("Binary BRT Variable contributions.csv")) {
+      #   binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
+      #   if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
+      #     binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
+      #   bin = TRUE} else bin = FALSE
+      #
+      # # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
+      # # adding i'th loop's values as new column
+      # if (bin) for (j in colnames(samples[expvar])) {
+      #   if (!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
+      #   #if file not created because simp, populate with 0s
+      #   if (file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))}
+      #   #else use values
+      #
+      #   colnames(tmp)[2] <- paste0("Loop",i)
+      #   if (i == 1) {assign(paste0("binline_", j), tmp)
+      #   } else {
+      #     assign(paste0("binline_", j), cbind(get(paste0("binline_", j)),
+      #                                         tmp[,2]))
+      #     if (is.na(get(paste0("binline_", j))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+      #       assign(paste0("binline_", j), #rebuild same obj as df
+      #              data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
+      #                         get(paste0("binline_", j))[,2:(i + 1)]))} #then add the remainder of the existing obj cols
+      #   }}
+      #
+      # if (file.exists("Gaussian BRT Variable contributions.csv")) {
+      #   gausbarstmp <- read.csv("Gaussian BRT Variable contributions.csv") # temp container for Gaus lines
+      #   if (i == 1) {gausbars.df <- gausbarstmp} else {
+      #     gausbars.df <- rbind(gausbars.df, gausbarstmp)}
+      #   gaus = TRUE} else gaus = FALSE
+      #
+      # if (gaus) for (k in colnames(samples[expvar])) {
+      #   if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
+      #   #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
+      #   #else use existing csv file, 2 columns
+      #   if (file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
+      #   colnames(tmp)[2] <- paste0("Loop",i)
+      #   if (i == 1) {assign(paste0("gausline_", k), tmp)
+      #   } else {
+      #     assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
+      #                                          tmp[,2]))
+      #     if (is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+      #       assign(paste0("gausline_", k), #rebuild same obj as df
+      #              data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
+      #                         get(paste0("gausline_", k))[,2:(i + 1)]))} #then add the remainder of the existing obj cols
+      #     #column cbound but not named. Can name as string "col name" = 1:10, or
+      #     #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
+      #     #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]
+      #     #colnames(paste0("gausline_", k))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
+      #   }}
+      # if (!file.exists("Abundance_Preds_only.csv")) calcpreds = FALSE
+      # if (calcpreds) {predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
+      # var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
+      # colnames(var.df)[2 + i] <- paste0("Loop_", i)} # label newly added preds column
+      #
+      # #Collect report CV & AUC scores
+      # reporttmp <- read.csv("Report.csv") # temp container for bin bars
+      #
+      # if ("Best.Binary.BRT" %in% colnames(reporttmp)) {
+      #   bincvtmp <- as.character(reporttmp$Best.Binary.BRT[2])
+      #   bincvspltmp <- strsplit(bincvtmp, "Model CV score: ")
+      #   bincvsplnumtmp <- as.numeric(bincvspltmp[[1]][2])
+      #   report.df[i,1] <- bincvsplnumtmp # copy BinCV score from this loop's report to allreport
+      #
+      #   auctmp <- as.character(reporttmp$Best.Binary.BRT[3])
+      #   aucspltmp <- strsplit(auctmp, "Training data AUC score: ")
+      #   aucsplnumtmp <- as.numeric(aucspltmp[[1]][2])
+      #   report.df[i,2] <- aucsplnumtmp} # copy AUC score from this loop's report to allreport
+      #
+      # if ("Best.Gaussian.BRT" %in% colnames(reporttmp)) {
+      #   gauscvtmp <- as.character(reporttmp$Best.Gaussian.BRT[2])
+      #   gauscvspltmp <- strsplit(gauscvtmp, "Model CV score: ")
+      #   gauscvsplnumtmp <- as.numeric(gauscvspltmp[[1]][2])
+      #   report.df[i,3] <- gauscvsplnumtmp} # copy GausCV score from this loop's report to allreport
 
-      if (file.exists("Binary BRT Variable contributions.csv")) {
-        binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
-        if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
-          binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
-        bin = TRUE} else bin = FALSE
+      setwd("../../") # move back up to root folder
+      if (cleanup) unlink(i, recursive = TRUE)
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Loop ",i," complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+    } # close i loop & go to the next i
+  } # close runautos if optional
+
+
+  binbars.df <- data.frame(var = rep(NA, length(expvar)),
+                           rel.inf = rep(NA, length(expvar)))
+  gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
+  report.df <- data.frame(BinCV = rep(NA, length(loops)),
+                          AUC = rep(NA, length(loops)),
+                          GausCV = rep(NA, length(loops)))
+  if (calcpreds) var.df <- grids[,c(gridslon, gridslat)] # create df with just lat & longs
+
+  for (i in 1:loops) { # loop through all gbm.autos
+    setwd(paste0("./", i, "/", colnames(samples[resvar]))) # set wd to loopnumber and species named subfolder
+
+    if (file.exists("Binary BRT Variable contributions.csv")) {
+      binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
+      if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
+        binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
+      bin = TRUE} else bin = FALSE
 
       # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
       # adding i'th loop's values as new column
       if (bin) for (j in colnames(samples[expvar])) {
-        if (!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
-        #if file not created because simp, populate with 0s
+        if (class(samples[,j]) == "factor") nreps = length(levels(samples[,j])) else nreps = 100
+        # rep 100 is fine for numeric variables but needs to match n(levels) of factorial variables.
+        if (!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA, nreps), y = rep(NA, nreps))}
+        #if file not created because simp, populate with NAs
         if (file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- read.csv(paste0("Bin_Best_line_", j, ".csv"))}
         #else use values
 
@@ -254,77 +347,75 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
           gausbars.df <- rbind(gausbars.df, gausbarstmp)}
         gaus = TRUE} else gaus = FALSE
 
-      if (gaus) for (k in colnames(samples[expvar])) {
-        if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA,100), y = rep(NA,100))}
-        #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
-        #else use existing csv file, 2 columns
-        if (file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
-        colnames(tmp)[2] <- paste0("Loop",i)
-        if (i == 1) {assign(paste0("gausline_", k), tmp)
-        } else {
-          assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
-                                               tmp[,2]))
-          if (is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
-            assign(paste0("gausline_", k), #rebuild same obj as df
-                   data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
-                              get(paste0("gausline_", k))[,2:(i + 1)]))} #then add the remainder of the existing obj cols
-          #column cbound but not named. Can name as string "col name" = 1:10, or
-          #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
-          #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]
-          #colnames(paste0("gausline_", k))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
-        }}
-      if (!file.exists("Abundance_Preds_only.csv")) calcpreds = FALSE
-      if (calcpreds) {predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
-      var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
-      colnames(var.df)[2 + i] <- paste0("Loop_", i)} # label newly added preds column
+        if (gaus) for (k in colnames(samples[expvar])) {
+          if (class(samples[,j]) == "factor") nreps = length(levels(samples[,j])) else nreps = 100
+          if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA, nreps), y = rep(NA, nreps))}
+          #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
+          #else use existing csv file, 2 columns
+          if (file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- read.csv(paste0("Gaus_Best_line_", k, ".csv"))}
+          colnames(tmp)[2] <- paste0("Loop",i)
+          if (i == 1) {assign(paste0("gausline_", k), tmp)
+          } else {
+            assign(paste0("gausline_", k), cbind(get(paste0("gausline_", k)),
+                                                 tmp[,2]))
+            if (is.na(get(paste0("gausline_", k))[1,1])) { #if the first cell is NA (all 1st col, x, is na)
+              assign(paste0("gausline_", k), #rebuild same obj as df
+                     data.frame(x = tmp[,1], #start with this loop's x values, hopefully not NA also
+                                get(paste0("gausline_", k))[,2:(i + 1)]))} #then add the remainder of the existing obj cols
+            #column cbound but not named. Can name as string "col name" = 1:10, or
+            #objectname ColName = 1:10 but not formulaicly paste0("Col","Name") = 1:10
+            #or anything evaluated e.g. colnames(tmp)[2] = tmp[,2]
+            #colnames(paste0("gausline_", k))[i + 1] <- paste0("loop", i) #rename last column (loop# + 1)
+          }}
+        if (!file.exists("Abundance_Preds_only.csv")) calcpreds = FALSE
+        if (calcpreds) {
+          predtmp <- read.csv("Abundance_Preds_only.csv") # temp container for latest preds
+          var.df <- cbind(var.df, predtmp[,3]) # cbind preds to existing lat/longs or other preds
+          colnames(var.df)[2 + i] <- paste0("Loop_", i) # label newly added preds column
+        }
 
-      #Collect report CV & AUC scores
-      reporttmp <- read.csv("Report.csv") # temp container for bin bars
+        #Collect report CV & AUC scores
+        reporttmp <- read.csv("Report.csv") # temp container for bin bars
 
-      if ("Best.Binary.BRT" %in% colnames(reporttmp)) {
-        bincvtmp <- as.character(reporttmp$Best.Binary.BRT[2])
-        bincvspltmp <- strsplit(bincvtmp, "Model CV score: ")
-        bincvsplnumtmp <- as.numeric(bincvspltmp[[1]][2])
-        report.df[i,1] <- bincvsplnumtmp # copy BinCV score from this loop's report to allreport
+        if ("Best.Binary.BRT" %in% colnames(reporttmp)) {
+          # cv.statistics$deviance.mean = cv.dev = mean(cv.deviance.stats, na.rm = TRUE). cv.deviance.stats[i] <- calc.deviance(y_i, u_i, weight.preds, family = family)
+          # cv.statistics$deviance.mean is already in gbm.auto report.csv: "CV Mean Deviance: ", but ISN'T in bin_best column!
+          # Therefore need to lookup best against other cols to find it.
+          binbestcomboname <- as.character(reporttmp$Best.Binary.BRT[1])
+          binbestcomboname <- strsplit(binbestcomboname, "Model combo: ")[[1]][2]
+          binbestcomboname <- gsub(pattern = "lr1e-", replacement = "lr1e.", x = binbestcomboname)
+          # copy BinCV score from this loop's report to allreport
+          report.df[i, 1] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% binbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
+          # bincvtmp <- as.character(reporttmp$Best.Binary.BRT[2])
+          # bincvspltmp <- strsplit(bincvtmp, "CV Mean Deviance: ")
+          # bincvsplnumtmp <- as.numeric(bincvspltmp[[1]][2])
+          # report.df[i,1] <- bincvsplnumtmp
 
-        auctmp <- as.character(reporttmp$Best.Binary.BRT[3])
-        aucspltmp <- strsplit(auctmp, "Training data AUC score: ")
-        aucsplnumtmp <- as.numeric(aucspltmp[[1]][2])
-        report.df[i,2] <- aucsplnumtmp} # copy AUC score from this loop's report to allreport
+          auctmp <- as.character(reporttmp$Best.Binary.BRT[3])
+          aucspltmp <- strsplit(auctmp, "Training data AUC score: ")
+          aucsplnumtmp <- as.numeric(aucspltmp[[1]][2])
+          report.df[i, 2] <- aucsplnumtmp} # copy AUC score from this loop's report to allreport
 
-      if ("Best.Gaussian.BRT" %in% colnames(reporttmp)) {
-        gauscvtmp <- as.character(reporttmp$Best.Gaussian.BRT[2])
-        gauscvspltmp <- strsplit(gauscvtmp, "Model CV score: ")
-        gauscvsplnumtmp <- as.numeric(gauscvspltmp[[1]][2])
-        report.df[i,3] <- gauscvsplnumtmp} # copy GausCV score from this loop's report to allreport
+        if ("Best.Gaussian.BRT" %in% colnames(reporttmp)) {
+          gausbestcomboname <- as.character(reporttmp$Best.Gaussian.BRT[1])
+          gausbestcomboname <- strsplit(gausbestcomboname, "Model combo: ")[[1]][2]
+          # replace lr1e- with lr1e. in the case of very small lr's, R will convert the colname to a dot and the lookup will fail
+          gausbestcomboname <- gsub(pattern = "lr1e-", replacement = "lr1e.", x = gausbestcomboname)
+          # copy GausCV score from this loop's report to allreport
+          report.df[i, 3] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% gausbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
+          # gauscvtmp <- as.character(reporttmp$Best.Gaussian.BRT[2])
+          # gauscvspltmp <- strsplit(gauscvtmp, "Model CV score: ")
+          # gauscvsplnumtmp <- as.numeric(gauscvspltmp[[1]][2])
+          # report.df[i,3] <- gauscvsplnumtmp} # copy GausCV score from this loop's report to allreport
 
-      setwd("../../") # move back up to root folder
-      if (cleanup) unlink(i, recursive = TRUE)
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Loop ",i," complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-    } # close i loop & go to the next i
-  } # close runautos if optional
-
-  #runautos fix####
-  #move runautos binbars.df gausbars.df code to here, in separate loops
-  # binbars.df <- data.frame(var = rep(NA, length(expvar)),
-  #                          rel.inf = rep(NA, length(expvar)))
-  # gausbars.df <- binbars.df # blank dataframes for bin & gaus bars data
-  #
-  # if (file.exists("Binary BRT Variable contributions.csv")) {
-  #   binbarstmp <- read.csv("Binary BRT Variable contributions.csv") # temp container for bin bars
-  #   if (i == 1) {binbars.df <- binbarstmp} else {# csv file to df unless df exists
-  #     binbars.df <- rbind(binbars.df, binbarstmp)} # if so add to bottom of existing
-  #   bin = TRUE} else bin = FALSE
-  #
-  # if (file.exists("Gaussian BRT Variable contributions.csv")) {
-  #   gausbarstmp <- read.csv("Gaussian BRT Variable contributions.csv") # temp container for Gaus lines
-  #   if (i == 1) {gausbars.df <- gausbarstmp} else {
-  #     gausbars.df <- rbind(gausbars.df, gausbarstmp)}
-  #   gaus = TRUE} else gaus = FALSE
+        setwd("../../") # move back up to root folder
+        # if (cleanup) unlink(i, recursive = TRUE)
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Loop ", i, " complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+  } # close i loop & go to the next i
 
   ####loops done create dfs####
   # create bin & Gaus barplot stats data frames
-  if (fam1 == "bernoulli") {binbars <- data.frame(Min.Inf = with(binbars.df, tapply(rel.inf, var, min)),
+  if (bin) {binbars <- data.frame(Min.Inf = with(binbars.df, tapply(rel.inf, var, min)),
                                   Av.Inf = with(binbars.df, tapply(rel.inf, var, mean)),
                                   Max.Inf = with(binbars.df, tapply(rel.inf, var, max)),
                                   Inf.variance = with(binbars.df, tapply(rel.inf, var, var)),
@@ -340,8 +431,8 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   gausbars <- gausbars[order(-gausbars[,"Av.Inf"]),]
   gausbarsgood <- subset(gausbars, Min.Inf > 0)}
 
-  # create linesfiles end-column stats for each variable
-  if (fam1 == "bernoulli") for (l in colnames(samples[expvar])) {
+  # create linesfiles end-column stats (Min Av Max Var) for each variable
+  if (bin) for (l in colnames(samples[expvar])) {
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
                                         "MinLine" = apply(get(paste0("binline_", l))[, (2:(1 + loops))], MARGIN = 1, min, na.rm = TRUE)))
     assign(paste0("binline_", l), cbind(get(paste0("binline_", l)),
@@ -380,12 +471,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   setwd(names(samples[resvar]))
 
   if (savecsv) {
-    if (fam1 == "bernoulli") {write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
+    if (bin) {write.csv(binbars, file = "BinBarsLoop.csv", row.names = T)
       write.csv(binbarsgood, file = "BinBarsGoodLoop.csv", row.names = T)}
     if (gaus) {write.csv(gausbars, file = "GausBarsLoop.csv", row.names = T)
       write.csv(gausbarsgood, file = "GausBarsGoodLoop.csv", row.names = T)}
 
-    if (fam1 == "bernoulli") for (n in colnames(samples[expvar])) {
+    if (bin) for (n in colnames(samples[expvar])) {
       write.csv(get(paste0("binline_", n)), file = paste0("BinLineLoop_", n, ".csv"), row.names = F)}
     if (gaus) for (o in colnames(samples[expvar])) {
       write.csv(get(paste0("gausline_", o)), file = paste0("GausLineLoop_", o, ".csv"), row.names = F)}
@@ -396,7 +487,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      csv files created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
   ####plot linesfiles####
-  if (fam1 == "bernoulli") for (p in colnames(samples[expvar])) {
+  if (bin) for (p in colnames(samples[expvar])) {
     yrange <- c(min(get(paste0("binline_", p))[,"MinLine"]), max(get(paste0("binline_", p))[,"MaxLine"]))
     png(filename = paste0("Bin_Loop_lines_", p, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
@@ -441,7 +532,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
   # bin & gaus barplots####
-  if (fam1 == "bernoulli") {
+  if (bin) {
     pointlineseqbin <- seq(0, length(binbars[,2]) - 1, 1)
     revseq <- rev(pointlineseqbin)
     png(filename = "BinBarsLoop.png", width = 4*480, height = 4*480, units = "px",
