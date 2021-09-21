@@ -377,13 +377,16 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         reporttmp <- read.csv("Report.csv") # temp container for bin bars
 
         if ("Best.Binary.BRT" %in% colnames(reporttmp)) {
+          # copy BinCV score from this loop's report to allreport
           # cv.statistics$deviance.mean = cv.dev = mean(cv.deviance.stats, na.rm = TRUE). cv.deviance.stats[i] <- calc.deviance(y_i, u_i, weight.preds, family = family)
           # cv.statistics$deviance.mean is already in gbm.auto report.csv: "CV Mean Deviance: ", but ISN'T in bin_best column!
           # Therefore need to lookup best against other cols to find it.
           binbestcomboname <- as.character(reporttmp$Best.Binary.BRT[1])
           binbestcomboname <- strsplit(binbestcomboname, "Model combo: ")[[1]][2]
           binbestcomboname <- gsub(pattern = "lr1e-", replacement = "lr1e.", x = binbestcomboname)
-          # copy BinCV score from this loop's report to allreport
+          # if binbestcomboname is simplified, value ends in _Simp, but colname is "Simplified.Binary.BRT.stats"
+          # need to use length because if grep doesn't find the pattern it returns integer(0) which doesn't evaluate to logical FALSE for ==1 for some reason
+          if (length(grep(pattern = "_Simp", x = binbestcomboname)) == 1) binbestcomboname <- "Simplified.Binary.BRT.stats"
           report.df[i, 1] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% binbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
           # bincvtmp <- as.character(reporttmp$Best.Binary.BRT[2])
           # bincvspltmp <- strsplit(bincvtmp, "CV Mean Deviance: ")
@@ -396,11 +399,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
           report.df[i, 2] <- aucsplnumtmp} # copy AUC score from this loop's report to allreport
 
         if ("Best.Gaussian.BRT" %in% colnames(reporttmp)) {
+          # copy GausCV score from this loop's report to allreport
           gausbestcomboname <- as.character(reporttmp$Best.Gaussian.BRT[1])
           gausbestcomboname <- strsplit(gausbestcomboname, "Model combo: ")[[1]][2]
           # replace lr1e- with lr1e. in the case of very small lr's, R will convert the colname to a dot and the lookup will fail
           gausbestcomboname <- gsub(pattern = "lr1e-", replacement = "lr1e.", x = gausbestcomboname)
-          # copy GausCV score from this loop's report to allreport
+          if (length(grep(pattern = "_Simp", x = gausbestcomboname)) == 1) gausbestcomboname <- "Simplified.Gaussian.BRT.stats"
           report.df[i, 3] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% gausbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
           # gauscvtmp <- as.character(reporttmp$Best.Gaussian.BRT[2])
           # gauscvspltmp <- strsplit(gauscvtmp, "Model CV score: ")
