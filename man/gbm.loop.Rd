@@ -19,13 +19,19 @@ gbm.loop(
   tc = c(2),
   lr = c(0.01),
   bf = 0.5,
+  n.trees = 50,
   ZI = "CHECK",
+  fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
+  fam2 = c("gaussian", "bernoulli", "binomial", "poisson", "laplace"),
   simp = TRUE,
   gridslat = 2,
   gridslon = 1,
+  multiplot = FALSE,
   cols = grey.colors(1, 1, 1),
   linesfiles = TRUE,
+  smooth = FALSE,
   savegbm = FALSE,
+  loadgbm = NULL,
   varint = FALSE,
   map = TRUE,
   shape = NULL,
@@ -33,6 +39,8 @@ gbm.loop(
   BnW = FALSE,
   alerts = FALSE,
   pngtype = c("cairo-png", "quartz", "Xlib"),
+  gaus = TRUE,
+  MLEvaluate = TRUE,
   runautos = TRUE,
   Min.Inf = NULL,
   ...
@@ -68,7 +76,13 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{bf}{See gbm.auto help.}
 
+\item{n.trees}{See gbm.auto help.}
+
 \item{ZI}{See gbm.auto help. Choose one.}
+
+\item{fam1}{See gbm.auto help. Choose one.}
+
+\item{fam2}{See gbm.auto help. Choose one.}
 
 \item{simp}{See gbm.auto help.}
 
@@ -76,11 +90,17 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 
 \item{gridslon}{See gbm.auto help.}
 
+\item{multiplot}{See gbm.auto help. Default False}
+
 \item{cols}{See gbm.auto help.}
 
 \item{linesfiles}{See gbm.auto help; TRUE or linesfiles calculations fail.}
 
+\item{smooth}{See gbm.auto help.}
+
 \item{savegbm}{See gbm.auto help.}
+
+\item{loadgbm}{See gbm.auto help.}
 
 \item{varint}{See gbm.auto help.}
 
@@ -96,6 +116,10 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 RStudio.}
 
 \item{pngtype}{See gbm.auto help. Choose one.}
+
+\item{gaus}{See gbm.auto help.}
+
+\item{MLEvaluate}{See gbm.auto help.}
 
 \item{runautos}{Run gbm.autos, default TRUE, turn off to only collate
 numbered-folder results.}

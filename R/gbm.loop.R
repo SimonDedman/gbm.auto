@@ -408,7 +408,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          ylim = yrange,
          axes = FALSE)
     # x axis labels
-    if (class(get(paste0("binline_", p))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("binline_", p))[,1])), lab = get(paste0("binline_", p))[,1])} else axis(1)
+    if (class(get(paste0("binline_", p))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("binline_", p))[,1])), labels = get(paste0("binline_", p))[,1])} else axis(1)
     axis(2) # y axis default
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
     lines(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
@@ -436,7 +436,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          ylim = yrange,
          axes = FALSE)
     # x axis labels
-    if (class(get(paste0("gausline_", q))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("gausline_", q))[,1])), lab = get(paste0("gausline_", q))[,1])} else axis(1)
+    if (class(get(paste0("gausline_", q))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("gausline_", q))[,1])), labels = get(paste0("gausline_", q))[,1])} else axis(1)
     axis(2) # y axis default
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
     lines(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],

@@ -1,7 +1,7 @@
 ---
 title: "cran-comments"
 author: "Simon Dedman"
-date: "23 February 2021"
+date: "30 September 2021"
 output: html_document
 ---
 
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ***
 
 ## Test environments
-* local R installation, R 4.0.3, xubuntu 20.10
+* local R installation, R 4.1.1, xubuntu 21.04
 * win-builder (devel and release)
 
 ***
@@ -20,8 +20,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
-
-Minor tweak to fix match.arg issue made for release but used inproperly.
 
 ***
 

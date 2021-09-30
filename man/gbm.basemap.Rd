@@ -47,7 +47,7 @@ datasets basemaps over the entire square area created by basemap in mapplots.}
 }
 \value{
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
-SpatialPolygonsDataFramein in local environment & user-named files in
+SpatialPolygonsDataFrame in in local environment & user-named files in
 "CroppedMap" folder. Load later with maptools function:
 MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 }

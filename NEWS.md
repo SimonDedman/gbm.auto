@@ -5,6 +5,10 @@ date: "2021-01-14"
 output: html_document
 ---
 
+# v1.5.0
+* gbm.loop fixed for running gbm.auto & post-run-results-gatehring loops separately.
+* gbm.loop added all params for internal call to gbm.auto.
+
 # v1.4.1, 2021-02-23
 * match.arg removed for ZI and res in basemap and elsewhere. Function can't have mixed inputs i.e. character and logical/numeric (#​65)
 
