@@ -506,9 +506,9 @@ gbm.auto <- function(
 
               # Add Bin stats objects to StatsObjectsList
               StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics # send to new position after last item
-              names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l, "_self.statistics") # name it. new length now includes self.statistics
+              names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l, "__self.statistics") # name it. new length now includes self.statistics
               StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics
-              names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l, "_cv.statistics")
+              names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l, "__cv.statistics")
               } # close ZI if
 
               if (alerts) beep(2) # progress printer, right aligned
@@ -609,9 +609,9 @@ gbm.auto <- function(
 
             # Add Bin simp stats objects to StatsObjectsList
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- Bin_Best_Simp$self.statistics # send to new position after last item
-            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Bin_Best_Model, "_Simp_self.statistics") # name it. new length now includes self.statistics
+            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Bin_Best_Model, "_Simp__self.statistics") # name it. new length now includes self.statistics
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- Bin_Best_Simp$cv.statistics
-            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Bin_Best_Model, "_Simp_cv.statistics")
+            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Bin_Best_Model, "_Simp__cv.statistics")
 
           } # close if min bin best simp
 
@@ -645,9 +645,9 @@ gbm.auto <- function(
 
             # Add Gaus simp stats objects to StatsObjectsList
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$self.statistics # send to new position after last item
-            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Gaus_Best_Model, "_Simp_self.statistics") # name it. new length now includes self.statistics
+            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Gaus_Best_Model, "_Simp__self.statistics") # name it. new length now includes self.statistics
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$cv.statistics
-            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Gaus_Best_Model, "_Simp_cv.statistics")
+            names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0(Gaus_Best_Model, "_Simp__cv.statistics")
 
           } # close if min gaus best simp
           if (alerts) beep(2)
@@ -1063,11 +1063,7 @@ gbm.auto <- function(
       # format StatsObjectsList if required
       # "cv.statistics" # list chars, unlist to df
       # "self.statistics" # list chars, unlist to df, need to unlist self.statistics$calibration first
-      save(StatsObjectsList, file = paste0("./",names(samples[i]),"/StatsObjectsList")) #only save bin if ZI=TRUE
-      # StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$self.statistics # send to new position after last item
-      # names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Gaus_Best_Model, "_Simp_self.statistics") # name it. new length now includes self.statistics
-      # StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$cv.statistics
-      # names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Gaus_Best_Model, "_Simp_cv.statistics")
+      save(StatsObjectsList, file = paste0("./", names(samples[i]), "/StatsObjectsList"))
 
 
       #18. Machine learning evaluation metrics####
