@@ -1064,6 +1064,7 @@ gbm.auto <- function(
       # "cv.statistics" # list chars, unlist to df
       # "self.statistics" # list chars, unlist to df, need to unlist self.statistics$calibration first
       save(StatsObjectsList, file = paste0("./", names(samples[i]), "/StatsObjectsList"))
+      print(paste0("StatsObjectsList length = ", length(StatsObjectsList)))
 
 
       #18. Machine learning evaluation metrics####
