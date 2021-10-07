@@ -456,6 +456,8 @@ gbm.auto <- function(
       Report[1,2] <- names(samples[i]) # put resvar in col 2
       Report[1,3] <- ZI # ZI in col 3
 
+      StatsObjectsList <- list()
+
       Bin_Best_Score <- 0 # create blanks for best results to use in loops
       Bin_Best_Model <- 0
       Gaus_Best_Score <- 0
@@ -483,9 +485,10 @@ gbm.auto <- function(
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
               print(warnings())
               ####5. Select best bin model####
-              if (n == 1) {
+              if (n == 1) { # if this is the first loop, best score & model name is this one by default
                 Bin_Best_Score <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
                 Bin_Best_Model <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
+              # else if this models self.statistics$correlation > the best model, make this the new best model
               }  else if (get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]] > Bin_Best_Score) {
                 Bin_Best_Score <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
                 Bin_Best_Model <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
@@ -500,6 +503,12 @@ gbm.auto <- function(
                                                                                          paste0("CV Correlation SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
               # bin BRT name
               colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
+
+              # Add Bin stats objects to StatsObjectsList
+              StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics # send to new position after last item
+              names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l, "_self.statistics") # name it. new length now includes self.statistics
+              StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics
+              names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l, "cv.statistics")
               } # close ZI if
 
               if (alerts) beep(2) # progress printer, right aligned
@@ -554,6 +563,11 @@ gbm.auto <- function(
                                      paste0("CV Correlation SE: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
             # Gaus BRT name
             colnames(Report)[3 + n] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)
+            # Add Gaus stats objects to StatsObjectsList
+            StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$self.statistics # send to new position after last item
+            names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l, "_self.statistics") # name it. new length now includes self.statistics
+            StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics
+            names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l, "cv.statistics")
 
             n <- n + 1 # Add to print/loop counter for every bin or gaus BRT loop
             m <- m + 1 # Add to loop counter for Gaus best model selection
@@ -592,6 +606,13 @@ gbm.auto <- function(
                             bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction,
                             ...))
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin_simp.jpeg"), device = jpeg, width = 600)
+
+            # Add Bin simp stats objects to StatsObjectsList
+            StatsObjectsList[[length(StatsObjectsList) + 1]] <- Bin_Best_Simp$self.statistics # send to new position after last item
+            names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Bin_Best_Model, "_Simp_self.statistics") # name it. new length now includes self.statistics
+            StatsObjectsList[[length(StatsObjectsList) + 1]] <- Bin_Best_Simp$cv.statistics
+            names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Bin_Best_Model, "_Simp_cv.statistics")
+
           } # close if min bin best simp
 
           if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -621,6 +642,13 @@ gbm.auto <- function(
                             bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
                             ...))
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus_simp.jpeg"), device = jpeg, width = 600)
+
+            # Add Gaus simp stats objects to StatsObjectsList
+            StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$self.statistics # send to new position after last item
+            names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Gaus_Best_Model, "_Simp_self.statistics") # name it. new length now includes self.statistics
+            StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$cv.statistics
+            names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Gaus_Best_Model, "_Simp_cv.statistics")
+
           } # close if min gaus best simp
           if (alerts) beep(2)
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Simplified Gaus model    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -893,14 +921,14 @@ gbm.auto <- function(
                                               paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                               paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
                                               paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
-                                              paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+                                              paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
         } else {
           Report[1:6,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                              paste0("Training Data Correlation: ", Bin_Best_Score),
                                              paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                              paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
                                              paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
-                                             paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+                                             paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
         } # close if else gaus bin report
 
         if (simp) { # bin & gaus simp stats (or no simp notes)
@@ -918,7 +946,7 @@ gbm.auto <- function(
                                                   paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
                                                   paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
                                                   paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
-                                                  paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+                                                  paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
             } else { # if min
               Report[1,(reportcolno - 10)] <- paste0("No simplification benefit")
             } # close if min else
@@ -933,7 +961,7 @@ gbm.auto <- function(
                                                  paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
                                                  paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
                                                  paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
-                                                 paste0("Deviance% explain relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+                                                 paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
             } else { # if min bin best simp
               Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
             } # close if min bin best simp else
@@ -1002,7 +1030,7 @@ gbm.auto <- function(
                                                paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
                                                paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
                                                paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
-                                               paste0("Deviance% explain relative to null: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null) * 100, 2)))
+                                               paste0("Deviance% explained relative to null: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null) * 100, 2)))
           } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
             Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
           } # close if else simp benefit check
@@ -1029,6 +1057,18 @@ gbm.auto <- function(
       write.csv(Report, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/Report.csv"))
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+
+
+      #fromhere####
+      # format StatsObjectsList if required
+      # "cv.statistics" # list chars, unlist to df
+      # "self.statistics" # list chars, unlist to df, need to unlist self.statistics$calibration first
+      save(StatsObjectsList, file = paste0("./",names(samples[i]),"/StatsObjectsList")) #only save bin if ZI=TRUE
+      # StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$self.statistics # send to new position after last item
+      # names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Gaus_Best_Model, "_Simp_self.statistics") # name it. new length now includes self.statistics
+      # StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$cv.statistics
+      # names(StatsObjectsList[[length(StatsObjectsList)]]) <- paste0(Gaus_Best_Model, "_Simp_cv.statistics")
+
 
       #18. Machine learning evaluation metrics####
       if (MLEvaluate) { # if user wants ML evaluation
