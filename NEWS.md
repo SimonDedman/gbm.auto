@@ -5,6 +5,9 @@ date: "2021-01-14"
 output: html_document
 ---
 
+# v1.5.1
+* More reporting info
+
 # v1.5.0
 * gbm.loop fixed for running gbm.auto & post-run-results-gatehring loops separately.
 * gbm.loop added all params for internal call to gbm.auto.
