@@ -194,6 +194,7 @@
 #' @importFrom graphics axis barplot image legend lines mtext par text
 #' @importFrom stats sd
 #' @importFrom utils read.csv write.csv
+#' @importFrom stringi stri_split_fixed
 #'
 gbm.auto <- function(
   grids = NULL,         # explanatory data to predict to. Import with (e.g.)
@@ -438,12 +439,12 @@ gbm.auto <- function(
       } else {
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
-                                                                                                                                              "Bin_BRT_simp predictors dropped",
-                                                                                                                                              "Bin_BRT_simp predictors kept",
-                                                                                                                                              "Simplified Binary BRT stats",
-                                                                                                                                              "Best Binary BRT variables",
-                                                                                                                                              "Relative Influence (Bin)",
-                                                                                                                                              "Biggest Interactions (Bin)")}
+                                                                                                                      "Bin_BRT_simp predictors dropped",
+                                                                                                                      "Bin_BRT_simp predictors kept",
+                                                                                                                      "Simplified Binary BRT stats",
+                                                                                                                      "Best Binary BRT variables",
+                                                                                                                      "Relative Influence (Bin)",
+                                                                                                                      "Biggest Interactions (Bin)")}
         colnames(Report)[(reportcolno - 6):reportcolno] <- c("Best Gaussian BRT",
                                                              "Gaus_BRT_simp predictors dropped",
                                                              "Gaus_BRT_simp predictors kept",
@@ -488,7 +489,7 @@ gbm.auto <- function(
               if (n == 1) { # if this is the first loop, best score & model name is this one by default
                 Bin_Best_Score <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
                 Bin_Best_Model <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
-              # else if this models self.statistics$correlation > the best model, make this the new best model
+                # else if this models self.statistics$correlation > the best model, make this the new best model
               }  else if (get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]] > Bin_Best_Score) {
                 Bin_Best_Score <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
                 Bin_Best_Model <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
@@ -1058,16 +1059,22 @@ gbm.auto <- function(
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
+      # 18. Finalise & Write Self & CV Stats csv ####
+      StatsObjectsDf <- data.frame(StatsNames = names(unlist(StatsObjectsList)),
+                                   Value = unlist(StatsObjectsList),
+                                   row.names = NULL)
+      StatsObjectsNames <- as.data.frame(stri_split_fixed(str = StatsObjectsDf$StatsNames,
+                                                          pattern = "__",
+                                                          n = 2,
+                                                          simplify = TRUE))
+      colnames(StatsObjectsNames) <- c("Model", "Test_Statistic")
+      Self_CV_Statistics <- data.frame(StatsObjectsNames, Value = StatsObjectsDf[,"Value"])
+      write.csv(x = Self_CV_Statistics, row.names = FALSE, na = "",
+                file = paste0("./", names(samples[i]), "/Self_CV_Statistics.csv"))
+      rm(list = c("StatsObjectsList", "StatsObjectsDf", "StatsObjectsNames", "Self_CV_Statistics"))
 
-      #fromhere####
-      # format StatsObjectsList if required
-      # "cv.statistics" # list chars, unlist to df
-      # "self.statistics" # list chars, unlist to df, need to unlist self.statistics$calibration first
-      save(StatsObjectsList, file = paste0("./", names(samples[i]), "/StatsObjectsList"))
-      print(paste0("StatsObjectsList length = ", length(StatsObjectsList)))
 
-
-      #18. Machine learning evaluation metrics####
+      #19. Machine learning evaluation metrics####
       if (MLEvaluate) { # if user wants ML evaluation
         # if (any(fam1 == "bernoulli", fam2 == "bernoulli")) {
         #   whichbin <- which(c(fam1 == "bernoulli", fam2 == "bernoulli"))
@@ -1448,7 +1455,7 @@ gbm.auto <- function(
         dir.create(names(samples[i])) # create resvar-named directory for outputs
       } # close if isnull loadgbm
 
-      ####19. Binomial predictions####
+      ####20. Binomial predictions####
       if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         grids$Bin_Preds <- predict.gbm(object = get(Bin_Best_Model),
                                        newdata = grids,
@@ -1458,7 +1465,7 @@ gbm.auto <- function(
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Binomial predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       } # close if ZI
 
-      ####20. Gaussian predictions####
+      ####21. Gaussian predictions####
       if (gaus) {
         Gaus_Preds <- predict.gbm(object = get(Gaus_Best_Model),
                                   newdata = grids,
@@ -1470,11 +1477,11 @@ gbm.auto <- function(
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
           grids$Gaus_Preds <- Gaus_Preds
 
-          ####21. Backtransform logged Gaus to unlogged####
+          ####22. Backtransform logged Gaus to unlogged####
           grids$Gaus_Preds_Unlog <- expm1(Gaus_Preds + 1/2 * sd(get(Gaus_Best_Model)$residuals, na.rm = FALSE) ^ 2)
           # exp for log, expm1 for log1p, L395
 
-          ####22. BIN*positive abundance = final abundance####
+          ####23. BIN*positive abundance = final abundance####
           grids$PredAbund <- grids$Gaus_Preds_Unlog * grids$Bin_Preds
         } else { # close gaus yes zi yes run gaus yes zi no
           grids$PredAbund <- Gaus_Preds #if ZI=TRUE, unlog gaus & multiply by bin. Else just use gaus preds.
@@ -1488,7 +1495,7 @@ gbm.auto <- function(
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Final abundance calculated  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
-      ####23. Final saves####
+      ####24. Final saves####
       # CSV of Predicted values at each site inc predictor variables' values.
       write.csv(grids, row.names = FALSE, file = paste0("./", names(samples[i]), "/Abundance_Preds_All.csv"))
       # CSV of Predicted values at each site without predictor variables' values.
@@ -1499,7 +1506,7 @@ gbm.auto <- function(
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Output CSVs written     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
-      ####24. Unrepresentativeness surface builder####
+      ####25. Unrepresentativeness surface builder####
       # builds doesn't plot surface. If built, plotted by map maker.
       if (RSB) {
         rsbdf_bin <- gbm.rsb(samples, grids, expvarnames, gridslat, gridslon)
@@ -1514,7 +1521,7 @@ gbm.auto <- function(
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX       RSB CSV written       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
       } # close if RSB
 
-      ####25. Map maker####
+      ####26. Map maker####
       if (map) {   # generate output image & set parameters
         png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
             width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)

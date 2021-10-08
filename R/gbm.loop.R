@@ -176,7 +176,11 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   pngtype <- match.arg(pngtype)
 
   if (runautos) { # run gbm.autos unless turned off
-    for (i in 1:loops) { # loop through all gbm.autos
+    # test for presence of report.csvs, don't run those folders
+    runloops <- data.frame(loop = 1:loops, run = as.logical(rep(NA, loops))) # create recipient df
+    for (i in 1:loops) runloops[i, "run"] <- file.exists(paste0("./", i, "/Report.csv")) # check for Report.csvs in subfolders
+    # only want to keep the false ones. update gbm.loop for inputs
+    for (i in runloops[which(runloops$run == FALSE), "loop"]) { # loop through all gbm.autos
       dir.create(paste0("./", i)) # create i'th folder
       setwd(paste0("./", i)) # move to it
       gbm.auto(grids = grids, # run i'th gbm.auto
