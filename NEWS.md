@@ -5,6 +5,9 @@ date: "2021-10-07"
 output: html_document
 ---
 
+# v1.5.2
+* gbm.basemap added sf::sf_use_s2(FALSE)
+
 # v1.5.1
 * More reporting info - Self_CV_Statistics.csv created with all outputs from all models for those 2 gbm.step objects
 * gbm.loop automatially checks for the presence of Report.csv's in numbered folders and doesn't run for that folder if so

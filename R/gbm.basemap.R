@@ -37,7 +37,7 @@
 #' @importFrom raster crop
 #' @importFrom graphics lines par
 #' @importFrom utils download.file unzip
-#' @importFrom sf st_crop st_read st_write
+#' @importFrom sf st_crop st_read st_write sf_use_s2
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' \donttest{
@@ -102,6 +102,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   oldwd <- getwd() # record original directory
   on.exit(setwd(oldwd), add = TRUE) # defensive block, thanks to Gregor Sayer
   setwd(savedir)
+  sf::sf_use_s2(FALSE) # 2021 addition of s2 code to sf often causes: Error in s2_geography_from_wkb(x, oriented = oriented, check = check):
+  # Evaluation error: Found 1 feature with invalid spherical geometry. Loop 0 is not valid: Edge n has duplicate vertex with edge n2.
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
   if (is.null(bounds)) {
     #check none of grids & gridslat & gridslon is null, if any are print message
