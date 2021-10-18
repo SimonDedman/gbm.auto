@@ -33,5 +33,6 @@ Imports:
     raster (>= 2.5-8),
     sf (>= 0.9-7),
     shapefiles (>= 0.7),
-    stats (>= 3.3.1)
+    stats (>= 3.3.1),
+    stringi(>= 1.7.5)
 RoxygenNote: 7.1.2
