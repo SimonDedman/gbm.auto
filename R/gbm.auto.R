@@ -749,23 +749,32 @@ gbm.auto <- function(
 
           #If factor variable
           if (is.factor(plotgrid[,1])) {
-            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))}
+            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))
+          } # close if is factor
 
-          # replace Y values in place with average-centred values
-          plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
-
-          #Put Y values on a log scale
-          plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
-
-          #Center the response to have zero mean over the data distribution
-          plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
+          # This section centres the values around 0,
+          # Inverts their position relative to 0 (top becomes bottom),
+          # Exponentiates them (midrange values push towards extremes)
+          # Then rescales from 0:1 to +/- values by subtracting the mean from each value
+          # 2021-10-18 per https://github.com/SimonDedman/gbm.auto/issues/45
+          # Why I built this code? Copied from https://stats.stackexchange.com/a/144871/43360
+          # I don't think I need it nor is it helpful. Comment out.
+          # # replace Y values in place with average-centred values
+          # plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
+          # #Put Y values on a log scale
+          # plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
+          # #Center the response to have zero mean over the data distribution
+          # plotgrid[,2] <- scale(plotgrid[,2], center = TRUE, scale = FALSE)
 
           # write out csv
           write.csv(plotgrid, row.names = FALSE, na = "",
                     file = paste0("./", names(samples[i]), "/Bin_Best_line_",
                                   as.character(get(Bin_Best_Model)$contributions$var[o]),
-                                  ".csv"))} #close linesfiles
-          dev.off() }} # close ZI option
+                                  ".csv"))
+          } #close linesfiles
+          dev.off()
+        } # close for o
+      } # close ZI option
 
       if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
         png(filename = paste0("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p]),".png"),
@@ -789,9 +798,9 @@ gbm.auto <- function(
         plotgrid <- plot.gbm(get(Gaus_Best_Model), u, return.grid = TRUE)
         if (is.factor(plotgrid[,1])) {
           plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Gaus_Best_Model)$gbm.call$dataframe[,get(Gaus_Best_Model)$gbm.call$gbm.x[u]]))}
-        plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
-        plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
-        plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
+        # plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
+        # plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
+        # plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
         write.csv(plotgrid, row.names = FALSE, na = "",
                   file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
                                 as.character(get(Gaus_Best_Model)$contributions$var[p]),
