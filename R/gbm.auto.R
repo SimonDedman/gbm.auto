@@ -926,19 +926,35 @@ gbm.auto <- function(
       if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # only do bin bits if ZI; move 7 cols left if no gaus run
         # L812, 873, 879: ZI yes, gaus ifelse sections, should combine####
         if (gaus) {
-          Report[1:6,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
+          Report[1:13,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
+                                               paste0("trees: ", get(Bin_Best_Model)$n.trees),
+                                               paste0("Training Data Correlation: ", Bin_Best_Score),
+                                               paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
+                                               paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
+                                               paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
+                                               paste0("Overfitting (Training data AUC - CV AUC): ", get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean),
+                                               paste0("CV Mean Deviance: ", get(Bin_Best_Model)$cv.statistics$deviance.mean),
+                                               paste0("CV Deviance SE: ", get(Bin_Best_Model)$cv.statistics$deviance.se),
+                                               paste0("CV Mean Correlation: ", get(Bin_Best_Model)$cv.statistics$correlation.mean),
+                                               paste0("CV Correlation SE: ", get(Bin_Best_Model)$cv.statistics$correlation.se),
+                                               paste0("Deviance% explained relative to null, training: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)),
+                                               paste0("Deviance% explained relative to null, CV: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$cv.statistics$deviance.mean) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+          # Add extra report rows here?####
+        } else {
+          Report[1:13,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
+                                              paste0("trees: ", get(Bin_Best_Model)$n.trees),
                                               paste0("Training Data Correlation: ", Bin_Best_Score),
                                               paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
                                               paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
                                               paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
-                                              paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
-        } else {
-          Report[1:6,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
-                                             paste0("Training Data Correlation: ", Bin_Best_Score),
-                                             paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
-                                             paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                             paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
-                                             paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+                                              paste0("Overfitting (Training data AUC - CV AUC): ", get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean),
+                                              paste0("CV Mean Deviance: ", get(Bin_Best_Model)$cv.statistics$deviance.mean),
+                                              paste0("CV Deviance SE: ", get(Bin_Best_Model)$cv.statistics$deviance.se),
+                                              paste0("CV Mean Correlation: ", get(Bin_Best_Model)$cv.statistics$correlation.mean),
+                                              paste0("CV Correlation SE: ", get(Bin_Best_Model)$cv.statistics$correlation.se),
+                                              paste0("Deviance% explained relative to null, training: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)),
+                                              paste0("Deviance% explained relative to null, CV: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$cv.statistics$deviance.mean) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+          # Add extra report rows here?####
         } # close if else gaus bin report
 
         if (simp) { # bin & gaus simp stats (or no simp notes)
@@ -950,13 +966,19 @@ gbm.auto <- function(
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             # listing simp predictors dropped.
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-              Report[1:7,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
-                                                  paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
-                                                  paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
-                                                  paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
-                                                  paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
-                                                  paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
-                                                  paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+              Report[1:12,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
+                                                   paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
+                                                   paste0("Training data AUC score: ", Bin_Best_Simp$self.statistics$discrimination),
+                                                   paste0("CV AUC score: ", Bin_Best_Simp$cv.statistics$discrimination.mean),
+                                                   paste0("CV AUC se: ", Bin_Best_Simp$cv.statistics$discrimination.se),
+                                                   paste0("Overfitting (Training data AUC - CV AUC): ", Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean),
+                                                   paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
+                                                   paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
+                                                   paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
+                                                   paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
+                                                   paste0("Deviance% explained relative to null, training: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$self.statistics$mean.resid) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)),
+                                                   paste0("Deviance% explained relative to null, CV: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$cv.statistics$deviance.mean) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)))
+              # Add extra report rows here?####
             } else { # if min
               Report[1,(reportcolno - 10)] <- paste0("No simplification benefit")
             } # close if min else
@@ -965,13 +987,19 @@ gbm.auto <- function(
             Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 4)] <-
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-              Report[1:7,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
-                                                 paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
-                                                 paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
-                                                 paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
-                                                 paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
-                                                 paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
-                                                 paste0("Deviance% explained relative to null: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
+              Report[1:12,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
+                                                  paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
+                                                  paste0("Training data AUC score: ", Bin_Best_Simp$self.statistics$discrimination),
+                                                  paste0("CV AUC score: ", Bin_Best_Simp$cv.statistics$discrimination.mean),
+                                                  paste0("CV AUC se: ", Bin_Best_Simp$cv.statistics$discrimination.se),
+                                                  paste0("Overfitting (Training data AUC - CV AUC): ", Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean),
+                                                  paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
+                                                  paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
+                                                  paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
+                                                  paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
+                                                  paste0("Deviance% explained relative to null, training: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$self.statistics$mean.resid) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)),
+                                                  paste0("Deviance% explained relative to null, CV: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$cv.statistics$deviance.mean) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)))
+              # Add extra report rows here?####
             } else { # if min bin best simp
               Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
             } # close if min bin best simp else
@@ -1028,19 +1056,37 @@ gbm.auto <- function(
       } # close ZI way further up start of report section (L810)
 
       if (gaus) {
-        Report[1:2,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name), paste0("Training Data Correlation: ", Gaus_Best_Score))
+        Report[1:12,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
+                                            paste0("trees: ", get(Gaus_Best_Model)$n.trees),  # new, might not work
+                                            paste0("Training Data Correlation: ", Gaus_Best_Score),
+                                            paste0("Training data AUC score: ", get(Gaus_Best_Model)$self.statistics$discrimination),  # new, might not work
+                                            paste0("CV AUC score: ", get(Gaus_Best_Model)$cv.statistics$discrimination.mean), # new, might not work
+                                            paste0("CV AUC se: ", get(Gaus_Best_Model)$cv.statistics$discrimination.se), # new, might not work
+                                            paste0("Overfitting (Training data AUC - CV AUC): ", get(Gaus_Best_Model)$self.statistics$discrimination - get(Gaus_Best_Model)$cv.statistics$discrimination.mean), # new, might not work
+                                            paste0("CV Mean Deviance: ", get(Gaus_Best_Model)$cv.statistics$deviance.mean), # new, might not work
+                                            paste0("CV Deviance SE: ", get(Gaus_Best_Model)$cv.statistics$deviance.se), # new, might not work
+                                            paste0("CV Mean Correlation: ", get(Gaus_Best_Model)$cv.statistics$correlation.mean), # new, might not work
+                                            paste0("CV Correlation SE: ", get(Gaus_Best_Model)$cv.statistics$correlation.se), # new, might not work
+                                            paste0("Deviance% explained relative to null, training: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2)), # new, might not work
+                                            paste0("Deviance% explained relative to null, CV: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$cv.statistics$deviance.mean) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2))) # new, might not work
+
+
         if (simp) {
           Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
           Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
             as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
-            Report[1:7,(reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
-                                               paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
-                                               paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
-                                               paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
-                                               paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
-                                               paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
-                                               paste0("Deviance% explained relative to null: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null) * 100, 2)))
+            Report[1:10,(reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
+                                                paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
+                                                paste0("Training data AUC score: ", Gaus_Best_Simp$self.statistics$discrimination), # new, might not work
+                                                paste0("CV AUC score: ", Gaus_Best_Simp$cv.statistics$discrimination.mean), # new, might not work
+                                                paste0("CV AUC se: ", Gaus_Best_Simp$cv.statistics$discrimination.se), # new, might not work
+                                                paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
+                                                paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
+                                                paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
+                                                paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
+                                                paste0("Deviance% explained relative to null, training: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$self.statistics$mean.resid) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)), # new, might not work
+                                                paste0("Deviance% explained relative to null, CV: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$cv.statistics$deviance.mean) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)))
           } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
             Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
           } # close if else simp benefit check
@@ -1092,7 +1138,7 @@ gbm.auto <- function(
 
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # only do if bin exists, previously was: exists("Bin_Best_Model")
           preds <- predict.gbm(get(Bin_Best_Model),
-                               samples,
+                               samples, # predict back to samples, not out of bag, for performance evaluation
                                n.trees = get(Bin_Best_Model)$gbm.call$best.trees,
                                type = "response")
           #If type="response" then gbm converts back to the same scale as the outcome.
@@ -1100,10 +1146,14 @@ gbm.auto <- function(
           # bernoulli and expected counts for poisson. For the other distributions
           # "response" and "link" return the same. gbm:::predict.gbm
 
-          # dev reported later but not used otherwise
-          dev <- calc.deviance(obs = samples[, get(Bin_Best_Model)$gbm.call$gbm.y],
-                               pred = preds,
-                               family = "bernoulli") # change fam if using
+          # calc.deviance = remaining deviance
+          pct.dev.remain.samples <- calc.deviance(obs = samples[, get(Bin_Best_Model)$gbm.call$gbm.y],
+                                                  pred = preds,
+                                                  family = "bernoulli") # change fam if using
+          pct.dev.remain.samples <- (1 - pct.dev.remain.samples) * 100 # convert to % deviance explained
+          AUC.samples <- roc(obs = samples[, get(Bin_Best_Model)$gbm.call$gbm.y],
+                             pred = preds)
+
           # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
           samples <- cbind(samples, preds)
           pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
@@ -1113,8 +1163,8 @@ gbm.auto <- function(
 
           # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
           # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
-          MLEvalLength <- 31
-          # Improve descriptions####
+          MLEvalLength <- 32
+          # Improve ML STATS descriptions####
           MLEval <- data.frame(Statistic = rep(NA, MLEvalLength),
                                Description = rep(NA, MLEvalLength),
                                Value = rep(NA, MLEvalLength))
@@ -1246,10 +1296,13 @@ gbm.auto <- function(
           MLEval[30,] <- c("kappa",
                            "Cohen's kappa",
                            e@kappa[which.max(e@TPR + e@TNR)])
-          # dev from calc.deviance from dismo
-          MLEval[31,] <- c("dev",
-                           "deviance from 2 vecs, obs & pred vals",
-                           dev)
+          # (1 - pct.dev.remain.samples) * 100; pct.dev.remain.samples from calc.deviance from dismo
+          MLEval[31,] <- c("pct.dev.remain.samples",
+                           "% deviance explained, samples data only, calc.deviance frunction in gbm.auto, Leathwick & Elith",
+                           pct.dev.remain.samples)
+          MLEval[32,] <- c("AUC.samples",
+                           "AUC for samples data, roc function in gbm.auto, by J.Elith",
+                           AUC.samples)
 
           # MLEval$Value <- round(MLEval$Value, digits = 5)
           write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsBin.csv"))
@@ -1264,7 +1317,7 @@ gbm.auto <- function(
 
 
         # # can do calc.deviance for gaus also, ditto poisson
-        # #ToFix####
+        # #ToFix GAUS ML STATS####
         # #Gaus metrics won't work as is
         # #Also code this better to reduce duplication & allow for bin & gaus runs
         # if (gaus) { #
@@ -1285,7 +1338,7 @@ gbm.auto <- function(
         #   samples <- cbind(samples, preds)
         #   pres <- samples[samples[, brvcol] == 1, "preds"] # check brvcol indexed properly, ditto last col is preds
         #   abs <- samples[samples[, brvcol] == 0, "preds"]
-        #   # FAILS HERE ####
+        #   # GAUS ML STATS FAILS HERE ####
         #   # THERE MAY NOT BE ANY ABSENCES IN A GAUSSIAN DISTRIBUTION
         #   # means abs = numeric(0) & evaluate() fails.
         #   e <- evaluate(p = pres,
