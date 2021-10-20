@@ -1052,13 +1052,9 @@ gbm.auto <- function(
       } # close ZI way further up start of report section (L810)
 
       if (gaus) {
-        Report[1:13,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
+        Report[1:9 ,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
                                             paste0("trees: ", get(Gaus_Best_Model)$n.trees),  # new, might not work
                                             paste0("Training Data Correlation: ", round(Gaus_Best_Score, 3)),
-                                            paste0("Training data AUC score: ", round(get(Gaus_Best_Model)$self.statistics$discrimination, 3)),  # new, might not work
-                                            paste0("CV AUC score: ", round(get(Gaus_Best_Model)$cv.statistics$discrimination.mean, 3)), # new, might not work
-                                            paste0("CV AUC se: ", round(get(Gaus_Best_Model)$cv.statistics$discrimination.se, 3)), # new, might not work
-                                            paste0("Overfitting (Training data AUC - CV AUC): ", round(get(Gaus_Best_Model)$self.statistics$discrimination - get(Gaus_Best_Model)$cv.statistics$discrimination.mean, 3)), # new, might not work
                                             paste0("CV Mean Deviance: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.mean, 3)), # new, might not work
                                             paste0("CV Deviance SE: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.se, 3)), # new, might not work
                                             paste0("CV Mean Correlation: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.mean, 3)), # new, might not work
@@ -1072,11 +1068,8 @@ gbm.auto <- function(
           Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
             as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
-            Report[1:11,(reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
+            Report[1:8, (reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
                                                 paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
-                                                paste0("Training data AUC score: ", Gaus_Best_Simp$self.statistics$discrimination), # new, might not work
-                                                paste0("CV AUC score: ", Gaus_Best_Simp$cv.statistics$discrimination.mean), # new, might not work
-                                                paste0("CV AUC se: ", Gaus_Best_Simp$cv.statistics$discrimination.se), # new, might not work
                                                 paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
                                                 paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
                                                 paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
@@ -1112,7 +1105,7 @@ gbm.auto <- function(
 
       # 18. Finalise & Write Self & CV Stats csv ####
       StatsObjectsDf <- data.frame(StatsNames = names(unlist(StatsObjectsList)),
-                                   Value = unlist(StatsObjectsList),
+                                   Value = round(unlist(StatsObjectsList), 3),
                                    row.names = NULL)
       StatsObjectsNames <- as.data.frame(stri_split_fixed(str = StatsObjectsDf$StatsNames,
                                                           pattern = "__",
