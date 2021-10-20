@@ -1017,9 +1017,9 @@ gbm.auto <- function(
         } # close ifelse best bin variables rel inf names ordered
 
         if (gaus) { # if ZI & gaus again
-          Report[1:(length(Bin_Bars[,2])),(reportcolno - 8)] <- as.character(Bin_Bars$rel.inf)
+          Report[1:(length(Bin_Bars[,2])),(reportcolno - 8)] <- as.character(round(Bin_Bars$rel.inf), 2)
         } else { # zi & not gaus
-          Report[1:(length(Bin_Bars[,2])),(reportcolno - 1)] <- as.character(Bin_Bars$rel.inf)
+          Report[1:(length(Bin_Bars[,2])),(reportcolno - 1)] <- as.character(round(Bin_Bars$rel.inf), 2)
         } # close ifelse best bin variables rel inf scores
 
         if (varint) { # only do final variable interaction lines if varint=TRUE
@@ -1092,7 +1092,7 @@ gbm.auto <- function(
                                                              paste0("simp turned off"))
         } # close simp, still in gaus yes
         Report[1:(length(Gaus_Bars[,1])),(reportcolno - 2)] <- as.character(Gaus_Bars$var)
-        Report[1:(length(Gaus_Bars[,2])),(reportcolno - 1)] <- as.character(Gaus_Bars$rel.inf)
+        Report[1:(length(Gaus_Bars[,2])),(reportcolno - 1)] <- as.character(round(Gaus_Bars$rel.inf), 2)
         if (varint) { # gaus yes varint yes
           # 2020.12.17 instead of top 2 interactions, do all of them that are > 0 size (unless there are more than the report nrow)
           for (t in 1:min(length(which(find.int_Gaus$rank.list$int.size > 0)),
