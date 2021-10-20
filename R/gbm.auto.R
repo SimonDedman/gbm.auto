@@ -928,33 +928,31 @@ gbm.auto <- function(
         if (gaus) {
           Report[1:13,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                                paste0("trees: ", get(Bin_Best_Model)$n.trees),
-                                               paste0("Training Data Correlation: ", Bin_Best_Score),
-                                               paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
-                                               paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                               paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
-                                               paste0("Overfitting (Training data AUC - CV AUC): ", get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                               paste0("CV Mean Deviance: ", get(Bin_Best_Model)$cv.statistics$deviance.mean),
-                                               paste0("CV Deviance SE: ", get(Bin_Best_Model)$cv.statistics$deviance.se),
-                                               paste0("CV Mean Correlation: ", get(Bin_Best_Model)$cv.statistics$correlation.mean),
-                                               paste0("CV Correlation SE: ", get(Bin_Best_Model)$cv.statistics$correlation.se),
+                                               paste0("Training Data Correlation: ", round(Bin_Best_Score, 3)),
+                                               paste0("Training data AUC score: ", round(get(Bin_Best_Model)$self.statistics$discrimination, 3)),
+                                               paste0("CV AUC score: ", round(get(Bin_Best_Model)$cv.statistics$discrimination.mean, 3)),
+                                               paste0("CV AUC se: ", round(get(Bin_Best_Model)$cv.statistics$discrimination.se, 3)),
+                                               paste0("Overfitting (Training data AUC - CV AUC): ", round(get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean, 3)),
+                                               paste0("CV Mean Deviance: ", round(get(Bin_Best_Model)$cv.statistics$deviance.mean, 3)),
+                                               paste0("CV Deviance SE: ", round(get(Bin_Best_Model)$cv.statistics$deviance.se, 3)),
+                                               paste0("CV Mean Correlation: ", round(get(Bin_Best_Model)$cv.statistics$correlation.mean, 3)),
+                                               paste0("CV Correlation SE: ", round(get(Bin_Best_Model)$cv.statistics$correlation.se, 3)),
                                                paste0("Deviance% explained relative to null, training: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)),
                                                paste0("Deviance% explained relative to null, CV: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$cv.statistics$deviance.mean) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
-          # Add extra report rows here?####
         } else {
           Report[1:13,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                               paste0("trees: ", get(Bin_Best_Model)$n.trees),
-                                              paste0("Training Data Correlation: ", Bin_Best_Score),
-                                              paste0("Training data AUC score: ", get(Bin_Best_Model)$self.statistics$discrimination),
-                                              paste0("CV AUC score: ", get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                              paste0("CV AUC se: ", get(Bin_Best_Model)$cv.statistics$discrimination.se),
-                                              paste0("Overfitting (Training data AUC - CV AUC): ", get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean),
-                                              paste0("CV Mean Deviance: ", get(Bin_Best_Model)$cv.statistics$deviance.mean),
-                                              paste0("CV Deviance SE: ", get(Bin_Best_Model)$cv.statistics$deviance.se),
-                                              paste0("CV Mean Correlation: ", get(Bin_Best_Model)$cv.statistics$correlation.mean),
-                                              paste0("CV Correlation SE: ", get(Bin_Best_Model)$cv.statistics$correlation.se),
+                                              paste0("Training Data Correlation: ", round(Bin_Best_Score, 3)),
+                                              paste0("Training data AUC score: ", round(get(Bin_Best_Model)$self.statistics$discrimination, 3)),
+                                              paste0("CV AUC score: ", round(get(Bin_Best_Model)$cv.statistics$discrimination.mean, 3)),
+                                              paste0("CV AUC se: ", round(get(Bin_Best_Model)$cv.statistics$discrimination.se, 3)),
+                                              paste0("Overfitting (Training data AUC - CV AUC): ", round(get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean, 3)),
+                                              paste0("CV Mean Deviance: ", round(get(Bin_Best_Model)$cv.statistics$deviance.mean, 3)),
+                                              paste0("CV Deviance SE: ", round(get(Bin_Best_Model)$cv.statistics$deviance.se, 3)),
+                                              paste0("CV Mean Correlation: ", round(get(Bin_Best_Model)$cv.statistics$correlation.mean, 3)),
+                                              paste0("CV Correlation SE: ", round(get(Bin_Best_Model)$cv.statistics$correlation.se, 3)),
                                               paste0("Deviance% explained relative to null, training: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)),
                                               paste0("Deviance% explained relative to null, CV: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$cv.statistics$deviance.mean) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
-          # Add extra report rows here?####
         } # close if else gaus bin report
 
         if (simp) { # bin & gaus simp stats (or no simp notes)
@@ -967,18 +965,17 @@ gbm.auto <- function(
             # listing simp predictors dropped.
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
               Report[1:12,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
-                                                   paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
-                                                   paste0("Training data AUC score: ", Bin_Best_Simp$self.statistics$discrimination),
-                                                   paste0("CV AUC score: ", Bin_Best_Simp$cv.statistics$discrimination.mean),
-                                                   paste0("CV AUC se: ", Bin_Best_Simp$cv.statistics$discrimination.se),
-                                                   paste0("Overfitting (Training data AUC - CV AUC): ", Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean),
-                                                   paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
-                                                   paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
-                                                   paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
-                                                   paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
+                                                   paste0("Training Data Correlation: ", round(Bin_Best_Simp$self.statistics$correlation[[1]], 3)),
+                                                   paste0("Training data AUC score: ", round(Bin_Best_Simp$self.statistics$discrimination, 3)),
+                                                   paste0("CV AUC score: ", round(Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
+                                                   paste0("CV AUC se: ", round(Bin_Best_Simp$cv.statistics$discrimination.se, 3)),
+                                                   paste0("Overfitting (Training data AUC - CV AUC): ", round(Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
+                                                   paste0("CV Mean Deviance: ", round(Bin_Best_Simp$cv.statistics$deviance.mean, 3)),
+                                                   paste0("CV Deviance SE: ", round(Bin_Best_Simp$cv.statistics$deviance.se, 3)),
+                                                   paste0("CV Mean Correlation: ", round(Bin_Best_Simp$cv.statistics$correlation.mean, 3)),
+                                                   paste0("CV Correlation SE: ", round(Bin_Best_Simp$cv.statistics$correlation.se, 3)),
                                                    paste0("Deviance% explained relative to null, training: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$self.statistics$mean.resid) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)),
                                                    paste0("Deviance% explained relative to null, CV: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$cv.statistics$deviance.mean) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)))
-              # Add extra report rows here?####
             } else { # if min
               Report[1,(reportcolno - 10)] <- paste0("No simplification benefit")
             } # close if min else
@@ -988,18 +985,17 @@ gbm.auto <- function(
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
               Report[1:12,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
-                                                  paste0("Training Data Correlation: ", Bin_Best_Simp$self.statistics$correlation[[1]]),
-                                                  paste0("Training data AUC score: ", Bin_Best_Simp$self.statistics$discrimination),
-                                                  paste0("CV AUC score: ", Bin_Best_Simp$cv.statistics$discrimination.mean),
-                                                  paste0("CV AUC se: ", Bin_Best_Simp$cv.statistics$discrimination.se),
-                                                  paste0("Overfitting (Training data AUC - CV AUC): ", Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean),
-                                                  paste0("CV Mean Deviance: ", Bin_Best_Simp$cv.statistics$deviance.mean),
-                                                  paste0("CV Deviance SE: ", Bin_Best_Simp$cv.statistics$deviance.se),
-                                                  paste0("CV Mean Correlation: ", Bin_Best_Simp$cv.statistics$correlation.mean),
-                                                  paste0("CV Correlation SE: ", Bin_Best_Simp$cv.statistics$correlation.se),
+                                                  paste0("Training Data Correlation: ", round(Bin_Best_Simp$self.statistics$correlation[[1]], 3)),
+                                                  paste0("Training data AUC score: ", round(Bin_Best_Simp$self.statistics$discrimination, 3)),
+                                                  paste0("CV AUC score: ", round(Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
+                                                  paste0("CV AUC se: ", round(Bin_Best_Simp$cv.statistics$discrimination.se, 3)),
+                                                  paste0("Overfitting (Training data AUC - CV AUC): ", round(Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
+                                                  paste0("CV Mean Deviance: ", round(Bin_Best_Simp$cv.statistics$deviance.mean, 3)),
+                                                  paste0("CV Deviance SE: ", round(Bin_Best_Simp$cv.statistics$deviance.se, 3)),
+                                                  paste0("CV Mean Correlation: ", round(Bin_Best_Simp$cv.statistics$correlation.mean, 3)),
+                                                  paste0("CV Correlation SE: ", round(Bin_Best_Simp$cv.statistics$correlation.se, 3)),
                                                   paste0("Deviance% explained relative to null, training: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$self.statistics$mean.resid) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)),
                                                   paste0("Deviance% explained relative to null, CV: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$cv.statistics$deviance.mean) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)))
-              # Add extra report rows here?####
             } else { # if min bin best simp
               Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
             } # close if min bin best simp else
@@ -1058,15 +1054,15 @@ gbm.auto <- function(
       if (gaus) {
         Report[1:12,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
                                             paste0("trees: ", get(Gaus_Best_Model)$n.trees),  # new, might not work
-                                            paste0("Training Data Correlation: ", Gaus_Best_Score),
-                                            paste0("Training data AUC score: ", get(Gaus_Best_Model)$self.statistics$discrimination),  # new, might not work
-                                            paste0("CV AUC score: ", get(Gaus_Best_Model)$cv.statistics$discrimination.mean), # new, might not work
-                                            paste0("CV AUC se: ", get(Gaus_Best_Model)$cv.statistics$discrimination.se), # new, might not work
-                                            paste0("Overfitting (Training data AUC - CV AUC): ", get(Gaus_Best_Model)$self.statistics$discrimination - get(Gaus_Best_Model)$cv.statistics$discrimination.mean), # new, might not work
-                                            paste0("CV Mean Deviance: ", get(Gaus_Best_Model)$cv.statistics$deviance.mean), # new, might not work
-                                            paste0("CV Deviance SE: ", get(Gaus_Best_Model)$cv.statistics$deviance.se), # new, might not work
-                                            paste0("CV Mean Correlation: ", get(Gaus_Best_Model)$cv.statistics$correlation.mean), # new, might not work
-                                            paste0("CV Correlation SE: ", get(Gaus_Best_Model)$cv.statistics$correlation.se), # new, might not work
+                                            paste0("Training Data Correlation: ", round(Gaus_Best_Score, 3)),
+                                            paste0("Training data AUC score: ", round(get(Gaus_Best_Model)$self.statistics$discrimination, 3)),  # new, might not work
+                                            paste0("CV AUC score: ", round(get(Gaus_Best_Model)$cv.statistics$discrimination.mean, 3)), # new, might not work
+                                            paste0("CV AUC se: ", round(get(Gaus_Best_Model)$cv.statistics$discrimination.se, 3)), # new, might not work
+                                            paste0("Overfitting (Training data AUC - CV AUC): ", round(get(Gaus_Best_Model)$self.statistics$discrimination - get(Gaus_Best_Model)$cv.statistics$discrimination.mean, 3)), # new, might not work
+                                            paste0("CV Mean Deviance: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.mean, 3)), # new, might not work
+                                            paste0("CV Deviance SE: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.se, 3)), # new, might not work
+                                            paste0("CV Mean Correlation: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.mean, 3)), # new, might not work
+                                            paste0("CV Correlation SE: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.se, 3)), # new, might not work
                                             paste0("Deviance% explained relative to null, training: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2)), # new, might not work
                                             paste0("Deviance% explained relative to null, CV: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$cv.statistics$deviance.mean) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2))) # new, might not work
 
@@ -1176,30 +1172,30 @@ gbm.auto <- function(
                           e@na)
           MLEval[3,] <- c("AUC",
                           "Area under the receiver operator (ROC) curve",
-                          e@auc)
+                          round(e@auc, 3))
           if (length(e@pauc) == 0) e@pauc <- 0 # pauc may be missing, numeric(0), if so replace with 0
           MLEval[4,] <- c("pAUC",
                           "p-value for the AUC (for the Wilcoxon test W statistic)",
-                          e@pauc)
+                          round(e@pauc,3))
           MLEval[5,] <- c("Cor",
                           "Correlation coefficient",
-                          e@cor[[1]])
+                          round(e@cor[[1]],3))
           MLEval[6,] <- c("cor",
                           "p-value for correlation coefficient",
-                          e@pcor)
+                          round(e@pcor,3))
           # Steph Brodie's TSS which produces the same result as Allouche
           # -1 just makes the output range is 0:1 instead of 1:2 I think.
           # If so this means Sensitivity is e@TPR[which.max(e@TPR + e@TNR)], which doesn't include
           # (e@TPR + e@FNR) but it's a vector of 1s so is redundant. Same for Specificity
           MLEval[7,] <- c("TSS",
                           "True Skill Statistic",
-                          max(e@TPR + e@TNR - 1))
+                          round(max(e@TPR + e@TNR - 1),3))
           # sensitivity: TP/(TP+FN)
           MLEval[8,] <- c("Sensitivity",
                           "Sensitivity",
-                          e@TPR[which.max(e@TPR + e@TNR)])
+                          round(e@TPR[which.max(e@TPR + e@TNR)],3))
           # specificity: TN/(FP+TN)
-          Specificity <- e@TNR[which.max(e@TPR + e@TNR)]
+          Specificity <- round(e@TNR[which.max(e@TPR + e@TNR)],3)
           MLEval[9,] <- c("Specificity",
                           "Specificity",
                           Specificity)
@@ -1207,28 +1203,28 @@ gbm.auto <- function(
           # TP+TN is just TSS + 1, TP+TN+FP+FN #Sums to 2, redundant
           MLEval[10,] <- c("Accuracy",
                            "Accuracy",
-                           (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2)
+                           round((e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)]) / 2, 3))
           # Precision: TP/TP+FP. Ignores true negatives. “X% of the predictions are right”
           Precision <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FPR[which.max(e@TPR + e@TNR)])
           MLEval[11,] <- c("Precision",
                            "X% of the predictions are right",
-                           Precision)
+                           round(Precision,3))
           # Recall: TP/TP+FN: “Y% of actually existing things are captured”.
           Recall <- e@TPR[which.max(e@TPR + e@TNR)] / (e@TPR[which.max(e@TPR + e@TNR)] + e@FNR[which.max(e@TPR + e@TNR)])
           MLEval[12,] <- c("Recall",
                            "Y% of actually existing things are captured",
-                           Recall)
+                           round(Recall,3))
           # https://www.corvil.com/kb/what-is-a-false-positive-rate
           # Allouche et al 2006:
           # overall accuracy: (TP+TN)/n
           # this seems like a weird metric since the numerator is 0:2 or 1:2 and the divisor could be tiny or huge
           MLEval[13,] <- c("OverallAccuracy",
                            "Overall Accuracy",
-                           (e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples))
+                           round((e@TPR[which.max(e@TPR + e@TNR)] + e@TNR[which.max(e@TPR + e@TNR)])/nrow(samples),3))
           # Balanced Accuracy, (Recall + Specificity) / 2
           MLEval[14,] <- c("BalancedAccuracy",
                            "Balanced Accuracy",
-                           (Recall + Specificity) / 2)
+                           round((Recall + Specificity) / 2,3))
           # Number of samples. Useful to include in the list
           MLEval[15,] <- c("nSamples",
                            "Number of samples",
@@ -1238,71 +1234,71 @@ gbm.auto <- function(
           # F1 score: P & R are equally rated. This is the most common one. F1 score importance depends on the project.
           MLEval[16,] <- c("F1score",
                            "P & R equally rated, score importance depends on project",
-                           2 * ((Precision * Recall) / (Precision + Recall)))
+                           round(2 * ((Precision * Recall) / (Precision + Recall)),3))
           # F2 score: weighted average of Precision & Recall
           MLEval[17,] <- c("F2score",
                            "weighted average of P & R",
-                           5 * ((Precision * Recall) / (4 * Precision + Recall)))
+                           round(5 * ((Precision * Recall) / (4 * Precision + Recall)),3))
           # Threshold which produces the best combo of TPR & TNR
           # t: vector of thresholds used to compute confusion matrices
           MLEval[18,] <- c("Threshold",
                            "Threshold which produced best combo of TPR & TNR",
-                           e@t[which.max(e@TPR + e@TNR)])
+                           round(e@t[which.max(e@TPR + e@TNR)],3))
           # e@prevalence: Prevalence
           MLEval[19,] <- c("Prevalence",
                            "Prevalence",
-                           e@prevalence[which.max(e@TPR + e@TNR)])
+                           round(e@prevalence[which.max(e@TPR + e@TNR)],3))
           # e@ODP: Overall diagnostic power
           MLEval[20,] <- c("ODP",
                            "Overall diagnostic power",
-                           e@ODP[which.max(e@TPR + e@TNR)])
+                           round(e@ODP[which.max(e@TPR + e@TNR)],3))
           # e@CCR: Correct classification rate
           MLEval[21,] <- c("CCR",
                            "Correct classification rate",
-                           e@CCR[which.max(e@TPR + e@TNR)])
+                           round(e@CCR[which.max(e@TPR + e@TNR)],3))
           # e@TPR: True positive rate
           MLEval[22,] <- c("TPR",
                            "True positive rate",
-                           e@TPR[which.max(e@TPR + e@TNR)])
+                           round(e@TPR[which.max(e@TPR + e@TNR)],3))
           # e@TNR: True negative rate
           MLEval[23,] <- c("TNR",
                            "True negative rate",
-                           e@TNR[which.max(e@TPR + e@TNR)])
+                           round(e@TNR[which.max(e@TPR + e@TNR)],3))
           # e@FPR: False positive rate
           MLEval[24,] <- c("FPR",
                            "False positive rate",
-                           e@FPR[which.max(e@TPR + e@TNR)])
+                           round(e@FPR[which.max(e@TPR + e@TNR)],3))
           # e@FNR: False negative rate
           MLEval[25,] <- c("FNR",
                            "False negative rate",
-                           e@FNR[which.max(e@TPR + e@TNR)])
+                           round(e@FNR[which.max(e@TPR + e@TNR)],3))
           # e@PPP: Positive predictive power
           MLEval[26,] <- c("PPP",
                            "Positive predictive power",
-                           e@PPP[which.max(e@TPR + e@TNR)])
+                           round(e@PPP[which.max(e@TPR + e@TNR)],3))
           # e@NPP: Negative predictive power
           MLEval[27,] <- c("NPP",
                            "Negative predictive power",
-                           e@NPP[which.max(e@TPR + e@TNR)])
+                           round(e@NPP[which.max(e@TPR + e@TNR)],3))
           # e@MCR: Misclassification rate
           MLEval[28,] <- c("MCR",
                            "Misclassification rate",
-                           e@MCR[which.max(e@TPR + e@TNR)])
+                           round(e@MCR[which.max(e@TPR + e@TNR)],3))
           # e@OR: Odds-ratio
           MLEval[29,] <- c("OR",
                            "Odds-ratio",
-                           e@OR[which.max(e@TPR + e@TNR)])
+                           round(e@OR[which.max(e@TPR + e@TNR)],3))
           # e@kappa: Cohen's kappa
           MLEval[30,] <- c("kappa",
                            "Cohen's kappa",
-                           e@kappa[which.max(e@TPR + e@TNR)])
+                           round(e@kappa[which.max(e@TPR + e@TNR)],3))
           # (1 - pct.dev.remain.samples) * 100; pct.dev.remain.samples from calc.deviance from dismo
           MLEval[31,] <- c("pct.dev.remain.samples",
                            "% deviance explained, samples data only, calc.deviance frunction in gbm.auto, Leathwick & Elith",
-                           pct.dev.remain.samples)
+                           round(pct.dev.remain.samples,3))
           MLEval[32,] <- c("AUC.samples",
                            "AUC for samples data, roc function in gbm.auto, by J.Elith",
-                           AUC.samples)
+                           round(AUC.samples,3))
 
           # MLEval$Value <- round(MLEval$Value, digits = 5)
           write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsBin.csv"))
