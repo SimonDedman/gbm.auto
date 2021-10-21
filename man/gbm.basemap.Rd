@@ -74,6 +74,9 @@ sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 4. Error in as.environment(pos):no item called "package:shapefiles" on the
 search list: strange error occurring despite shapefiles being coded like all
 other packages. Correct output produced regardless.
+
+5. subscript out of bounds: can't crop world map to your bounds.
+Check lat/lon are the right way around
 }
 \examples{
 \donttest{

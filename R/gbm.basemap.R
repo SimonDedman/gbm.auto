@@ -67,6 +67,9 @@
 #' search list: strange error occurring despite shapefiles being coded like all
 #' other packages. Correct output produced regardless.
 #'
+#' 5. subscript out of bounds: can't crop world map to your bounds.
+#' Check lat/lon are the right way around
+#'
 gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
                         grids = NULL, # if bounds unspecified, name your grids database here
                         gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
@@ -120,7 +123,7 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
     xmax = max(grids[,gridslon])
     ymin = min(grids[,gridslat])
     ymax = max(grids[,gridslat])
-  } else {
+  } else { # if bounds not null
     xmin = bounds[1] #for sf/st upgrade
     xmax = bounds[2]
     ymin = bounds[3]
@@ -179,7 +182,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # read_sf results in a sf tibble which needs tibble installed. st_read is a sf dataframe. Changed also in @importFrom
   world <- st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
   cropshp <- st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
-  setwd(savedir) # setwd to savedir else saves CroppedMap folder in res folder
+  # setwd(savedir) # setwd to savedir else saves CroppedMap folder in res folder
+  setwd("../../") # setwd to savedir else saves CroppedMap folder in res folder
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
   st_write(cropshp, dsn = paste0(savename, ".shp"))
