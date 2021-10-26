@@ -22,7 +22,8 @@
 #' intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
 #' @param extrabounds Grow bounds 16pct each direction to expand rectangular
 #' datasets basemaps over the entire square area created by basemap in mapplots.
-
+#' @param returnsf Return object as simple features object? Default FALSE,
+#'  returns as list format for draw.shape in mapplots, used in gbm.map.
 #'
 #' @return basemap coastline file for gbm.map in gbm.auto. "cropshp"
 #' SpatialPolygonsDataFrame in in local environment & user-named files in
@@ -80,7 +81,8 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
                         # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
                         savename = "Crop_Map", #shapefile save-name without the .shp
                         res = "CALC", # Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
-                        extrabounds = FALSE) { # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
+                        extrabounds = FALSE, # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
+                        returnsf = FALSE) { # Return object as simple features object? Default FALSE, returns as list format for draw.shape in mapplots, used in gbm.map
 
   #if i don't need rgdal etc i won't need this line either####
   # if (!require(rgdal)) install.packages("rgdal")
@@ -104,7 +106,6 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
 
   oldwd <- getwd() # record original directory
   on.exit(setwd(oldwd), add = TRUE) # defensive block, thanks to Gregor Sayer
-  setwd(savedir)
   sf::sf_use_s2(FALSE) # 2021 addition of s2 code to sf often causes: Error in s2_geography_from_wkb(x, oriented = oriented, check = check):
   # Evaluation error: Found 1 feature with invalid spherical geometry. Loop 0 is not valid: Edge n has duplicate vertex with edge n2.
   # if bounds is entered it's user below, else check grids & gridslat & gridslon
@@ -144,11 +145,18 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
     if (29 > scope & scope >= 9) res <- "h"
     if (9 > scope) res <- "f"}
 
-  ifelse(getzip, {# download & unzip GSHGG if getzip = TRUE
-    download.file(paste0("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip"), "GSHHG.zip")
+  # setwd(savedir) #  "../basemap"
+
+  # If savedir has a terminal slash, remove it, it's added later
+  if (substr(x = savedir, start = nchar(savedir), stop = nchar(savedir)) == "/") savedir = substr(x = savedir, start = 1, stop = nchar(savedir) - 1)
+
+  ifelse(getzip ==TRUE, {# download & unzip GSHGG if getzip = TRUE
+    download.file(url = paste0("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip"),
+                  destfile = paste0(savedir, "/GSHHG.zip")) # need to ensure 1 / between savedir & GSHHG.zip. Done above
     unzip("GSHHG.zip")
     setwd("./GSHHS_shp")}
-    , setwd(getzip)) # else just setwd to there
+    , setwd(getzip) # else just setwd to there
+  )
 
   setwd(paste("./", res, sep = "")) #setwd to res subfolder
 
@@ -186,7 +194,13 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   setwd("../../") # setwd to savedir else saves CroppedMap folder in res folder
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
-  st_write(cropshp, dsn = paste0(savename, ".shp"))
-  cropshp <- read.shapefile(savename) # read it back in with read.shapefile which results in the expected format for draw.shape in mapplots, used in gbm.map # shapefiles::
+  st_write(cropshp, dsn = paste0(savename, ".shp"), append = FALSE) # append FALSE overwrites existing files
+
+  if (returnsf) {
+    cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
+  } else {
+    cropshp <- read.shapefile(savename) # read it back in with read.shapefile which results in the expected format for draw.shape in mapplots, used in gbm.map # shapefiles::
+  }
+
   print(paste("World map cropped and saved successfully"))
   return(cropshp)}

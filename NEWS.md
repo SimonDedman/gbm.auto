@@ -4,6 +4,8 @@ author: "Simon Dedman"
 date: "2021-10-07"
 output: html_document
 ---
+# v1.5.5
+* gbm.basemap added returnsf param, allows returning sf object
 
 # v1.5.2
 * gbm.basemap added sf::sf_use_s2(FALSE)

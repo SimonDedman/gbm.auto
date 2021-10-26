@@ -14,7 +14,8 @@ gbm.basemap(
   savedir = tempdir(),
   savename = "Crop_Map",
   res = "CALC",
-  extrabounds = FALSE
+  extrabounds = FALSE,
+  returnsf = FALSE
 )
 }
 \arguments{
@@ -44,6 +45,9 @@ intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.}
 
 \item{extrabounds}{Grow bounds 16pct each direction to expand rectangular
 datasets basemaps over the entire square area created by basemap in mapplots.}
+
+\item{returnsf}{Return object as simple features object? Default FALSE,
+returns as list format for draw.shape in mapplots, used in gbm.map.}
 }
 \value{
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
