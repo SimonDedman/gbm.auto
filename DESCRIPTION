@@ -2,37 +2,39 @@ Package: gbm.auto
 Title: Automated Boosted Regression Tree Modelling and Mapping Suite
 Version: 1.5.5
 Authors@R: c(
-    person("Simon", "Dedman", email = "simondedman@gmail.com", role = c("aut", "cre")),
-    person("Hans", "Gerritsen", role = "aut"))
+    person("Simon", "Dedman", , "simondedman@gmail.com", role = c("aut", "cre")),
+    person("Hans", "Gerritsen", role = "aut")
+  )
 Description: Automates delta log-normal boosted regression tree abundance
-    prediction. Loops through parameters provided (LR (learning rate), TC (tree 
-    complexity), BF (bag fraction)), chooses best, simplifies, & generates line, 
-    dot & bar plots, & outputs these & predictions & a report, makes predicted 
-    abundance maps, and Unrepresentativeness surfaces.
-    Package core built around 'gbm' (gradient boosting machine) functions in 
-    'dismo' (Hijmans, Phillips, Leathwick & Jane Elith, 2020 & ongoing), itself 
-    built around 'gbm' (Greenwell, Boehmke, Cunningham & Metcalfe, 2020 & 
-    ongoing, originally by Ridgeway). Indebted to Elith/Leathwick/Hastie 2008 
-    'Working Guide' <doi:10.1111/j.1365-2656.2008.01390.x>; workflow follows 
-    Appendix S3. See <http://www.simondedman.com/> for published guides and 
-    papers using this package.
+    prediction. Loops through parameters provided (LR (learning rate), TC
+    (tree complexity), BF (bag fraction)), chooses best, simplifies, &
+    generates line, dot & bar plots, & outputs these & predictions & a
+    report, makes predicted abundance maps, and Unrepresentativeness
+    surfaces.  Package core built around 'gbm' (gradient boosting machine)
+    functions in 'dismo' (Hijmans, Phillips, Leathwick & Jane Elith, 2020
+    & ongoing), itself built around 'gbm' (Greenwell, Boehmke, Cunningham
+    & Metcalfe, 2020 & ongoing, originally by Ridgeway). Indebted to
+    Elith/Leathwick/Hastie 2008 'Working Guide'
+    <doi:10.1111/j.1365-2656.2008.01390.x>; workflow follows Appendix S3.
+    See <http://www.simondedman.com/> for published guides and papers
+    using this package.
+License: MIT + file LICENSE
 Depends:
     R (>= 3.5.0)
-License: MIT + file LICENSE
-Encoding: UTF-8
-Language: en-GB
-LazyData: true
 Imports:
-    gbm (>= 2.1.1),
-    dismo (>= 1.0-15),
     beepr (>= 1.2),
+    dismo (>= 1.0-15),
+    gbm (>= 2.1.1),
     mapplots (>= 1.5),
     maptools (>= 0.9-1),
+    raster (>= 2.5-8),
     rgdal (>= 1.1-10),
     rgeos (>= 0.3-19),
-    raster (>= 2.5-8),
     sf (>= 0.9-7),
     shapefiles (>= 0.7),
     stats (>= 3.3.1),
-    stringi(>= 1.6.1)
+    stringi (>= 1.6.1)
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
 RoxygenNote: 7.1.2
