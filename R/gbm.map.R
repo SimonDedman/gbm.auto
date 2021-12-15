@@ -133,6 +133,19 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
              NA)
     # Take an average of those distances, they should all be identical anyway. Apply it to byx & byy.
     byx <- mean(cells$bydist, na.rm = TRUE)
+    # if users grids data are organised in COLUMNS rather than rows, they'll have long blocks of the same longitude
+    # the mean distance will be 0, and make.grid will fail when it calls seq(xlim[1], xlim[2], by = byx) and byx == 0
+    # in case of this, try latitude instead of longitude
+    if (byx == 0) {
+      bydist <- rep(NA, length(y))
+      cells <- data.frame(LONGITUDE = y, bydist = bydist, stringsAsFactors = FALSE)
+      cells[2:(length(y) - 1),"bydist"] <-
+        ifelse(round(cells[2:(length(y) - 1),1] - cells[1:(length(y) - 2),1], digits = 5) ==
+                 round(cells[3:length(y),1] - cells[2:(length(y) - 1),1], digits = 5),
+               round(cells[2:(length(y) - 1),1] - cells[1:(length(y) - 2),1], digits = 5),
+               NA)
+      byx <- mean(cells$bydist, na.rm = TRUE)
+    }
     byy <- byx
     if (byxout) byxport <<- byx
   }
