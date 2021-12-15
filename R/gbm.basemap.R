@@ -131,6 +131,15 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
     ymax = bounds[4]
   }
 
+  if (extrabounds) { # grow bounds extents if requested
+    xmid <- mean(bounds[1:2])
+    ymid <- mean(bounds[3:4])
+    xmax <- ((bounds[2] - xmid) * 1.6) + xmid #updated for sf/st
+    xmin <- xmid - ((xmid - bounds[1]) * 1.6)
+    ymax <- ((bounds[4] - ymid) * 1.6) + ymid
+    ymin <- ymid - ((ymid - bounds[3]) * 1.6)
+  }
+
   if (res == 1) res <- "c" # If res provided as number convert to letter
   if (res == 2) res <- "l"
   if (res == 3) res <- "i"
@@ -150,24 +159,18 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   # If savedir has a terminal slash, remove it, it's added later
   if (substr(x = savedir, start = nchar(savedir), stop = nchar(savedir)) == "/") savedir = substr(x = savedir, start = 1, stop = nchar(savedir) - 1)
 
-  ifelse(getzip ==TRUE, {# download & unzip GSHGG if getzip = TRUE
+  ifelse(getzip == TRUE, {# download & unzip GSHGG if getzip = TRUE
     download.file(url = paste0("https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/latest/gshhg-shp-", zipvers, ".zip"),
                   destfile = paste0(savedir, "/GSHHG.zip")) # need to ensure 1 / between savedir & GSHHG.zip. Done above
+    setwd(savedir)
     unzip("GSHHG.zip")
-    setwd("./GSHHS_shp")}
+    setwd("GSHHS_shp")}
     , setwd(getzip) # else just setwd to there
   )
 
   setwd(paste("./", res, sep = "")) #setwd to res subfolder
 
-  if (extrabounds) { # grow bounds extents if requested
-    xmid <- mean(bounds[1:2])
-    ymid <- mean(bounds[3:4])
-    xmax <- ((bounds[2] - xmid) * 1.6) + xmid #updated for sf/st
-    xmin <- xmid - ((xmid - bounds[1]) * 1.6)
-    ymax <- ((bounds[4] - ymid) * 1.6) + ymid
-    ymin <- ymid - ((ymid - bounds[3]) * 1.6)
-  }
+
 
   # read in worldmap
   # world <- readOGR(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"))

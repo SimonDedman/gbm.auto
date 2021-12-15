@@ -342,6 +342,7 @@ gbm.auto <- function(
       # yextramin <- ymid - ((ymid - bounds[3]) * 1.6)
       # extrabounds <- c(xextramin, xextramax, yextramin, yextramax) # identical code to what's in basemap
       shape <- gbm.basemap(bounds = bounds,
+                           savedir = savedir,
                            extrabounds = TRUE)
     } # close isnull shape
   } # close isnull grids
@@ -738,6 +739,8 @@ gbm.auto <- function(
                    show.contrib = TRUE,
                    plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
           mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
+          # gbm.plot calls plot.gbm ~L47 but then centres to have 0 mean @L53
+          # Asked Robert Hijmans to add a param to omit this: https://github.com/rspatial/dismo/issues/22
 
           # create lines data to export to file. Need to recreate transformations from gbm.plot
           # Next 6 lines from GNG answer https://stats.stackexchange.com/a/144871/43360 which uses gbm.plot code
