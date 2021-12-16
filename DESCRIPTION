@@ -20,7 +20,7 @@ Description: Automates delta log-normal boosted regression tree abundance
     using this package.
 License: MIT + file LICENSE
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     beepr (>= 1.2),
     dismo (>= 1.0-15),

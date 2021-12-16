@@ -189,12 +189,15 @@
 #' @export
 #' @import dismo
 #' @importFrom beepr beep
+#' @importFrom dplyr across
+#' @importFrom dplyr mutate
 #' @importFrom gbm plot.gbm
 #' @importFrom grDevices dev.off dev.print graphics.off grey.colors jpeg png
 #' @importFrom graphics axis barplot image legend lines mtext par text
 #' @importFrom stats sd
 #' @importFrom utils read.csv write.csv
 #' @importFrom stringi stri_split_fixed
+#' @importFrom tidyverse where
 #'
 gbm.auto <- function(
   grids = NULL,         # explanatory data to predict to. Import with (e.g.)
@@ -314,6 +317,16 @@ gbm.auto <- function(
     setwd(oldwd) # reinstate original working directory. Probably redundant given on.exit
   } # close options subcurly
   ) # close options
+
+  # presence of list columns, even if not used, will break the write.table within write.csv for abundance prediction saving
+  if (any(as.data.frame(unlist(lapply(samples, class)))[,1] == "list")) {
+    samples <- samples |> mutate(across(.cols = where(is.list), ~ sapply(.x, toString)))
+    print("list columns converted to character columns in samples")
+  }
+  if (any(as.data.frame(unlist(lapply(grids, class)))[,1] == "list")) {
+    grids <- grids |> mutate(across(.cols = where(is.list), ~ sapply(.x, toString)))
+    print("list columns converted to character columns in grids")
+  }
 
   # ToDo: add to existing options(error) if present####
   # options(error = function() {.rs.recordTraceback(TRUE, 5, .rs.enqueueError)})
