@@ -188,6 +188,7 @@
 #'
 #' @export
 #' @import dismo
+#' @import utils
 #' @importFrom beepr beep
 #' @importFrom dplyr across
 #' @importFrom dplyr mutate
@@ -318,6 +319,7 @@ gbm.auto <- function(
   ) # close options
 
   utils::globalVariables("where") # https://github.com/r-lib/tidyselect/issues/201#issuecomment-650547846
+  # https://stackoverflow.com/questions/40251801/how-to-use-utilsglobalvariables
   # presence of list columns, even if not used, will break the write.table within write.csv for abundance prediction saving
   if (any(as.data.frame(unlist(lapply(samples, class)))[,1] == "list")) {
     samples <- samples |> mutate(across(.cols = where(is.list), ~ sapply(.x, toString)))
