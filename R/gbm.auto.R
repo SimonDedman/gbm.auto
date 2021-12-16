@@ -197,7 +197,6 @@
 #' @importFrom stats sd
 #' @importFrom utils read.csv write.csv
 #' @importFrom stringi stri_split_fixed
-#' @importFrom tidyselect where
 #'
 gbm.auto <- function(
   grids = NULL,         # explanatory data to predict to. Import with (e.g.)
