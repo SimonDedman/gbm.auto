@@ -61,6 +61,7 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
     # make object from samples histogram
     assign(paste0("hist_samples_", expvarnames[q]), hist(samples[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
     # make object from grids histogram
+    save(list = ls(all.names = TRUE), file = "environment.RData") # 2021-12-18 chuck bug test
     assign(paste0("hist_grids_", expvarnames[q]), hist(grids[,expvarnames[q]], breaks = binbreaks, plot = FALSE))
     # calculate difference between frequencies, assign to object
     assign(paste0("hist_diff_", expvarnames[q]), (get(paste0("hist_samples_", expvarnames[q]))$density*bin - get(paste0("hist_grids_",expvarnames[q]))$density * bin))
