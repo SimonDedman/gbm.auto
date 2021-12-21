@@ -343,6 +343,10 @@ gbm.auto <- function(
   fam2 <- match.arg(fam2)
   pngtype <- match.arg(pngtype)
 
+  # tibble's don't collapse into a vector, instead an X x 1 df, which breaks various functionality.
+  if ("tbl" %in% class(grids)) grids <- as.data.frame(grids)
+  if ("tbl" %in% class(samples)) samples <- as.data.frame(samples)
+
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
     if (is.null(shape)) {
