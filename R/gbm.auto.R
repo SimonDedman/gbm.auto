@@ -146,7 +146,10 @@
 #' > LR or BF probably too low in earlier BRT (normally Gaus run with highest
 #' TC)
 #' It may be that you don't have enough positive samples to run BRT modelling
-#' Run gbm.bfcheck to check recommended minimum BF size
+#' Run gbm.bfcheck to check recommended minimum BF size. Similarly:
+#' glm.fit: fitted probabilities numerically 0 or 1 occurred
+#' glm.fit: algorithm did not converge
+#' See also: Error 14.
 #'
 #' 9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
 #' 32:35ppm  but dataset has errant 0 value: plot axis will be 0:35 and 99.99%
@@ -169,6 +172,10 @@
 #' (or similar)
 #' > Your resvar column name contains an illegal character e.g. / & ' _
 #' Fix with colnames(samples)[n] <- "BetterName"
+#'
+#' 14. Error in gbm.fit: Poisson requires the response to be a positive integer
+#' If running poisson distributions, ensure the response variables are positive integers, but if
+#' they are, try a smaller learning rate.
 #'
 #' @examples
 #' \donttest{
