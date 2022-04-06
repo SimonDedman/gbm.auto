@@ -415,8 +415,7 @@ gbm.auto <- function(
     # create logged response variable, for gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
     logem <- log1p(samples[,i]) # logs resvar i.e. containing zeroes
     dont  <- samples[,i]
-    # log1p resvar if bin only (fam1 bin, fam2 FALSE), OR if resvar is delta & ZI & NOT poisson (which can't be logged, must be positive integers)
-    if (fam1 == "bernoulli" & (!gaus | (gaus & ZI & (fam2 != "poisson")))) {samples$grv <- logem} else {samples$grv <- dont}
+    if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {samples$grv <- logem} else {samples$grv <- dont} # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
     grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
 
