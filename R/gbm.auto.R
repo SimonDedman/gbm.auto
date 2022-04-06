@@ -342,6 +342,8 @@ gbm.auto <- function(
   fam1 <- match.arg(fam1) # populate object from function argument in proper way
   fam2 <- match.arg(fam2)
   pngtype <- match.arg(pngtype)
+  if (fam1 == "binomial") fam1 <- "bernoulli" # gbm::gbm doesn't like binomial even though it's the same
+  if (fam2 == "binomial") fam2 <- "bernoulli"
 
   # tibble's don't collapse into a vector, instead an X x 1 df, which breaks various functionality.
   if ("tbl" %in% class(grids)) grids <- as.data.frame(grids)
@@ -416,7 +418,7 @@ gbm.auto <- function(
     logem <- log1p(samples[,i]) # logs resvar i.e. containing zeroes
     dont  <- samples[,i]
     # log1p resvar if bin only (fam1 bin, fam2 FALSE), OR if resvar is delta & ZI & NOT poisson (which can't be logged, must be positive integers)
-    if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI & (fam2 != "poisson")))) {samples$grv <- logem} else {samples$grv <- dont}
+    if (fam1 == "bernoulli" & (!gaus | (gaus & ZI & (fam2 != "poisson")))) {samples$grv <- logem} else {samples$grv <- dont}
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
     grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
 
@@ -424,7 +426,7 @@ gbm.auto <- function(
       # predicting from existing models. Skip to L1404
 
       ####3. Begin Report####
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         reportcolno = 3 + (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)) + 14
         # if only 1 permutation, = 19
       } else { # else zi
@@ -459,7 +461,7 @@ gbm.auto <- function(
                                                                        "Biggest Interactions (Bin)")
       } else {
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {colnames(Report)[(reportcolno - 13):(reportcolno - 7)] <- c("Best Binary BRT",
                                                                                                                       "Bin_BRT_simp predictors dropped",
                                                                                                                       "Bin_BRT_simp predictors kept",
                                                                                                                       "Simplified Binary BRT stats",
@@ -486,7 +488,7 @@ gbm.auto <- function(
       Gaus_Best_Model <- 0
 
       # Begin bin loops
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         for (j in tc) {   # list permutations of tree complexity allowed
           for (k in lr) {   # list permutations of learning rate allowed
             for (l in bf) {   # list permutations of bag fraction allowed
@@ -517,7 +519,7 @@ gbm.auto <- function(
               } # close if else n==1
 
               ####6. Add bin stats to report####
-              if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
+              if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
                                                                                          paste0("Training Data Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
                                                                                          paste0("CV Mean Deviance: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
                                                                                          paste0("CV Deviance SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
@@ -573,7 +575,7 @@ gbm.auto <- function(
             Gaus_Best_Model <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)} # close if else m==1
 
             if (alerts) beep(2) # progress printer, right aligned for visibility
-            if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+            if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)) + (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
             } else {print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
             ####9. Add gaus stats to report####
@@ -608,7 +610,7 @@ gbm.auto <- function(
       # if simp TRUE & ZI=TRUE, run simplification test on best bin model
       if (simp) {
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
           Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
           dev.print(file = paste0("./",names(samples[i]),"/simp_drops_bin.jpeg"), device = jpeg, width = 600)
           # if best number of variables to remove isn't 0 (i.e. it's worth simplifying),
@@ -677,7 +679,7 @@ gbm.auto <- function(
         } # close gaus if
 
         ## Select final best models
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI. If Bin_Best has a simplified model:
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI. If Bin_Best has a simplified model:
           if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
             # & if the simplified model has better correlation than Bin_Best itself
             if (Bin_Best_Simp$self.statistics$correlation > Bin_Best_Score[1]) {
@@ -708,7 +710,7 @@ gbm.auto <- function(
       # All plots on one image for Bin & Gaus
       if (multiplot) { # don't do if multiplot=FALSE
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
           op <- par(oma = c(5,7,1,1)) # younes
           par(mar = rep(2, 4)) # for Younes' Error in plot.new() : figure margins too large
           png(filename = paste0("./",names(samples[i]),"/Bin_Best_line.png"),
@@ -742,7 +744,7 @@ gbm.auto <- function(
 
       # All plots individually, named by explanatory variable, bin & gaus
       # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
         for (o in 1:length(get(Bin_Best_Model)$contributions$var)) {
           png(filename = paste0("./",names(samples[i]),"/Bin_Best_line_",as.character(get(Bin_Best_Model)$gbm.call$predictor.names[o]),".png"),
               width = 4*480, height = 4*480, units = "px", pointsize = 80, bg = "white", res = NA, family = "", type = pngtype)
@@ -835,7 +837,7 @@ gbm.auto <- function(
 
       ####12. Dot plots####
       # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         png(filename = paste0("./",names(samples[i]),"/Bin_Best_dot.png"),
             width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
         gbm.plot.fits(get(Bin_Best_Model))
@@ -855,7 +857,7 @@ gbm.auto <- function(
 
       ####14. Bar plots of variable influence####
       # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # create tables
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # create tables
         Bin_Bars <- summary(get(Bin_Best_Model),
                             cBars = length(get(Bin_Best_Model)$var.names),
                             n.trees = get(Bin_Best_Model)$n.trees,
@@ -872,7 +874,7 @@ gbm.auto <- function(
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Bar plot csvs created    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
       # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # produce graphics
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # produce graphics
         pointlineseqbin <- seq(0, length(Bin_Bars[,2]) - 1, 1)
         png(filename = paste0("./",names(samples[i]),"/Bin_Bars.png"),
             width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "",
@@ -921,7 +923,7 @@ gbm.auto <- function(
 
       ####15. Variable interactions####
       if (varint) {
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) find.int_Bin <- gbm.interactions(get(Bin_Best_Model))
         if (gaus) find.int_Gaus <- gbm.interactions(get(Gaus_Best_Model))
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Variable interactions done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -929,7 +931,7 @@ gbm.auto <- function(
 
       ####16. Save model objects####
       if (savegbm) { # Save model objects if switched on
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
           Bin_Best_Model_Object <- get(Bin_Best_Model)
           # Bin_Best_Model <<- Bin_Best_Model_Object # this causes Bin_Best_Model to BE the model not the name of the original
         } # close if ZI
@@ -938,7 +940,7 @@ gbm.auto <- function(
           # Gaus_Best_Model <<- Gaus_Best_Model_Object
           save(Gaus_Best_Model_Object, file = paste0("./",names(samples[i]),"/Gaus_Best_Model"))
         } # close if gaus
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
           save(Bin_Best_Model_Object, file = paste0("./",names(samples[i]),"/Bin_Best_Model")) #only save bin if ZI=TRUE
         } # close if ZI
         if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -946,7 +948,7 @@ gbm.auto <- function(
       } # close if savegbm
 
       ####17. Finalise & Write Report####
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) { # only do bin bits if ZI; move 7 cols left if no gaus run
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # only do bin bits if ZI; move 7 cols left if no gaus run
         # L812, 873, 879: ZI yes, gaus ifelse sections, should combine####
         if (gaus) {
           Report[1:13,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
@@ -1148,7 +1150,7 @@ gbm.auto <- function(
         #   if (whichbin == 1) getmodel <- "Bin_Best_Model" else getmodel <- "Gaus_Best_Model"
         # } # close if any fam 1
 
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) { # only do if bin exists, previously was: exists("Bin_Best_Model")
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # only do if bin exists, previously was: exists("Bin_Best_Model")
           preds <- predict.gbm(get(Bin_Best_Model),
                                samples, # predict back to samples, not out of bag, for performance evaluation
                                n.trees = get(Bin_Best_Model)$gbm.call$best.trees,
@@ -1518,7 +1520,7 @@ gbm.auto <- function(
 
       # Load model objects if loadgbm set
       if (!is.null(loadgbm)) {
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
           load(paste0(loadgbm, "Bin_Best_Model"))
           Bin_Best_Model <- "Bin_Best_Model_Object"
         } # close ZI if
@@ -1530,7 +1532,7 @@ gbm.auto <- function(
       } # close if isnull loadgbm
 
       ####20. Binomial predictions####
-      if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         grids$Bin_Preds <- predict.gbm(object = get(Bin_Best_Model),
                                        newdata = grids,
                                        n.trees = get(Bin_Best_Model)$gbm.call$best.trees,
@@ -1548,7 +1550,7 @@ gbm.auto <- function(
 
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-        if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
           grids$Gaus_Preds <- Gaus_Preds
 
           ####22. Backtransform logged Gaus to unlogged####
@@ -1641,7 +1643,7 @@ gbm.auto <- function(
           linear01seq <- seq(from = 0, to = 1, length.out = 9) #linear sequence from 0:1, 9 bins
           exp01seq <- expm1(4*linear01seq)/expm1(4) # exponentiate to change shape then scale back to 1
 
-          if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+          if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
             png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
                 width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -1695,7 +1697,7 @@ gbm.auto <- function(
           } # close both map
 
           if (BnW) {     # if BnW=TRUE, do again for b&w
-            if ((fam1 == "bernoulli" | fam1 == "binomial") & (!gaus | (gaus & ZI))) {
+            if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
               png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
                   width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
