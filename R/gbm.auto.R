@@ -516,7 +516,7 @@ gbm.auto <- function(
               dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
               print(warnings())
-              assign("last.warning", NULL, envir = baseenv()) # dumps warnings so subsequent printing doesn't reprint the existing warning
+              # assign("last.warning", NULL, envir = baseenv()) # dumps warnings so subsequent printing doesn't reprint the existing warning
               ####5. Select best bin model####
               if (n == 1) { # if this is the first loop, best score & model name is this one by default
                 Bin_Best_Score <- get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
@@ -577,6 +577,7 @@ gbm.auto <- function(
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
             print(warnings())
+            print("Note: previous warnings may be reprinted")
             ####8. Select best Gaus model####
             if (m == 1)
             {Gaus_Best_Score <- get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]
