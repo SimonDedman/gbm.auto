@@ -501,6 +501,7 @@ gbm.auto <- function(
             for (l in bf) {   # list permutations of bag fraction allowed
 
               ####4. Binomial BRT####
+              print(paste0("Running ", fam1, " BRT, tc=",j,", lr=",k,", bf=",l))
               assign(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l),
                      gbm.step(data = samples,
                               gbm.x = expvar,
@@ -560,6 +561,8 @@ gbm.auto <- function(
         for (k in lrgaus) {   # list permutations of learning rate allowed
           for (l in bfgaus) {   # list permutations of bag fraction allowed
             ####7. Gaussian BRT####
+            print(paste0("Running ", fam2, " BRT, tc=",j,", lr=",k,", bf=",l))
+            write.csv(x = grv_yes[,grvcol], file = "grv.csv", row.names = FALSE)
             assign(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l),
                    gbm.step(data = grv_yes,
                             gbm.x = expvar,
