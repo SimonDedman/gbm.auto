@@ -206,72 +206,72 @@
 #' @importFrom stringi stri_split_fixed
 #'
 gbm.auto <- function(
-  grids = NULL,         # explanatory data to predict to. Import with (e.g.)
-  # read.csv and specify object name. Defaults to NULL (won't predict to grids)
-  samples,  # explanatory and response variables to predict from.
-  # Keep col names short, no odd characters, starting numerals or terminal periods
-  # Spaces may be converted to periods in directory names, underscores won't.
-  # Can be a subset
-  expvar,               # list of column numbers of explanatory variables in
-  # 'samples', expected e.g. c(1,35,67,etc.). No default
-  resvar,               # column number(s) of response variable (e.g. CPUE) in
-  # samples, e.g. 12 or c(4,5,6). No default. Column name should be species name
-  tc = c(2),            # permutations of tree complexity allowed, can be a
-  # vector with the largest sized number no larger than the number of
-  # explanatory variables e.g. c(2,7), or a list of 2 single numbers or vectors,
-  # the first to be passed to the binary BRT, the second to the Gaussian, e.g.
-  # tc = list(c(2,6), 2) or list(6, c(2,6))
-  lr = c(0.01, 0.005),   # permutations of learning rate allowed. Can be a
-  # vector or a list of 2 single numbers or vectors, the first to be passed to
-  # the binary BRT, the second to the Gaussian, e.g.
-  # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
-  bf = 0.5,             # permutations of bag fraction allowed, can be single
-  # number, vector or list, per tc and lr
-  n.trees = 50,         # from gbm.step, number of initial trees to fit. Can be
-  # single or list but not vector i.e. list(fam1, fam2)
-  ZI = "CHECK", # are data zero-inflated? "CHECK"/FALSE/TRUE.
-  # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
-  # FALSE: do Gaussian only, no log-normalisation.
-  # CHECK: Tests data for you. Default is TRUE.
-  fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
-  # probability distribution family for 1st part of delta process, defaults to
-  # "bernoulli",
-  fam2 = c("gaussian", "bernoulli", "binomial", "poisson", "laplace"),
-  # probability distribution family for 2nd part of delta process, defaults to
-  # "gaussian",
-  simp = TRUE,          # try simplifying best BRTs?
-  gridslat = 2,         # column number for latitude in 'grids'
-  gridslon = 1,         # column number for longitude in 'grids'
-  multiplot = TRUE,     # create matrix plot of all line files? Default true
-  # turn off if large number of expvars causes an error due to margin size problems.
-  cols = grey.colors(1,1,1), # bar-plot colour vector. Assignment in order of
-  # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
-  linesfiles = TRUE,    # save individual line plots' data as CSVs?
-  smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
-  savedir = tempdir(),  # save outputs to a temporary directory (default) else
-  # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
-  savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
-  loadgbm = NULL,       # relative or absolute location of folder containing
-  # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
-  # predicted maps and CSVs. Default NULL, character vector, "./" for working directory
-  varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
-  # for error "contrasts can be applied only to factors with 2 or more levels"
-  map = TRUE,           # save abundance map png files?
-  shape = NULL,         # set coast shapefile, else bounds calculated by gbm.map
-  # which then calls gbm.basemap to download and auto-generate the base map.
-  RSB = TRUE,           # run Unrepresentativeness surface builder?
-  BnW = TRUE,           # repeat maps in black and white e.g. for print journals
-  alerts = TRUE,        # play sounds to mark progress steps. Running many small
-  # BRTs e.g. gbm.loop can cause RStudio to crash, if so set this to FALSE
-  pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
-  # alternatively try "quartz" on Mac
-  gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
-  MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
-  brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-  ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
+    grids = NULL,         # explanatory data to predict to. Import with (e.g.)
+    # read.csv and specify object name. Defaults to NULL (won't predict to grids)
+    samples,  # explanatory and response variables to predict from.
+    # Keep col names short, no odd characters, starting numerals or terminal periods
+    # Spaces may be converted to periods in directory names, underscores won't.
+    # Can be a subset
+    expvar,               # list of column numbers of explanatory variables in
+    # 'samples', expected e.g. c(1,35,67,etc.). No default
+    resvar,               # column number(s) of response variable (e.g. CPUE) in
+    # samples, e.g. 12 or c(4,5,6). No default. Column name should be species name
+    tc = c(2),            # permutations of tree complexity allowed, can be a
+    # vector with the largest sized number no larger than the number of
+    # explanatory variables e.g. c(2,7), or a list of 2 single numbers or vectors,
+    # the first to be passed to the binary BRT, the second to the Gaussian, e.g.
+    # tc = list(c(2,6), 2) or list(6, c(2,6))
+    lr = c(0.01, 0.005),   # permutations of learning rate allowed. Can be a
+    # vector or a list of 2 single numbers or vectors, the first to be passed to
+    # the binary BRT, the second to the Gaussian, e.g.
+    # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
+    bf = 0.5,             # permutations of bag fraction allowed, can be single
+    # number, vector or list, per tc and lr
+    n.trees = 50,         # from gbm.step, number of initial trees to fit. Can be
+    # single or list but not vector i.e. list(fam1, fam2)
+    ZI = "CHECK", # are data zero-inflated? "CHECK"/FALSE/TRUE.
+    # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
+    # FALSE: do Gaussian only, no log-normalisation.
+    # CHECK: Tests data for you. Default is TRUE.
+    fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
+    # probability distribution family for 1st part of delta process, defaults to
+    # "bernoulli",
+    fam2 = c("gaussian", "bernoulli", "binomial", "poisson", "laplace"),
+    # probability distribution family for 2nd part of delta process, defaults to
+    # "gaussian",
+    simp = TRUE,          # try simplifying best BRTs?
+    gridslat = 2,         # column number for latitude in 'grids'
+    gridslon = 1,         # column number for longitude in 'grids'
+    multiplot = TRUE,     # create matrix plot of all line files? Default true
+    # turn off if large number of expvars causes an error due to margin size problems.
+    cols = grey.colors(1,1,1), # bar-plot colour vector. Assignment in order of
+    # explanatory variables. Default 1*white: white bars black borders. '1*' repeats
+    linesfiles = TRUE,    # save individual line plots' data as CSVs?
+    smooth = FALSE,       # apply a smoother to the line plots? Default FALSE
+    savedir = tempdir(),  # save outputs to a temporary directory (default) else
+    # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
+    savegbm = TRUE,       # save gbm objects and make available in environment after running? Open with load("Bin_Best_Model")
+    loadgbm = NULL,       # relative or absolute location of folder containing
+    # Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
+    # predicted maps and CSVs. Default NULL, character vector, "./" for working directory
+    varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
+    # for error "contrasts can be applied only to factors with 2 or more levels"
+    map = TRUE,           # save abundance map png files?
+    shape = NULL,         # set coast shapefile, else bounds calculated by gbm.map
+    # which then calls gbm.basemap to download and auto-generate the base map.
+    RSB = TRUE,           # run Unrepresentativeness surface builder?
+    BnW = TRUE,           # repeat maps in black and white e.g. for print journals
+    alerts = TRUE,        # play sounds to mark progress steps. Running many small
+    # BRTs e.g. gbm.loop can cause RStudio to crash, if so set this to FALSE
+    pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
+    # alternatively try "quartz" on Mac
+    gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
+    MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
+    brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+    grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+    Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+    Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
+    ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
 # legend in legend.grid in gbm.map, mapmain in gbm.map
 # (default = "Predicted CPUE (numbers per hour): ") and gbm.step (dismo package)
 # arguments max.trees and others.
@@ -503,15 +503,15 @@ gbm.auto <- function(
               ####4. Binomial BRT####
               print(paste0("Running ", fam1, " BRT, tc=",j,", lr=",k,", bf=",l))
               assign(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l),
-                     gbm.step(data = samples,
-                              gbm.x = expvar,
-                              gbm.y = brvcol,
-                              family = fam1,
-                              tree.complexity = j,
-                              learning.rate = k,
-                              bag.fraction = l,
-                              n.trees = ntf1,
-                              ...)
+                     gbm.step.sd(data = samples,
+                                 gbm.x = expvar,
+                                 gbm.y = brvcol,
+                                 family = fam1,
+                                 tree.complexity = j,
+                                 learning.rate = k,
+                                 bag.fraction = l,
+                                 n.trees = ntf1,
+                                 ...)
               )
               dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
@@ -528,12 +528,14 @@ gbm.auto <- function(
               } # close if else n==1
 
               ####6. Add bin stats to report####
-              if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
+              if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {Report[1:8,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
                                                                                          paste0("Training Data Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
                                                                                          paste0("CV Mean Deviance: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
                                                                                          paste0("CV Deviance SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
+                                                                                         paste0("CV D squared: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$d.squared),
                                                                                          paste0("CV Mean Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
-                                                                                         paste0("CV Correlation SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
+                                                                                         paste0("CV Correlation SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se),
+                                                                                         paste0("CV RMSE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$cv.rmse))
               # bin BRT name
               colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
 
@@ -564,15 +566,15 @@ gbm.auto <- function(
             print(paste0("Running ", fam2, " BRT, tc=",j,", lr=",k,", bf=",l))
             write.csv(x = grv_yes[,grvcol], file = "grv.csv", row.names = FALSE)
             assign(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l),
-                   gbm.step(data = grv_yes,
-                            gbm.x = expvar,
-                            gbm.y = grvcol,
-                            family = fam2,
-                            tree.complexity = j,
-                            learning.rate = k,
-                            bag.fraction = l,
-                            n.trees = ntf2,
-                            ...)
+                   gbm.step.sd(data = grv_yes,
+                               gbm.x = expvar,
+                               gbm.y = grvcol,
+                               family = fam2,
+                               tree.complexity = j,
+                               learning.rate = k,
+                               bag.fraction = l,
+                               n.trees = ntf2,
+                               ...)
             )
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
@@ -591,12 +593,15 @@ gbm.auto <- function(
             } else {print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
             ####9. Add gaus stats to report####
-            Report[1:6,(3 + n)] <- c(paste0("trees: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
+            Report[1:8,(3 + n)] <- c(paste0("trees: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
                                      paste0("Training Data Correlation: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
                                      paste0("CV Mean Deviance: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
                                      paste0("CV Deviance SE: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
+                                     paste0("CV D squared: ", get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$d.squared),
                                      paste0("CV Mean Correlation: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
-                                     paste0("CV Correlation SE: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se))
+                                     paste0("CV Correlation SE: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se),
+                                     paste0("CV RMSE: ", get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$cv.rmse))
+
             # Gaus BRT name
             colnames(Report)[3 + n] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)
             # Add Gaus stats objects to StatsObjectsList
@@ -632,15 +637,15 @@ gbm.auto <- function(
           # up the list of predictor variables with those removed, from $pred.list
           if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
             assign("Bin_Best_Simp",
-                   gbm.step(data = samples,
-                            gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
-                            # gbm.x = as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)]),
-                            gbm.y = get(Bin_Best_Model)$gbm.call$gbm.y,
-                            tree.complexity = get(Bin_Best_Model)$gbm.call$tree.complexity,
-                            learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
-                            family = get(Bin_Best_Model)$gbm.call$family,
-                            bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction,
-                            ...))
+                   gbm.step.sd(data = samples,
+                               gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
+                               # gbm.x = as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)]),
+                               gbm.y = get(Bin_Best_Model)$gbm.call$gbm.y,
+                               tree.complexity = get(Bin_Best_Model)$gbm.call$tree.complexity,
+                               learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
+                               family = get(Bin_Best_Model)$gbm.call$family,
+                               bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction,
+                               ...))
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin_simp.jpeg"), device = jpeg, width = 600)
 
             # Add Bin simp stats objects to StatsObjectsList
@@ -661,22 +666,22 @@ gbm.auto <- function(
           dev.print(file = paste0("./",names(samples[i]),"/simp_drops_gaus.jpeg"), device = jpeg, width = 600)
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             assign("Gaus_Best_Simp",
-                   gbm.step(data = grv_yes,
-                            gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
-                            # does the above line return ALL vars or just the simp predictors kept?####
-                            # returns a subsample, but not the same as the one below. In bonnie example, top/original line is:
-                            # 9 19 28 38
-                            # below line is:
-                            # "Latitude" "WTMP"
-                            # code from report Gaus_BRT_simp predictors kept column, can potentially drop in place:
-                            # gbm.x = as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)]),
-                            # if this works do the same for bin
-                            gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
-                            tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
-                            learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
-                            family = get(Gaus_Best_Model)$gbm.call$family,
-                            bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
-                            ...))
+                   gbm.step.sd(data = grv_yes,
+                               gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
+                               # does the above line return ALL vars or just the simp predictors kept?####
+                               # returns a subsample, but not the same as the one below. In bonnie example, top/original line is:
+                               # 9 19 28 38
+                               # below line is:
+                               # "Latitude" "WTMP"
+                               # code from report Gaus_BRT_simp predictors kept column, can potentially drop in place:
+                               # gbm.x = as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)]),
+                               # if this works do the same for bin
+                               gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
+                               tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
+                               learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
+                               family = get(Gaus_Best_Model)$gbm.call$family,
+                               bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
+                               ...))
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus_simp.jpeg"), device = jpeg, width = 600)
 
             # Add Gaus simp stats objects to StatsObjectsList
@@ -963,7 +968,7 @@ gbm.auto <- function(
       if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) { # only do bin bits if ZI; move 7 cols left if no gaus run
         # L812, 873, 879: ZI yes, gaus ifelse sections, should combine####
         if (gaus) {
-          Report[1:13,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
+          Report[1:15,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                                paste0("trees: ", get(Bin_Best_Model)$n.trees),
                                                paste0("Training Data Correlation: ", round(Bin_Best_Score, 3)),
                                                paste0("Training data AUC score: ", round(get(Bin_Best_Model)$self.statistics$discrimination, 3)),
@@ -972,12 +977,14 @@ gbm.auto <- function(
                                                paste0("Overfitting (Training data AUC - CV AUC): ", round(get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean, 3)),
                                                paste0("CV Mean Deviance: ", round(get(Bin_Best_Model)$cv.statistics$deviance.mean, 3)),
                                                paste0("CV Deviance SE: ", round(get(Bin_Best_Model)$cv.statistics$deviance.se, 3)),
+                                               paste0("CV D squared: ", round(get(Bin_Best_Model)$cv.statistics$d.squared, 3)),
                                                paste0("CV Mean Correlation: ", round(get(Bin_Best_Model)$cv.statistics$correlation.mean, 3)),
                                                paste0("CV Correlation SE: ", round(get(Bin_Best_Model)$cv.statistics$correlation.se, 3)),
+                                               paste0("CV RMSE: ", round(get(Bin_Best_Model)$cv.statistics$cv.rmse, 3)),
                                                paste0("Deviance% explained relative to null, training: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)),
                                                paste0("Deviance% explained relative to null, CV: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$cv.statistics$deviance.mean) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
         } else {
-          Report[1:13,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
+          Report[1:15,(reportcolno - 6)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                               paste0("trees: ", get(Bin_Best_Model)$n.trees),
                                               paste0("Training Data Correlation: ", round(Bin_Best_Score, 3)),
                                               paste0("Training data AUC score: ", round(get(Bin_Best_Model)$self.statistics$discrimination, 3)),
@@ -986,8 +993,10 @@ gbm.auto <- function(
                                               paste0("Overfitting (Training data AUC - CV AUC): ", round(get(Bin_Best_Model)$self.statistics$discrimination - get(Bin_Best_Model)$cv.statistics$discrimination.mean, 3)),
                                               paste0("CV Mean Deviance: ", round(get(Bin_Best_Model)$cv.statistics$deviance.mean, 3)),
                                               paste0("CV Deviance SE: ", round(get(Bin_Best_Model)$cv.statistics$deviance.se, 3)),
+                                              paste0("CV D squared: ", round(get(Bin_Best_Model)$cv.statistics$d.squared, 3)),
                                               paste0("CV Mean Correlation: ", round(get(Bin_Best_Model)$cv.statistics$correlation.mean, 3)),
                                               paste0("CV Correlation SE: ", round(get(Bin_Best_Model)$cv.statistics$correlation.se, 3)),
+                                              paste0("CV RMSE: ", round(get(Bin_Best_Model)$cv.statistics$cv.rmse, 3)),
                                               paste0("Deviance% explained relative to null, training: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$self.statistics$mean.resid) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)),
                                               paste0("Deviance% explained relative to null, CV: ", round(((get(Bin_Best_Model)$self.statistics$mean.null - get(Bin_Best_Model)$cv.statistics$deviance.mean) / get(Bin_Best_Model)$self.statistics$mean.null)*100, 2)))
         } # close if else gaus bin report
@@ -1001,7 +1010,7 @@ gbm.auto <- function(
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             # listing simp predictors dropped.
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-              Report[1:12,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
+              Report[1:14,(reportcolno - 10)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
                                                    paste0("Training Data Correlation: ", round(Bin_Best_Simp$self.statistics$correlation[[1]], 3)),
                                                    paste0("Training data AUC score: ", round(Bin_Best_Simp$self.statistics$discrimination, 3)),
                                                    paste0("CV AUC score: ", round(Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
@@ -1009,8 +1018,10 @@ gbm.auto <- function(
                                                    paste0("Overfitting (Training data AUC - CV AUC): ", round(Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
                                                    paste0("CV Mean Deviance: ", round(Bin_Best_Simp$cv.statistics$deviance.mean, 3)),
                                                    paste0("CV Deviance SE: ", round(Bin_Best_Simp$cv.statistics$deviance.se, 3)),
+                                                   paste0("CV D squared: ", round(Bin_Best_Simp$cv.statistics$d.squared, 3)),
                                                    paste0("CV Mean Correlation: ", round(Bin_Best_Simp$cv.statistics$correlation.mean, 3)),
                                                    paste0("CV Correlation SE: ", round(Bin_Best_Simp$cv.statistics$correlation.se, 3)),
+                                                   paste0("CV RMSE: ", round(Bin_Best_Simp$cv.statistics$cv.rmse, 3)),
                                                    paste0("Deviance% explained relative to null, training: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$self.statistics$mean.resid) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)),
                                                    paste0("Deviance% explained relative to null, CV: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$cv.statistics$deviance.mean) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)))
             } else { # if min
@@ -1021,7 +1032,7 @@ gbm.auto <- function(
             Report[1:(length(Bin_Best_Simp_Check$final.drops$preds) - dim(subset(Bin_Best_Simp_Check$final.drops, order > 0))[1]),(reportcolno - 4)] <-
               as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)])
             if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
-              Report[1:12,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
+              Report[1:14,(reportcolno - 3)] <- c(paste0("trees: ", Bin_Best_Simp$n.trees),
                                                   paste0("Training Data Correlation: ", round(Bin_Best_Simp$self.statistics$correlation[[1]], 3)),
                                                   paste0("Training data AUC score: ", round(Bin_Best_Simp$self.statistics$discrimination, 3)),
                                                   paste0("CV AUC score: ", round(Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
@@ -1029,8 +1040,10 @@ gbm.auto <- function(
                                                   paste0("Overfitting (Training data AUC - CV AUC): ", round(Bin_Best_Simp$self.statistics$discrimination - Bin_Best_Simp$cv.statistics$discrimination.mean, 3)),
                                                   paste0("CV Mean Deviance: ", round(Bin_Best_Simp$cv.statistics$deviance.mean, 3)),
                                                   paste0("CV Deviance SE: ", round(Bin_Best_Simp$cv.statistics$deviance.se, 3)),
+                                                  paste0("CV D squared: ", round(Bin_Best_Simp$cv.statistics$d.squared, 3)),
                                                   paste0("CV Mean Correlation: ", round(Bin_Best_Simp$cv.statistics$correlation.mean, 3)),
                                                   paste0("CV Correlation SE: ", round(Bin_Best_Simp$cv.statistics$correlation.se, 3)),
+                                                  paste0("CV RMSE: ", round(Bin_Best_Simp$cv.statistics$cv.rmse, 3)),
                                                   paste0("Deviance% explained relative to null, training: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$self.statistics$mean.resid) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)),
                                                   paste0("Deviance% explained relative to null, CV: ", round(((Bin_Best_Simp$self.statistics$mean.null - Bin_Best_Simp$cv.statistics$deviance.mean) / Bin_Best_Simp$self.statistics$mean.null)*100, 2)))
             } else { # if min bin best simp
@@ -1089,31 +1102,34 @@ gbm.auto <- function(
       } # close ZI way further up start of report section (L810)
 
       if (gaus) {
-        Report[1:9 ,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
+        Report[1:11 ,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
                                             paste0("trees: ", get(Gaus_Best_Model)$n.trees),  # new, might not work
                                             paste0("Training Data Correlation: ", round(Gaus_Best_Score, 3)),
                                             paste0("CV Mean Deviance: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.mean, 3)), # new, might not work
                                             paste0("CV Deviance SE: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.se, 3)), # new, might not work
+                                            paste0("CV D squared: ", round(get(Gaus_Best_Model)$cv.statistics$d.squared, 3)), # new, might not work
                                             paste0("CV Mean Correlation: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.mean, 3)), # new, might not work
                                             paste0("CV Correlation SE: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.se, 3)), # new, might not work
+                                            paste0("CV RMSE: ", round(get(Gaus_Best_Model)$cv.statistics$cv.rmse, 3)), # new, might not work
                                             paste0("Deviance% explained relative to null, training: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2)), # new, might not work
                                             paste0("Deviance% explained relative to null, CV: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$cv.statistics$deviance.mean) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2))) # new, might not work
-
 
         if (simp) {
           Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
           Report[1:(length(Gaus_Best_Simp_Check$final.drops$preds) - dim(subset(Gaus_Best_Simp_Check$final.drops, order > 0))[1]), (reportcolno - 4)] <-
             as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
-            Report[1:8, (reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
+            Report[1:10, (reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
                                                 paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
                                                 paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
                                                 paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
+                                                paste0("CV D squared: ", Gaus_Best_Simp$cv.statistics$d.squared),
                                                 paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
                                                 paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
+                                                paste0("CV RMSE: ", Gaus_Best_Simp$cv.statistics$cv.rmse),
                                                 paste0("Deviance% explained relative to null, training: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$self.statistics$mean.resid) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)), # new, might not work
                                                 paste0("Deviance% explained relative to null, CV: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$cv.statistics$deviance.mean) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)))
-          } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
+            } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
             Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
           } # close if else simp benefit check
         } else { # close gaus yes simp yes, do gaus yes simp no
