@@ -47,8 +47,10 @@
 #
 
 #' @importFrom Metrics rmse
+#' @export
+#'
 
-gbm.step <- function(
+gbm.step.sd <- function(
     data,                                     # the input dataframe
     gbm.x,                                    # the predictors
     gbm.y,                                    # and response

@@ -1,6 +1,6 @@
 Package: gbm.auto
 Title: Automated Boosted Regression Tree Modelling and Mapping Suite
-Version: 1.5.7
+Version: 1.5.8
 Authors@R: c(
     person("Simon", "Dedman", , "simondedman@gmail.com", role = c("aut", "cre")),
     person("Hans", "Gerritsen", role = "aut")
@@ -24,9 +24,11 @@ Depends:
 Imports:
     beepr (>= 1.2),
     dismo (>= 1.0-15),
+    dplyr (>= 1.0.9),
     gbm (>= 2.1.1),
     mapplots (>= 1.5),
     maptools (>= 0.9-1),
+    Metrics (>= 0.1.4),
     raster (>= 2.5-8),
     rgdal (>= 1.1-10),
     rgeos (>= 0.3-19),
