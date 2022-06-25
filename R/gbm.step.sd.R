@@ -43,8 +43,6 @@
 # requires gbm library from Cran
 # requires roc and calibration scripts of J Elith
 # requires calc.deviance script of J Elith/J Leathwick
-#
-#
 
 #' @importFrom Metrics rmse
 #' @export
@@ -448,7 +446,7 @@ gbm.step.sd <- function(
     cv.deviance.stats[i] <- calc.deviance(y_i, u_i, weight.preds, family = family)
 
     cv.cor.stats[i] <- cor(y_i,u_i)
-    cv.rmse.stats[i] <- metrics::rmse(y_i,u_i)
+    cv.rmse.stats[i] <- Metrics::rmse(y_i,u_i)
 
     if (family == "bernoulli") {
       cv.roc.stats[i] <- .roc(y_i,u_i)
