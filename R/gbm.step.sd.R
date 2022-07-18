@@ -449,13 +449,13 @@ gbm.step.sd <- function(
     cv.rmse.stats[i] <- Metrics::rmse(y_i,u_i)
 
     if (family == "bernoulli") {
-      cv.roc.stats[i] <- .roc(y_i,u_i)
-      cv.calibration.stats[i,] <- .calibration(y_i,u_i,"binomial")
+      cv.roc.stats[i] <- roc(y_i,u_i)
+      cv.calibration.stats[i,] <- calibration(y_i,u_i,"binomial")
       threshold.stats[i] <- approx(ppoints(u_i), sort(u_i,decreasing = T), prevalence)$y
     }
 
     if (family == "poisson") {
-      cv.calibration.stats[i,] <- .calibration(y_i,u_i,"poisson")
+      cv.calibration.stats[i,] <- calibration(y_i,u_i,"poisson")
     }
   }
 
@@ -530,15 +530,15 @@ gbm.step.sd <- function(
     deviance.contribs <- (y_i * log(u_i)) + ((1 - y_i) * log(1 - u_i))
     residuals <- sqrt(abs(deviance.contribs * 2))
     residuals <- ifelse((y_i - u_i) < 0, 0 - residuals, residuals)
-    self.roc <- .roc(y_i,u_i)
-    self.calibration <- .calibration(y_i,u_i,"binomial")
+    self.roc <- roc(y_i,u_i)
+    self.calibration <- calibration(y_i,u_i,"binomial")
   }
 
   if (family == "poisson") {   # do this manually as we need the residuals
     deviance.contribs <- ifelse(y_i == 0, 0, (y_i * log(y_i/u_i))) - (y_i - u_i)
     residuals <- sqrt(abs(deviance.contribs * 2))
     residuals <- ifelse((y_i - u_i) < 0, 0 - residuals, residuals)
-    self.calibration <- .calibration(y_i,u_i,"poisson")
+    self.calibration <- calibration(y_i,u_i,"poisson")
   }
 
   if (family == "gaussian" | family == "laplace") {
