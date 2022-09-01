@@ -21,7 +21,7 @@
 # updated 13/6/05 to accommodate weighting of sites
 #
 # updated 19/8/05 to increment all folds simultaneously, allowing the stopping rule
-# for the maxinum number of trees to be fitted to be imposed by the data,
+# for the maximum number of trees to be fitted to be imposed by the data,
 # rather than being fixed in advance
 #
 # updated 29/8/05 to return cv test statistics, and deviance as mean
@@ -469,7 +469,8 @@ gbm.step.sd <- function(
   cv.cor <- mean(cv.cor.stats, na.rm = TRUE)
   cv.cor.se <- sqrt(var(cv.cor.stats, use = "complete.obs")) / sqrt(n.folds)
 
-  cv.rmse <- mean(cv.cor.stats, na.rm = TRUE)
+  cv.rmse <- mean(cv.rmse.stats, na.rm = TRUE)
+  cv.rmse.se <- sqrt(var(cv.rmse.stats, use = "complete.obs")) / sqrt(n.folds)
 
   cv.roc <- 0.0
   cv.roc.se <- 0.0
@@ -557,7 +558,7 @@ gbm.step.sd <- function(
     cat("estimated cv deviance =", round(cv.dev,3),"; se =", round(cv.dev.se,3),"\n","\n")
     cat("training data correlation =",round(self.cor,3),"\n")
     cat("cv correlation = ",round(cv.cor,3),"; se =",round(cv.cor.se,3),"\n","\n")
-    cat("cv rmse = ",round(cv.rmse,3),"\n","\n")
+    cat("cv rmse = ",round(cv.rmse,3),"; se =",round(cv.rmse.se,3),"\n","\n")
     if (family == "bernoulli") {
       cat("training data AUC score =",round(self.roc,3),"\n")
       cat("cv AUC score =",round(cv.roc,3),"; se =",round(cv.roc.se,3),"\n","\n")
@@ -591,6 +592,7 @@ gbm.step.sd <- function(
                    correlation.mean = cv.cor,
                    correlation.se = cv.cor.se,
                    cv.rmse = cv.rmse,
+                   cv.rmse.se = cv.rmse.se,
                    discrimination.mean = cv.roc,
                    discrimination.se = cv.roc.se,
                    calibration.mean = cv.calibration,
