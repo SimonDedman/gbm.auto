@@ -241,6 +241,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       # adding i'th loop's values as new column
       if (bin) for (j in colnames(samples[expvar])) {
         if (class(samples[,j]) == "factor") nreps = length(levels(samples[,j])) else nreps = 100
+        # Error in `[.data.frame`(samples, , j) : object 'j' not found ####
         # rep 100 is fine for numeric variables but needs to match n(levels) of factorial variables.
         if (!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA, nreps), y = rep(NA, nreps))}
         #if file not created because simp, populate with NAs
@@ -264,7 +265,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         gaus = TRUE} else gaus = FALSE
 
         if (gaus) for (k in colnames(samples[expvar])) {
-          if (class(samples[,j]) == "factor") nreps = length(levels(samples[,j])) else nreps = 100
+          if (class(samples[,k]) == "factor") nreps = length(levels(samples[,k])) else nreps = 100
           if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA, nreps), y = rep(NA, nreps))}
           #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
           #else use existing csv file, 2 columns
