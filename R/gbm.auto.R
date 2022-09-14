@@ -177,6 +177,9 @@
 #' If running poisson distributions, ensure the response variables are positive integers, but if
 #' they are, try a smaller learning rate.
 #'
+#' 15. If lineplots of factorial variables include empty columns be sure to remove unused levels
+#' with samples %<>% droplevels() before the gbm.auto run
+#'
 #' @examples
 #' \donttest{
 #' # Not run. Note: grids file was heavily cropped for CRAN upload so output map
