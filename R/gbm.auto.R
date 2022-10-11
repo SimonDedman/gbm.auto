@@ -641,8 +641,8 @@ gbm.auto <- function(
           if (min(Bin_Best_Simp_Check$deviance.summary$mean) < 0) {
             assign("Bin_Best_Simp",
                    gbm.step.sd(data = samples,
-                               gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
-                               # gbm.x = as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)]),
+                               # gbm.x = Bin_Best_Simp_Check$pred.list[[which.min(Bin_Best_Simp_Check$deviance.summary$mean)]],
+                               gbm.x = as.character(Bin_Best_Simp_Check$final.drops$preds[((dim(subset(Bin_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Bin_Best_Simp_Check$final.drops$preds)]),
                                gbm.y = get(Bin_Best_Model)$gbm.call$gbm.y,
                                tree.complexity = get(Bin_Best_Model)$gbm.call$tree.complexity,
                                learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
@@ -670,14 +670,14 @@ gbm.auto <- function(
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             assign("Gaus_Best_Simp",
                    gbm.step.sd(data = grv_yes,
-                               gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
+                               # gbm.x = Gaus_Best_Simp_Check$pred.list[[which.min(Gaus_Best_Simp_Check$deviance.summary$mean)]],
                                # does the above line return ALL vars or just the simp predictors kept?####
                                # returns a subsample, but not the same as the one below. In bonnie example, top/original line is:
                                # 9 19 28 38
                                # below line is:
                                # "Latitude" "WTMP"
                                # code from report Gaus_BRT_simp predictors kept column, can potentially drop in place:
-                               # gbm.x = as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)]),
+                               gbm.x = as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)]),
                                # if this works do the same for bin
                                gbm.y = get(Gaus_Best_Model)$gbm.call$gbm.y,
                                tree.complexity = get(Gaus_Best_Model)$gbm.call$tree.complexity,
