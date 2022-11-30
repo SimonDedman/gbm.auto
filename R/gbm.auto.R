@@ -531,6 +531,7 @@ gbm.auto <- function(
                                  learning.rate = k,
                                  bag.fraction = l,
                                  n.trees = ntf1,
+                                 {if (!is.null(offset)) offset = grv_yes$offset},
                                  ...)
               )
               dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
@@ -666,6 +667,7 @@ gbm.auto <- function(
                                learning.rate = get(Bin_Best_Model)$gbm.call$learning.rate,
                                family = get(Bin_Best_Model)$gbm.call$family,
                                bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction,
+                               {if (!is.null(offset)) offset = grv_yes$offset},
                                ...))
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin_simp.jpeg"), device = jpeg, width = 600)
 
@@ -702,6 +704,7 @@ gbm.auto <- function(
                                learning.rate = get(Gaus_Best_Model)$gbm.call$learning.rate,
                                family = get(Gaus_Best_Model)$gbm.call$family,
                                bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
+                               {if (!is.null(offset)) offset = grv_yes$offset},
                                ...))
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus_simp.jpeg"), device = jpeg, width = 600)
 
