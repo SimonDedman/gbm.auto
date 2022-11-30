@@ -32,6 +32,9 @@
 #' list(0.01,c(0.001, 0.0005)).
 #' @param bf Permutations of bag fraction allowed, can be single number, vector
 #' or list, per tc and lr. Defaults to 0.5.
+#' @param offset Column number or quoted name in samples, containing offset values relating to the
+#' samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
+#' https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .
 #' @param n.trees From gbm.step, number of initial trees to fit. Can be
 #' single or list but not vector i.e. list(fam1,fam2).
 #' @param ZI Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
@@ -214,24 +217,28 @@ gbm.auto <- function(
     samples,  # explanatory and response variables to predict from.
     # Keep col names short, no odd characters, starting numerals or terminal periods
     # Spaces may be converted to periods in directory names, underscores won't.
-    # Can be a subset
+    # Can be a subset.
     expvar,               # list of column numbers of explanatory variables in
-    # 'samples', expected e.g. c(1,35,67,etc.). No default
+    # 'samples', expected e.g. c(1,35,67,etc.). No default.
     resvar,               # column number(s) of response variable (e.g. CPUE) in
-    # samples, e.g. 12 or c(4,5,6). No default. Column name should be species name
+    # samples, e.g. 12 or c(4,5,6). No default. Column name should be species name.
     tc = c(2),            # permutations of tree complexity allowed, can be a
     # vector with the largest sized number no larger than the number of
     # explanatory variables e.g. c(2,7), or a list of 2 single numbers or vectors,
     # the first to be passed to the binary BRT, the second to the Gaussian, e.g.
-    # tc = list(c(2,6), 2) or list(6, c(2,6))
+    # tc = list(c(2,6), 2) or list(6, c(2,6)).
     lr = c(0.01, 0.005),   # permutations of learning rate allowed. Can be a
     # vector or a list of 2 single numbers or vectors, the first to be passed to
     # the binary BRT, the second to the Gaussian, e.g.
-    # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005))
+    # lr = list(c(0.01,0.02),0.0001) or list(0.01,c(0.001, 0.0005)).
     bf = 0.5,             # permutations of bag fraction allowed, can be single
-    # number, vector or list, per tc and lr
+    # number, vector or list, per tc and lr.
+    offset = NULL,        # column number or quoted name in samples, containing offset values
+    # relating to the samples. A numeric vector of length equal to the number of cases. Similar to
+    # weighting, see
+    # https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798
     n.trees = 50,         # from gbm.step, number of initial trees to fit. Can be
-    # single or list but not vector i.e. list(fam1, fam2)
+    # single or list but not vector i.e. list(fam1, fam2).
     ZI = "CHECK", # are data zero-inflated? "CHECK"/FALSE/TRUE.
     # TRUE: delta BRT, log-normalised Gaus, reverse log-norm and bias corrected.
     # FALSE: do Gaussian only, no log-normalisation.
@@ -381,6 +388,11 @@ gbm.auto <- function(
   expvarnames <- names(samples[expvar]) # list of explanatory variable names
   expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 
+  if (!is.null(offset)) {
+    if (is.character(offset)) offset <- which(colnames(samples) %in% offset) # if offset is the column name, change to column number
+    colnames(samples)[offset] <- "offset" # then change name to "offset"
+  }
+
   if (is.list(tc)) { # if lists entered for tc lr or bf, split them to bin and gaus
     if (length(tc) > 2) {stop("Only 2 tc list items allowed: 1 per family")}
     tcgaus <- tc[[2]]
@@ -424,13 +436,18 @@ gbm.auto <- function(
     samples$brv <- ifelse(samples[i] > 0, 1, 0)
     brvcol <- which(colnames(samples) == "brv") # brv column number for BRT
 
-    # create logged response variable, for gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
+    # create logged response variable, for Gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
     logem <- log1p(samples[,i]) # logs resvar i.e. containing zeroes
     dont  <- samples[,i]
     # log1p resvar if bin only (fam1 bin, fam2 FALSE), OR if resvar is delta & ZI & NOT poisson (which can't be logged, must be positive integers)
     if (fam1 == "bernoulli" & (!gaus | (gaus & ZI & (fam2 != "poisson")))) {samples$grv <- logem} else {samples$grv <- dont}
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
-    grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian BRTs
+
+    if (ZI) {
+      grv_yes <- subset(samples, grv > 0) # nonzero subset for gaussian/poisson BRTs if zero inflated
+    } else {
+      grv_yes <- samples # use the full dataset if not ZI
+    }
 
     if (is.null(loadgbm)) { #if loadgbm is NULL i.e. you're running BRTs not
       # predicting from existing models. Skip to L1404
@@ -577,7 +594,8 @@ gbm.auto <- function(
                                learning.rate = k,
                                bag.fraction = l,
                                n.trees = ntf2,
-                               ...)
+                               {if (!is.null(offset)) offset = grv_yes$offset},
+                               ) # ...
             )
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))

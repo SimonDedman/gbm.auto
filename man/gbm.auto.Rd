@@ -12,6 +12,7 @@ gbm.auto(
   tc = c(2),
   lr = c(0.01, 0.005),
   bf = 0.5,
+  offset = NULL,
   n.trees = 50,
   ZI = "CHECK",
   fam1 = c("bernoulli", "binomial", "poisson", "laplace", "gaussian"),
@@ -70,6 +71,10 @@ list(0.01,c(0.001, 0.0005)).}
 
 \item{bf}{Permutations of bag fraction allowed, can be single number, vector
 or list, per tc and lr. Defaults to 0.5.}
+
+\item{offset}{Column number or quoted name in samples, containing offset values relating to the
+samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
+https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .}
 
 \item{n.trees}{From gbm.step, number of initial trees to fit. Can be
 single or list but not vector i.e. list(fam1,fam2).}

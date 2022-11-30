@@ -78,7 +78,7 @@ gbm.step.sd <- function(
     ...)                                      # allows for any additional plotting parameters
 {
 
-  if (!requireNamespace('gbm') ) { stop ('you need to install the gbm package to run this function') }
+  if (!requireNamespace('gbm') ) { stop('you need to install the gbm package to run this function') }
   requireNamespace('splines')
 
   if (silent) verbose <- FALSE
@@ -109,7 +109,7 @@ gbm.step.sd <- function(
   n.preds <- length(gbm.x)
 
   if (!silent) {
-    cat("\n","\n","GBM STEP - version 2.9","\n","\n")
+    cat("\n","\n","GBM STEP - version 2.9.SD","\n","\n")
     cat("Performing cross-validation optimisation of a boosted regression tree model \n")
     cat("for", sp.name, "and using a family of",family,"\n")
     cat("Using",n.cases,"observations and",n.preds,"predictors \n")
