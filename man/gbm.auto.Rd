@@ -180,89 +180,69 @@ and thesis published using this package.
 \details{
 Errors and their origins:
 
-0. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package
- ‘gbm.auto’
-For Linux/*buntu systems, in terminal, type
-sudo apt install libgeos-dev
-sudo apt install libproj-dev
-sudo apt install libgdal-dev
+1. install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package ‘gbm.auto’.
+For Linux/*buntu systems, in terminal, type: 'sudo apt install libgeos-dev', 'sudo apt install
+libproj-dev', 'sudo apt install libgdal-dev'.
 
-1. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric
-variables
-> Check your variable types are correct, e.g. numerics haven't been imported
+2. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric
+variables. Check your variable types are correct, e.g. numerics haven't been imported
 as factors because there's an errant first row of text information before the
 data. Remove NA rows from the response variable if present: convert blank
 cells to NA on import with read.csv(x, na.strings = "") then
 samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
 
-2. At bf=0.5, if nrows <= 42 gbm.step will crash
-> Use gbm.bfcheck to determine optimal viable bf size
+3. At bf=0.5, if nrows <= 42 gbm.step will crash. Use gbm.bfcheck to determine optimal viable bf
+size
 
-3. Maps/plots don't work/output
-> If on a Mac, try changing pngtype to "quartz"
+4. Maps/plots don't work/output. If on a Mac, try changing pngtype to "quartz".
 
-4. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
-max.trees): missing value where TRUE/FALSE needed
-> If running a zero-inflated delta model (bernoulli/bin & gaussian/gaus),
-Data are expected to contain zeroes (lots of them in zero-inflated cases),
-have you already filtered them out, i.e. are only testing the positive cases?
-Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to
- FALSE
+5. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
+max.trees): missing value where TRUE/FALSE needed. If running a zero-inflated delta model
+(bernoulli/bin & gaussian/gaus), Data are expected to contain zeroes (lots of them in zero-
+inflated cases), have you already filtered them out, i.e. are only testing the positive cases?
+Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to FALSE.
 
-5. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric
-argument to mathematical function
-> LR or BF probably too low in earlier BRT (normally Gaus run with highest
+6. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric argument to
+mathematical function. LR or BF probably too low in earlier BRT (normally Gaus run with highest
 TC)
 
-6. Error in if (n.trees > x$n.trees) { : argument is of length zero}
-> LR or BF probably too low in earlier BRT (normally Gaus run with highest
-TC)
+7. Error in if (n.trees > x$n.trees) { : argument is of length zero}. LR or BF probably too low
+in earlier BRT (normally Gaus run with highest TC).
 
-7. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w =
-w)
-The dataset size is too small or subsampling rate is too large:
-nTrain*bag.fraction <= n.minobsinnode
-> LR or BF probably too low in earlier BRT (normally Gaus run with highest
-TC)
-It may be that you don't have enough positive samples to run BRT modelling
-Run gbm.bfcheck to check recommended minimum BF size
+8. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w) The dataset size
+is too small or subsampling rate is too large: nTrain*bag.fraction <= n.minobsinnode. LR or BF
+probably too low in earlier BRT (normally Gaus run with highest TC). It may be that you don't
+have enough positive samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum
+BF size.
 
-8. Warning message: In cor(y_i, u_i) : the standard deviation is zero
-> LR or BF probably too low in earlier BRT (normally Gaus run with highest
-TC)
-It may be that you don't have enough positive samples to run BRT modelling
-Run gbm.bfcheck to check recommended minimum BF size. Similarly:
-glm.fit: fitted probabilities numerically 0 or 1 occurred
-glm.fit: algorithm did not converge
-See also: Error 14.
+9. Warning message: In cor(y_i, u_i) : the standard deviation is zero. LR or BF probably too low
+in earlier BRT (normally Gaus run with highest TC). It may be that you don't have enough positive
+ samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum BF size. Similarly:
+ glm.fit: fitted probabilities numerically 0 or 1 occurred, and glm.fit: algorithm did not
+ converge. See also: Error 15.
 
-9. Anomalous values can obfuscate clarity in line plots e.g. salinity range
-32:35ppm  but dataset has errant 0 value: plot axis will be 0:35 and 99.99%
-of the data will be in the tiny bit at the right. Clean your data beforehand
+10. Anomalous values can obfuscate clarity in line plots e.g. salinity range 32:35ppm but dataset
+ has errant 0 value: plot axis will be 0:35, and 99.99% of the data will be in the tiny bit at
+ the right. Clean your data beforehand.
 
-10. Error in plot.new() : figure margins too large:
-> In RStudio, adjust plot frame (usually bottom right) to increase its size
-Still fails? Set multiplot=FALSE
+11. Error in plot.new() : figure margins too large: In RStudio, adjust plot frame (usually bottom
+ right) to increase its size. Still fails? Set multiplot=FALSE.
 
-11. Error in dev.print(file = paste0("./", names(samples[i]),
-"/pred_dev_bin.jpeg"): can only print from a screen device
-> An earlier failed run (e.g. LR/BF too low) left a plotting device open.
-Close it with: dev.off()
+12. Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"): can only
+print from a screen device. An earlier failed run (e.g. LR/BF too low) left a plotting device
+open. Close it with: 'dev.off()'.
 
-12. RStudio crashed: set alerts=F and pause cloud sync programs if outputting
-to a synced folder
+13. RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder.
 
-13. Error in grDevices::dev.copy(device = function (filename =
-"Rplot%03d.jpeg", could not open file './P_PECTINATA..../pred_dev_bin.jpeg'
-(or similar)
-> Your resvar column name contains an illegal character e.g. / & ' _
-Fix with colnames(samples)[n] <- "BetterName"
+14. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg", could not open
+file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
+illegal character e.g. /&'_. Fix with colnames(samples)[n] <- "BetterName".
 
-14. Error in gbm.fit: Poisson requires the response to be a positive integer
-If running poisson distributions, ensure the response variables are positive integers, but if
-they are, try a smaller learning rate.
+15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running poisson
+distributions, ensure the response variables are positive integers, but if they are, try a
+smaller learning rate.
 
-15. If lineplots of factorial variables include empty columns be sure to remove unused levels
+16. If lineplots of factorial variables include empty columns be sure to remove unused levels
 with samples %<>% droplevels() before the gbm.auto run
 }
 \examples{
