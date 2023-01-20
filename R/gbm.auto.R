@@ -163,6 +163,11 @@
 #' 16. If lineplots of factorial variables include empty columns be sure to remove unused levels
 #' with samples %<>% droplevels() before the gbm.auto run
 #'
+#' I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
+#' <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background).
+#' Elith et al 2008 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also strongly
+#' recommended.
+#'
 #' @examples
 #' \donttest{
 #' # Not run. Note: grids file was heavily cropped for CRAN upload so output map

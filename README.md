@@ -24,7 +24,15 @@ I strongly recommend that you download papers 1 to 5 (or just the
 doctoral thesis) on <http://www.simondedman.com>, with emphasis on P4
 (the guide) and P1 (statistical background). Elith et al 2008
 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also
-strongly recommended.
+strongly recommended. Also it’s imperative you read the R help files for
+each function before you use them. In RStudio: Packages tab, scroll to
+gbm.auto, click its name, the click the function to see its man (manual)
+page. Read the whole thing. Function man pages can also be accessed from
+the console by typing
+
+``` r
+?function
+```
 
 ------------------------------------------------------------------------
 
@@ -58,8 +66,8 @@ Creates Basemaps for Gbm.auto mapping from your data range
 
 Downloads unzips crops & saves NOAAs global coastline shapefiles to
 user-set box. Use for ‘shape’ in gbm.map. If downloading in RStudio
-uncheck “Use secure download method for HTTP” in Tools &gt; Global
-Options &gt; Packages.
+uncheck “Use secure download method for HTTP” in Tools \> Global Options
+\> Packages.
 
 ------------------------------------------------------------------------
 
