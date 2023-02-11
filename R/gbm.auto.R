@@ -137,7 +137,8 @@
 #' in earlier BRT (normally Gaus run with highest TC). It may be that you don't have enough positive
 #'  samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum BF size. Similarly:
 #'  glm.fit: fitted probabilities numerically 0 or 1 occurred, and glm.fit: algorithm did not
-#'  converge. See also: Error 15.
+#'  converge. Similarly: Error in if (get(paste0("Gaus_BRT", ".tc", j, ".lr", k, ".bf",
+#'  l))$self.statistics$correlation[[1]]: argument is of length zero. See also: Error 15.
 #'
 #' 10. Anomalous values can obfuscate clarity in line plots e.g. salinity range 32:35ppm but dataset
 #'  has errant 0 value: plot axis will be 0:35, and 99.99% of the data will be in the tiny bit at
