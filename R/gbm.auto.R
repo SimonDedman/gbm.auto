@@ -817,6 +817,9 @@ gbm.auto <- function(
           # plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
           # #Center the response to have zero mean over the data distribution
           # plotgrid[,2] <- scale(plotgrid[,2], center = TRUE, scale = FALSE)
+          # 2023-02-24 this is useful for making ggplots like the plot.gbm
+          # https://github.com/SimonDedman/gbm.auto/issues/81
+          plotgrid$ycentred <- plotgrid$y - mean(plotgrid$y)
 
           # write out csv
           write.csv(plotgrid, row.names = FALSE, na = "",
@@ -853,6 +856,7 @@ gbm.auto <- function(
         # plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
         # plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
         # plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
+        plotgrid$ycentred <- plotgrid$y - mean(plotgrid$y)
         write.csv(plotgrid, row.names = FALSE, na = "",
                   file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
                                 as.character(get(Gaus_Best_Model)$contributions$var[p]),
