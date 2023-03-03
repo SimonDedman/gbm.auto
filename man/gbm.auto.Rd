@@ -163,7 +163,8 @@ max.trees, both of which can be added in list(1,2) format to pass to fam1 and
 \value{
 Line, dot and bar plots, a report of all variables used, statistics
 for tests, variable interactions, predictors used and dropped, etc. If
-selected generates predicted abundance maps, and Unrepresentativeness surface
+selected, generates predicted abundance maps, and Unrepresentativeness surface. Biggest
+Interactions in the report csv: see ?dismo::gbm.interactions .
 }
 \description{
 Automates delta log normal boosted regression trees abundance prediction.

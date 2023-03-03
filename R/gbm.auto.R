@@ -94,7 +94,8 @@
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics
 #' for tests, variable interactions, predictors used and dropped, etc. If
-#' selected generates predicted abundance maps, and Unrepresentativeness surface
+#' selected, generates predicted abundance maps, and Unrepresentativeness surface. Biggest
+#' Interactions in the report csv: see ?dismo::gbm.interactions .
 #'
 #' @details Errors and their origins:
 #'
