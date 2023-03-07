@@ -52,7 +52,7 @@ names short (~17 characters max), no odd characters, spaces, starting
 numerals or terminal periods. Spaces may be converted to periods in directory
 names, underscores won't. Can be a subset of a large dataset.}
 
-\item{expvar}{List of names or column numbers of explanatory variables in
+\item{expvar}{Vector of names or column numbers of explanatory variables in
 'samples': c(1,3,6) or c("Temp","Sal"). No default.}
 
 \item{resvar}{Name or column number(s) of response variable in samples: 12,
