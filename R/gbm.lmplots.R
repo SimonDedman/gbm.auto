@@ -52,7 +52,6 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         pointlabs = resvar, # point labels, defaults to resvar value
                         pointcol = "black" # points colour
 ){
-  source("lmplot.R")
   for (i in expvar) {
     # overwrite xname if expvarnames present
     xname <- ifelse(test = is.null(expvarnames),
@@ -67,7 +66,7 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                     yes = resvar,
                     no = resvarname)
     # run plot
-    lmplot(
+    gbm.auto::lmplot(
       x = samples[, i],
       y = samples[, resvar],
       xname = xname,
