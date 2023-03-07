@@ -247,6 +247,10 @@ smaller learning rate.
 16. If lineplots of factorial variables include empty columns be sure to remove unused levels
 with samples %<>% droplevels() before the gbm.auto run
 
+17. Error in seq.default(from = min(x$var.levels[[i.var[i]]]), to = max(x$var.levels[[i.var[i]]])
+:'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
+, those zeroes became imaginary numbers. Use log1p() instead.
+
 I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
 <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background).
 Elith et al 2008 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also strongly

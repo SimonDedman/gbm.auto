@@ -165,6 +165,10 @@
 #' 16. If lineplots of factorial variables include empty columns be sure to remove unused levels
 #' with samples %<>% droplevels() before the gbm.auto run
 #'
+#' 17. Error in seq.default(from = min(x$var.levels[[i.var[i]]]), to = max(x$var.levels[[i.var[i]]])
+#' :'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
+#' , those zeroes became imaginary numbers. Use log1p() instead.
+#'
 #' I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
 #' <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background).
 #' Elith et al 2008 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also strongly
@@ -310,6 +314,7 @@ gbm.auto <- function(
   oldpar <- par(no.readonly = TRUE) # defensive block, thanks to Gregor Sayer
   oldwd <- getwd()
   oldoptions <- options()
+  on.exit(dev.off()) # close any open graphics devices to avoid issues later
   on.exit(par(oldpar))
   on.exit(setwd(oldwd), add = TRUE)
   on.exit(options(oldoptions), add = TRUE)
@@ -830,7 +835,7 @@ gbm.auto <- function(
           } #close linesfiles
           dev.off()
         } # close for o
-      } # close ZI option
+      } # close if fam1 bernoulli / ZI option
 
       if (gaus) {for (p in 1:length(get(Gaus_Best_Model)$contributions$var)) {
         png(filename = paste0("./",names(samples[i]),"/Gaus_Best_line_",as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p]),".png"),
