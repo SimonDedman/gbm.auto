@@ -1382,7 +1382,7 @@ gbm.auto <- function(
           evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
           for (s in evalmetrics) {
             png(filename = paste0("./",names(samples[i]),"/Bin_Eval_", s, ".png"))
-            plot(e, s)
+            dismo::plot(e, s)
             dev.off()
           } # close for (s in evalmetrics)
         } # close if(fam1 == "bernoulli" & (!gaus | (gaus & ZI)))
