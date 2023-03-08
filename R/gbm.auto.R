@@ -505,7 +505,7 @@ gbm.auto <- function(
                                                              "Relative Influence (Gaus)",
                                                              "Biggest Interactions (Gaus)")} # close if else gaus
       # populate the final 14 column names
-      Report[1:length(expvar),1] <- names(samples[expvar]) # put expvar names in first column
+      Report[1:length(expvar),1] <- expvarnames # put expvar names in first column # names(samples[expvar])
       Report[1,2] <- names(samples[i]) # put resvar in col 2
       Report[1,3] <- ZI # ZI in col 3
 
