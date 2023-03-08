@@ -1232,6 +1232,7 @@ gbm.auto <- function(
           abs <- samples[samples[, brvcol] == 0, "preds"]
           e <- evaluate(p = pres,
                         a = abs)
+          saveRDS(e, file = paste0("./",names(samples[i]),"/e.rds"))
 
           # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
           # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
