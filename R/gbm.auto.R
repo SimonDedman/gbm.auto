@@ -385,7 +385,9 @@ gbm.auto <- function(
     samples$randomvar <- runif(n = nrow(drumline), min = 0, max = 1)  # make it then add to expvar & thus expvarnames
     if (is.numeric(expvar)) expvar <- c(expvar, which(colnames(samples) %in% "randomvar")) else expvar <- c(expvar, "randomvar")
   }
-  expvarnames <- names(samples[expvar]) # list of explanatory variable names
+  expvarnames <- if (is.numeric(expvar)) names(samples[expvar]) else expvar # list of explanatory variable names
+  if (!length(cols) == 1 & !length(cols) == length(expvarnames)) stop("length of cols is neither the same as the length of expvars (plus randomvar if selected) nor 1")
+  if (length(cols) == 1) cols <- rep(cols, length(expvarnames)) # if cols is length 1, repeat it so it attaches properly next
   expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 
   if (!is.null(offset)) {
