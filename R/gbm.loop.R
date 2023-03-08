@@ -19,6 +19,7 @@
 #' @param samples See gbm.auto help.
 #' @param expvar See gbm.auto help.
 #' @param resvar See gbm.auto help.
+#' @param randomvar See gbm.auto help.
 #' @param tc See gbm.auto help.
 #' @param lr See gbm.auto help.
 #' @param bf See gbm.auto help.
@@ -89,7 +90,9 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                      expvar,               # list of column numbers of explanatory variables in
                      # 'samples', expected e.g. c(1,35,67,etc.). No default
                      resvar,               # column number of response variable (e.g. CPUE) in
-                     # samples. Expected, e.g. 12. No default. Column name should be species name
+                     # samples. Expected, e.g. 12. No default. Column name should be species name.
+                     randomvar = FALSE,    # Add a random variable (uniform distribution, 0-1) to
+                     # the expvars, to see whether other expvars perform better or worse than random.
                      tc = c(2),            # permutations of tree complexity allowed, can be a
                      # vector with the largest sized number no larger than the number of
                      # explanatory variables e.g. c(2,7), or a list of 2 single numbers or vectors,
@@ -187,6 +190,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                samples = samples,
                expvar = expvar,
                resvar = resvar,
+               randomvar = randomvar,
                tc = tc,
                lr = lr,
                bf = bf,

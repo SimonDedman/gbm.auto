@@ -9,6 +9,7 @@ gbm.auto(
   samples,
   expvar,
   resvar,
+  randomvar = FALSE,
   tc = c(2),
   lr = c(0.01, 0.005),
   bf = 0.5,
@@ -57,6 +58,9 @@ names, underscores won't. Can be a subset of a large dataset.}
 
 \item{resvar}{Name or column number(s) of response variable in samples: 12,
 c(1,4), "Rockfish". No default. Column name is ideally species name.}
+
+\item{randomvar}{Add a random variable (uniform distribution, 0-1) to the expvars, to see whether
+other expvars perform better or worse than random.}
 
 \item{tc}{Permutations of tree complexity allowed, can be vector with
 the largest sized number no larger than the number of explanatory variables

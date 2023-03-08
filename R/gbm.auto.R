@@ -21,6 +21,8 @@
 #' 'samples': c(1,3,6) or c("Temp","Sal"). No default.
 #' @param resvar Name or column number(s) of response variable in samples: 12,
 #' c(1,4), "Rockfish". No default. Column name is ideally species name.
+#' @param randomvar Add a random variable (uniform distribution, 0-1) to the expvars, to see whether
+#'  other expvars perform better or worse than random.
 #' @param tc Permutations of tree complexity allowed, can be vector with
 #' the largest sized number no larger than the number of explanatory variables
 #' e.g. c(2,7), or a list of 2 single numbers or vectors, the first to be passed
@@ -213,6 +215,8 @@ gbm.auto <- function(
     # 'samples', expected e.g. c(1,35,67,etc.). No default.
     resvar,               # column number(s) of response variable (e.g. CPUE) in
     # samples, e.g. 12 or c(4,5,6). No default. Column name should be species name.
+    randomvar = FALSE,    # Add a random variable (uniform distribution, 0-1) to the expvars, to see
+    # whether other expvars perform better or worse than random.
     tc = c(2),            # permutations of tree complexity allowed, can be a
     # vector with the largest sized number no larger than the number of
     # explanatory variables e.g. c(2,7), or a list of 2 single numbers or vectors,
@@ -377,6 +381,10 @@ gbm.auto <- function(
     } # close isnull shape
   } # close isnull grids
 
+  if (randomvar) { # add random variable if requested
+    samples$randomvar <- runif(n = nrow(drumline), min = 0, max = 1)  # make it then add to expvar & thus expvarnames
+    if (is.numeric(expvar)) expvar <- c(expvar, which(colnames(samples) %in% "randomvar")) else expvar <- c(expvar, "randomvar")
+  }
   expvarnames <- names(samples[expvar]) # list of explanatory variable names
   expvarcols <- cbind(cols[1:length(expvarnames)],expvarnames) # assign explanatory variables to colours
 

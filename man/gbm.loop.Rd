@@ -16,6 +16,7 @@ gbm.loop(
   samples,
   expvar,
   resvar,
+  randomvar = FALSE,
   tc = c(2),
   lr = c(0.01),
   bf = 0.5,
@@ -69,6 +70,8 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 \item{expvar}{See gbm.auto help.}
 
 \item{resvar}{See gbm.auto help.}
+
+\item{randomvar}{See gbm.auto help.}
 
 \item{tc}{See gbm.auto help.}
 
