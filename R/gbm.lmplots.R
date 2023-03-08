@@ -28,8 +28,6 @@
 #' @details Errors and their origins:
 #'
 #' @export
-#' @importFrom grDevices dev.off png
-#' @importFrom graphics legend par plot mtext abline text
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
 ## Simon Dedman 2018.08.30 & 2023-03-07
@@ -52,6 +50,12 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         pointlabs = resvar, # point labels, defaults to resvar value
                         pointcol = "black" # points colour
 ){
+
+  # removed so plot not imported which overwrites the use of dismo::plot
+  #  #' @importFrom grDevices dev.off png
+  #  #' @importFrom graphics legend par mtext abline text
+
+
   for (i in expvar) {
     # overwrite xname if expvarnames present
     xname <- ifelse(test = is.null(expvarnames),
