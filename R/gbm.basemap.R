@@ -31,7 +31,6 @@
 #' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 #'
 #' @export
-#' @import rgeos
 #' @import shapefiles
 #' @importFrom rgdal readOGR
 #' @importFrom maptools writeSpatialShape
