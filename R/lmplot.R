@@ -20,7 +20,8 @@
 #' @return Invisibly saves png plot into savedir.
 #'
 #' @details Errors and their origins:
-#'
+#' @importFrom grDevices dev.off png
+#' @importFrom graphics legend par mtext abline text
 #' @export
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
@@ -45,10 +46,6 @@ lmplot <- function(x, # explanatory variable data
                    pointcol = "black", # points colour
                    savedir = "", # save location, end with /
                    ...){ # allows controlling of text label params e.g. adj cex &
-
-  # removed so plot not imported which overwrites the use of dismo::plot
-  #  #' @importFrom grDevices dev.off png
-  #  #' @importFrom graphics legend par mtext abline text
 
   options(scipen = 5) # prevents plot using 1e+05 godawful notation for 100000
   pngtype <- match.arg(pngtype)

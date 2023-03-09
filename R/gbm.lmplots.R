@@ -26,7 +26,8 @@
 #' @return Invisibly saves png plots into savedir.
 #'
 #' @details Errors and their origins:
-#'
+#' @importFrom grDevices dev.off png
+#' @importFrom graphics legend par mtext abline text
 #' @export
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
@@ -50,12 +51,6 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         pointlabs = resvar, # point labels, defaults to resvar value
                         pointcol = "black" # points colour
 ){
-
-  # removed so plot not imported which overwrites the use of dismo::plot
-  #  #' @importFrom grDevices dev.off png
-  #  #' @importFrom graphics legend par mtext abline text
-
-
   for (i in expvar) {
     # overwrite xname if expvarnames present
     xname <- ifelse(test = is.null(expvarnames),
