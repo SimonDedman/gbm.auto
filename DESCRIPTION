@@ -1,6 +1,6 @@
 Package: gbm.auto
 Title: Automated Boosted Regression Tree Modelling and Mapping Suite
-Version: 2023.03.10
+Version: 2023.03.12
 Authors@R: c(
     person("Simon", "Dedman", , "simondedman@gmail.com", role = c("aut", "cre")),
     person("Hans", "Gerritsen", role = "aut")
@@ -23,7 +23,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     beepr (>= 1.2),
-    dismo (>= 1.0-15),
+    dismo (>= 1.3-10),
     dplyr (>= 1.0.9),
     gbm (>= 2.1.1),
     mapplots (>= 1.5),
@@ -40,3 +40,5 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: true
 RoxygenNote: 7.2.3
+Remotes:  
+    rspatial

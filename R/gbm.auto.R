@@ -1380,6 +1380,20 @@ gbm.auto <- function(
           # MLEval$Value <- round(MLEval$Value, digits = 5)
           write.csv(MLEval, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/MLEvalMetricsBin.csv"))
 
+          # 2023-03-12
+          # bug where plot(e,s) wanted type=double because ModeEvaluation wasn't an exported method from dismo:
+          # https://stackoverflow.com/questions/75669228/r-plot-error-in-as-doublex-cannot-coerce-type-s4-to-vector-of-type-doubl
+          # Raised in bug: https://github.com/rspatial/dismo/issues/37
+          # Fixed in commit: https://github.com/rspatial/dismo/commit/e4cc66f2abaec80a46d40f0afc6f7b06f16c7228
+          # Included dismo github 1.3-10 into DESCRIPTION via:
+          # use_dev_package(package = "dismo",type = "Imports",remote = "rspatial")
+          # adds Remotes section. Manually changed dismo version.
+          # Per https://r-pkgs.org/dependencies-in-practice.html#depending-on-the-development-version-of-a-package
+          # After document(): Warning message: In loadNamespace(i, c(lib.loc, .libPaths()), versionCheck = vI[[i]]):
+          #  namespace ‘dismo’ 1.3-9 is already loaded, but >= 1.3.10 is required
+          # Note I need to change to the next CRAN dismo submission before I can submit to CRAN again.
+
+
           evalmetrics <- c("ROC", "kappa", "prevalence", "TPR", "TNR", "FPR", "FNR", "CCR", "PPP", "NPP", "MCR", "OR")
           for (s in evalmetrics) {
             png(filename = paste0("./",names(samples[i]),"/Bin_Eval_", s, ".png"))
