@@ -85,8 +85,8 @@ single or list but not vector i.e. list(fam1,fam2).}
 
 \item{ZI}{Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
 delta BRT, log-normalised Gaus, reverse log-norm and bias corrected. FALSE:
-do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is
- CHECK.}
+do Gaussian only, no log-normalisation. "CHECK": Tests data for you. Default is
+ "CHECK". TRUE and FALSE aren't in quotes, "CHECK" is.}
 
 \item{fam1}{Probability distribution family for 1st part of delta process,
 defaults to "bernoulli". Choose one.}

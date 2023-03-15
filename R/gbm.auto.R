@@ -41,8 +41,8 @@
 #' single or list but not vector i.e. list(fam1,fam2).
 #' @param ZI Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
 #' delta BRT, log-normalised Gaus, reverse log-norm and bias corrected. FALSE:
-#' do Gaussian only, no log-normalisation. CHECK: Tests data for you. Default is
-#'  CHECK.
+#' do Gaussian only, no log-normalisation. "CHECK": Tests data for you. Default is
+#'  "CHECK". TRUE and FALSE aren't in quotes, "CHECK" is.
 #' @param fam1 Probability distribution family for 1st part of delta process,
 #' defaults to "bernoulli". Choose one.
 #' @param fam2 Probability distribution family for 2nd part of delta process,
@@ -357,6 +357,7 @@ gbm.auto <- function(
   pngtype <- match.arg(pngtype)
   if (fam1 == "binomial") fam1 <- "bernoulli" # gbm::gbm doesn't like binomial even though it's the same
   if (fam2 == "binomial") fam2 <- "bernoulli"
+  if (gaus) if (fam2 == fam1) stop("attempting to run delta model with both families the same. Expects fam1==bernoulli & gaus==TRUE & fam2==somethingElse, OR fam1==anything & gaus==FALSE")
 
   # tibble's don't collapse into a vector, instead an X x 1 df, which breaks various functionality.
   if ("tbl" %in% class(grids)) grids <- as.data.frame(grids)
@@ -508,6 +509,7 @@ gbm.auto <- function(
       Report[1:length(expvar),1] <- expvarnames # put expvar names in first column # names(samples[expvar])
       Report[1,2] <- names(samples[i]) # put resvar in col 2
       Report[1,3] <- ZI # ZI in col 3
+      Report[2,3] <- paste0(round(sum(samples[,i] == 0, na.rm = TRUE) / length(samples[,i]), 3) * 100, "% zeroes") # add zeroes % under ZI in col3
 
       StatsObjectsList <- list()
 
@@ -551,14 +553,14 @@ gbm.auto <- function(
               } # close if else n==1
 
               ####6. Add bin stats to report####
-              if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {Report[1:8,(3 + n)] <- c(paste0("trees: ",get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
-                                                                                         paste0("Training Data Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
-                                                                                         paste0("CV Mean Deviance: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
-                                                                                         paste0("CV Deviance SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
-                                                                                         paste0("CV D squared: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$d.squared),
-                                                                                         paste0("CV Mean Correlation: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
-                                                                                         paste0("CV Correlation SE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se),
-                                                                                         paste0("CV RMSE: ", get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$cv.rmse))
+              if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {Report[1:8,(3 + n)] <- c(paste0("trees: ",round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$n.trees, 3)),
+                                                                                         paste0("Training Data Correlation: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]], 3)),
+                                                                                         paste0("CV Mean Deviance: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean, 3)),
+                                                                                         paste0("CV Deviance SE: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se, 3)),
+                                                                                         paste0("CV D squared: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$d.squared, 3)),
+                                                                                         paste0("CV Mean Correlation: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean, 3)),
+                                                                                         paste0("CV Correlation SE: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se, 3)),
+                                                                                         paste0("CV RMSE: ", round(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$cv.rmse), 3))
               # bin BRT name
               colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
 
@@ -617,14 +619,14 @@ gbm.auto <- function(
             } else {print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tcgaus)*length(lrgaus)*length(bfgaus)),"     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
             ####9. Add gaus stats to report####
-            Report[1:8,(3 + n)] <- c(paste0("trees: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$n.trees),
-                                     paste0("Training Data Correlation: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]]),
-                                     paste0("CV Mean Deviance: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean),
-                                     paste0("CV Deviance SE: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se),
-                                     paste0("CV D squared: ", get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$d.squared),
-                                     paste0("CV Mean Correlation: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean),
-                                     paste0("CV Correlation SE: ",get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se),
-                                     paste0("CV RMSE: ", get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$cv.rmse))
+            Report[1:8,(3 + n)] <- c(paste0("trees: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$n.trees, 3)),
+                                     paste0("Training Data Correlation: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$self.statistics$correlation[[1]], 3)),
+                                     paste0("CV Mean Deviance: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.mean, 3)),
+                                     paste0("CV Deviance SE: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$deviance.se, 3)),
+                                     paste0("CV D squared: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$d.squared, 3)),
+                                     paste0("CV Mean Correlation: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.mean, 3)),
+                                     paste0("CV Correlation SE: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$correlation.se, 3)),
+                                     paste0("CV RMSE: ", round(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics$cv.rmse, 3)))
 
             # Gaus BRT name
             colnames(Report)[3 + n] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)
@@ -1182,6 +1184,16 @@ gbm.auto <- function(
         } # close varint yes no, still in gaus yes
       } # close gaus if
 
+      Report[, "Metadata"] <- as.character(NA)
+      Report$Metadata[1:4] <- c(
+        paste0("gbm.auto v", packageVersion("gbm.auto")),
+        paste0("dismo v", packageVersion("dismo")),
+        paste0("fam1 n ", length(samples[, i])),
+        ifelse(gaus, paste0("fam2 n ", length(grv_yes[, i])), as.character(NA))
+      )
+
+      # ) was a closed bracket here, I think errantly
+
       write.csv(Report, row.names = FALSE, na = "", file = paste0("./", names(samples[i]), "/Report.csv"))
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Report CSV written      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
@@ -1232,7 +1244,7 @@ gbm.auto <- function(
           abs <- samples[samples[, brvcol] == 0, "preds"]
           e <- evaluate(p = pres,
                         a = abs)
-          saveRDS(e, file = paste0("./",names(samples[i]),"/e.rds"))
+          # saveRDS(e, file = paste0("./",names(samples[i]),"/e.rds")) # saveout for diagnostics, bug since fixed
 
           # Fielding, A. H. & J.F. Bell, 1997. A review of methods for the assessment of prediction errors in conservation presence/absence models. Environmental Conservation 24: 38-49
           # Liu, C., M. White & G. Newell, 2011. Measuring and comparing the accuracy of species distribution models with presence-absence data. Ecography 34: 232-243.
