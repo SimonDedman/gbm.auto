@@ -175,6 +175,10 @@
 #' <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background).
 #' Elith et al 2008 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also strongly
 #' recommended.
+#' Just because you CAN try every conceivable combination of tc, lr, bf, all, at once doesn't mean
+#' you should. Try a range of lr in shrinking orders of magnitude from 0.1 to 0.000001, find the
+#' best, THEN try tc c(2, n.expvars), find the best THEN bf c(0.5, 0.75, 0.9) and then in between if
+#'  either outperform 0.5.
 #'
 #' @examples
 #' \donttest{

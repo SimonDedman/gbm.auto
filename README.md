@@ -34,6 +34,12 @@ the console by typing
 ?function
 ```
 
+Just because you CAN try every conceivable combination of tc, lr, bf,
+all, at once doesn’t mean you should. Try a range of lr in shrinking
+orders of magnitude from 0.1 to 0.000001, find the best, THEN try tc
+c(2, n.expvars), find the best THEN bf c(0.5, 0.75, 0.9) and then in
+between if either outperform 0.5.
+
 ------------------------------------------------------------------------
 
 ### gbm.auto
@@ -135,6 +141,26 @@ Processes a user-specified number of loops through the same gbm.auto
 parameter combinations and calculates the Coefficient Of Variation in
 the predicted abundance scores for each site aka cell. This can be
 mapped to spatially demonstrate the output variance range.
+
+------------------------------------------------------------------------
+
+### gbm.factorplot
+
+ggplot-based update to PDP for factorial/categorical/character
+variables, allows changing order of categorical variables, and changing
+angle of x-axis labels to avoid them being cut off.
+
+------------------------------------------------------------------------
+
+### lmplot
+
+Linear plot of two variables.
+
+------------------------------------------------------------------------
+
+### gbm.lmplots
+
+Loops through lmplots for all expvars (x) against the same resvar (y).
 
 ------------------------------------------------------------------------
 

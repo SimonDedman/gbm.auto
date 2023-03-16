@@ -1,9 +1,16 @@
 ---
 title: "NEWS.md"
 author: "Simon Dedman"
-date: "2021-10-07"
+date: "2023-03-16"
 output: html_document
 ---
+#v2023.03.16
+* added categorical_pdp_plotter to extras
+* added gbm.plots and lmplot
+* random var added
+* gbm.factorplot added
+* add gbm.step.sd and model evaluation metrics like RMSE etc
+
 # v1.5.5
 * gbm.basemap added returnsf param, allows returning sf object
 
