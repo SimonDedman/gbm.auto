@@ -4,6 +4,11 @@
 # gbm.auto
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/SimonDedman/gbm.auto/workflows/R-CMD-check--as-cran/badge.svg)](https://github.com/SimonDedman/gbm.auto/actions)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/gbm.auto)](https://cran.r-project.org/package=gbm.auto)
+[![CRAN RStudio mirror
+downloads](https://cranlogs.r-pkg.org/badges/gbm.auto)](https://cran.r-project.org/package=gbm.auto)
 <!-- badges: end -->
 <!-- badgeplacer(location = ".", status = "active", githubaccount = SimonDedman, githubrepo = gbm.auto, branch = master, name = "README.Rmd") -->
 

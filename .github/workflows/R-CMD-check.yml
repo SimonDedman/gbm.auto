@@ -1,0 +1,98 @@
+# adapted from ggplot2's repository, copied from Hugo Flavio's actel, cheers Hugo!
+
+on: [push, pull_request]
+
+name: R-CMD-check
+
+# Increment this version when we want to clear cache
+env:
+  cache-version: v4
+
+jobs:
+  R-CMD-check:
+  runs-on: ${{ matrix.config.os }}
+
+name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+strategy:
+  fail-fast: false
+matrix:
+  config:
+  - {os: windows-latest, r: '4.1'}
+- {os: windows-latest, r: '4.2'}
+- {os: windows-latest, r: 'devel'}
+- {os: macOS-latest,   r: '4.1'}
+- {os: macOS-latest,   r: '4.2'}
+- {os: ubuntu-18.04,   r: '4.1', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+- {os: ubuntu-18.04,   r: '4.2', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+
+env:
+  R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+RSPM: ${{ matrix.config.rspm }}
+# don't treat missing suggested packages as error
+_R_CHECK_FORCE_SUGGESTS_: false
+
+steps:
+  - uses: actions/checkout@v2
+
+- uses: r-lib/actions/setup-r@master
+with:
+  r-version: ${{ matrix.config.r }}
+http-user-agent: ${{ matrix.config.http-user-agent }}
+
+- uses: r-lib/actions/setup-pandoc@master
+
+- name: Query dependencies
+run: |
+  install.packages('remotes')
+saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
+shell: Rscript {0}
+
+- name: Cache R packages
+if: runner.os != 'Windows'
+uses: actions/cache@v1
+with:
+  path: ${{ env.R_LIBS_USER }}
+key: ${{ env.cache-version }}-${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
+restore-keys: ${{ env.cache-version }}-${{ runner.os }}-r-${{ matrix.config.r }}-
+
+  - name: Install system dependencies on Linux
+if: runner.os == 'Linux'
+run: |
+  while read -r cmd
+do
+eval sudo $cmd
+done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "18.04"))')
+- name: Install system dependencies on macOS
+if: runner.os == 'macOS'
+run: |
+  brew install --cask xquartz
+- name: Install dependencies
+run: |
+  remotes::install_deps(dependencies = TRUE)
+remotes::install_cran("rcmdcheck")
+remotes::install_cran("covr")
+shell: Rscript {0}
+
+- name: Check
+run: |
+  file.remove("depends.Rds")
+rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "warning", check_dir = "check")
+shell: Rscript {0}
+
+- name: Run codecov
+if: runner.os == 'Linux'
+run: |
+  covr::codecov()
+shell: Rscript {0}
+
+- name: Upload coverage to Codecov
+if: runner.os == 'Linux'
+uses: codecov/codecov-action@v1
+
+- name: Upload check results
+if: failure()
+uses: actions/upload-artifact@master
+with:
+  name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+path: check
