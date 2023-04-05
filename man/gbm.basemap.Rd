@@ -68,18 +68,14 @@ If you've specified the location of the local GSHHS_shp folder, ensure you're
 in the correct directory relative to it. This error means it looked for the
 folder and couldn't find it.
 
-2. Error in writeSpatialShape(cropshp, savename) x is a NULL object, not a
-compatible Spatial*DataFrame.
-Ensure that your lats and longs are the the right way around
-
-3. If rgdal install fails in Linux try:
+2. If rgdal install fails in Linux try:
 sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 
-4. Error in as.environment(pos):no item called "package:shapefiles" on the
+3. Error in as.environment(pos):no item called "package:shapefiles" on the
 search list: strange error occurring despite shapefiles being coded like all
 other packages. Correct output produced regardless.
 
-5. subscript out of bounds: can't crop world map to your bounds.
+4. subscript out of bounds: can't crop world map to your bounds.
 Check lat/lon are the right way around
 }
 \examples{

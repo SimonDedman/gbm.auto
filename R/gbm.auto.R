@@ -428,8 +428,8 @@ gbm.auto <- function(
 
   for (i in resvar) { # loop everything for each response variable (e.g. species)
     dir.create(names(samples[i])) # create resvar-named directory for outputs
-    m = 1 # Gaus only loop counter to allow best gaus BRT choice
-    n = 1 # Print counter for all loops of BRT combos & best bin BRT choice
+    m = 0 # Gaus only loop counter to allow best gaus BRT choice
+    n = 0 # Print counter for all loops of BRT combos & best bin BRT choice
     if (!is.null(grids)) if (!all(expvarnames %in% names(grids))) stop(print("Expvar column names in samples but missing from grids:"), print(expvarnames[which(!expvarnames %in% names(grids))]))
     if (anyNA(samples[i])) stop("Response variable range contains NA values, please filter out these rows with: mysamples <- mysamples[-which(is.na(mysamples[resvar])),]")
 
@@ -527,11 +527,11 @@ gbm.auto <- function(
         for (j in tc) {   # list permutations of tree complexity allowed
           for (k in lr) {   # list permutations of learning rate allowed
             for (l in bf) {   # list permutations of bag fraction allowed
-
+              n <- n + 1   # Add to print counter
               ####4. Binomial BRT####
               print(paste0("Running ", fam1, " BRT, tc=",j,", lr=",k,", bf=",l))
               assign(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l),
-                     gbm.step.sd(data = samples,
+                     try(gbm.step.sd(data = samples, # try wrapper results in the object being a try-error class if the BRT fails
                                  gbm.x = expvar,
                                  gbm.y = brvcol,
                                  family = fam1,
@@ -540,8 +540,9 @@ gbm.auto <- function(
                                  bag.fraction = l,
                                  n.trees = ntf1,
                                  {if (!is.null(offset)) offset = grv_yes$offset},
-                                 ...)
+                                 ...))
               )
+              if (class(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))) == "try-error") next # test for BRT failure and skip this hyperparameter combo
               dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
               print(warnings())
@@ -581,7 +582,6 @@ gbm.auto <- function(
               } else { # close if else gaus
                 print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Completed BRT ",n," of ", (length(tc)*length(lr)*length(bf)), "     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
               } # else if gaus
-              n <- n + 1   # Add to print counter
             } # close bf l
           } # close lr k
         } # close tc j
@@ -591,11 +591,13 @@ gbm.auto <- function(
       if (gaus) for (j in tcgaus) {   # list permutations of tree complexity allowed
         for (k in lrgaus) {   # list permutations of learning rate allowed
           for (l in bfgaus) {   # list permutations of bag fraction allowed
+            n <- n + 1 # Add to print/loop counter for every bin or gaus BRT loop
+            m <- m + 1 # Add to loop counter for Gaus best model selection
             ####7. Gaussian BRT####
             print(paste0("Running ", fam2, " BRT, tc=",j,", lr=",k,", bf=",l))
             write.csv(x = grv_yes[,grvcol], file = paste0("./",names(samples[i]),"/grv.csv"), row.names = FALSE)
             assign(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l),
-                   gbm.step.sd(data = grv_yes,
+                   try(gbm.step.sd(data = grv_yes,
                                gbm.x = expvar,
                                gbm.y = grvcol,
                                family = fam2,
@@ -604,8 +606,9 @@ gbm.auto <- function(
                                bag.fraction = l,
                                n.trees = ntf2,
                                {if (!is.null(offset)) offset = grv_yes$offset},
-                               ...)
+                               ...))
             )
+            if (class(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))) == "try-error") next
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
             print(warnings())
@@ -639,10 +642,6 @@ gbm.auto <- function(
             names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l, "_self.statistics") # name it. new length now includes self.statistics
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))$cv.statistics
             names(StatsObjectsList)[[length(StatsObjectsList)]] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l, "_cv.statistics")
-
-            n <- n + 1 # Add to print/loop counter for every bin or gaus BRT loop
-            m <- m + 1 # Add to loop counter for Gaus best model selection
-
           } # close bfgaus
         } # close lrgaus
       } # close for j in tcgaus, making all Gaus BRT objects & continuing through model selection

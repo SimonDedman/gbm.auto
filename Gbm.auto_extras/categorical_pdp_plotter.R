@@ -1,3 +1,10 @@
+# 2023-03-10 code to plot categorical variables with ggplot
+# Todo: could automate the process of scanning through the output folder,
+# looking for csvs with certain naming conventions,
+# screening out those which aren't factorial variables,
+# then auto-plotting the rest?
+# add abline @ Y=0
+
 # library(readr)
 # library(utils)
 library(ggplot2)

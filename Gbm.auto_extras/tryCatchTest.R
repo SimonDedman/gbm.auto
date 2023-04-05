@@ -27,6 +27,7 @@ for (i in 1:length(j)) { # i <- 1
 
 # If it fails, I need to just move onto the next loop I think? So:
 if (class(get(paste0("res", i), try(log(j[[i]])))) == "try-error") next
+if (class(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))) == "try-error") next
 
 # NO, because report column indices are based on a loop-agnostic counter, n:
 n = 1 # Print counter for all loops of BRT combos & best bin BRT choice #L432 (same for gaus L431)
