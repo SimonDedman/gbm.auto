@@ -748,7 +748,7 @@ gbm.auto <- function(
         } # close ZI
 
         # Same for Gaus:
-        if (gaus& exists("Gaus_Best_Model")) {
+        if (gaus & exists("Gaus_Best_Model")) {
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             if (Gaus_Best_Simp$self.statistics$correlation > Gaus_Best_Score[1]) {
               Gaus_Best_Score <- Gaus_Best_Simp$self.statistics$correlation
