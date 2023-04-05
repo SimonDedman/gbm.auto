@@ -542,7 +542,11 @@ gbm.auto <- function(
                                  {if (!is.null(offset)) offset = grv_yes$offset},
                                  ...)
               )
-              if (is.null(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)))) next # test for BRT failure and skip this hyperparameter combo
+              if (is.null(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)))) { # test for BRT failure and skip this hyperparameter combo
+                Report[1, (3 + n)] <- "Run failed, try smaller lr or step size"
+                colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
+                next
+              }
               dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
               print(warnings())
@@ -608,7 +612,11 @@ gbm.auto <- function(
                                {if (!is.null(offset)) offset = grv_yes$offset},
                                ...)
             )
-            if (is.null(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)))) next
+            if (is.null(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)))) {
+              Report[1, (3 + n)] <- "Run failed, try smaller lr or step size"
+              colnames(Report)[3 + n] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)
+              next
+              }
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
             print(warnings())
