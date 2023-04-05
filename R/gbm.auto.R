@@ -531,7 +531,7 @@ gbm.auto <- function(
               ####4. Binomial BRT####
               print(paste0("Running ", fam1, " BRT, tc=",j,", lr=",k,", bf=",l))
               assign(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l),
-                     try(gbm.step.sd(data = samples, # try wrapper results in the object being a try-error class if the BRT fails
+                     gbm.step.sd(data = samples,
                                  gbm.x = expvar,
                                  gbm.y = brvcol,
                                  family = fam1,
@@ -540,9 +540,9 @@ gbm.auto <- function(
                                  bag.fraction = l,
                                  n.trees = ntf1,
                                  {if (!is.null(offset)) offset = grv_yes$offset},
-                                 ...))
+                                 ...)
               )
-              if (class(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l))) == "try-error") next # test for BRT failure and skip this hyperparameter combo
+              if (is.null(get(paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)))) next # test for BRT failure and skip this hyperparameter combo
               dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
               print(warnings())
@@ -597,7 +597,7 @@ gbm.auto <- function(
             print(paste0("Running ", fam2, " BRT, tc=",j,", lr=",k,", bf=",l))
             write.csv(x = grv_yes[,grvcol], file = paste0("./",names(samples[i]),"/grv.csv"), row.names = FALSE)
             assign(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l),
-                   try(gbm.step.sd(data = grv_yes,
+                   gbm.step.sd(data = grv_yes,
                                gbm.x = expvar,
                                gbm.y = grvcol,
                                family = fam2,
@@ -606,9 +606,9 @@ gbm.auto <- function(
                                bag.fraction = l,
                                n.trees = ntf2,
                                {if (!is.null(offset)) offset = grv_yes$offset},
-                               ...))
+                               ...)
             )
-            if (class(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l))) == "try-error") next
+            if (is.null(get(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)))) next
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
             print(warnings())
@@ -1138,16 +1138,16 @@ gbm.auto <- function(
 
       if (gaus) {
         Report[1:11 ,(reportcolno - 6)] <- c(paste0("Model combo: ", Gaus_Best_Name),
-                                            paste0("trees: ", get(Gaus_Best_Model)$n.trees),  # new, might not work
-                                            paste0("Training Data Correlation: ", round(Gaus_Best_Score, 3)),
-                                            paste0("CV Mean Deviance: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.mean, 3)), # new, might not work
-                                            paste0("CV Deviance SE: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.se, 3)), # new, might not work
-                                            paste0("CV D squared: ", round(get(Gaus_Best_Model)$cv.statistics$d.squared, 3)), # new, might not work
-                                            paste0("CV Mean Correlation: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.mean, 3)), # new, might not work
-                                            paste0("CV Correlation SE: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.se, 3)), # new, might not work
-                                            paste0("CV RMSE: ", round(get(Gaus_Best_Model)$cv.statistics$cv.rmse, 3)), # new, might not work
-                                            paste0("Deviance% explained relative to null, training: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2)), # new, might not work
-                                            paste0("Deviance% explained relative to null, CV: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$cv.statistics$deviance.mean) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2))) # new, might not work
+                                             paste0("trees: ", get(Gaus_Best_Model)$n.trees),  # new, might not work
+                                             paste0("Training Data Correlation: ", round(Gaus_Best_Score, 3)),
+                                             paste0("CV Mean Deviance: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.mean, 3)), # new, might not work
+                                             paste0("CV Deviance SE: ", round(get(Gaus_Best_Model)$cv.statistics$deviance.se, 3)), # new, might not work
+                                             paste0("CV D squared: ", round(get(Gaus_Best_Model)$cv.statistics$d.squared, 3)), # new, might not work
+                                             paste0("CV Mean Correlation: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.mean, 3)), # new, might not work
+                                             paste0("CV Correlation SE: ", round(get(Gaus_Best_Model)$cv.statistics$correlation.se, 3)), # new, might not work
+                                             paste0("CV RMSE: ", round(get(Gaus_Best_Model)$cv.statistics$cv.rmse, 3)), # new, might not work
+                                             paste0("Deviance% explained relative to null, training: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$self.statistics$mean.resid) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2)), # new, might not work
+                                             paste0("Deviance% explained relative to null, CV: ", round(((get(Gaus_Best_Model)$self.statistics$mean.null - get(Gaus_Best_Model)$cv.statistics$deviance.mean) / get(Gaus_Best_Model)$self.statistics$mean.null)*100, 2))) # new, might not work
 
         if (simp) {
           Report[1:dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1], (reportcolno - 5)] <- as.character(subset(Gaus_Best_Simp_Check$final.drops ,order > 0)$preds)
@@ -1155,16 +1155,16 @@ gbm.auto <- function(
             as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             Report[1:10, (reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
-                                                paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
-                                                paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
-                                                paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
-                                                paste0("CV D squared: ", Gaus_Best_Simp$cv.statistics$d.squared),
-                                                paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
-                                                paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
-                                                paste0("CV RMSE: ", Gaus_Best_Simp$cv.statistics$cv.rmse),
-                                                paste0("Deviance% explained relative to null, training: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$self.statistics$mean.resid) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)), # new, might not work
-                                                paste0("Deviance% explained relative to null, CV: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$cv.statistics$deviance.mean) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)))
-            } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
+                                                 paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
+                                                 paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
+                                                 paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
+                                                 paste0("CV D squared: ", Gaus_Best_Simp$cv.statistics$d.squared),
+                                                 paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
+                                                 paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
+                                                 paste0("CV RMSE: ", Gaus_Best_Simp$cv.statistics$cv.rmse),
+                                                 paste0("Deviance% explained relative to null, training: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$self.statistics$mean.resid) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)), # new, might not work
+                                                 paste0("Deviance% explained relative to null, CV: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$cv.statistics$deviance.mean) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)))
+          } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
             Report[1,(reportcolno - 3)] <- paste0("No simplification benefit")
           } # close if else simp benefit check
         } else { # close gaus yes simp yes, do gaus yes simp no
