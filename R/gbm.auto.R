@@ -171,6 +171,9 @@
 #' :'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
 #' , those zeroes became imaginary numbers. Use log1p() instead.
 #'
+#' 18. Error in loadNamespace...'dismo' 1.3-9 is being loaded, but >= 1.3.10 is required: first do
+#' remotes::install_github("rspatial/dismo") then library(dismo).
+#'
 #' I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
 #' <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background).
 #' Elith et al 2008 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also strongly
@@ -547,7 +550,8 @@ gbm.auto <- function(
                 colnames(Report)[3 + n] <- paste0("Bin_BRT",".tc",j,".lr",k,".bf",l)
                 next
               }
-              dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
+              dev.print(file = paste0("./",names(samples[i]),"/pred_dev_", fam1, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
+              # dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin.jpeg"), device = jpeg, width = 600)
               print(paste0("Done Bin_BRT",".tc",j,".lr",k,".bf",l))
               print(warnings())
               # assign("last.warning", NULL, envir = baseenv()) # dumps warnings so subsequent printing doesn't reprint the existing warning
@@ -617,7 +621,8 @@ gbm.auto <- function(
               colnames(Report)[3 + n] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)
               next
               }
-            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
+            # dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
+            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_", fam2, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
             print(warnings())
             print("Note: previous warnings may be reprinted")
@@ -666,7 +671,7 @@ gbm.auto <- function(
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
           Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
-          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_bin.jpeg"), device = jpeg, width = 600)
+          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", fam1, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
           # if best number of variables to remove isn't 0 (i.e. it's worth simplifying),
           # re-run best model (Bin_Best_Model, using gbm.call to get its values) with
           # just-calculated best number of variables to remove, removed. gbm.x asks which
@@ -684,7 +689,7 @@ gbm.auto <- function(
                                bag.fraction = get(Bin_Best_Model)$gbm.call$bag.fraction,
                                {if (!is.null(offset)) offset = grv_yes$offset},
                                ...))
-            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_bin_simp.jpeg"), device = jpeg, width = 600)
+            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_", fam1, "_tc",j,"lr",k,"bf",l,"_simp.jpeg"), device = jpeg, width = 600)
 
             # Add Bin simp stats objects to StatsObjectsList
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- Bin_Best_Simp$self.statistics # send to new position after last item
@@ -701,7 +706,7 @@ gbm.auto <- function(
         # Same for Gaus
         if (gaus & exists("Gaus_Best_Model")) {
           Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
-          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_gaus.jpeg"), device = jpeg, width = 600)
+          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", fam2, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             assign("Gaus_Best_Simp",
                    gbm.step.sd(data = grv_yes,
@@ -721,7 +726,7 @@ gbm.auto <- function(
                                bag.fraction = get(Gaus_Best_Model)$gbm.call$bag.fraction,
                                {if (!is.null(offset)) offset = grv_yes$offset},
                                ...))
-            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus_simp.jpeg"), device = jpeg, width = 600)
+            dev.print(file = paste0("./",names(samples[i]),"/pred_dev_", fam2, "_tc",j,"lr",k,"bf",l,"_simp.jpeg"), device = jpeg, width = 600)
 
             # Add Gaus simp stats objects to StatsObjectsList
             StatsObjectsList[[length(StatsObjectsList) + 1]] <- Gaus_Best_Simp$self.statistics # send to new position after last item
@@ -816,6 +821,7 @@ gbm.auto <- function(
                    x.label = NULL,
                    show.contrib = TRUE,
                    plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
+          abline(h = 0) # https://github.com/SimonDedman/gbm.auto/issues/7
           mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
           # gbm.plot calls plot.gbm ~L47 but then centres to have 0 mean @L53
           # Asked Robert Hijmans to add a param to omit this: https://github.com/rspatial/dismo/issues/22
@@ -875,6 +881,7 @@ gbm.auto <- function(
                  x.label = NULL,
                  show.contrib = TRUE,
                  plot.layout = c(1, 1))
+        abline(h = 0) # https://github.com/SimonDedman/gbm.auto/issues/7
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
         if (linesfiles) {u <- match(get(Gaus_Best_Model)$contributions$var[p],

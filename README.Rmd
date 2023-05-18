@@ -127,7 +127,13 @@ Loops through lmplots for all expvars (x) against the same resvar (y).
 
 ### roc & calibration
 
-internal functions authored by Elith & Leathwick, used by gbm.auto.R
+Internal functions authored by Elith & Leathwick, used by gbm.auto.R
+
+***
+
+### gbm.step.sd
+
+Local copy of dismo's gbm.step, with added functions to generate model evaluation metrics such as root mean squared error and amount of deviance explained relative to null.
 
 ***
 
@@ -143,7 +149,7 @@ And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("SimonDedman/gbm.auto")
+remotes::install_github("SimonDedman/gbm.auto")
 ```
 
 ***
