@@ -881,7 +881,13 @@ gbm.auto <- function(
                  x.label = NULL,
                  show.contrib = TRUE,
                  plot.layout = c(1, 1))
-        abline(a = 0, b = 0, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 0, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 0.5, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 1, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 2, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 5, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 10, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
+        abline(h = 100, lty = 2, lwd = 20) # https://github.com/SimonDedman/gbm.auto/issues/7
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
         if (linesfiles) {u <- match(get(Gaus_Best_Model)$contributions$var[p],
