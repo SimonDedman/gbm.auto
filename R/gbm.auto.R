@@ -390,7 +390,7 @@ gbm.auto <- function(
   } # close isnull grids
 
   if (randomvar) { # add random variable if requested
-    samples$randomvar <- runif(n = nrow(drumline), min = 0, max = 1)  # make it then add to expvar & thus expvarnames
+    samples$randomvar <- runif(n = nrow(samples), min = 0, max = 1)  # make it then add to expvar & thus expvarnames
     if (is.numeric(expvar)) expvar <- c(expvar, which(colnames(samples) %in% "randomvar")) else expvar <- c(expvar, "randomvar")
   }
   expvarnames <- if (is.numeric(expvar)) names(samples[expvar]) else expvar # list of explanatory variable names
@@ -821,7 +821,7 @@ gbm.auto <- function(
                    x.label = NULL,
                    show.contrib = TRUE,
                    plot.layout = c(1, 1)) # ... for cex.axis, cex.lab etc
-          abline(h = 0, lty = 2) # https://github.com/SimonDedman/gbm.auto/issues/7 & https://github.com/rspatial/dismo/issues/41
+          # abline(h = 0, lty = 2) # https://github.com/SimonDedman/gbm.auto/issues/7 & https://github.com/rspatial/dismo/issues/41
           mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
           # gbm.plot calls plot.gbm ~L47 but then centres to have 0 mean @L53
           # Asked Robert Hijmans to add a param to omit this: https://github.com/rspatial/dismo/issues/22
@@ -881,7 +881,7 @@ gbm.auto <- function(
                  x.label = NULL,
                  show.contrib = TRUE,
                  plot.layout = c(1, 1))
-        abline(h = 0, lty = 2) # https://github.com/SimonDedman/gbm.auto/issues/7 & https://github.com/rspatial/dismo/issues/41
+        # abline(h = 0, lty = 2) # https://github.com/SimonDedman/gbm.auto/issues/7 & https://github.com/rspatial/dismo/issues/41
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
 
         if (linesfiles) {u <- match(get(Gaus_Best_Model)$contributions$var[p],
