@@ -4,6 +4,9 @@ author: "Simon Dedman"
 date: "2023-03-16"
 output: html_document
 ---
+#v2023.05.22
+* dismo1.3.14 pushed to CRAN, updated dependency
+
 #v2023.05.18
 * readme - gbm.step.sd added, changed devtools to remotes
 * gbm.auto - dismo 1.3.10 remotes install note added, dev.print fix so it saves residual deviance lineplots for each model combo, ablines added at y=0 for pdp lineplots
