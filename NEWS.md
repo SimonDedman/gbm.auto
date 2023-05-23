@@ -1,9 +1,12 @@
 ---
 title: "NEWS.md"
 author: "Simon Dedman"
-date: "2023-03-16"
+date: "2023-05-23"
 output: html_document
 ---
+#v2023.05.23
+* added stop condition when all resvar are zero
+
 #v2023.05.22
 * dismo1.3.14 pushed to CRAN, updated dependency
 

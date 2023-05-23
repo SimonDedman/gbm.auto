@@ -435,6 +435,7 @@ gbm.auto <- function(
     n = 0 # Print counter for all loops of BRT combos & best bin BRT choice
     if (!is.null(grids)) if (!all(expvarnames %in% names(grids))) stop(print("Expvar column names in samples but missing from grids:"), print(expvarnames[which(!expvarnames %in% names(grids))]))
     if (anyNA(samples[i])) stop("Response variable range contains NA values, please filter out these rows with: mysamples <- mysamples[-which(is.na(mysamples[resvar])),]")
+    if (all(samples[i] == 0)) stop("Response variable only contains zeroes")
 
     ####2. ZI check & log####
     # if user has asked code to check for ZI, check it & set new ZI status
