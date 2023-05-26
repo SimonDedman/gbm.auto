@@ -207,8 +207,8 @@
 #' @importFrom gbm plot.gbm
 #' @importFrom grDevices dev.off dev.print graphics.off grey.colors jpeg png
 #' @importFrom graphics axis barplot image legend lines mtext par text
-#' @importFrom stats sd
-#' @importFrom utils read.csv write.csv
+#' @importFrom stats sd runif
+#' @importFrom utils packageVersion read.csv write.csv
 #' @importFrom stringi stri_split_fixed
 #'
 gbm.auto <- function(

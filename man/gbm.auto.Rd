@@ -45,7 +45,7 @@ gbm.auto(
 )
 }
 \arguments{
-\item{grids}{Explantory data to predict to. Import with (e.g.) read.csv and
+\item{grids}{Explanatory data to predict to. Import with (e.g.) read.csv and
 specify object name. Defaults to NULL (won't predict to grids).}
 
 \item{samples}{Explanatory and response variables to predict from. Keep col
@@ -244,7 +244,7 @@ open. Close it with: 'dev.off()'.
 file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
 illegal character e.g. /&'_. Fix with colnames(samples)[n] <- "BetterName".
 
-15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running poisson
+15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running Poisson
 distributions, ensure the response variables are positive integers, but if they are, try a
 smaller learning rate.
 

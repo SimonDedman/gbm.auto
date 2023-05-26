@@ -12,10 +12,12 @@ gbm.lmplots(
   resvarname = NULL,
   savedir = NULL,
   plotname = NULL,
+  pngtype = c("cairo-png", "quartz", "Xlib"),
   r2line = TRUE,
   pointtext = FALSE,
   pointlabs = resvar,
-  pointcol = "black"
+  pointcol = "black",
+  ...
 )
 }
 \arguments{
@@ -38,6 +40,8 @@ c(1,4), "Rockfish". No default. Column name is ideally species name.}
 
 \item{plotname}{Character vector of plot names else expvarnames else expvar will be used.}
 
+\item{pngtype}{Filetype for png files, alternatively try "quartz" on Mac.}
+
 \item{r2line}{Plot rsquared trendline, default TRUE.}
 
 \item{pointtext}{Label each point? Default FALSE.}
@@ -45,8 +49,6 @@ c(1,4), "Rockfish". No default. Column name is ideally species name.}
 \item{pointlabs}{Point labels, defaults to resvar value.}
 
 \item{pointcol}{Points colour, default "black".}
-
-\item{pngtype}{Filetype for png files, alternatively try "quartz" on Mac.}
 
 \item{...}{Allows controlling of text label params e.g. adj cex &.}
 }

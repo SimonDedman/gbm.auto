@@ -46,10 +46,13 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         resvarname = NULL, # single character to overwrite resvar name if desired
                         savedir = NULL,
                         plotname = NULL,
+                        pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
+                        # alternatively try "quartz" on Mac
                         r2line = TRUE, # plot rsquared trendline, default TRUE
                         pointtext = FALSE, # label each point? Default false
                         pointlabs = resvar, # point labels, defaults to resvar value
-                        pointcol = "black" # points colour
+                        pointcol = "black", # points colour
+                        ...
 ){
   for (i in expvar) {
     # overwrite xname if expvarnames present

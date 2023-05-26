@@ -244,7 +244,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
       # loop thru variables name linesfiles e.g. Bin_Best_line_[varname].csv
       # adding i'th loop's values as new column
       if (bin) for (j in colnames(samples[expvar])) {
-        if (class(samples[,j]) == "factor") nreps = length(levels(samples[,j])) else nreps = 100
+        if (inherits(samples[,j], "factor")) nreps = length(levels(samples[,j])) else nreps = 100
         # Error in `[.data.frame`(samples, , j) : object 'j' not found ####
         # rep 100 is fine for numeric variables but needs to match n(levels) of factorial variables.
         if (!file.exists(paste0("Bin_Best_line_", j, ".csv"))) {tmp <- data.frame(x = rep(NA, nreps), y = rep(NA, nreps))}
@@ -269,7 +269,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
         gaus = TRUE} else gaus = FALSE
 
         if (gaus) for (k in colnames(samples[expvar])) {
-          if (class(samples[,k]) == "factor") nreps = length(levels(samples[,k])) else nreps = 100
+          if (inherits(samples[,k], "factor")) nreps = length(levels(samples[,k])) else nreps = 100
           if (!file.exists(paste0("Gaus_Best_line_", k, ".csv"))) {tmp <- data.frame(x = rep(NA, nreps), y = rep(NA, nreps))}
           #if the first loop is simplified then the first col of gausline will be NAs which should be the X for the linefiles
           #else use existing csv file, 2 columns
@@ -406,7 +406,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     png(filename = paste0("Bin_Loop_lines_", p, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 40, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25, 0.5, 0), xpd = NA)
-    plot(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
+    plot(if (inherits(get(paste0("binline_", p))[,1], "character")) {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
          # x doesn't work if it's a factor variable
          y = get(paste0("binline_", p))[,"AvLine"],
          type = "l",
@@ -417,12 +417,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          ylim = yrange,
          axes = FALSE)
     # x axis labels
-    if (class(get(paste0("binline_", p))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("binline_", p))[,1])), labels = get(paste0("binline_", p))[,1])} else axis(1)
+    if (inherits(get(paste0("binline_", p))[,1], "character")) {axis(1, at = 1:(length(get(paste0("binline_", p))[,1])), labels = get(paste0("binline_", p))[,1])} else axis(1)
     axis(2) # y axis default
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-    lines(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
+    lines(if (inherits(get(paste0("binline_", p))[,1], "character")) {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
           y = get(paste0("binline_", p))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
-    lines(if (class(get(paste0("binline_", p))[,1]) == "character") {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
+    lines(if (inherits(get(paste0("binline_", p))[,1], "character")) {x = 1:(length(get(paste0("binline_", p))[,1]))} else x = get(paste0("binline_", p))[,1],
           y = get(paste0("binline_", p))[,"MaxLine"], col = "grey33")
     legend("top", # Need to shrink & move this, but where/how to move? if() based on values?
            legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
@@ -435,7 +435,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
     png(filename = paste0("Gaus_Loop_lines_", q, ".png"),
         width = 4*480, height = 4*480, units = "px", pointsize = 40, bg = "white", res = NA, family = "", type = pngtype)
     par(mar = c(2.3,5,0.3,0.4), fig = c(0,1,0,1), las = 1, lwd = 8, bty = "n", mgp = c(1.25,0.5,0), xpd = NA)
-    plot(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
+    plot(if (inherits(get(paste0("gausline_", q))[,1], "character")) {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
          y = get(paste0("gausline_", q))[,"AvLine"],
          type = "l",
          xlab = paste0(q, " (", round(gausbars[q, "Av.Inf"],1), "%)"),
@@ -445,12 +445,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
          ylim = yrange,
          axes = FALSE)
     # x axis labels
-    if (class(get(paste0("gausline_", q))[,1]) == "character") {axis(1, at = 1:(length(get(paste0("gausline_", q))[,1])), labels = get(paste0("gausline_", q))[,1])} else axis(1)
+    if (inherits(get(paste0("gausline_", q))[,1], "character")) {axis(1, at = 1:(length(get(paste0("gausline_", q))[,1])), labels = get(paste0("gausline_", q))[,1])} else axis(1)
     axis(2) # y axis default
     mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
-    lines(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
+    lines(if (inherits(get(paste0("gausline_", q))[,1], "character")) {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
           y = get(paste0("gausline_", q))[,"MinLine"], col = "grey66") #[,1] is 1st column, X values, always the same
-    lines(if (class(get(paste0("gausline_", q))[,1]) == "character") {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
+    lines(if (inherits(get(paste0("gausline_", q))[,1], "character")) {x = 1:(length(get(paste0("gausline_", q))[,1]))} else x = get(paste0("gausline_", q))[,1],
           y = get(paste0("gausline_", q))[,"MaxLine"], col = "grey33")
     legend("top", legend = c("Max","Av.","Min"), col = c("grey33","black","grey66"),
            lty = 1, pch = "-")

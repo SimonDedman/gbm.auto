@@ -1,50 +1,57 @@
-# Fork of dismo's gbm.step to add evaluation metrics like d.squared and rmse
-#
-# j. leathwick/j. elith - 19th September 2005
-#
-# version 2.9
-#
-# function to assess optimal no of boosting trees using k-fold cross validation
-#
-# implements the cross-validation procedure described on page 215 of
-# Hastie T, Tibshirani R, Friedman JH (2001) The Elements of Statistical Learning:
-# Data Mining, Inference, and Prediction Springer-Verlag, New York.
-#
-# divides the data into 10 subsets, with stratification by prevalence if required for pa data
-# then fits a gbm model of increasing complexity along the sequence from n.trees to n.trees + (n.steps * step.size)
-# calculating the residual deviance at each step along the way
-# after each fold processed, calculates the average holdout residual deviance and its standard error
-# then identifies the optimal number of trees as that at which the holdout deviance is minimised
-# and fits a model with this number of trees, returning it as a gbm model along with additional information
-# from the cv selection process
-#
-# updated 13/6/05 to accommodate weighting of sites
-#
-# updated 19/8/05 to increment all folds simultaneously, allowing the stopping rule
-# for the maximum number of trees to be fitted to be imposed by the data,
-# rather than being fixed in advance
-#
-# updated 29/8/05 to return cv test statistics, and deviance as mean
-# time for analysis also returned via unclass(Sys.time())
-#
-# updated 5/9/05 to use external function calc.deviance
-# and to return cv test stats via predictions formed from fold models
-# with n.trees = target.trees
-#
-# updated 15/5/06 to calculate variance of fitted and predicted values across folds
-# these can be expected to approximate the variance of fitted values
-# as would be estimated for example by bootstrapping
-# as these will underestimate the true variance
-# they are corrected by multiplying by (n-1)2/n
-# where n is the number of folds
-#
-# updated 25/3/07 tp allow varying of bag fraction
-#
-# requires gbm library from Cran
-# requires roc and calibration scripts of J Elith
-# requires calc.deviance script of J Elith/J Leathwick
+#' Function to assess optimal no of boosting trees using k-fold cross validation
+#'
+#' SD fork of dismo's gbm.step to add evaluation metrics like d.squared and rmse. J. Leathwick and
+#' J. Elith - 19th September 2005, version 2.9. Function to assess optimal no of boosting trees
+#' using k-fold cross validation. Implements the cross-validation procedure described on page 215 of
+#'  Hastie T, Tibshirani R, Friedman JH (2001) The Elements of Statistical Learning: Data Mining,
+#' Inference, and Prediction Springer-Verlag, New York.
+#'
+#' @param data The input dataframe.
+#' @param gbm.x The predictors.
+#' @param gbm.y The response.
+#' @param offset Allows an offset to be specified.
+#' @param fold.vector Allows a fold vector to be read in for CV with offsets,.
+#' @param tree.complexity Sets the complexity of individual trees.
+#' @param learning.rate Sets the weight applied to inidivudal trees.
+#' @param bag.fraction Sets the proportion of observations used in selecting variables.
+#' @param site.weights Allows varying weighting for sites.
+#' @param var.monotone Restricts responses to individual predictors to monotone.
+#' @param n.folds Number of folds.
+#' @param prev.stratify Prevalence stratify the folds - only for p/a data.
+#' @param family Family - bernoulli (=binomial), poisson, laplace or gaussian.
+#' @param n.trees Number of initial trees to fit.
+#' @param step.size Numbers of trees to add at each cycle.
+#' @param max.trees Max number of trees to fit before stopping.
+#' @param tolerance.method Method to use in deciding to stop - "fixed" or "auto".
+#' @param tolerance Tolerance value to use - if method == fixed is absolute, if auto is multiplier * total mean deviance.
+#' @param plot.main Plot hold-out deviance curve.
+#' @param plot.folds Plot the individual folds as well.
+#' @param verbose Control amount of screen reporting.
+#' @param silent To allow running with no output for simplifying model).
+#' @param keep.fold.models Keep the fold models from cross valiation.
+#' @param keep.fold.vector Allows the vector defining fold membership to be kept.
+#' @param keep.fold.fit Allows the predicted values for observations from CV to be kept.
+#' @param... Allows for any additional plotting parameters.
+#'
+#' @return GBM models using gbm as the engine.
+#'
+#' @details Divides the data into 10 subsets, with stratification by prevalence if required for pa data then
+#' fits a gbm model of increasing complexity along the sequence from n.trees to n.trees + (n.steps *
+#'  step.size) calculating the residual deviance at each step along the way after each fold
+#'  processed, calculates the average holdout residual deviance and its standard error then
+#'  identifies the optimal number of trees as that at which the holdout deviance is minimised and
+#'  fits a model with this number of trees, returning it as a gbm model along with additional
+#'  information from the cv selection process.
+#'
+#' requires gbm library from Cran
+#' requires roc and calibration scripts of J Elith
+#' requires calc.deviance script of J Elith/J Leathwick
 
 #' @importFrom Metrics rmse
+#' @importFrom gbm predict.gbm gbm.more
+#' @importFrom graphics title
+#' @importFrom stats approx cor lm ppoints runif
+#' @importFrom utils flush.console
 #' @export
 #'
 
