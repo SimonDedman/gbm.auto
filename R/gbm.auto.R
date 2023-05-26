@@ -277,7 +277,7 @@ gbm.auto <- function(
     # BRTs e.g. gbm.loop can cause RStudio to crash, if so set this to FALSE
     pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
     # alternatively try "quartz" on Mac
-    gaus = TRUE,          # do Gaussian runs as well as Bin? Default TRUE.
+    gaus = TRUE,          # do fam2 (typically Gaussian) runs as well as Bin? Default TRUE.
     MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
     brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
     grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
@@ -450,7 +450,7 @@ gbm.auto <- function(
     # create logged response variable, for Gaussian BRTs when data are zero-inflated (otherwise just use resvar directly)
     logem <- log1p(samples[,i]) # logs resvar i.e. containing zeroes
     dont  <- samples[,i]
-    # log1p resvar if bin only (fam1 bin, fam2 FALSE), OR if resvar is delta & ZI & NOT poisson (which can't be logged, must be positive integers)
+    # log1p fam2 (gaussian response variable grv) resvar if bin only (fam1 bin, fam2 FALSE), OR if resvar is delta & ZI & NOT poisson (which can't be logged, must be positive integers)
     if (fam1 == "bernoulli" & (!gaus | (gaus & ZI & (fam2 != "poisson")))) {samples$grv <- logem} else {samples$grv <- dont}
     grvcol <- which(colnames(samples) == "grv") # grv column number for BRT
 

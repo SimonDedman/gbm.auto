@@ -1,6 +1,6 @@
 Package: gbm.auto
 Title: Automated Boosted Regression Tree Modelling and Mapping Suite
-Version: 2023.05.23
+Version: 2023.05.25
 Authors@R: c(
     person("Simon", "Dedman", , "simondedman@gmail.com", role = c("aut", "cre")),
     person("Hans", "Gerritsen", role = "aut")
