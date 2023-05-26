@@ -11,7 +11,7 @@
 #' suggestions. See SimonDedman.com for links to walkthrough paper, and papers
 #' and thesis published using this package.
 #'
-#' @param grids Explantory data to predict to. Import with (e.g.) read.csv and
+#' @param grids Explanatory data to predict to. Import with (e.g.) read.csv and
 #' specify object name. Defaults to NULL (won't predict to grids).
 #' @param samples Explanatory and response variables to predict from. Keep col
 #' names short (~17 characters max), no odd characters, spaces, starting
@@ -160,7 +160,7 @@
 #' file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
 #' illegal character e.g. /&'_. Fix with colnames(samples)[n] <- "BetterName".
 #'
-#' 15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running poisson
+#' 15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running Poisson
 #' distributions, ensure the response variables are positive integers, but if they are, try a
 #' smaller learning rate.
 #'

@@ -32,10 +32,10 @@ output: html_document
 
 # v1.5.1
 * More reporting info - Self_CV_Statistics.csv created with all outputs from all models for those 2 gbm.step objects
-* gbm.loop automatially checks for the presence of Report.csv's in numbered folders and doesn't run for that folder if so
+* gbm.loop automatically checks for the presence of Report.csv's in numbered folders and doesn't run for that folder if so
 
 # v1.5.0
-* gbm.loop fixed for running gbm.auto & post-run-results-gatehring loops separately.
+* gbm.loop fixed for running gbm.auto & post-run-results-gathering loops separately.
 * gbm.loop added all params for internal call to gbm.auto.
 
 # v1.4.1, 2021-02-23
