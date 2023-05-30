@@ -4,7 +4,7 @@ author: "Simon Dedman"
 date: "2023-05-25"
 output: html_document
 ---
-# v2023.05.25
+# v2023.05.30
 * CRAN release
 
 # v2023.05.23
