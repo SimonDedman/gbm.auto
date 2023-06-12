@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.lmplots.R
 \name{gbm.lmplots}
 \alias{gbm.lmplots}
-\title{Plot linear models for all expvars against the resvar}
+\title{Plot linear models for all expvar against the resvar}
 \usage{
 gbm.lmplots(
   samples = NULL,
@@ -32,7 +32,7 @@ names, underscores won't. Can be a subset of a large dataset.}
 \item{resvar}{Name or column number(s) of response variable in samples: 12,
 c(1,4), "Rockfish". No default. Column name is ideally species name.}
 
-\item{expvarnames}{Vector of names same length as expvars, if you want nicer names.}
+\item{expvarnames}{Vector of names same length as expvar, if you want nicer names.}
 
 \item{resvarname}{Single character object, if you want a nicer resvar name.}
 
@@ -56,7 +56,7 @@ c(1,4), "Rockfish". No default. Column name is ideally species name.}
 Invisibly saves png plots into savedir.
 }
 \description{
-Loops the lmplot function, shows linear model plots for all expvars against the resvar. Good
+Loops the lmplot function, shows linear model plots for all expvar against the resvar. Good
 practice to do this before running gbm.auto so you have a sense of the basic relationship of the
 variables.
 }
