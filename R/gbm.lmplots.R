@@ -55,6 +55,7 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         ...
 ){
   for (i in expvar) {
+    print(paste0("plotting ", which(expvars %in% i), "/", length(expvars), ": ", i))
     # overwrite xname if expvarnames present
     xname <- ifelse(test = is.null(expvarnames),
                     yes = i,
