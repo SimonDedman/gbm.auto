@@ -1,6 +1,6 @@
-#' Plot linear models for all expvars against the resvar
+#' Plot linear models for all expvar against the resvar
 #'
-#' Loops the lmplot function, shows linear model plots for all expvars against the resvar. Good
+#' Loops the lmplot function, shows linear model plots for all expvar against the resvar. Good
 #' practice to do this before running gbm.auto so you have a sense of the basic relationship of the
 #' variables.
 #'
@@ -12,7 +12,7 @@
 #' 'samples': c(1,3,6) or c("Temp","Sal"). No default.
 #' @param resvar Name or column number(s) of response variable in samples: 12,
 #' c(1,4), "Rockfish". No default. Column name is ideally species name.
-#' @param expvarnames Vector of names same length as expvars, if you want nicer names.
+#' @param expvarnames Vector of names same length as expvar, if you want nicer names.
 #' @param resvarname Single character object, if you want a nicer resvar name.
 #' @param savedir Save location, end with "/".
 #' @param plotname Character vector of plot names else expvarnames else expvar will be used.
@@ -42,7 +42,7 @@
 gbm.lmplots <- function(samples = NULL, # dataframe
                         expvar = NULL, # character vector of colnames in samples
                         resvar = NULL, # single character colname in samples
-                        expvarnames = NULL, # character vector same length as expvars
+                        expvarnames = NULL, # character vector same length as expvar
                         resvarname = NULL, # single character to overwrite resvar name if desired
                         savedir = NULL,
                         plotname = NULL,
@@ -55,7 +55,7 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         ...
 ){
   for (i in expvar) {
-    print(paste0("plotting ", which(expvars %in% i), "/", length(expvars), ": ", i))
+    print(paste0("plotting ", which(expvar %in% i), "/", length(expvar), ": ", i))
     # overwrite xname if expvarnames present
     xname <- ifelse(test = is.null(expvarnames),
                     yes = i,

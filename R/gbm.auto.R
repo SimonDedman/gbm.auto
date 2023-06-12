@@ -1254,8 +1254,8 @@ gbm.auto <- function(
                                                   pred = preds,
                                                   family = "bernoulli") # change fam if using
           pct.dev.remain.samples <- (1 - pct.dev.remain.samples) * 100 # convert to % deviance explained
-          AUC.samples <- roc(obs = samples[, get(Bin_Best_Model)$gbm.call$gbm.y],
-                             pred = preds)
+          AUC.samples <- roc(obsdat = samples[, get(Bin_Best_Model)$gbm.call$gbm.y],
+                             preddat = preds)
 
           # One of "binomial", "bernoulli", "poisson", "laplace", or "gaussian"
           samples <- cbind(samples, preds)
