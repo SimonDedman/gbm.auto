@@ -19,13 +19,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 3 notes
+0 errors | 0 warnings | 1 note
 
 Notes:
 
-* Hidden file .github keen not to remove.
-* Possible partial argument obs to obsdat has never been a problem and comes from another package.
-* Non-standard things, png file created by examples, doesn't exist permanantly.
+* Non-standard things, png file created by examples, doesn't exist permanently.
 
 ***
 
