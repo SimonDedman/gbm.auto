@@ -51,13 +51,19 @@
 #' run in a png/par/gbm.map/dev.off sequence.
 #'
 #' @details Errors and their origins:
+#'
 #' Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
 #' Check that your lat & long columns are the right way around. Ensure grids
-#' data are gridded.
+#' data are gridded, i.e. they are in a regular pattern of same/similar lines of lat/lon, even if
+#' they're missing sections.
+#'
 #' Suggested parameter values:
 #' z = rsbdf[,"Unrepresentativeness"]
+#'
 #' mapmain = "Unrepresentativeness: "
+#'
 #' legendtitle = "UnRep 0-1"
+#'
 #' @export
 #' @import mapplots
 #' @importFrom grDevices colorRampPalette dev.off grey.colors png
@@ -98,7 +104,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                     byxout = FALSE, # export byx to use elsewhere? Default:FALSE
                     breaks = NULL, # vector of breakpoints for colour scales; default blank, generated automatically
                     byxport = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-                    ...) # additional arguments for legend.grid's ... which passes to legend
+                    ...) # additional arguments for legend.grid's ... which passes to legend, and savedir and others for gbm.basemap
 
 # Generalised Boosting Models, automated map generator. Simon Dedman, 2014-2016, simondedman@gmail.com, https://github.com/SimonDedman/gbm.auto
 
@@ -144,7 +150,7 @@ gbm.map <- function(x,        #vector of longitudes, from make.grid in mapplots;
                  round(cells[3:length(y),1] - cells[2:(length(y) - 1),1], digits = 5),
                round(cells[2:(length(y) - 1),1] - cells[1:(length(y) - 2),1], digits = 5),
                NA)
-      byx <- mean(cells$bydist, na.rm = TRUE)
+      byx <- abs(mean(cells$bydist, na.rm = TRUE))
     }
     byy <- byx
     if (byxout) byxport <<- byx

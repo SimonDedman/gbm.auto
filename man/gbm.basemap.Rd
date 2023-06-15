@@ -76,7 +76,14 @@ search list: strange error occurring despite shapefiles being coded like all
 other packages. Correct output produced regardless.
 
 4. subscript out of bounds: can't crop world map to your bounds.
-Check lat/lon are the right way around
+Check lat/lon are the right way around: check gridslat and gridslon point to the correct columns
+for lat and lon in grids, and those columns named (something like) lat and lon, ARE ACTUALLY the
+latitudes and longitudes, and not the wrong way around.
+
+5. If your download is timing out use options(timeout = 240).
+
+6. Error in attachNamespace("shapefiles"): namespace is already attached. Use:
+unloadNamespace("shapefiles") .
 }
 \examples{
 \donttest{

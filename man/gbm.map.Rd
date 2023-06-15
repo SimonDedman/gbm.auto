@@ -105,12 +105,17 @@ representativeness surfaces from the output of gbm.rsb.
 }
 \details{
 Errors and their origins:
+
 Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
 Check that your lat & long columns are the right way around. Ensure grids
-data are gridded.
+data are gridded, i.e. they are in a regular pattern of same/similar lines of lat/lon, even if
+they're missing sections.
+
 Suggested parameter values:
 z = rsbdf[,"Unrepresentativeness"]
+
 mapmain = "Unrepresentativeness: "
+
 legendtitle = "UnRep 0-1"
 }
 \examples{

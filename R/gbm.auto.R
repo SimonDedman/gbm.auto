@@ -174,6 +174,9 @@
 #' 18. Error in loadNamespace...'dismo' 1.3-9 is being loaded, but >= 1.3.10 is required: first do
 #' remotes::install_github("rspatial/dismo") then library(dismo).
 #'
+#' ALSO: check this section in the other functions run by gbm.auto e.g. gbm.map, gbm.basemap. Use
+#' traceback() to find the source of errors.
+#'
 #' I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
 #' <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background).
 #' Elith et al 2008 (<http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085>) is also strongly
@@ -1736,6 +1739,7 @@ gbm.auto <- function(
                   landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
                   mapback = "white",
                   heatcolours = grey.colors(8, start = 1, end = 0),
+                  savedir = savedir, # passes to gbm.map's ... which passes to gbm.basemap
                   ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
           # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
           dev.off()
