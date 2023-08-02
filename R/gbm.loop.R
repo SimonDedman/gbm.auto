@@ -220,7 +220,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
                ...) # accept other gbm.auto values than these basics
       setwd("../") # move back up to root folder
       if (cleanup) unlink(i, recursive = TRUE)
-      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Gbm.auto loop ", i, " complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+      print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   Gbm.auto loop ", i, " complete   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
     } # close i loop & go to the next i
   } # close runautos if optional
 
@@ -308,12 +308,12 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
           # if binbestcomboname is simplified, value ends in _Simp, but colname is "Simplified.Binary.BRT.stats"
           # need to use length because if grep doesn't find the pattern it returns integer(0) which doesn't evaluate to logical FALSE for ==1 for some reason
           if (length(grep(pattern = "_Simp", x = binbestcomboname)) == 1) binbestcomboname <- "Simplified.Binary.BRT.stats"
-          report.df[i, 1] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% binbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
+          report.df[i, "BinCV"] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% binbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
           # copy AUC score from this loop's report to allreport
-          auctmp <- as.character(reporttmp$Best.Binary.BRT[3])
+          auctmp <- as.character(reporttmp$Best.Binary.BRT[4])
           aucspltmp <- strsplit(auctmp, "Training data AUC score: ")
           aucsplnumtmp <- as.numeric(aucspltmp[[1]][2])
-          report.df[i, 2] <- aucsplnumtmp
+          report.df[i, "AUC"] <- aucsplnumtmp
           }
 
         if ("Best.Gaussian.BRT" %in% colnames(reporttmp)) {
@@ -322,11 +322,11 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
           gausbestcomboname <- strsplit(gausbestcomboname, "Model combo: ")[[1]][2]
           gausbestcomboname <- gsub(pattern = "lr1e-", replacement = "lr1e.", x = gausbestcomboname)
           if (length(grep(pattern = "_Simp", x = gausbestcomboname)) == 1) gausbestcomboname <- "Simplified.Gaussian.BRT.stats"
-          report.df[i, 3] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% gausbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
+          report.df[i, "GausCV"] <- as.numeric(strsplit(reporttmp[, which(colnames(reporttmp) %in% gausbestcomboname)][3], "CV Mean Deviance: ")[[1]][2])
         }
 
         setwd("../../") # move back up to root folder
-        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      Results collation loop ", i, " complete        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
+        print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Collate results loop ", i, " done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
   } # close i loop & go to the next i
 
   ####loops done create dfs####
@@ -370,10 +370,10 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   if (calcpreds) var.df[,"C of V"] <- apply(var.df[,(3:(2 + loops))], MARGIN = 1, var, na.rm = TRUE)
 
   # Build CV & AUC stats report by scraping individual loops' reports
-  Minima <- c(min(report.df[,1], na.rm = TRUE), min(report.df[,2], na.rm = TRUE), min(report.df[,3], na.rm = TRUE))
-  Averages <- c(mean(report.df[,1], na.rm = TRUE), mean(report.df[,2], na.rm = TRUE), mean(report.df[,3], na.rm = TRUE))
-  Maxima <- c(max(report.df[,1], na.rm = TRUE), max(report.df[,2], na.rm = TRUE), max(report.df[,3], na.rm = TRUE))
-  Variances <- c(var(report.df[,1], na.rm = TRUE), var(report.df[,2], na.rm = TRUE), var(report.df[,3], na.rm = TRUE))
+  Minima <- c(min(report.df[, "BinCV"], na.rm = TRUE), min(report.df[, "AUC"], na.rm = TRUE), min(report.df[, "GausCV"], na.rm = TRUE))
+  Averages <- c(mean(report.df[, "BinCV"], na.rm = TRUE), mean(report.df[, "AUC"], na.rm = TRUE), mean(report.df[, "GausCV"], na.rm = TRUE))
+  Maxima <- c(max(report.df[, "BinCV"], na.rm = TRUE), max(report.df[, "AUC"], na.rm = TRUE), max(report.df[, "GausCV"], na.rm = TRUE))
+  Variances <- c(var(report.df[, "BinCV"], na.rm = TRUE), var(report.df[, "AUC"], na.rm = TRUE), var(report.df[, "GausCV"], na.rm = TRUE))
   # if all loops' values are NA (e.g. BinCV & AUC when only gaus), min will be Inf & max -Inf. A bit messy but Unimportant
   report.df <- rbind(report.df, Minima, Averages, Maxima, Variances)
   rep.len <- dim(report.df)[1]
@@ -397,7 +397,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
 
     if (calcpreds) {write.csv(var.df, file = "VarAll.csv", row.names = F)
       write.csv(var.df[,c(1,2,(3 + loops))], file = "VarOnly.csv", row.names = F)}
-    write.csv(report.df, file = "Report.csv", row.names = TRUE)
+    write.csv(report.df, file = "Report.csv", row.names = TRUE, col.names = c("LoopNo", "BinCV",	"AUC",	"GausCV"))
     print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX      csv files created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))}
 
   ####plot linesfiles####
