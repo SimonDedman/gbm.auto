@@ -1871,7 +1871,9 @@ gbm.auto <- function(
             # dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
             # # res there, but high values captures in the last few bins.
 
-            gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness),
+            gbm.mapsf(predabund = data.frame(Latitude = grids[, gridslat],
+                                             Longitude = grids[, gridslon],
+                                             Unrepresentativeness = rsbdf_bin[,"Unrepresentativeness"]),
                       # predabundlon = 2, # Longitude column number.
                       # predabundlat = 1, # Latitude column number.
                       # predabundpreds = 3, # Predicted abundance column number.
@@ -1943,7 +1945,9 @@ gbm.auto <- function(
             #         breaks = exp01seq)
             # dev.off()
 
-            gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_gaus$Unrepresentativeness),
+            gbm.mapsf(predabund = data.frame(Latitude = grids[, gridslat],
+                                             Longitude = grids[, gridslon],
+                                             Unrepresentativeness = rsbdf_gaus[,"Unrepresentativeness"]),
                       # predabundlon = 2, # Longitude column number.
                       # predabundlat = 1, # Latitude column number.
                       # predabundpreds = 3, # Predicted abundance column number.
@@ -2016,7 +2020,9 @@ gbm.auto <- function(
             #         breaks = exp01seq)
             # dev.off()
 
-            gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness + rsbdf_gaus$Unrepresentativeness),
+            gbm.mapsf(predabund = data.frame(Latitude = grids[, gridslat],
+                                             Longitude = grids[, gridslon],
+                                             Unrepresentativeness = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"]),
                       # predabundlon = 2, # Longitude column number.
                       # predabundlat = 1, # Latitude column number.
                       # predabundpreds = 3, # Predicted abundance column number.
@@ -2094,7 +2100,9 @@ gbm.auto <- function(
               #         breaks = exp01seq)
               # dev.off()
 
-              gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness),
+              gbm.mapsf(predabund = data.frame(Latitude = grids[, gridslat],
+                                               Longitude = grids[, gridslon],
+                                               Unrepresentativeness = rsbdf_bin[,"Unrepresentativeness"]),
                         # predabundlon = 2, # Longitude column number.
                         # predabundlat = 1, # Latitude column number.
                         # predabundpreds = 3, # Predicted abundance column number.
@@ -2169,7 +2177,9 @@ gbm.auto <- function(
               #         breaks = exp01seq)
               # dev.off()
 
-              gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_gaus$Unrepresentativeness),
+              gbm.mapsf(predabund = data.frame(Latitude = grids[, gridslat],
+                                               Longitude = grids[, gridslon],
+                                               Unrepresentativeness = rsbdf_gaus[,"Unrepresentativeness"]),
                         # predabundlon = 2, # Longitude column number.
                         # predabundlat = 1, # Latitude column number.
                         # predabundpreds = 3, # Predicted abundance column number.
@@ -2244,7 +2254,9 @@ gbm.auto <- function(
               #         breaks = exp01seq)
               # dev.off()
 
-              gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness + rsbdf_gaus$Unrepresentativeness),
+              gbm.mapsf(predabund = data.frame(Latitude = grids[, gridslat],
+                                               Longitude = grids[, gridslon],
+                                               Unrepresentativeness = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"]),
                         # predabundlon = 2, # Longitude column number.
                         # predabundlat = 1, # Latitude column number.
                         # predabundpreds = 3, # Predicted abundance column number.
