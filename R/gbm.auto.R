@@ -1823,7 +1823,7 @@ gbm.auto <- function(
                     # fontsize = 12,
                     # fontfamily = "Times New Roman",
                     filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_CPUE_BnW.png"),
-                    savedir = paste0("./",names(samples[i]), "/"),
+                    savedir = paste0("./",names(samples[i]), "/")
                     # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                     # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                     # receivernames = NULL, # vector of names for receivers to be plotted
@@ -1843,7 +1843,6 @@ gbm.auto <- function(
                     # reclabpad = 0, # Receiver label padding in lines.
                     # reclabrad = 0.15, # Receiver label radius in lines.
                     # reclabbord = 0 # Receiver label border in mm.
-                    ...
           )
 
 
@@ -1887,10 +1886,10 @@ gbm.auto <- function(
                       # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
                       shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
                       # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
-                      # colourscale = "viridis", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                      colourscale = "gradient", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
                       # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
-                      # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
-                      # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                      heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                      colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                       studyspecies = names(samples[i]),
                       plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                       plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
@@ -1902,7 +1901,7 @@ gbm.auto <- function(
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
                       filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Bin.png"),
-                      savedir = paste0("./",names(samples[i]), "/"),
+                      savedir = paste0("./",names(samples[i]), "/")
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                       # receivernames = NULL, # vector of names for receivers to be plotted
@@ -1922,7 +1921,6 @@ gbm.auto <- function(
                       # reclabpad = 0, # Receiver label padding in lines.
                       # reclabrad = 0.15, # Receiver label radius in lines.
                       # reclabbord = 0 # Receiver label border in mm.
-                      ...
             )
 
             if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2123,7 +2121,7 @@ gbm.auto <- function(
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
                         filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Bin_BnW.png"),
-                        savedir = paste0("./",names(samples[i]), "/"),
+                        savedir = paste0("./",names(samples[i]), "/")
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                         # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2143,7 +2141,6 @@ gbm.auto <- function(
                         # reclabpad = 0, # Receiver label padding in lines.
                         # reclabrad = 0.15, # Receiver label radius in lines.
                         # reclabbord = 0 # Receiver label border in mm.
-                        ...
               )
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2198,7 +2195,7 @@ gbm.auto <- function(
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
                         filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Gaus_BnW.png"),
-                        savedir = paste0("./",names(samples[i]), "/"),
+                        savedir = paste0("./",names(samples[i]), "/")
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                         # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2218,7 +2215,6 @@ gbm.auto <- function(
                         # reclabpad = 0, # Receiver label padding in lines.
                         # reclabrad = 0.15, # Receiver label radius in lines.
                         # reclabbord = 0 # Receiver label border in mm.
-                        ...
               )
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2273,7 +2269,7 @@ gbm.auto <- function(
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
                         filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Combo_BnW.png"),
-                        savedir = paste0("./",names(samples[i]), "/"),
+                        savedir = paste0("./",names(samples[i]), "/")
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                         # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2293,7 +2289,6 @@ gbm.auto <- function(
                         # reclabpad = 0, # Receiver label padding in lines.
                         # reclabrad = 0.15, # Receiver label radius in lines.
                         # reclabbord = 0 # Receiver label border in mm.
-                        ...
               )
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
