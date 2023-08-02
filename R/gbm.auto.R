@@ -1854,7 +1854,8 @@ gbm.auto <- function(
           linear01seq <- seq(from = 0, to = 1, length.out = 9) #linear sequence from 0:1, 9 bins
           exp01seq <- expm1(4*linear01seq)/expm1(4) # exponentiate to change shape then scale back to 1
 
-          if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
+          if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
+            #  & exists("Bin_Best_Model")
             # png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
             #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -1927,7 +1928,8 @@ gbm.auto <- function(
             print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
           } # close if zi bin
 
-          if (gaus & exists("Gaus_Best_Model")) {
+          if (gaus) {
+            #  & exists("Gaus_Best_Model")
             # png(filename = paste0("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png"),
             #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -1999,7 +2001,8 @@ gbm.auto <- function(
             print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
           } # close gaus map
 
-          if (ZI & gaus & exists("Gaus_Best_Model")) {
+          if (ZI & gaus) {
+            #  & exists("Gaus_Best_Model")
             # png(filename = paste0("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png"),
             #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
             # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -2072,7 +2075,8 @@ gbm.auto <- function(
           } # close both map
 
           if (BnW) {     # if BnW=TRUE, do again for b&w
-            if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
+            if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
+              #  & exists("Bin_Best_Model")
               # png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
               #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -2147,7 +2151,8 @@ gbm.auto <- function(
               print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     B&W RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
             } # close bin RSB
 
-            if (gaus & exists("Gaus_Best_Model")) {
+            if (gaus) {
+              #  & exists("Gaus_Best_Model")
               # png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png"),
               #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
@@ -2221,7 +2226,8 @@ gbm.auto <- function(
               print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
             } # close gaus RSB
 
-            if (ZI & gaus & exists("Gaus_Best_Model")) {
+            if (ZI & gaus) {
+              #  & exists("Gaus_Best_Model")
               # png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png"),
               #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
               # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
