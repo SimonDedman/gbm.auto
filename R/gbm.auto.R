@@ -1611,10 +1611,14 @@ gbm.auto <- function(
       # Load model objects if loadgbm set
       if (!is.null(loadgbm)) {
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+          # model import not working, need a checker####
+          print(getwd())
+          print(paste0(loadgbm, "Bin_Best_Model"))
           load(paste0(loadgbm, "Bin_Best_Model"))
           Bin_Best_Model <- "Bin_Best_Model_Object"
         } # close ZI if
         if (gaus & exists("Gaus_Best_Model")) {
+          print(paste0(loadgbm, "Gaus_Best_Model"))
           load(paste0(loadgbm, "Gaus_Best_Model"))
           Gaus_Best_Model <- "Gaus_Best_Model_Object"
         } # close gaus if
