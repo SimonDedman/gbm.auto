@@ -373,7 +373,7 @@ gbm.loop <- function(loops = 10, # the number of loops required, integer
   Minima <- c(min(report.df[, "BinCV"], na.rm = TRUE), min(report.df[, "AUC"], na.rm = TRUE), min(report.df[, "GausCV"], na.rm = TRUE))
   Averages <- c(mean(report.df[, "BinCV"], na.rm = TRUE), mean(report.df[, "AUC"], na.rm = TRUE), mean(report.df[, "GausCV"], na.rm = TRUE))
   Maxima <- c(max(report.df[, "BinCV"], na.rm = TRUE), max(report.df[, "AUC"], na.rm = TRUE), max(report.df[, "GausCV"], na.rm = TRUE))
-  Variances <- c(round(var(report.df[, "BinCV"], na.rm = TRUE), 3), round(var(report.df[, "AUC"], na.rm = TRUE), 3), round(var(report.df[, "GausCV"], na.rm = TRUE), 3))
+  Variances <- c(round(var(report.df[, "BinCV"], na.rm = TRUE), 5), round(var(report.df[, "AUC"], na.rm = TRUE), 5), round(var(report.df[, "GausCV"], na.rm = TRUE), 5))
   # if all loops' values are NA (e.g. BinCV & AUC when only gaus), min will be Inf & max -Inf. A bit messy but Unimportant
   report.df <- rbind(report.df, Minima, Averages, Maxima, Variances)
   rep.len <- dim(report.df)[1]
