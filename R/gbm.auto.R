@@ -1613,8 +1613,6 @@ gbm.auto <- function(
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
           # & exists("Bin_Best_Model") # not sure why this was in the above line; if using loadgbm then Bin_)Best_model necessarily won't exist in the environment.
           if (length(list.files(path = loadgbm, pattern = "Bin_Best_Model")) != 1) stop("Bin_Best_Model not found at loadgbm path")
-          # model import not working, need a checker####
-          print(paste0(loadgbm, "Bin_Best_Model"))
           load(paste0(loadgbm, "Bin_Best_Model"))
           Bin_Best_Model <- "Bin_Best_Model_Object"
         } # close ZI if
@@ -1824,7 +1822,7 @@ gbm.auto <- function(
                     legendposition = c(0.05, 0.18),
                     # fontsize = 12,
                     # fontfamily = "Times New Roman",
-                    filesavename = paste0(lubridate::today(), "_", studyspecies, "_", legendtitle, "_BnW.png"),
+                    filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_CPUE_BnW.png"),
                     savedir = paste0("./",names(samples[i]), "/")
                     # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                     # receiverlons = NULL, # vector of longitudes for receivers to be plotted
@@ -1893,7 +1891,7 @@ gbm.auto <- function(
                       # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
                       # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                       studyspecies = names(samples[i]),
-                      plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                      plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                       plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
                       legendtitle = "UnRep 0-1",
                       # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
@@ -1902,7 +1900,7 @@ gbm.auto <- function(
                       legendposition = c(0.05, 0.18),
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
-                      filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Bin.png"),
+                      filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Bin.png"),
                       savedir = paste0("./",names(samples[i]), "/")
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
@@ -1964,7 +1962,7 @@ gbm.auto <- function(
                       # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
                       # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                       studyspecies = names(samples[i]),
-                      plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                      plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                       plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
                       legendtitle = "UnRep 0-1",
                       # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
@@ -1973,7 +1971,7 @@ gbm.auto <- function(
                       legendposition = c(0.05, 0.18),
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
-                      filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Gaus.png"),
+                      filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Gaus.png"),
                       savedir = paste0("./",names(samples[i]), "/")
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
@@ -2035,7 +2033,7 @@ gbm.auto <- function(
                       # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
                       # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                       studyspecies = names(samples[i]),
-                      plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                      plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                       plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
                       legendtitle = "UnRep 0-2",
                       # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
@@ -2044,7 +2042,7 @@ gbm.auto <- function(
                       legendposition = c(0.05, 0.18),
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
-                      filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Combo.png"),
+                      filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Combo.png"),
                       savedir = paste0("./",names(samples[i]), "/")
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
@@ -2111,7 +2109,7 @@ gbm.auto <- function(
                         heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
                         # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                         studyspecies = names(samples[i]),
-                        plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                        plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                         plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
                         legendtitle = "UnRep 0-1",
                         # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
@@ -2120,7 +2118,7 @@ gbm.auto <- function(
                         legendposition = c(0.05, 0.18),
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
-                        filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Bin_BnW.png"),
+                        filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Bin_BnW.png"),
                         savedir = paste0("./",names(samples[i]), "/")
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
@@ -2185,7 +2183,7 @@ gbm.auto <- function(
                         heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
                         # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                         studyspecies = names(samples[i]),
-                        plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                        plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                         plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
                         legendtitle = "UnRep 0-1",
                         # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
@@ -2194,7 +2192,7 @@ gbm.auto <- function(
                         legendposition = c(0.05, 0.18),
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
-                        filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Gaus_BnW.png"),
+                        filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Gaus_BnW.png"),
                         savedir = paste0("./",names(samples[i]), "/")
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
@@ -2259,7 +2257,7 @@ gbm.auto <- function(
                         heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
                         # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
                         studyspecies = names(samples[i]),
-                        plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                        plottitle = paste0("Unrepresentativeness of samples data for ", names(samples[i])),
                         plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
                         legendtitle = "UnRep 0-1",
                         # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
@@ -2268,7 +2266,7 @@ gbm.auto <- function(
                         legendposition = c(0.05, 0.18),
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
-                        filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Combo_BnW.png"),
+                        filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Combo_BnW.png"),
                         savedir = paste0("./",names(samples[i]), "/")
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
