@@ -89,10 +89,9 @@
 #' @param grv Dummy param for package testing for CRAN, ignore.
 #' @param Bin_Preds Dummy param for package testing for CRAN, ignore.
 #' @param Gaus_Preds Dummy param for package testing for CRAN, ignore.
-#' @param ... Optional arguments for zero in breaks.grid in gbm.map, legend in
-#' legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
+#' @param ... Optional arguments for gbm.step (dismo package) arguments n.trees and
 #' max.trees, both of which can be added in list(1,2) format to pass to fam1 and
-#'  2.
+#'  2; for gbm.mapsf colourscale, heatcolours, colournumber, and others.
 #'
 #' @return Line, dot and bar plots, a report of all variables used, statistics
 #' for tests, variable interactions, predictors used and dropped, etc. If
@@ -1746,7 +1745,7 @@ gbm.auto <- function(
                   # fontsize = 12,
                   # fontfamily = "Times New Roman",
                   # filesavename = paste0(lubridate::today(), "_", studyspecies, "_", legendtitle, ".png"),
-                  savedir = paste0("./",names(samples[i]), "/")
+                  savedir = paste0("./",names(samples[i]), "/"),
                   # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                   # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                   # receivernames = NULL, # vector of names for receivers to be plotted
@@ -1766,6 +1765,7 @@ gbm.auto <- function(
                   # reclabpad = 0, # Receiver label padding in lines.
                   # reclabrad = 0.15, # Receiver label radius in lines.
                   # reclabbord = 0 # Receiver label border in mm.
+                  ...
         )
 
         # gbm.auto param existing shapefile format, google choice, API, stamen etc passthrough
@@ -1823,7 +1823,7 @@ gbm.auto <- function(
                     # fontsize = 12,
                     # fontfamily = "Times New Roman",
                     filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_CPUE_BnW.png"),
-                    savedir = paste0("./",names(samples[i]), "/")
+                    savedir = paste0("./",names(samples[i]), "/"),
                     # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                     # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                     # receivernames = NULL, # vector of names for receivers to be plotted
@@ -1843,6 +1843,7 @@ gbm.auto <- function(
                     # reclabpad = 0, # Receiver label padding in lines.
                     # reclabrad = 0.15, # Receiver label radius in lines.
                     # reclabbord = 0 # Receiver label border in mm.
+                    ...
           )
 
 
@@ -1901,7 +1902,7 @@ gbm.auto <- function(
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
                       filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Bin.png"),
-                      savedir = paste0("./",names(samples[i]), "/")
+                      savedir = paste0("./",names(samples[i]), "/"),
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                       # receivernames = NULL, # vector of names for receivers to be plotted
@@ -1921,6 +1922,7 @@ gbm.auto <- function(
                       # reclabpad = 0, # Receiver label padding in lines.
                       # reclabrad = 0.15, # Receiver label radius in lines.
                       # reclabbord = 0 # Receiver label border in mm.
+                      ...
             )
 
             if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -1972,7 +1974,7 @@ gbm.auto <- function(
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
                       filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Gaus.png"),
-                      savedir = paste0("./",names(samples[i]), "/")
+                      savedir = paste0("./",names(samples[i]), "/"),
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                       # receivernames = NULL, # vector of names for receivers to be plotted
@@ -1992,6 +1994,7 @@ gbm.auto <- function(
                       # reclabpad = 0, # Receiver label padding in lines.
                       # reclabrad = 0.15, # Receiver label radius in lines.
                       # reclabbord = 0 # Receiver label border in mm.
+                      ...
             )
 
             if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2043,7 +2046,7 @@ gbm.auto <- function(
                       # fontsize = 12,
                       # fontfamily = "Times New Roman",
                       filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Combo.png"),
-                      savedir = paste0("./",names(samples[i]), "/")
+                      savedir = paste0("./",names(samples[i]), "/"),
                       # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                       # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                       # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2063,6 +2066,7 @@ gbm.auto <- function(
                       # reclabpad = 0, # Receiver label padding in lines.
                       # reclabrad = 0.15, # Receiver label radius in lines.
                       # reclabbord = 0 # Receiver label border in mm.
+                      ...
             )
 
             if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2119,7 +2123,7 @@ gbm.auto <- function(
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
                         filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Bin_BnW.png"),
-                        savedir = paste0("./",names(samples[i]), "/")
+                        savedir = paste0("./",names(samples[i]), "/"),
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                         # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2139,6 +2143,7 @@ gbm.auto <- function(
                         # reclabpad = 0, # Receiver label padding in lines.
                         # reclabrad = 0.15, # Receiver label radius in lines.
                         # reclabbord = 0 # Receiver label border in mm.
+                        ...
               )
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2193,7 +2198,7 @@ gbm.auto <- function(
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
                         filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Gaus_BnW.png"),
-                        savedir = paste0("./",names(samples[i]), "/")
+                        savedir = paste0("./",names(samples[i]), "/"),
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                         # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2213,6 +2218,7 @@ gbm.auto <- function(
                         # reclabpad = 0, # Receiver label padding in lines.
                         # reclabrad = 0.15, # Receiver label radius in lines.
                         # reclabbord = 0 # Receiver label border in mm.
+                        ...
               )
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
@@ -2267,7 +2273,7 @@ gbm.auto <- function(
                         # fontsize = 12,
                         # fontfamily = "Times New Roman",
                         filesavename = paste0(lubridate::today(), "_", names(samples[i]), "_RSB_Map_Combo_BnW.png"),
-                        savedir = paste0("./",names(samples[i]), "/")
+                        savedir = paste0("./",names(samples[i]), "/"),
                         # receiverlats = NULL, # vector of latitudes for receivers to be plotted
                         # receiverlons = NULL, # vector of longitudes for receivers to be plotted
                         # receivernames = NULL, # vector of names for receivers to be plotted
@@ -2287,6 +2293,7 @@ gbm.auto <- function(
                         # reclabpad = 0, # Receiver label padding in lines.
                         # reclabrad = 0.15, # Receiver label radius in lines.
                         # reclabbord = 0 # Receiver label border in mm.
+                        ...
               )
 
               if (alerts) beep(2) # progress printer, right aligned for visibility
