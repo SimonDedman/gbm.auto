@@ -4,6 +4,9 @@ author: "Simon Dedman"
 date: "2023-05-25"
 output: html_document
 ---
+# v2023.08.02
+* gbm.map upgraded to gbm.mapsf, uses ggplot and ggmap, Hans removed as author.
+
 # v2023.06.13
 * CRAN release
 

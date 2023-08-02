@@ -1,10 +1,7 @@
 Package: gbm.auto
 Title: Automated Boosted Regression Tree Modelling and Mapping Suite
-Version: 2023.06.13
-Authors@R: c(
-    person("Simon", "Dedman", , "simondedman@gmail.com", role = c("aut", "cre")),
-    person("Hans", "Gerritsen", role = "aut")
-  )
+Version: 2023.08.02
+Authors@R: person("Simon", "Dedman", , "simondedman@gmail.com", role = c("aut", "cre"))
 Description: Automates delta log-normal boosted regression tree abundance
     prediction. Loops through parameters provided (LR (learning rate), TC
     (tree complexity), BF (bag fraction)), chooses best, simplifies, &

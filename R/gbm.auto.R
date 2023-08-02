@@ -309,22 +309,6 @@ gbm.auto <- function(
   # gbm.rsb, gbm.valuemap, gbm.cons, gbm.basemap
 
   ####1. Check packages, start loop####
-  # if (!require(gbm)) {stop("you need to install the gbm package to run this function")}
-  # if (!require(dismo)) {stop("you need to install the dismo package to run this function")}
-  # if (alerts) if (!require(beepr)) {stop("you need to install the beepr package to run this function")}
-  # if (map) if (!require(mapplots)) {stop("you need to install the mapplots package to run this function")}
-  # if (map) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-  # if (RSB) if (!exists("gbm.rsb")) {stop("you need to install the gbm.rsb function to run this function")}
-  # if (RSB) if (!exists("gbm.map")) {stop("you need to install the gbm.map function to run this function")}
-  # if (!is.null(grids)) if (!exists("gbm.predict.grids")) {stop("you need to install the gbm.predict.grids function from gbm.utils.R to run this function")}
-  # if (!exists("roc")) {stop("you need to install the roc function from gbm.utils.R to run this function")}
-  # if (!exists("calibration")) {stop("you need to install the calibration function from gbm.utils.R to run this function")}
-  # require(gbm)
-  # require(dismo)
-  # if (alerts) require(beepr)
-
-  # utils::globalVariables(c("brv", "grv", "Bin_Preds", "Gaus_Preds")) # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-
   oldpar <- par(no.readonly = TRUE) # defensive block, thanks to Gregor Sayer
   oldwd <- getwd()
   oldoptions <- options()
@@ -624,7 +608,7 @@ gbm.auto <- function(
               Report[1, (3 + n)] <- "Run failed, try smaller lr or step size"
               colnames(Report)[3 + n] <- paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l)
               next
-              }
+            }
             # dev.print(file = paste0("./",names(samples[i]),"/pred_dev_gaus.jpeg"), device = jpeg, width = 600)
             dev.print(file = paste0("./",names(samples[i]),"/pred_dev_", fam2, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
             print(paste0("Done Gaus_BRT",".tc",j,".lr",k,".bf",l))
@@ -915,7 +899,7 @@ gbm.auto <- function(
         dev.off()} # close ZI
 
       if (gaus & exists("Gaus_Best_Model")) {png(filename = paste0("./",names(samples[i]),"/Gaus_Best_dot.png"),
-                     width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
+                                                 width = 4*480, height = 4*480, units = "px", pointsize = 4*12, bg = "white", res = NA, family = "", type = pngtype)
         gbm.plot.fits(get(Gaus_Best_Model))
         dev.off()} # close if gaus
 
@@ -936,9 +920,9 @@ gbm.auto <- function(
         write.csv(Bin_Bars, file = paste0("./", names(samples[i]), "/Binary BRT Variable contributions.csv"), row.names = FALSE)} # close ZI
 
       if (gaus & exists("Gaus_Best_Model")) {Gaus_Bars <- summary(get(Gaus_Best_Model),
-                                      cBars = length(get(Gaus_Best_Model)$var.names),
-                                      n.trees = get(Gaus_Best_Model)$n.trees,
-                                      plotit = FALSE, order = TRUE, normalize = TRUE, las = 1, main = NULL)
+                                                                  cBars = length(get(Gaus_Best_Model)$var.names),
+                                                                  n.trees = get(Gaus_Best_Model)$n.trees,
+                                                                  plotit = FALSE, order = TRUE, normalize = TRUE, las = 1, main = NULL)
       write.csv(Gaus_Bars, file = paste0("./", names(samples[i]), "/Gaussian BRT Variable contributions.csv"), row.names = FALSE)} # close if gaus
 
       if (alerts) beep(2)# progress printer, right aligned for visibility
@@ -1174,13 +1158,13 @@ gbm.auto <- function(
             as.character(Gaus_Best_Simp_Check$final.drops$preds[((dim(subset(Gaus_Best_Simp_Check$final.drops,order > 0))[1]) + 1):length(Gaus_Best_Simp_Check$final.drops$preds)])
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             Report[1:10, (reportcolno - 3)] <- c(paste0("trees: ", Gaus_Best_Simp$n.trees),
-                                                 paste0("Training Data Correlation: ", Gaus_Best_Simp$self.statistics$correlation[[1]]),
-                                                 paste0("CV Mean Deviance: ", Gaus_Best_Simp$cv.statistics$deviance.mean),
-                                                 paste0("CV Deviance SE: ", Gaus_Best_Simp$cv.statistics$deviance.se),
-                                                 paste0("CV D squared: ", Gaus_Best_Simp$cv.statistics$d.squared),
-                                                 paste0("CV Mean Correlation: ", Gaus_Best_Simp$cv.statistics$correlation.mean),
-                                                 paste0("CV Correlation SE: ", Gaus_Best_Simp$cv.statistics$correlation.se),
-                                                 paste0("CV RMSE: ", Gaus_Best_Simp$cv.statistics$cv.rmse),
+                                                 paste0("Training Data Correlation: ", round(Gaus_Best_Simp$self.statistics$correlation[[1]], 3)),
+                                                 paste0("CV Mean Deviance: ", round(Gaus_Best_Simp$cv.statistics$deviance.mean, 3)),
+                                                 paste0("CV Deviance SE: ", round(Gaus_Best_Simp$cv.statistics$deviance.se, 3)),
+                                                 paste0("CV D squared: ", round(Gaus_Best_Simp$cv.statistics$d.squared, 3)),
+                                                 paste0("CV Mean Correlation: ", round(Gaus_Best_Simp$cv.statistics$correlation.mean, 3)),
+                                                 paste0("CV Correlation SE: ", round(Gaus_Best_Simp$cv.statistics$correlation.se, 3)),
+                                                 paste0("CV RMSE: ", round(Gaus_Best_Simp$cv.statistics$cv.rmse, 3)),
                                                  paste0("Deviance% explained relative to null, training: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$self.statistics$mean.resid) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)), # new, might not work
                                                  paste0("Deviance% explained relative to null, CV: ", round(((Gaus_Best_Simp$self.statistics$mean.null - Gaus_Best_Simp$cv.statistics$deviance.mean) / Gaus_Best_Simp$self.statistics$mean.null)*100, 2)))
           } else { # else if min gaus best simp, stats where simp benefit true, open note where no simp benefit
@@ -1710,39 +1694,151 @@ gbm.auto <- function(
 
       ####26. Map maker####
       if (map) {   # generate output image & set parameters
-        png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
-            width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-        par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-        # run gbm.map function with generated parameters
-        gbm.map(x = grids[,gridslon],
-                y = grids[,gridslat],
-                z = grids[,predabund],
-                species = names(samples[i]),
-                shape = shape, #either autogenerated or set by user so never blank
-                ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
-        # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
-        dev.off()
+        # png(filename = paste0("./",names(samples[i]),"/PredAbundMap_",names(samples[i]),".png"),
+        #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+        # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+        # # run gbm.map function with generated parameters
+        # gbm.map(x = grids[,gridslon],
+        #         y = grids[,gridslat],
+        #         z = grids[,predabund],
+        #         species = names(samples[i]),
+        #         shape = shape, #either autogenerated or set by user so never blank
+        #         ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
+        # # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
+        # dev.off()
+
+
+        gbm.mapsf(predabund = grids[c(gridslat, gridslon, predabund)],
+                  # predabundlon = 2, # Longitude column number.
+                  # predabundlat = 1, # Latitude column number.
+                  # predabundpreds = 3, # Predicted abundance column number.
+                  # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                  # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                  # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                  # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                  # mapsource = "google", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                  # googlemap = TRUE, # If pulling basemap from Google maps, this sets expansion factors since
+                  # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                  # maptype = "satellite",
+                  # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                  # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                  shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                  # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                  # colourscale = "viridis", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                  # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                  # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                  # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                  studyspecies = names(samples[i]),
+                  # plottitle = paste0("Predicted abundance of ", studyspecies),
+                  # plotsubtitle = "CPUE", # data %>% distinct(ID) %>% nrow() # 13
+                  # legendtitle = "CPUE",
+                  # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                  # axisxlabel = "Longitude",
+                  # axisylabel = "Latitude",
+                  legendposition = c(0.05, 0.18),
+                  # fontsize = 12,
+                  # fontfamily = "Times New Roman",
+                  # filesavename = paste0(lubridate::today(), "_", studyspecies, "_", legendtitle, ".png"),
+                  savedir = paste0("./",names(samples[i]), "/")
+                  # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                  # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                  # receivernames = NULL, # vector of names for receivers to be plotted
+                  # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                  # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                  # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                  # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                  # recpointssize = 1, # Size of receiver points.
+                  # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                  # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                  # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                  # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                  # reclabcol = "black", # Receiver label text colour.
+                  # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                  # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                  # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                  # reclabpad = 0, # Receiver label padding in lines.
+                  # reclabrad = 0.15, # Receiver label radius in lines.
+                  # reclabbord = 0 # Receiver label border in mm.
+        )
+
+        # gbm.auto param existing shapefile format, google choice, API, stamen etc passthrough
+
 
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Reticulating splines     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    Colour map generated     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
 
         if (BnW) { # if BnW=TRUE, run again in black & white for journal submission
-          png(filename = paste0("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png"),
-              width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-          par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-          gbm.map(x = grids[,gridslon],
-                  y = grids[,gridslat],
-                  z = grids[,predabund],
-                  species = names(samples[i]),
-                  shape = shape, #either autogenerated or set by user so never blank
-                  landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
-                  mapback = "white",
-                  heatcolours = grey.colors(8, start = 1, end = 0),
-                  savedir = savedir, # passes to gbm.map's ... which passes to gbm.basemap
-                  ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
-          # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
-          dev.off()
+          # png(filename = paste0("./",names(samples[i]),"/PredAbundMap_BnW_",names(samples[i]),".png"),
+          #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+          # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+          # gbm.map(x = grids[,gridslon],
+          #         y = grids[,gridslat],
+          #         z = grids[,predabund],
+          #         species = names(samples[i]),
+          #         shape = shape, #either autogenerated or set by user so never blank
+          #         landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
+          #         mapback = "white",
+          #         heatcolours = grey.colors(8, start = 1, end = 0),
+          #         savedir = savedir, # passes to gbm.map's ... which passes to gbm.basemap
+          #         ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
+          # # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
+          # dev.off()
+
+          gbm.mapsf(predabund = grids[c(gridslat, gridslon, predabund)],
+                    # predabundlon = 2, # Longitude column number.
+                    # predabundlat = 1, # Latitude column number.
+                    # predabundpreds = 3, # Predicted abundance column number.
+                    # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                    # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                    # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                    # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                    mapsource = "stamen", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                    googlemap = FALSE, # If pulling basemap from Google maps, this sets expansion factors since
+                    # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                    maptype = "toner-lite",
+                    # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                    # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                    shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                    # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                    colourscale = "gradient", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                    # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                    heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                    # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                    studyspecies = names(samples[i]),
+                    # plottitle = paste0("Predicted abundance of ", studyspecies),
+                    # plotsubtitle = "CPUE", # data %>% distinct(ID) %>% nrow() # 13
+                    # legendtitle = "CPUE",
+                    # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                    # axisxlabel = "Longitude",
+                    # axisylabel = "Latitude",
+                    legendposition = c(0.05, 0.18),
+                    # fontsize = 12,
+                    # fontfamily = "Times New Roman",
+                    filesavename = paste0(lubridate::today(), "_", studyspecies, "_", legendtitle, "_BnW.png"),
+                    savedir = paste0("./",names(samples[i]), "/")
+                    # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                    # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                    # receivernames = NULL, # vector of names for receivers to be plotted
+                    # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                    # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                    # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                    # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                    # recpointssize = 1, # Size of receiver points.
+                    # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                    # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                    # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                    # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                    # reclabcol = "black", # Receiver label text colour.
+                    # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                    # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                    # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                    # reclabpad = 0, # Receiver label padding in lines.
+                    # reclabrad = 0.15, # Receiver label radius in lines.
+                    # reclabbord = 0 # Receiver label border in mm.
+          )
+
+
           if (alerts) beep(2)  # progress printer, right aligned for visibility
           print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Black & white map generated XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
         } # close & save plotting device & close BnW optional
@@ -1752,116 +1848,440 @@ gbm.auto <- function(
           exp01seq <- expm1(4*linear01seq)/expm1(4) # exponentiate to change shape then scale back to 1
 
           if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
-            png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
-                width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-            gbm.map(x = grids[,gridslon],
-                    y = grids[,gridslat],
-                    z = rsbdf_bin[,"Unrepresentativeness"],
-                    mapmain = "Unrepresentativeness: ",
-                    species = names(samples[i]),
-                    legendtitle = "UnRep 0-1",
-                    shape = shape, #either autogenerated or set by user so never blank
-                    # breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = TRUE))/2000) #old failing breaks
-                    breaks = exp01seq)
-            dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
-            # res there, but high values captures in the last few bins.
+            # png(filename = paste0("./",names(samples[i]),"/RSB_Map_Bin_",names(samples[i]),".png"),
+            #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+            # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+            # gbm.map(x = grids[,gridslon],
+            #         y = grids[,gridslat],
+            #         z = rsbdf_bin[,"Unrepresentativeness"],
+            #         mapmain = "Unrepresentativeness: ",
+            #         species = names(samples[i]),
+            #         legendtitle = "UnRep 0-1",
+            #         shape = shape, #either autogenerated or set by user so never blank
+            #         # breaks = expm1(breaks.grid(log(2000), ncol = 8, zero = TRUE))/2000) #old failing breaks
+            #         breaks = exp01seq)
+            # dev.off() #high value log breaks mean first ~5 values cluster near 0 for high
+            # # res there, but high values captures in the last few bins.
+
+            gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness),
+                      # predabundlon = 2, # Longitude column number.
+                      # predabundlat = 1, # Latitude column number.
+                      # predabundpreds = 3, # Predicted abundance column number.
+                      # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                      # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                      # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                      # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                      # mapsource = "google", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                      # googlemap = TRUE, # If pulling basemap from Google maps, this sets expansion factors since
+                      # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                      # maptype = "satellite",
+                      # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                      # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                      shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                      # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                      # colourscale = "viridis", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                      # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                      # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                      # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                      studyspecies = names(samples[i]),
+                      plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                      plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
+                      legendtitle = "UnRep 0-1",
+                      # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                      # axisxlabel = "Longitude",
+                      # axisylabel = "Latitude",
+                      legendposition = c(0.05, 0.18),
+                      # fontsize = 12,
+                      # fontfamily = "Times New Roman",
+                      filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Bin.png"),
+                      savedir = paste0("./",names(samples[i]), "/")
+                      # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                      # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                      # receivernames = NULL, # vector of names for receivers to be plotted
+                      # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                      # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                      # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                      # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                      # recpointssize = 1, # Size of receiver points.
+                      # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                      # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                      # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                      # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                      # reclabcol = "black", # Receiver label text colour.
+                      # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                      # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                      # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                      # reclabpad = 0, # Receiver label padding in lines.
+                      # reclabrad = 0.15, # Receiver label radius in lines.
+                      # reclabbord = 0 # Receiver label border in mm.
+            )
+
             if (alerts) beep(2) # progress printer, right aligned for visibility
             print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Colour RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
           } # close if zi bin
 
           if (gaus & exists("Gaus_Best_Model")) {
-            png(filename = paste0("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png"),
-                width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-            gbm.map(x = grids[,gridslon],
-                    y = grids[,gridslat],
-                    z = rsbdf_gaus[,"Unrepresentativeness"],
-                    mapmain = "Unrepresentativeness: ",
-                    species = names(samples[i]),
-                    legendtitle = "UnRep 0-1",
-                    shape = shape, #either autogenerated or set by user so never blank
-                    breaks = exp01seq)
-            dev.off()
+            # png(filename = paste0("./",names(samples[i]),"/RSB_Map_Gaus_",names(samples[i]),".png"),
+            #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+            # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+            # gbm.map(x = grids[,gridslon],
+            #         y = grids[,gridslat],
+            #         z = rsbdf_gaus[,"Unrepresentativeness"],
+            #         mapmain = "Unrepresentativeness: ",
+            #         species = names(samples[i]),
+            #         legendtitle = "UnRep 0-1",
+            #         shape = shape, #either autogenerated or set by user so never blank
+            #         breaks = exp01seq)
+            # dev.off()
+
+            gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_gaus$Unrepresentativeness),
+                      # predabundlon = 2, # Longitude column number.
+                      # predabundlat = 1, # Latitude column number.
+                      # predabundpreds = 3, # Predicted abundance column number.
+                      # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                      # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                      # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                      # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                      # mapsource = "google", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                      # googlemap = TRUE, # If pulling basemap from Google maps, this sets expansion factors since
+                      # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                      # maptype = "satellite",
+                      # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                      # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                      shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                      # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                      # colourscale = "viridis", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                      # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                      # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                      # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                      studyspecies = names(samples[i]),
+                      plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                      plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
+                      legendtitle = "UnRep 0-1",
+                      # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                      # axisxlabel = "Longitude",
+                      # axisylabel = "Latitude",
+                      legendposition = c(0.05, 0.18),
+                      # fontsize = 12,
+                      # fontfamily = "Times New Roman",
+                      filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Gaus.png"),
+                      savedir = paste0("./",names(samples[i]), "/")
+                      # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                      # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                      # receivernames = NULL, # vector of names for receivers to be plotted
+                      # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                      # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                      # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                      # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                      # recpointssize = 1, # Size of receiver points.
+                      # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                      # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                      # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                      # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                      # reclabcol = "black", # Receiver label text colour.
+                      # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                      # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                      # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                      # reclabpad = 0, # Receiver label padding in lines.
+                      # reclabrad = 0.15, # Receiver label radius in lines.
+                      # reclabbord = 0 # Receiver label border in mm.
+            )
+
             if (alerts) beep(2) # progress printer, right aligned for visibility
             print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
           } # close gaus map
 
           if (ZI & gaus & exists("Gaus_Best_Model")) {
-            png(filename = paste0("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png"),
-                width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-            par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-            gbm.map(x = grids[,gridslon],
-                    y = grids[,gridslat],
-                    z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
-                    mapmain = "Unrepresentativeness: ",
-                    species = names(samples[i]),
-                    legendtitle = "UnRep 0-2",
-                    shape = shape, #either autogenerated or set by user so never blank
-                    breaks = exp01seq)
-            dev.off()
+            # png(filename = paste0("./",names(samples[i]),"/RSB_Map_Both_",names(samples[i]),".png"),
+            #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+            # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+            # gbm.map(x = grids[,gridslon],
+            #         y = grids[,gridslat],
+            #         z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
+            #         mapmain = "Unrepresentativeness: ",
+            #         species = names(samples[i]),
+            #         legendtitle = "UnRep 0-2",
+            #         shape = shape, #either autogenerated or set by user so never blank
+            #         breaks = exp01seq)
+            # dev.off()
+
+            gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness + rsbdf_gaus$Unrepresentativeness),
+                      # predabundlon = 2, # Longitude column number.
+                      # predabundlat = 1, # Latitude column number.
+                      # predabundpreds = 3, # Predicted abundance column number.
+                      # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                      # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                      # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                      # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                      # mapsource = "google", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                      # googlemap = TRUE, # If pulling basemap from Google maps, this sets expansion factors since
+                      # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                      # maptype = "satellite",
+                      # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                      # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                      shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                      # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                      # colourscale = "viridis", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                      # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                      # heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                      # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                      studyspecies = names(samples[i]),
+                      plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                      plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
+                      legendtitle = "UnRep 0-2",
+                      # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                      # axisxlabel = "Longitude",
+                      # axisylabel = "Latitude",
+                      legendposition = c(0.05, 0.18),
+                      # fontsize = 12,
+                      # fontfamily = "Times New Roman",
+                      filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Combo.png"),
+                      savedir = paste0("./",names(samples[i]), "/")
+                      # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                      # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                      # receivernames = NULL, # vector of names for receivers to be plotted
+                      # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                      # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                      # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                      # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                      # recpointssize = 1, # Size of receiver points.
+                      # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                      # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                      # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                      # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                      # reclabcol = "black", # Receiver label text colour.
+                      # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                      # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                      # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                      # reclabpad = 0, # Receiver label padding in lines.
+                      # reclabrad = 0.15, # Receiver label radius in lines.
+                      # reclabbord = 0 # Receiver label border in mm.
+            )
+
             if (alerts) beep(2) # progress printer, right aligned for visibility
             print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Colour RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
           } # close both map
 
           if (BnW) {     # if BnW=TRUE, do again for b&w
             if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
-              png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
-                  width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-              gbm.map(x = grids[,gridslon],
-                      y = grids[,gridslat],
-                      z = rsbdf_bin[,"Unrepresentativeness"],
-                      mapmain = "Unrepresentativeness: ",
-                      mapback = "white",
-                      species = names(samples[i]),
-                      heatcolours = grey.colors(8, start = 1, end = 0), #default 8 greys
-                      ####BUG:setting heatcolours & colournumber overrides this####
-                      landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
-                      legendtitle = "UnRep 0-1",
-                      shape = shape, #either autogenerated or set by user so never blank
-                      breaks = exp01seq)
-              dev.off()
+              # png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Bin_",names(samples[i]),".png"),
+              #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+              # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+              # gbm.map(x = grids[,gridslon],
+              #         y = grids[,gridslat],
+              #         z = rsbdf_bin[,"Unrepresentativeness"],
+              #         mapmain = "Unrepresentativeness: ",
+              #         mapback = "white",
+              #         species = names(samples[i]),
+              #         heatcolours = grey.colors(8, start = 1, end = 0), #default 8 greys
+              #         ####BUG:setting heatcolours & colournumber overrides this####
+              #         landcol = grey.colors(1, start = 0.8, end = 0.8), #light grey. 0=black 1=white
+              #         legendtitle = "UnRep 0-1",
+              #         shape = shape, #either autogenerated or set by user so never blank
+              #         breaks = exp01seq)
+              # dev.off()
+
+              gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness),
+                        # predabundlon = 2, # Longitude column number.
+                        # predabundlat = 1, # Latitude column number.
+                        # predabundpreds = 3, # Predicted abundance column number.
+                        # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                        # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                        # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                        # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                        mapsource = "stamen", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                        googlemap = FALSE, # If pulling basemap from Google maps, this sets expansion factors since
+                        # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                        maptype = "toner-lite",
+                        # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                        # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                        shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                        # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                        colourscale = "gradient", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                        # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                        heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                        # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                        studyspecies = names(samples[i]),
+                        plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                        plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
+                        legendtitle = "UnRep 0-1",
+                        # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                        # axisxlabel = "Longitude",
+                        # axisylabel = "Latitude",
+                        legendposition = c(0.05, 0.18),
+                        # fontsize = 12,
+                        # fontfamily = "Times New Roman",
+                        filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Bin_BnW.png"),
+                        savedir = paste0("./",names(samples[i]), "/")
+                        # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                        # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                        # receivernames = NULL, # vector of names for receivers to be plotted
+                        # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                        # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                        # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                        # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                        # recpointssize = 1, # Size of receiver points.
+                        # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                        # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                        # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                        # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                        # reclabcol = "black", # Receiver label text colour.
+                        # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                        # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                        # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                        # reclabpad = 0, # Receiver label padding in lines.
+                        # reclabrad = 0.15, # Receiver label radius in lines.
+                        # reclabbord = 0 # Receiver label border in mm.
+              )
+
               if (alerts) beep(2) # progress printer, right aligned for visibility
               print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     B&W RSB bin map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
             } # close bin RSB
 
             if (gaus & exists("Gaus_Best_Model")) {
-              png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png"),
-                  width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-              gbm.map(x = grids[,gridslon],
-                      y = grids[,gridslat],
-                      z = rsbdf_gaus[,"Unrepresentativeness"],
-                      mapmain = "Unrepresentativeness: ",
-                      mapback = "white",
-                      species = names(samples[i]),
-                      heatcolours = grey.colors(8, start = 1, end = 0),
-                      landcol = grey.colors(1, start = 0.8, end = 0.8),
-                      legendtitle = "UnRep 0-1",
-                      shape = shape, #either autogenerated or set by user so never blank
-                      breaks = exp01seq)
-              dev.off()
+              # png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Gaus_",names(samples[i]),".png"),
+              #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+              # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+              # gbm.map(x = grids[,gridslon],
+              #         y = grids[,gridslat],
+              #         z = rsbdf_gaus[,"Unrepresentativeness"],
+              #         mapmain = "Unrepresentativeness: ",
+              #         mapback = "white",
+              #         species = names(samples[i]),
+              #         heatcolours = grey.colors(8, start = 1, end = 0),
+              #         landcol = grey.colors(1, start = 0.8, end = 0.8),
+              #         legendtitle = "UnRep 0-1",
+              #         shape = shape, #either autogenerated or set by user so never blank
+              #         breaks = exp01seq)
+              # dev.off()
+
+              gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_gaus$Unrepresentativeness),
+                        # predabundlon = 2, # Longitude column number.
+                        # predabundlat = 1, # Latitude column number.
+                        # predabundpreds = 3, # Predicted abundance column number.
+                        # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                        # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                        # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                        # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                        mapsource = "stamen", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                        googlemap = FALSE, # If pulling basemap from Google maps, this sets expansion factors since
+                        # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                        maptype = "toner-lite",
+                        # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                        # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                        shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                        # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                        colourscale = "gradient", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                        # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                        heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                        # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                        studyspecies = names(samples[i]),
+                        plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                        plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
+                        legendtitle = "UnRep 0-1",
+                        # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                        # axisxlabel = "Longitude",
+                        # axisylabel = "Latitude",
+                        legendposition = c(0.05, 0.18),
+                        # fontsize = 12,
+                        # fontfamily = "Times New Roman",
+                        filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Gaus_BnW.png"),
+                        savedir = paste0("./",names(samples[i]), "/")
+                        # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                        # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                        # receivernames = NULL, # vector of names for receivers to be plotted
+                        # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                        # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                        # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                        # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                        # recpointssize = 1, # Size of receiver points.
+                        # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                        # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                        # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                        # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                        # reclabcol = "black", # Receiver label text colour.
+                        # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                        # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                        # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                        # reclabpad = 0, # Receiver label padding in lines.
+                        # reclabrad = 0.15, # Receiver label radius in lines.
+                        # reclabbord = 0 # Receiver label border in mm.
+              )
+
               if (alerts) beep(2) # progress printer, right aligned for visibility
               print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB Gaus map done    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
             } # close gaus RSB
 
             if (ZI & gaus & exists("Gaus_Best_Model")) {
-              png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png"),
-                  width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
-              par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
-              gbm.map(x = grids[,gridslon],
-                      y = grids[,gridslat],
-                      z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
-                      mapmain = "Unrepresentativeness: ",
-                      mapback = "white",
-                      species = names(samples[i]),
-                      heatcolours = grey.colors(8, start = 1, end = 0),
-                      landcol = grey.colors(1, start = 0.8, end = 0.8),
-                      legendtitle = "UnRep 0-2",
-                      shape = shape, #either autogenerated or set by user so never blank
-                      breaks = exp01seq)
-              dev.off()
+              # png(filename = paste0("./",names(samples[i]),"/RSB_Map_BnW_Both_",names(samples[i]),".png"),
+              #     width = 4*1920, height = 4*1920, units = "px", pointsize = 4*48, bg = "white", res = NA, family = "", type = pngtype)
+              # par(mar = c(3.2,3,1.3,0), las = 1, mgp = c(2.1,0.5,0), xpd = FALSE)
+              # gbm.map(x = grids[,gridslon],
+              #         y = grids[,gridslat],
+              #         z = rsbdf_bin[,"Unrepresentativeness"] + rsbdf_gaus[,"Unrepresentativeness"],
+              #         mapmain = "Unrepresentativeness: ",
+              #         mapback = "white",
+              #         species = names(samples[i]),
+              #         heatcolours = grey.colors(8, start = 1, end = 0),
+              #         landcol = grey.colors(1, start = 0.8, end = 0.8),
+              #         legendtitle = "UnRep 0-2",
+              #         shape = shape, #either autogenerated or set by user so never blank
+              #         breaks = exp01seq)
+              # dev.off()
+
+              gbm.mapsf(predabund = cbind(grids$gridslat, grids$gridslon, rsbdf_bin$Unrepresentativeness + rsbdf_gaus$Unrepresentativeness),
+                        # predabundlon = 2, # Longitude column number.
+                        # predabundlat = 1, # Latitude column number.
+                        # predabundpreds = 3, # Predicted abundance column number.
+                        # myLocation = NULL, # location for extents, format c(xmin, ymin, xmax, ymax).
+                        # trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+                        # scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
+                        # gmapsAPI = NULL, # enter your Google maps API here, quoted character string
+                        mapsource = "stamen", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
+                        googlemap = FALSE, # If pulling basemap from Google maps, this sets expansion factors since
+                        # # Google Maps tiling zoom setup doesn't align to myLocation extents.
+                        maptype = "toner-lite",
+                        # darkenproportion = 0, # amount to darken the basemap, 0-1.
+                        # mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+                        shape = shape, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
+                        # expandfactor = 0, # extents expansion factor for basemap. default was 1.6
+                        colourscale = "gradient", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
+                        # colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
+                        heatcolours = c("white", "grey80", "grey60","grey40", "grey20", "black"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
+                        # colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+                        studyspecies = names(samples[i]),
+                        plottitle = paste0("Unrepresentativeness of samples data for ", studyspecies),
+                        plotsubtitle = "Unrepresentativeness", # data %>% distinct(ID) %>% nrow() # 13
+                        legendtitle = "UnRep 0-1",
+                        # plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+                        # axisxlabel = "Longitude",
+                        # axisylabel = "Latitude",
+                        legendposition = c(0.05, 0.18),
+                        # fontsize = 12,
+                        # fontfamily = "Times New Roman",
+                        filesavename = paste0(lubridate::today(), "_", studyspecies, "_RSB_Map_Combo_BnW.png"),
+                        savedir = paste0("./",names(samples[i]), "/")
+                        # receiverlats = NULL, # vector of latitudes for receivers to be plotted
+                        # receiverlons = NULL, # vector of longitudes for receivers to be plotted
+                        # receivernames = NULL, # vector of names for receivers to be plotted
+                        # receiverrange = NULL, # single (will be recycled), or vector of detection ranges in metres for receivers to be plotted
+                        # recpointscol = "black", # Colour of receiver centrepoint outlines.
+                        # recpointsfill = "white", # Colour of receiver centrepoint fills.
+                        # recpointsalpha = 0.5, # Alpha value of receiver centrepoint fills, 0 (invisible) to 1 (fully visible).
+                        # recpointssize = 1, # Size of receiver points.
+                        # recpointsshape = 21, # Shape of receiver points, default 21, circle with outline and fill.
+                        # recbufcol = "grey75", # Colour of the receiver buffer circle outlines.
+                        # recbuffill = "grey", # Colour of the receiver buffer circle fills.
+                        # recbufalpha = 0.5,  # Alpha value of receiver buffer fills, 0 (invisible) to 1 (fully visible).
+                        # reclabcol = "black", # Receiver label text colour.
+                        # reclabfill = NA, # Receiver label fill colour, NA for no fill.
+                        # reclabnudgex = 0, # Receiver label offset nudge in X dimension.
+                        # reclabnudgey = -200, # Receiver label offset nudge in Y dimension.
+                        # reclabpad = 0, # Receiver label padding in lines.
+                        # reclabrad = 0.15, # Receiver label radius in lines.
+                        # reclabbord = 0 # Receiver label border in mm.
+              )
+
               if (alerts) beep(2) # progress printer, right aligned for visibility
               print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    B&W RSB combo map done   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
             } # close gaus (&combo) B&W RSB
