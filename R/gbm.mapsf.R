@@ -140,6 +140,7 @@ gbm.mapsf <- function(
     colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
     studyspecies = "MySpecies", # The name of your study species, appears in plot title and savename.
     plottitle = paste0("Predicted abundance of ", studyspecies),
+    plotsubtitle  = "CPUE", # Plot subtitle. Can add the n of your individuals.
     legendtitle = "CPUE",
     plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
     axisxlabel = "Longitude",

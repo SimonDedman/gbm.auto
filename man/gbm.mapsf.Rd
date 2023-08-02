@@ -26,6 +26,7 @@ gbm.mapsf(
   colournumber = 8,
   studyspecies = "MySpecies",
   plottitle = paste0("Predicted abundance of ", studyspecies),
+  plotsubtitle = "CPUE",
   legendtitle = "CPUE",
   plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
   axisxlabel = "Longitude",
@@ -112,6 +113,8 @@ colourscale. Default 8.}
 \item{plottitle}{Title of the resultant plot, default paste0("Predicted abundance of ",
 studyspecies).}
 
+\item{plotsubtitle}{Plot subtitle, default ""CPUE". Can add the n of your individuals.}
+
 \item{legendtitle}{Legend title, default "CPUE".}
 
 \item{plotcaption}{Plot caption, default "gbm.auto::gbm.map" + today's date.}
@@ -174,8 +177,6 @@ Default 0.5.}
 \item{reclabrad}{Receiver label radius in lines. Default 0.15.}
 
 \item{reclabbord}{Receiver label border in mm. Default 0.}
-
-\item{plotsubtitle}{Plot subtitle, default ""CPUE". Can add the n of your individuals.}
 }
 \value{
 Species abundance maps using data provided by gbm.auto, and
