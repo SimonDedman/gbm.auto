@@ -31,20 +31,20 @@
 #' , gridslat = 2, gridslon = 1)
 #'
 gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
-# Generalised Boosting Models, Representativeness Surface Builder. Simon Dedman, 2014, simondedman@gmail.com
+  # Generalised Boosting Models, Representativeness Surface Builder. Simon Dedman, 2014, simondedman@gmail.com
 
-# Loops through explanatory variables comparing their histogram in samples to their histogram in grids to see how well the explanatory
-# variable range in samples represents the range being predicted to in grids. Assigns a representativeness score per variable per site in
-# grids, and takes the average score per site if there's more than 1 expvar. Saves this to a CSV; it's plotted by gbm.map if called in
-# gbm.auto. This shows you which areas have the most and least representative coverage by samples, therefore where you can have the most /
-# least confidence in the predictions from gbm.predict.grids. Can be called directly, and choosing a subset of expvars allows one to see
-# their individual / collective representativeness.
+  # Loops through explanatory variables comparing their histogram in samples to their histogram in grids to see how well the explanatory
+  # variable range in samples represents the range being predicted to in grids. Assigns a representativeness score per variable per site in
+  # grids, and takes the average score per site if there's more than 1 expvar. Saves this to a CSV; it's plotted by gbm.map if called in
+  # gbm.auto. This shows you which areas have the most and least representative coverage by samples, therefore where you can have the most /
+  # least confidence in the predictions from gbm.predict.grids. Can be called directly, and choosing a subset of expvars allows one to see
+  # their individual / collective representativeness.
 
-# samples: data frame with response and explanatory variables
-# grids: data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids
-# expvarnames: vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.
-# gridslat: column number for latitude in 'grids'
-# gridslon: column number for longitude in 'grids'
+  # samples: data frame with response and explanatory variables
+  # grids: data frame of (more/different) explanatory variables and no response variable, to be predicted to by gbm.predict.grids
+  # expvarnames: vector of column names of explanatory variables being tested. Can be length 1. Names must match in samples and grids.
+  # gridslat: column number for latitude in 'grids'
+  # gridslon: column number for longitude in 'grids'
 
   # loop through explanatory variables
   for (q in seq(from = 1, to = length(expvarnames))) {
@@ -78,8 +78,10 @@ gbm.rsb <- function(samples, grids, expvarnames, gridslat, gridslon){
     colnames(rsbdf)[(length(rsbdf) - 1):length(rsbdf)] <- c(paste0(expvarnames[q],"_hist_diff"), paste0(expvarnames[q], "_hist_diff_mod"))
   }  # close expvar loop
   # create vector of sum of mod diffs, scaled to score out of 1. Add to rsbdf. Globally assign so it's available to gbm.map as Z later. Will cause problems in loops?
-  rsbdf <- data.frame("Latitude" = grids[,gridslat],
-                      "Longitude" = grids[,gridslon],
-                      rsbdf,
-                      "Unrepresentativeness" = rowMeans(rsbdf[ls(pattern = "_hist_diff_mod")]))
+  rsbdf <- data.frame(
+    "Latitude" = grids[,gridslat],
+    "Longitude" = grids[,gridslon],
+    rsbdf,
+    "Unrepresentativeness" = rowMeans(rsbdf[ls(pattern = "_hist_diff_mod")], na.rm = TRUE)
+  )
   rsbdf}   # return rsbdf as the object result of this function, for use elsewhere

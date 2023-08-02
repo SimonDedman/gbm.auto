@@ -116,7 +116,7 @@ current directory e.g. "/home/me/folder". Do not use getwd() here.}
 \item{savegbm}{Save gbm objects and make available in environment after
 running? Open with load("Bin_Best_Model") Default TRUE.}
 
-\item{loadgbm}{Relative or absolute location of folder containing
+\item{loadgbm}{Relative or (very much preferably) absolute location of folder containing
 Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
 predicted maps and csvs. Avoids re-running BRT models again (the slow bit),
 can run normally once with savegbm=T then multiple times with new grids &
@@ -159,10 +159,9 @@ TRUE.}
 
 \item{Gaus_Preds}{Dummy param for package testing for CRAN, ignore.}
 
-\item{...}{Optional arguments for zero in breaks.grid in gbm.map, legend in
-legend.grid in gbm.map, and gbm.step (dismo package) arguments n.trees and
+\item{...}{Optional arguments for gbm.step (dismo package) arguments n.trees and
 max.trees, both of which can be added in list(1,2) format to pass to fam1 and
- 2.}
+ 2; for gbm.mapsf colourscale, heatcolours, colournumber, and others.}
 }
 \value{
 Line, dot and bar plots, a report of all variables used, statistics
