@@ -60,7 +60,7 @@
 #'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param savegbm Save gbm objects and make available in environment after
 #' running? Open with load("Bin_Best_Model") Default TRUE.
-#' @param loadgbm Relative or absolute location of folder containing
+#' @param loadgbm Relative or (very much preferably) absolute location of folder containing
 #' Bin_Best_Model and Gaus_Best_Model. If set will skip BRT calculations and do
 #' predicted maps and csvs. Avoids re-running BRT models again (the slow bit),
 #' can run normally once with savegbm=T then multiple times with new grids &
@@ -1610,14 +1610,17 @@ gbm.auto <- function(
 
       # Load model objects if loadgbm set
       if (!is.null(loadgbm)) {
-        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+          # & exists("Bin_Best_Model") # not sure why this was in the above line; if using loadgbm then Bin_)Best_model necessarily won't exist in the environment.
+          if (length(list.files(path = loadgbm, pattern = "Bin_Best_Model")) != 1) stop("Bin_Best_Model not found at loadgbm path")
           # model import not working, need a checker####
-          print(getwd())
           print(paste0(loadgbm, "Bin_Best_Model"))
           load(paste0(loadgbm, "Bin_Best_Model"))
           Bin_Best_Model <- "Bin_Best_Model_Object"
         } # close ZI if
-        if (gaus & exists("Gaus_Best_Model")) {
+        if (gaus) {
+          #  & exists("Gaus_Best_Model")
+          if (length(list.files(path = loadgbm, pattern = "Gaus_Best_Model")) != 1) stop("Gaus_Best_Model not found at loadgbm path")
           print(paste0(loadgbm, "Gaus_Best_Model"))
           load(paste0(loadgbm, "Gaus_Best_Model"))
           Gaus_Best_Model <- "Gaus_Best_Model_Object"
@@ -1626,7 +1629,8 @@ gbm.auto <- function(
       } # close if isnull loadgbm
 
       ####20. Binomial predictions####
-      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+      if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {  # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
+        #  & exists("Bin_Best_Model")
         grids$Bin_Preds <- predict.gbm(object = get(Bin_Best_Model),
                                        newdata = grids,
                                        n.trees = get(Bin_Best_Model)$gbm.call$best.trees,
@@ -1636,7 +1640,8 @@ gbm.auto <- function(
       } # close if ZI
 
       ####21. Gaussian predictions####
-      if (gaus & exists("Gaus_Best_Model")) {
+      if (gaus) {
+        #  & exists("Gaus_Best_Model")
         Gaus_Preds <- predict.gbm(object = get(Gaus_Best_Model),
                                   newdata = grids,
                                   n.trees = get(Gaus_Best_Model)$gbm.call$best.trees,
@@ -1644,7 +1649,8 @@ gbm.auto <- function(
 
         if (alerts) beep(2) # progress printer, right aligned for visibility
         print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  Gaussian predictions done  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
-        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
+        if (fam1 == "bernoulli" & (!gaus | (gaus & ZI))) {
+          #  & exists("Bin_Best_Model")
           grids$Gaus_Preds <- Gaus_Preds
 
           ####22. Backtransform logged Gaus to unlogged####
