@@ -44,10 +44,10 @@
 #' species and sort type, in b&w if set. CSVs of all maps if set.
 #'
 #' @export
-#' @import mapplots
 #' @importFrom beepr beep
 #' @importFrom grDevices colorRampPalette dev.off grey.colors png rainbow
 #' @importFrom graphics image legend par
+#' @importFrom mapplots basemap breaks.grid draw.grid draw.shape legend.grid make.grid
 #' @importFrom utils write.csv
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #'
@@ -309,12 +309,12 @@ gbm.valuemap <- function(
         } # close if (!exists("byx"))
 
         # Plot first map: same as bothdata
-        grd <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y),fun = mean) #create gridded data. fun defaults to sum which is bad
+        grd <- mapplots::make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y),fun = mean) #create gridded data. fun defaults to sum which is bad
         heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
         breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
         if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-        basemap(xlim = range(x), ylim = range(y), main = paste0(maploopnames[o], "-Sorted Closed Area: ", goodname[j]), bg = mapback, xlab = "Longitude", ylab = "Latitude")
-        draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
+        mapplots::basemap(xlim = range(x), ylim = range(y), main = paste0(maploopnames[o], "-Sorted Closed Area: ", goodname[j]), bg = mapback, xlab = "Longitude", ylab = "Latitude")
+        mapplots::draw.grid(grd, breaks, col = heatcol) # plot grd data w/ breaks for colour breakpoints
 
         # Plot second map: closed area overlay only
         x = dbase[,loncolno] #set parameters for closed area map
@@ -322,13 +322,13 @@ gbm.valuemap <- function(
         z = dbase[,ncol(dbase)] #last column, cbound @ L187, sort column, zeroes populated with 1s.
         heatcolours2 = c("black","black")
         colournumber2 = 2
-        grd2 <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = mean) #create gridded data. fun defaults to sum which is bad
+        grd2 <- mapplots::make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = mean) #create gridded data. fun defaults to sum which is bad
         heatcol2 = colorRampPalette(heatcolours2)(colournumber2) #create heatcol from component parts
-        breaks2 <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))  #if breaks specified, do nothing (it'll be used later). Else generate it.
+        breaks2 <- mapplots::breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))  #if breaks specified, do nothing (it'll be used later). Else generate it.
         if (zero) {heatcol2 = c("#00000000", colorRampPalette(heatcol2)(length(heatcol2) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-        draw.grid(grd2, breaks2, col = heatcol2) # plot grd data w/ breaks for colour breakpoints
-        draw.shape(shape = shape, col = landcol) # add coastline
-        legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste0(badpct, "% E closed"), col = heatcol)
+        mapplots::draw.grid(grd2, breaks2, col = heatcol2) # plot grd data w/ breaks for colour breakpoints
+        mapplots::draw.shape(shape = shape, col = landcol) # add coastline
+        mapplots::legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste0(badpct, "% E closed"), col = heatcol)
         dev.off()
 
         # create csvs for closed area comparisons
@@ -366,24 +366,24 @@ gbm.valuemap <- function(
           } # close if (!exists("byx"))
 
           # Plot first map: same as bothdata
-          grd <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = mean) #create gridded data. fun defaults to sum which is bad
+          grd <- mapplots::make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = mean) #create gridded data. fun defaults to sum which is bad
           heatcol = colorRampPalette(heatcolours)(colournumber) #create heatcol from component parts
           breaks <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol))  #if breaks specified, do nothing (it'll be used later). Else generate it.
           if (zero) {heatcol = c("#00000000", colorRampPalette(heatcol)(length(heatcol) - 1))} #if zero=TRUE add alpha as 1st colour (1st 2 breakpoints)
-          basemap(xlim = range(x), ylim = range(y), main = paste0(maploopnames[o], "-Sorted Closed Area: ", goodname[j]), bg = mapback, xlab = "Longitude", ylab = "Latitude")
-          draw.grid(grd, breaks, col = heatcol)
+          mapplots::basemap(xlim = range(x), ylim = range(y), main = paste0(maploopnames[o], "-Sorted Closed Area: ", goodname[j]), bg = mapback, xlab = "Longitude", ylab = "Latitude")
+          mapplots::draw.grid(grd, breaks, col = heatcol)
           x = dbase[,loncolno]
           y = dbase[,latcolno]
           z = dbase[,ncol(dbase)]
           heatcolours2 = c("black","black")
           colournumber2 = 2
-          grd2 <- make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = mean)
+          grd2 <- mapplots::make.grid(x, y, z, byx, byy, xlim = range(x), ylim = range(y), fun = mean)
           heatcol2 = colorRampPalette(heatcolours2)(colournumber2)
-          breaks2 <- breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))
+          breaks2 <- mapplots::breaks.grid(grd, zero = zero, quantile = quantile, ncol = length(heatcol2))
           if (zero) {heatcol2 = c("#00000000",colorRampPalette(heatcol2)(length(heatcol2) - 1))}
-          draw.grid(grd2, breaks2, col = heatcol2)
-          draw.shape(shape = shape, col = landcol)
-          legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste0(badpct, "% E closed"), col = heatcol)
+          mapplots::draw.grid(grd2, breaks2, col = heatcol2)
+          mapplots::draw.shape(shape = shape, col = landcol)
+          mapplots::legend.grid(legendloc, breaks = breaks, type = 2, inset = 0, bg = lejback, title = paste0(badpct, "% E closed"), col = heatcol)
           dev.off()
         } # close BnW
         if (alerts) beep(2) # alert user

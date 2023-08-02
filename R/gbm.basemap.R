@@ -31,10 +31,10 @@
 #' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
 #'
 #' @export
-#' @import shapefiles
 #' @importFrom graphics lines par
 #' @importFrom utils download.file unzip
 #' @importFrom sf st_crop st_read st_write sf_use_s2
+#' @importFrom shapefiles read.shapefile
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' \donttest{

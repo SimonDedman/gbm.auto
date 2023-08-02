@@ -205,8 +205,7 @@
 #' @export
 #' @import dismo
 #' @importFrom beepr beep
-#' @importFrom dplyr across
-#' @importFrom dplyr mutate
+#' @importFrom dplyr across mutate
 #' @importFrom gbm plot.gbm
 #' @importFrom grDevices dev.off dev.print graphics.off grey.colors jpeg png
 #' @importFrom graphics axis barplot image legend lines mtext par text

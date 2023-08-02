@@ -7,11 +7,11 @@
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 
 #' @import ggplot2
-#' @import ggmap
+#' @importFrom ggmap get_map ggmap register_google
 #' @importFrom ggspatial layer_spatial
 #' @importFrom lubridate today
 #' @importFrom stars geom_stars st_as_stars
-#' @importFrom sf st_set_crs st_bbox st_transform st_as_sfc st_as_sf st_buffer geom_sf_label
+#' @importFrom sf st_set_crs st_bbox st_transform st_as_sfc st_as_sf st_buffer
 #' @importFrom starsExtra trim2
 #' @importFrom viridis scale_fill_viridis
 #' @export
@@ -305,207 +305,114 @@ gbm.mapsf <- function(
   # } + # close mapsource if
 
   if (mapsource == "gbm.basemap") {
-    ggplot() +   #plot lines by year
-      ggspatial::layer_spatial(shape, col = "black") +
-
-      # UD surface = prediction surface
-      # need to convert points to raster using byx code from gbm.map
-      stars::geom_stars(data = predabundstars |> sf::st_transform(3857), inherit.aes = FALSE) +
-
-      # # receiver centrepoints
-      {if (!is.null(receiverlats) & !is.null(receiverlons))
-        ggplot2::geom_sf(data = receiver |>
-                           sf::st_transform(3857), # Vector transform after st_contour
-                         # already 3857 above so converting twice but it ain't broke
-                         colour = recpointscol,
-                         fill = recpointsfill,
-                         alpha = recpointsalpha,
-                         size = recpointssize,
-                         shape = recpointsshape,
-                         inherit.aes = FALSE,
-        )
-      } +
-
-      # receiver buffer circles
-      {if (!is.null(receiverlats) & !is.null(receiverlons) & !is.null(receiverrange))
-        ggplot2::geom_sf(data = sf::st_buffer(receiver, dist = receiverrange)  |>
-                           sf::st_transform(3857), # Vector transform after st_contour
-                         # already 3857 above so converting twice but it ain't broke
-                         colour = recbufcol,
-                         fill = recbuffill,
-                         alpha = recbufalpha,
-                         inherit.aes = FALSE
-        )
-      } +
-
-      # receiver labels
-      {if (!is.null(receiverlats) & !is.null(receiverlons) & !is.null(receivernames))
-        ggplot2::geom_sf_label(data = receiver  |>
-                                 sf::st_transform(3857), # Vector transform after st_contour
-                               # already 3857 above so converting twice but it ain't broke
-                               colour = reclabcol,
-                               fill = reclabfill,
-                               inherit.aes = FALSE,
-                               nudge_x = reclabnudgex,
-                               nudge_y = reclabnudgey,
-                               label.padding = unit(reclabpad, "lines"), # 0.25
-                               label.r = unit(reclabrad, "lines"),
-                               label.size = reclabbord, # 0.25
-                               ggplot2::aes(label = receivernames)
-        )
-      } +
-
-      # CPUE scale colours
-      {if (colourscale == "viridis")
-        viridis::scale_fill_viridis(
-          alpha = 1, # 0:1
-          begin = 0, # hue
-          end = 1, # hue
-          direction = 1, # colour order, 1 or -1
-          discrete = FALSE, # false = continuous
-          option = "D", # A magma B inferno C plasma D viridis E cividis F rocket G mako H turbo
-          space = "Lab",
-          na.value = "grey50",
-          guide = "colourbar",
-          aesthetics = "fill",
-          # name = waiver(),
-          name = legendtitle,
-          # limits = NA,
-          # position = "left"
-          position = "right"
-        )
-      } +
-
-      # CPUE scale colours
-      {if (colourscale == "gradient")
-        scale_fill_gradientn(
-          name = legendtitle,
-          position = "right",
-          colours = colorRampPalette(heatcolours)(colournumber), # Vector of colours to use for n-colour gradient.
-          na.value = "grey50"
-        )
-      } +
-
-      ggplot2::ggtitle(plottitle, subtitle = plotsubtitle) +
-      ggplot2::labs(x = axisxlabel, y = axisylabel, caption = plotcaption) +
-      ggplot2::theme_minimal() +
-      ggplot2::theme(
-        legend.position = legendposition, #%dist (of middle? of legend box) from L to R, %dist from Bot to Top
-        legend.spacing.x = ggplot2::unit(0, 'cm'), #compress spacing between legend items, this is min
-        legend.spacing.y = ggplot2::unit(0, 'cm'), #compress spacing between legend items, this is min
-        legend.title = ggplot2::element_text(size = 8),
-        legend.text = ggplot2::element_text(size = 8),
-        legend.background = ggplot2::element_rect(fill = "white", colour = NA), # element_blank(),
-        panel.background = ggplot2::element_rect(fill = "white", colour = "grey50"), # white background
-        plot.background = ggplot2::element_rect(fill = "white", colour = "grey50"), # white background
-        legend.key = ggplot2::element_blank(),
-        text = ggplot2::element_text(size = fontsize,  family = fontfamily)
-      ) # removed whitespace buffer around legend boxes which is nice
-
-    ggplot2::ggsave(filename = filesavename, plot = ggplot2::last_plot(), device = "png", path = savedir, scale = 1,
-                    #changes how big lines & legend items & axes & titles are relative to basemap. Smaller number = bigger items
-                    width = 6, height = autoheight, units = "in", dpi = 600, limitsize = TRUE)
-
+    p <- ggplot() +   #plot lines by year
+      ggspatial::layer_spatial(shape, col = "black")
   } else {
-    ggmap::ggmap(myMap, # basemap CRS = 3857? Doesn't plot on its own, don't worry
-                 darken = c(darkenproportion, "black")) +
-
-      # UD surface = prediction surface
-      # need to convert points to raster using byx code from gbm.map
-      stars::geom_stars(data = predabundstars |> sf::st_transform(3857), inherit.aes = FALSE) +
-
-      # # receiver centrepoints
-      {if (!is.null(receiverlats) & !is.null(receiverlons))
-        ggplot2::geom_sf(data = receiver |>
-                           sf::st_transform(3857), # Vector transform after st_contour
-                         # already 3857 above so converting twice but it ain't broke
-                         colour = recpointscol,
-                         fill = recpointsfill,
-                         alpha = recpointsalpha,
-                         size = recpointssize,
-                         shape = recpointsshape,
-                         inherit.aes = FALSE,
-        )
-      } +
-
-      # receiver buffer circles
-      {if (!is.null(receiverlats) & !is.null(receiverlons) & !is.null(receiverrange))
-        ggplot2::geom_sf(data = sf::st_buffer(receiver, dist = receiverrange)  |>
-                           sf::st_transform(3857), # Vector transform after st_contour
-                         # already 3857 above so converting twice but it ain't broke
-                         colour = recbufcol,
-                         fill = recbuffill,
-                         alpha = recbufalpha,
-                         inherit.aes = FALSE
-        )
-      } +
-
-      # receiver labels
-      {if (!is.null(receiverlats) & !is.null(receiverlons) & !is.null(receivernames))
-        ggplot2::geom_sf_label(data = receiver  |>
-                                 sf::st_transform(3857), # Vector transform after st_contour
-                               # already 3857 above so converting twice but it ain't broke
-                               colour = reclabcol,
-                               fill = reclabfill,
-                               inherit.aes = FALSE,
-                               nudge_x = reclabnudgex,
-                               nudge_y = reclabnudgey,
-                               label.padding = unit(reclabpad, "lines"), # 0.25
-                               label.r = unit(reclabrad, "lines"),
-                               label.size = reclabbord, # 0.25
-                               ggplot2::aes(label = receivernames)
-        )
-      } +
-
-      # CPUE scale colours
-      {if (colourscale == "viridis")
-        viridis::scale_fill_viridis(
-          alpha = 1, # 0:1
-          begin = 0, # hue
-          end = 1, # hue
-          direction = 1, # colour order, 1 or -1
-          discrete = FALSE, # false = continuous
-          option = "D", # A magma B inferno C plasma D viridis E cividis F rocket G mako H turbo
-          space = "Lab",
-          na.value = "grey50",
-          guide = "colourbar",
-          aesthetics = "fill",
-          # name = waiver(),
-          name = legendtitle,
-          # limits = NA,
-          # position = "left"
-          position = "right"
-        )
-      } +
-
-      # CPUE scale colours
-      {if (colourscale == "gradient")
-        scale_fill_gradientn(
-          name = legendtitle,
-          position = "right",
-          colours = colorRampPalette(heatcolours)(colournumber), # Vector of colours to use for n-colour gradient.
-          na.value = "grey50"
-        )
-      } +
-
-      ggplot2::ggtitle(plottitle, subtitle = plotsubtitle) +
-      ggplot2::labs(x = axisxlabel, y = axisylabel, caption = plotcaption) +
-      ggplot2::theme_minimal() +
-      ggplot2::theme(
-        legend.position = legendposition, #%dist (of middle? of legend box) from L to R, %dist from Bot to Top
-        legend.spacing.x = ggplot2::unit(0, 'cm'), #compress spacing between legend items, this is min
-        legend.spacing.y = ggplot2::unit(0, 'cm'), #compress spacing between legend items, this is min
-        legend.title = ggplot2::element_text(size = 8),
-        legend.text = ggplot2::element_text(size = 8),
-        legend.background = ggplot2::element_rect(fill = "white", colour = NA), # element_blank(),
-        panel.background = ggplot2::element_rect(fill = "white", colour = "grey50"), # white background
-        plot.background = ggplot2::element_rect(fill = "white", colour = "grey50"), # white background
-        legend.key = ggplot2::element_blank(),
-        text = ggplot2::element_text(size = fontsize,  family = fontfamily)
-      ) # removed whitespace buffer around legend boxes which is nice
-
-    ggplot2::ggsave(filename = filesavename, plot = ggplot2::last_plot(), device = "png", path = savedir, scale = 1,
-                    #changes how big lines & legend items & axes & titles are relative to basemap. Smaller number = bigger items
-                    width = 6, height = autoheight, units = "in", dpi = 600, limitsize = TRUE)
+    p <- ggmap::ggmap(myMap, # basemap CRS = 3857? Doesn't plot on its own, don't worry
+                      darken = c(darkenproportion, "black"))
   } # close mapsource ifelse
+
+  p <- p +
+    # Prediction surface
+    # need to convert points to raster using byx code from gbm.map
+    stars::geom_stars(data = predabundstars |> sf::st_transform(3857), inherit.aes = FALSE) +
+
+    # # receiver centrepoints
+    {if (!is.null(receiverlats) & !is.null(receiverlons))
+      ggplot2::geom_sf(data = receiver |>
+                         sf::st_transform(3857), # Vector transform after st_contour
+                       # already 3857 above so converting twice but it ain't broke
+                       colour = recpointscol,
+                       fill = recpointsfill,
+                       alpha = recpointsalpha,
+                       size = recpointssize,
+                       shape = recpointsshape,
+                       inherit.aes = FALSE,
+      )
+    } +
+
+    # receiver buffer circles
+    {if (!is.null(receiverlats) & !is.null(receiverlons) & !is.null(receiverrange))
+      ggplot2::geom_sf(data = sf::st_buffer(receiver, dist = receiverrange)  |>
+                         sf::st_transform(3857), # Vector transform after st_contour
+                       # already 3857 above so converting twice but it ain't broke
+                       colour = recbufcol,
+                       fill = recbuffill,
+                       alpha = recbufalpha,
+                       inherit.aes = FALSE
+      )
+    } +
+
+    # receiver labels
+    {if (!is.null(receiverlats) & !is.null(receiverlons) & !is.null(receivernames))
+      ggplot2::geom_sf_label(data = receiver  |>
+                               sf::st_transform(3857), # Vector transform after st_contour
+                             # already 3857 above so converting twice but it ain't broke
+                             colour = reclabcol,
+                             fill = reclabfill,
+                             inherit.aes = FALSE,
+                             nudge_x = reclabnudgex,
+                             nudge_y = reclabnudgey,
+                             label.padding = unit(reclabpad, "lines"), # 0.25
+                             label.r = unit(reclabrad, "lines"),
+                             label.size = reclabbord, # 0.25
+                             ggplot2::aes(label = receivernames)
+      )
+    } +
+
+    # CPUE scale colours
+    {if (colourscale == "viridis")
+      viridis::scale_fill_viridis(
+        alpha = 1, # 0:1
+        begin = 0, # hue
+        end = 1, # hue
+        direction = 1, # colour order, 1 or -1
+        discrete = FALSE, # false = continuous
+        option = "D", # A magma B inferno C plasma D viridis E cividis F rocket G mako H turbo
+        space = "Lab",
+        na.value = "grey50",
+        guide = "colourbar",
+        aesthetics = "fill",
+        # name = waiver(),
+        name = legendtitle,
+        # limits = NA,
+        # position = "left"
+        position = "right"
+      )
+    } +
+
+    # CPUE scale colours
+    {if (colourscale == "gradient")
+      scale_fill_gradientn(
+        name = legendtitle,
+        position = "right",
+        colours = colorRampPalette(heatcolours)(colournumber), # Vector of colours to use for n-colour gradient.
+        na.value = "grey50"
+      )
+    } +
+
+    ggplot2::ggtitle(plottitle, subtitle = plotsubtitle) +
+    ggplot2::labs(x = axisxlabel, y = axisylabel, caption = plotcaption) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      legend.position = legendposition, #%dist (of middle? of legend box) from L to R, %dist from Bot to Top
+      legend.spacing.x = ggplot2::unit(0, 'cm'), #compress spacing between legend items, this is min
+      legend.spacing.y = ggplot2::unit(0, 'cm'), #compress spacing between legend items, this is min
+      legend.title = ggplot2::element_text(size = 8),
+      legend.text = ggplot2::element_text(size = 8),
+      legend.background = ggplot2::element_rect(fill = "white", colour = NA), # element_blank(),
+      panel.background = ggplot2::element_rect(fill = "white", colour = "grey50"), # white background
+      plot.background = ggplot2::element_rect(fill = "white", colour = "grey50"), # white background
+      legend.key = ggplot2::element_blank(),
+      text = ggplot2::element_text(size = fontsize,  family = fontfamily)
+    ) # removed whitespace buffer around legend boxes which is nice
+
+  ggplot2::ggsave(filename = filesavename,
+                  plot = p, # ggplot2::last_plot()
+                  device = "png",
+                  path = savedir,
+                  scale = 1,
+                  #changes how big lines & legend items & axes & titles are relative to basemap. Smaller number = bigger items
+                  width = 6, height = autoheight, units = "in", dpi = 600, limitsize = TRUE)
+
 } # close function
