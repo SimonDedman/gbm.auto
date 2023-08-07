@@ -58,9 +58,9 @@ gbm.mapsf(
 )
 }
 \arguments{
-\item{predabund}{Predicted abundance data frame csv produced by gbm.auto
-(Abundance_Preds_only.csv), with Latitude, Longitude, and Predicted Abundance columns. Default
-NULL.}
+\item{predabund}{Predicted abundance data frame produced by gbm.auto (Abundance_Preds_only.csv),
+with Latitude, Longitude, and Predicted Abundance columns. Default NULL. You need to read the csv
+ in R if not already present as an object in the environment.}
 
 \item{predabundlon}{Longitude column number. Default 2.}
 

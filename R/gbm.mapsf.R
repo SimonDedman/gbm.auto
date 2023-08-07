@@ -16,9 +16,9 @@
 #' @importFrom viridis scale_fill_viridis
 #' @export
 #'
-#' @param predabund Predicted abundance data frame csv produced by gbm.auto
-#' (Abundance_Preds_only.csv), with Latitude, Longitude, and Predicted Abundance columns. Default
-#' NULL.
+#' @param predabund Predicted abundance data frame produced by gbm.auto (Abundance_Preds_only.csv),
+#' with Latitude, Longitude, and Predicted Abundance columns. Default NULL. You need to read the csv
+#'  in R if not already present as an object in the environment.
 #' @param predabundlon Longitude column number. Default 2.
 #' @param predabundlat Latitude column number. Default 1.
 #' @param predabundpreds Predicted abundance column number, default 3.
@@ -114,7 +114,7 @@
 #' }
 
 gbm.mapsf <- function(
-    predabund = NULL, # predicted abundance data frame csv produced by gbm.auto (Abundance_Preds_only.csv), with Latitude, Longitude, and Predicted Abundance columns.
+    predabund = NULL, # predicted abundance data frame produced by gbm.auto (Abundance_Preds_only.csv), with Latitude, Longitude, and Predicted Abundance columns.
     predabundlon = 2, # Longitude column number.
     predabundlat = 1, # Latitude column number.
     predabundpreds = 3, # Predicted abundance column number.
@@ -272,6 +272,10 @@ gbm.mapsf <- function(
     if (googlemap) autoheight <- 6.4 # googlemap pulls tiles for a centre point hence will always be square. But needs a bit extra for title area.
   } # close mapsource ifelse
 
+  # remove extra columns from predabund so they don't become additional layers in stars raster
+  predabund <- data.frame(Latitude = predabund[, predabundlat],
+                          Longitude = predabund[, predabundlon],
+                          PredAbund = predabund[, predabundpreds])
   # create stars from predabund
   predabundstars <- stars::st_as_stars(predabund, coords = c(predabundlon, predabundlat)) |>
     sf::st_set_crs(4326) # one of (i) character: a string accepted by GDAL, (ii) integer, a valid EPSG value (numeric), or (iii) an object of class crs.
