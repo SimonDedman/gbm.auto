@@ -22,8 +22,8 @@
 #' intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
 #' @param extrabounds Grow bounds 16pct each direction to expand rectangular
 #' datasets basemaps over the entire square area created by basemap in mapplots.
-#' @param returnsf Return object as simple features object? Default FALSE,
-#'  returns as list format for draw.shape in mapplots, used in gbm.map.
+# #' @param returnsf Return object as simple features object? Default FALSE,
+# #'  returns as list format for draw.shape in mapplots, used in gbm.map.
 #'
 #' @return basemap coastline file for gbm.map in gbm.auto. "cropshp"
 #' SpatialPolygonsDataFrame in in local environment & user-named files in
@@ -34,7 +34,7 @@
 #' @importFrom graphics lines par
 #' @importFrom utils download.file unzip
 #' @importFrom sf st_crop st_read st_write sf_use_s2
-#' @importFrom shapefiles read.shapefile
+# #' @importFrom shapefiles read.shapefile
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' \donttest{
@@ -70,18 +70,20 @@
 #' 6. Error in attachNamespace("shapefiles"): namespace is already attached. Use:
 #' unloadNamespace("shapefiles") .
 #'
-gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
-                        grids = NULL, # if bounds unspecified, name your grids database here
-                        gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
-                        gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
-                        getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, including that folder
-                        zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
-                        savedir = tempdir(), # save outputs to a temporary directory (default) else
-                        # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
-                        savename = "Crop_Map", #shapefile save-name without the .shp
-                        res = "CALC", # Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
-                        extrabounds = FALSE, # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
-                        returnsf = FALSE) { # Return object as simple features object? Default FALSE, returns as list format for draw.shape in mapplots, used in gbm.map
+gbm.basemap <- function(
+    bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
+    grids = NULL, # if bounds unspecified, name your grids database here
+    gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
+    gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
+    getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, including that folder
+    zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
+    savedir = tempdir(), # save outputs to a temporary directory (default) else
+    # change to current directory e.g. "/home/me/folder". Do not use getwd() here.
+    savename = "Crop_Map", #shapefile save-name without the .shp
+    res = "CALC", # Resolution, 1:5 (low:high) OR c,l,i,h,f (coarse, low, intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.
+    extrabounds = FALSE # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
+    # returnsf = FALSE # obviated by gbm.mapsf
+) { # Return object as simple features object? Default FALSE, returns as list format for draw.shape in mapplots, used in gbm.map
 
   attachNamespace("shapefiles") # else Error in as.environment(pos): no item called "package:shapefiles" on the search list
   # or Error during wrapup: no item called "package:shapefiles" on the search list
@@ -160,11 +162,13 @@ gbm.basemap <- function(bounds = NULL, # region to crop to: c(xmin,xmax,ymin,yma
   setwd("CroppedMap")
   st_write(cropshp, dsn = paste0(savename, ".shp"), append = FALSE) # append FALSE overwrites existing files
 
-  if (returnsf) {
-    cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
-  } else {
-    cropshp <- shapefiles::read.shapefile(savename) # read it back in with read.shapefile which results in the expected format for draw.shape in mapplots, used in gbm.map # shapefiles::
-  }
+  # if (returnsf) {
+  #   cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
+  # } else {
+  #   cropshp <- shapefiles::read.shapefile(savename) # read it back in with read.shapefile which results in the expected format for draw.shape in mapplots, used in gbm.map # shapefiles::
+  # }
+
+  cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
 
   print(paste("World map cropped and saved successfully"))
   return(cropshp)}

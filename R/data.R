@@ -28,7 +28,7 @@
 #' @name Adult_Females
 #' @usage data(Adult_Females)
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @source \url{http://datras.ices.dk}
+#' @source <http://datras.ices.dk>
 "Adult_Females"
 
 #' Data: Scaled abundance data for 2 subsets of 4 rays in the Irish Sea, by gbm.cons
@@ -178,7 +178,7 @@
 #' @name grids
 #' @usage data(grids)
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @source \url{http://oar.marine.ie/handle/10793/958}
+#' @source <http://oar.marine.ie/handle/10793/958>
 "grids"
 
 #' Data: Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014
@@ -212,7 +212,7 @@
 #' @name samples
 #' @usage data(samples)
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
-#' @source \url{http://oar.marine.ie/handle/10793/958}
+#' @source <http://oar.marine.ie/handle/10793/958>
 "samples"
 
 #' Data: Predicted abundances of 4 ray species generated using gbm.auto

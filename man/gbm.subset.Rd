@@ -22,8 +22,8 @@ This function returns the variable value corresponding to the 0 value on the
 lineplots, which should be the optimal place to split the dataset into 2
 subsets, low and high, IF the relationship doesn't cross 0 more than once.
 Function is similarly useful to quickly get the 0-point value in these cases,
- i.e. where values below are detrimental, values above beneficial (check
- plots though)
+i.e. where values below are detrimental, values above beneficial (check
+plots though)
 }
 \details{
 loop varnames are BinLineLoop_VAR.csv & GausLineLoop_VAR.csv

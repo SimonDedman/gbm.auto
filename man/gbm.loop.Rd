@@ -140,8 +140,8 @@ Bagging introduces stochasticity which can result in sizeable variance in
 output predictions by gbm.auto for small datasets. This function runs a user-
 specified number of loops through the same gbm.auto parameter combinations
 and calculates the Coefficient Of Variation in the predicted abundance scores
- for each site aka cell. This can be mapped, to spatially demonstrate the
- output variance range.
+for each site aka cell. This can be mapped, to spatially demonstrate the
+output variance range.
 }
 \examples{
 \donttest{

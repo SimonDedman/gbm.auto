@@ -7,10 +7,10 @@
 \format{
 A data frame with 378570 rows and 3 variables:
 \describe{
-  \item{Longitude}{Decimal longitudes in the Irish Sea}
-  \item{Latitude}{Decimal latitudes in the Irish Sea}
-  \item{allscaled}{Relative abundance. Each juvenile and adult female
-  cuckoo, blonde, thornback and spotted ray scaled to 1 and added together}
+\item{Longitude}{Decimal longitudes in the Irish Sea}
+\item{Latitude}{Decimal latitudes in the Irish Sea}
+\item{allscaled}{Relative abundance. Each juvenile and adult female
+cuckoo, blonde, thornback and spotted ray scaled to 1 and added together}
 }
 }
 \usage{

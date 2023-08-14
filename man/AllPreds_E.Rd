@@ -7,13 +7,13 @@
 \format{
 A data frame with 378570 rows and 7 variables:
 \describe{
-  \item{Latitude}{Decimal latitudes in the Irish Sea}
-  \item{Longitude}{Decimal longitudes in the Irish Sea}
-  \item{Cuckoo}{Predicted abundances of cuckoo rays in the Irish Sea, generated using gbm.auto}
-  \item{Thornback}{Predicted abundances of thornback rays in the Irish Sea, generated using gbm.auto}
-  \item{Blonde}{Predicted abundances of blonde rays in the Irish Sea, generated using gbm.auto}
-  \item{Spotted}{Predicted abundances of spotted rays in the Irish Sea, generated using gbm.auto}
-  \item{Effort}{Irish commercial beam trawler effort 2012}
+\item{Latitude}{Decimal latitudes in the Irish Sea}
+\item{Longitude}{Decimal longitudes in the Irish Sea}
+\item{Cuckoo}{Predicted abundances of cuckoo rays in the Irish Sea, generated using gbm.auto}
+\item{Thornback}{Predicted abundances of thornback rays in the Irish Sea, generated using gbm.auto}
+\item{Blonde}{Predicted abundances of blonde rays in the Irish Sea, generated using gbm.auto}
+\item{Spotted}{Predicted abundances of spotted rays in the Irish Sea, generated using gbm.auto}
+\item{Effort}{Irish commercial beam trawler effort 2012}
 }
 }
 \usage{

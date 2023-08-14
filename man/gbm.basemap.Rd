@@ -14,8 +14,7 @@ gbm.basemap(
   savedir = tempdir(),
   savename = "Crop_Map",
   res = "CALC",
-  extrabounds = FALSE,
-  returnsf = FALSE
+  extrabounds = FALSE
 )
 }
 \arguments{
@@ -45,9 +44,6 @@ intermediate, high, full) or "CALC" to calculate based on bounds. Choose one.}
 
 \item{extrabounds}{Grow bounds 16pct each direction to expand rectangular
 datasets basemaps over the entire square area created by basemap in mapplots.}
-
-\item{returnsf}{Return object as simple features object? Default FALSE,
-returns as list format for draw.shape in mapplots, used in gbm.map.}
 }
 \value{
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
@@ -63,27 +59,24 @@ Simon Dedman, 2015/6 simondedman@gmail.com GitHub.com/SimonDedman/gbm.auto
 }
 \details{
 errors and their origins:
-1. Error in setwd(getzip) : cannot change working directory
+\enumerate{
+\item Error in setwd(getzip) : cannot change working directory
 If you've specified the location of the local GSHHS_shp folder, ensure you're
 in the correct directory relative to it. This error means it looked for the
 folder and couldn't find it.
-
-2. If rgdal install fails in Linux try:
+\item If rgdal install fails in Linux try:
 sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
-
-3. Error in as.environment(pos):no item called "package:shapefiles" on the
+\item Error in as.environment(pos):no item called "package:shapefiles" on the
 search list: strange error occurring despite shapefiles being coded like all
 other packages. Correct output produced regardless.
-
-4. subscript out of bounds: can't crop world map to your bounds.
+\item subscript out of bounds: can't crop world map to your bounds.
 Check lat/lon are the right way around: check gridslat and gridslon point to the correct columns
 for lat and lon in grids, and those columns named (something like) lat and lon, ARE ACTUALLY the
 latitudes and longitudes, and not the wrong way around.
-
-5. If your download is timing out use options(timeout = 240).
-
-6. Error in attachNamespace("shapefiles"): namespace is already attached. Use:
+\item If your download is timing out use options(timeout = 240).
+\item Error in attachNamespace("shapefiles"): namespace is already attached. Use:
 unloadNamespace("shapefiles") .
+}
 }
 \examples{
 \donttest{

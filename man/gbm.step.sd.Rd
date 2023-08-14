@@ -93,17 +93,17 @@ GBM models using gbm as the engine.
 SD fork of dismo's gbm.step to add evaluation metrics like d.squared and rmse. J. Leathwick and
 J. Elith - 19th September 2005, version 2.9. Function to assess optimal no of boosting trees
 using k-fold cross validation. Implements the cross-validation procedure described on page 215 of
- Hastie T, Tibshirani R, Friedman JH (2001) The Elements of Statistical Learning: Data Mining,
+Hastie T, Tibshirani R, Friedman JH (2001) The Elements of Statistical Learning: Data Mining,
 Inference, and Prediction Springer-Verlag, New York.
 }
 \details{
 Divides the data into 10 subsets, with stratification by prevalence if required for pa data then
 fits a gbm model of increasing complexity along the sequence from n.trees to n.trees + (n.steps *
- step.size) calculating the residual deviance at each step along the way after each fold
- processed, calculates the average holdout residual deviance and its standard error then
- identifies the optimal number of trees as that at which the holdout deviance is minimised and
- fits a model with this number of trees, returning it as a gbm model along with additional
- information from the cv selection process.
+step.size) calculating the residual deviance at each step along the way after each fold
+processed, calculates the average holdout residual deviance and its standard error then
+identifies the optimal number of trees as that at which the holdout deviance is minimised and
+fits a model with this number of trees, returning it as a gbm model along with additional
+information from the cv selection process.
 
 requires gbm library from Cran
 requires roc and calibration scripts of J Elith

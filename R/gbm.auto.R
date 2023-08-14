@@ -820,11 +820,6 @@ gbm.auto <- function(
           # create dataframe
           plotgrid <- plot.gbm(get(Bin_Best_Model), s, return.grid = TRUE)
 
-          #If factor variable
-          if (is.factor(plotgrid[,1])) {
-            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))
-          } # close if is factor
-
           # This section centres the values around 0,
           # Inverts their position relative to 0 (top becomes bottom),
           # Exponentiates them (midrange values push towards extremes)
@@ -841,6 +836,46 @@ gbm.auto <- function(
           # 2023-02-24 this is useful for making ggplots like the plot.gbm
           # https://github.com/SimonDedman/gbm.auto/issues/81
           plotgrid$ycentred <- plotgrid$y - mean(plotgrid$y)
+
+          #If factor variable
+          if (is.factor(plotgrid[,1])) {
+            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))
+            # overwrite plot with gbm.factorplot output
+            gbm.factorplot(x = plotgrid,
+                           # factorplotlevels = NULL,
+                           # ggplot2guideaxisangle = 0,
+                           # ggplot2labsx = "",
+                           # ggplot2labsy = "Marginal Effect",
+                           # ggplot2axistext = 1.5,
+                           # ggplot2axistitle = 2,
+                           # ggplot2legendtext = 1,
+                           # ggplot2legendtitle = 1.5,
+                           # ggplot2legendtitlealign = 0, # otherwise effect type title centre aligned for some reason
+                           # ggplot2plotbackgroundfill = "white", # white background
+                           # ggplot2plotbackgroundcolour = "grey50",
+                           # ggplot2striptextx = 2,
+                           # ggplot2panelbordercolour = "black",
+                           # ggplot2panelborderfill = NA,
+                           # ggplot2panelborderlinewidth = 1,
+                           # ggplot2legendspacingx = unit(0, "cm"), # compress spacing between legend items, this is min
+                           # ggplot2legendbackground = ggplot2::element_blank(),
+                           # ggplot2panelbackgroundfill = "white",
+                           # ggplot2panelbackgroundcolour = "grey50",
+                           # ggplot2panelgridcolour = "grey90",
+                           # ggplot2legendkey = ggplot2::element_blank(),
+                           ggsavefilename = paste0("./", names(samples[i]), "/Bin_Best_line_", as.character(get(Bin_Best_Model)$gbm.call$predictor.names[o]), "_gg.png"),
+                           # ggsaveplot = last_plot(),
+                           # ggsavedevice = "png",
+                           # ggsavepath = "",
+                           # ggsavescale = 2,
+                           ggsavewidth = 4*480,
+                           ggsaveheight = 4*480,
+                           ggsaveunits = "px",
+                           # ggsavedpi = 300,
+                           # ggsavelimitsize = TRUE
+                           ...
+            ) # close gbm.factorplot
+          } # close if is factor
 
           # write out csv
           write.csv(plotgrid, row.names = FALSE, na = "",
@@ -873,12 +908,19 @@ gbm.auto <- function(
         if (linesfiles) {u <- match(get(Gaus_Best_Model)$contributions$var[p],
                                     get(Gaus_Best_Model)$gbm.call$predictor.names)
         plotgrid <- plot.gbm(get(Gaus_Best_Model), u, return.grid = TRUE)
-        if (is.factor(plotgrid[,1])) {
-          plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Gaus_Best_Model)$gbm.call$dataframe[,get(Gaus_Best_Model)$gbm.call$gbm.x[u]]))}
         # plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
         # plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
         # plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
         plotgrid$ycentred <- plotgrid$y - mean(plotgrid$y)
+
+        if (is.factor(plotgrid[,1])) {
+          plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Gaus_Best_Model)$gbm.call$dataframe[,get(Gaus_Best_Model)$gbm.call$gbm.x[u]]))
+          gbm.factorplot(x = plotgrid,
+                         ggsavefilename = paste0("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[o]), "_gg.png"),
+                         ggsavewidth = 4*480,
+                         ggsaveheight = 4*480,
+                         ggsaveunits = "px",
+                         ...)} # close if is factor plotgrid
         write.csv(plotgrid, row.names = FALSE, na = "",
                   file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
                                 as.character(get(Gaus_Best_Model)$contributions$var[p]),

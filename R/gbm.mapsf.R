@@ -24,10 +24,12 @@
 #' @param predabundpreds Predicted abundance column number, default 3.
 #' @param myLocation Location for extents, format c(xmin, ymin, xmax, ymax). Default NULL, extents
 #' autocreated from data.
-#' @param trim Remove NA & 0 values and crop to remaining date extents? Default TRUE.
+#' @param trim Remove NA & <=0 values and crop to remaining date extents? Default TRUE.
 #' @param scale100 Scale Predicted Abundance to 100? Default FALSE.
 #' @param gmapsAPI Enter your Google maps API here, quoted character string. Default NULL.
-#' @param mapsource Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap". Default "google".
+#' @param mapsource Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present
+#' . Options: "google", "stamen", "gbm.basemap". Default "google". Using "gbm.basemap" requires one
+#' to have run that functiuon already, and enter its location using the shape paramater below.
 #' @param googlemap If pulling basemap from Google maps, this sets expansion factors since Google
 #' Maps tiling zoom setup doesn't align to myLocation extents. Default TRUE.
 #' @param maptype = "satellite", # Type of map for ggmap::get_map. Options: "terrain",

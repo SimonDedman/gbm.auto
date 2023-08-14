@@ -7,20 +7,20 @@
 \format{
 A data frame with 2244 rows and 14 variables:
 \describe{
-  \item{Survey_StNo_HaulNo_Year}{Index column of combined Survey number, station number, haul number, and year}
-  \item{Latitude}{Decimal latitudes in the Irish Sea}
-  \item{Longitude}{Decimal longitudes in the Irish Sea}
-  \item{Depth}{ Metres, decimal}
-  \item{Temperature}{Degrees, decimal}
-  \item{Salinity}{PPM}
-  \item{Current_Speed}{Metres per second at the seabed}
-  \item{Distance_to_Shore}{Metres, decimal}
-  \item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
-  \item{Effort}{Irish commercial beam trawler effort 2012}
-  \item{Cuckoo}{Numbers of juvenile cuckoo rays caught, standardised to 1 hour}
-  \item{Thornback}{Numbers of juvenile thornback rays caught, standardised to 1 hour}
-  \item{Blonde}{Numbers of juvenile blonde rays caught, standardised to 1 hour}
-  \item{Spotted}{Numbers of juvenile spotted rays caught, standardised to 1 hour}
+\item{Survey_StNo_HaulNo_Year}{Index column of combined Survey number, station number, haul number, and year}
+\item{Latitude}{Decimal latitudes in the Irish Sea}
+\item{Longitude}{Decimal longitudes in the Irish Sea}
+\item{Depth}{ Metres, decimal}
+\item{Temperature}{Degrees, decimal}
+\item{Salinity}{PPM}
+\item{Current_Speed}{Metres per second at the seabed}
+\item{Distance_to_Shore}{Metres, decimal}
+\item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
+\item{Effort}{Irish commercial beam trawler effort 2012}
+\item{Cuckoo}{Numbers of juvenile cuckoo rays caught, standardised to 1 hour}
+\item{Thornback}{Numbers of juvenile thornback rays caught, standardised to 1 hour}
+\item{Blonde}{Numbers of juvenile blonde rays caught, standardised to 1 hour}
+\item{Spotted}{Numbers of juvenile spotted rays caught, standardised to 1 hour}
 }
 }
 \source{

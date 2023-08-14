@@ -60,7 +60,7 @@ gbm.mapsf(
 \arguments{
 \item{predabund}{Predicted abundance data frame produced by gbm.auto (Abundance_Preds_only.csv),
 with Latitude, Longitude, and Predicted Abundance columns. Default NULL. You need to read the csv
- in R if not already present as an object in the environment.}
+in R if not already present as an object in the environment.}
 
 \item{predabundlon}{Longitude column number. Default 2.}
 
@@ -71,13 +71,15 @@ with Latitude, Longitude, and Predicted Abundance columns. Default NULL. You nee
 \item{myLocation}{Location for extents, format c(xmin, ymin, xmax, ymax). Default NULL, extents
 autocreated from data.}
 
-\item{trim}{Remove NA & 0 values and crop to remaining date extents? Default TRUE.}
+\item{trim}{Remove NA & <=0 values and crop to remaining date extents? Default TRUE.}
 
 \item{scale100}{Scale Predicted Abundance to 100? Default FALSE.}
 
 \item{gmapsAPI}{Enter your Google maps API here, quoted character string. Default NULL.}
 
-\item{mapsource}{Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap". Default "google".}
+\item{mapsource}{Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present
+. Options: "google", "stamen", "gbm.basemap". Default "google". Using "gbm.basemap" requires one
+to have run that functiuon already, and enter its location using the shape paramater below.}
 
 \item{googlemap}{If pulling basemap from Google maps, this sets expansion factors since Google
 Maps tiling zoom setup doesn't align to myLocation extents. Default TRUE.}
@@ -85,7 +87,7 @@ Maps tiling zoom setup doesn't align to myLocation extents. Default TRUE.}
 \item{maptype}{= "satellite", # Type of map for ggmap::get_map. Options: "terrain",
 "terrain-background", "satellite", "roadmap", "hybrid", "toner", "terrain-labels",
 "terrain-lines", "toner-2010", "toner-2011", "toner-background", "toner-hybrid", "toner-labels",
- "toner-lines", "toner-lite". Google options: “terrain”, “satellite”, “roadmap”, “hybrid”.}
+"toner-lines", "toner-lite". Google options: “terrain”, “satellite”, “roadmap”, “hybrid”.}
 
 \item{darkenproportion}{Amount to darken the google/stamen basemap, 0-1. Default 0.}
 
@@ -144,7 +146,7 @@ paste0(movegroupsavedir, "Plot/") .}
 
 \item{receiverrange}{Single (will be recycled), or vector (same length as receiverlats) of
 detection ranges in metres for receivers to be plotted. If you have a max and a (e.g.) 90 percent
- detection range, probably use max.}
+detection range, probably use max.}
 
 \item{recpointscol}{Colour of receiver centrepoint outlines. Default "black".}
 
@@ -189,13 +191,13 @@ gbm.auto but can be run alone, and generates representativeness surfaces from th
 gbm.rsb.
 }
 \details{
-Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
+Error in seq.default(xlim\link{1}, xlim\link{2}, by = byx):wrong sign in 'by' argument
 Check that your lat & long columns are the right way around. Ensure grids (predabund) data are
 gridded, i.e. they are in a regular pattern of same/similar lines of lat/lon, even if they're
 missing sections.
 
 Suggested parameter values:
-z = rsbdf[,"Unrepresentativeness"]
+z = rsbdf\link{,"Unrepresentativeness"}
 
 mapmain = "Unrepresentativeness: "
 

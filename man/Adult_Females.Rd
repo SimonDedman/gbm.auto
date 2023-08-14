@@ -7,19 +7,19 @@
 \format{
 A data frame with 2137 rows and 13 variables:
 \describe{
-  \item{Longitude}{Decimal longitudes in the Irish Sea}
-  \item{Latitude}{Decimal latitudes in the Irish Sea}
-  \item{Haul_Index}{ICES IBTS area, survey, station, and year}
-  \item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
-  \item{Depth}{Metres, decimal}
-  \item{Temperature}{Degrees, decimal}
-  \item{Salinity}{PPM}
-  \item{Distance_to_Shore}{Metres, decimal}
-  \item{Current_Speed}{Metres per second at the seabed}
-  \item{Cuckoo}{Numbers of cuckoo rays caught, standardised to 1 hour}
-  \item{Thornback}{Numbers of thornback rays caught, standardised to 1 hour}
-  \item{Blonde}{Numbers of blonde rays caught, standardised to 1 hour}
-  \item{Spotted}{Numbers of spotted rays caught, standardised to 1 hour}
+\item{Longitude}{Decimal longitudes in the Irish Sea}
+\item{Latitude}{Decimal latitudes in the Irish Sea}
+\item{Haul_Index}{ICES IBTS area, survey, station, and year}
+\item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
+\item{Depth}{Metres, decimal}
+\item{Temperature}{Degrees, decimal}
+\item{Salinity}{PPM}
+\item{Distance_to_Shore}{Metres, decimal}
+\item{Current_Speed}{Metres per second at the seabed}
+\item{Cuckoo}{Numbers of cuckoo rays caught, standardised to 1 hour}
+\item{Thornback}{Numbers of thornback rays caught, standardised to 1 hour}
+\item{Blonde}{Numbers of blonde rays caught, standardised to 1 hour}
+\item{Spotted}{Numbers of spotted rays caught, standardised to 1 hour}
 }
 }
 \source{

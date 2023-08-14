@@ -19,11 +19,11 @@ Internal use only. Adapted from Ferrier, Pearce and Watson's code, by J.Elith
 , see: Hanley, J.A. & McNeil, B.J. (1982) The meaning and use of the area
 under a Receiver Operating Characteristic (ROC) curve. Radiology, 143, 29-36.
 Also Pearce, J. & Ferrier, S. (2000) Evaluating the predictive performance of
- habitat models developed using logistic regression. Ecological Modelling,
- 133, 225-245. This is the non-parametric calculation for area under the ROC
- curve, using the fact that a MannWhitney U statistic is closely related to
- the area. In dismo, this is used in the gbm routines, but not elsewhere (see
- evaluate).
+habitat models developed using logistic regression. Ecological Modelling,
+133, 225-245. This is the non-parametric calculation for area under the ROC
+curve, using the fact that a MannWhitney U statistic is closely related to
+the area. In dismo, this is used in the gbm routines, but not elsewhere (see
+evaluate).
 }
 \examples{
 roc(obsdat = rbinom(100,size = 1, prob = 0.5), preddat = runif(100))
