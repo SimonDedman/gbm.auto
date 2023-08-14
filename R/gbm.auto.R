@@ -50,6 +50,8 @@
 #' @param simp Try simplifying best BRTs?
 #' @param gridslat Column number for latitude in 'grids'.
 #' @param gridslon Column number for longitude in 'grids'.
+#' @param samplesGridsAreaScaleFactor Scale up or down factor so values in the predict-to pixels of
+#' 'grids' match the spatial scale sampled by rows in 'samples'. Default 1 means no change.
 #' @param multiplot Create matrix plot of all line files? Default true.
 #' turn off if big n of exp vars causes an error due to margin size problems.
 #' @param cols Barplot colour vector. Assignment in order of explanatory
@@ -255,6 +257,8 @@ gbm.auto <- function(
     simp = TRUE,          # try simplifying best BRTs?
     gridslat = 2,         # column number for latitude in 'grids'
     gridslon = 1,         # column number for longitude in 'grids'
+    samplesGridsAreaScaleFactor = 1, # Scale up or down factor so values in the predict-to pixels of
+    # 'grids' match the spatial scale sampled by rows in 'samples'. Default 1 means no change.
     multiplot = TRUE,     # create matrix plot of all line files? Default true
     # turn off if large number of expvars causes an error due to margin size problems.
     cols = grey.colors(1,1,1), # bar-plot colour vector. Assignment in order of
@@ -1044,7 +1048,7 @@ gbm.auto <- function(
 
       ####17. Finalise & Write Report####
       if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) { # only do bin bits if ZI; move 7 cols left if no gaus run
-        # L812, 873, 879: ZI yes, gaus ifelse sections, should combine####
+        # Combine sections ZI yes, gaus ifelse was L812,873,879####
         if (gaus & exists("Gaus_Best_Model")) {
           Report[1:15,(reportcolno - 13)] <- c(paste0("Model combo: ", Bin_Best_Name),
                                                paste0("trees: ", get(Bin_Best_Model)$n.trees),
@@ -1708,6 +1712,9 @@ gbm.auto <- function(
       } else { # if not gaus
         grids$PredAbund <- grids$Bin_Preds # if only doing Bin, preds are just bin preds
       } # close ifelse gaus
+
+      # scale up/down predictions so values in grids pixels relate to the same area sampled in samples
+      grids$PredAbund <- grids$PredAbund * samplesGridsAreaScaleFactor
 
       predabund <- which(colnames(grids) == "PredAbund") # predicted abundance column number for writecsv
 

@@ -24,6 +24,10 @@ gbm.mapsf(
   colorscale = NULL,
   heatcolours = c("white", "yellow", "orange", "red", "brown4"),
   colournumber = 8,
+  colourscalelimits = NULL,
+  colourscalebreaks = NULL,
+  colourscalelabels = NULL,
+  colourscaleexpand = NULL,
   studyspecies = "MySpecies",
   plottitle = paste0("Predicted abundance of ", studyspecies),
   plotsubtitle = "CPUE",
@@ -108,6 +112,14 @@ theme.}
 
 \item{colournumber}{Number of colours to spread heatcolours over, if gradient selected for
 colourscale. Default 8.}
+
+\item{colourscalelimits}{Colour scale limits, default NULL, vector of 2, e.g. c(0, 0).}
+
+\item{colourscalebreaks}{Colour scale breaks, default NULL.}
+
+\item{colourscalelabels}{Colour scale labels, default NULL, must match number of breaks.}
+
+\item{colourscaleexpand}{Colour scale expand, default NULL, vector of 2, e.g. c(0, 0).}
 
 \item{studyspecies}{Name of your study species, appears in plot title and savename. Default
 "MySpecies".}

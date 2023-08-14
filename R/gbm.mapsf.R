@@ -49,6 +49,10 @@
 #' theme.
 #' @param colournumber Number of colours to spread heatcolours over, if gradient selected for
 #' colourscale. Default 8.
+#' @param colourscalelimits Colour scale limits, default NULL, vector of 2, e.g. c(0, 0).
+#' @param colourscalebreaks Colour scale breaks, default NULL.
+#' @param colourscalelabels Colour scale labels, default NULL, must match number of breaks.
+#' @param colourscaleexpand Colour scale expand, default NULL, vector of 2, e.g. c(0, 0).
 #' @param studyspecies Name of your study species, appears in plot title and savename. Default
 #' "MySpecies".
 #' @param plottitle Title of the resultant plot, default paste0("Predicted abundance of ",
@@ -140,6 +144,10 @@ gbm.mapsf <- function(
     colorscale = NULL, # Scale fill colour scheme to use, default NULL, populating this will overwrite colourscale.
     heatcolours = c("white", "yellow", "orange","red", "brown4"), # Vector of colours if gradient selected for colourscale, defaults to heatmap theme.
     colournumber = 8, # Number of colours to spread heatcolours over, if gradient selected for colourscale. Default 8.
+    colourscalelimits = NULL, # Colour scale limits, default NULL, vector of 2, e.g. c(0, 0).
+    colourscalebreaks = NULL, # Colour scale breaks, default NULL.
+    colourscalelabels = NULL, # Colour scale labels, default NULL, must match number of breaks.
+    colourscaleexpand = NULL, # Colour scale expand, default NULL, vector of 2, e.g. c(0, 0).
     studyspecies = "MySpecies", # The name of your study species, appears in plot title and savename.
     plottitle = paste0("Predicted abundance of ", studyspecies),
     plotsubtitle  = "CPUE", # Plot subtitle. Can add the n of your individuals.
@@ -370,6 +378,10 @@ gbm.mapsf <- function(
     # CPUE scale colours
     {if (colourscale == "viridis")
       viridis::scale_fill_viridis(
+        if (!is.null(colourscalelimits)) limits = colourscalelimits, # c(0, 1),
+        if (!is.null(colourscalebreaks)) breaks = colourscalebreaks,
+        if (!is.null(colourscalelabels)) labels = colourscalelabels,
+        if (!is.null(colourscaleexpand)) expand = colourscaleexpand, # c(0, 0),
         alpha = 1, # 0:1
         begin = 0, # hue
         end = 1, # hue
@@ -391,6 +403,10 @@ gbm.mapsf <- function(
     # CPUE scale colours
     {if (colourscale == "gradient")
       scale_fill_gradientn(
+        if (!is.null(colourscalelimits)) limits = colourscalelimits, # c(0, 1),
+        if (!is.null(colourscalebreaks)) breaks = colourscalebreaks,
+        if (!is.null(colourscalelabels)) labels = colourscalelabels,
+        if (!is.null(colourscaleexpand)) expand = colourscaleexpand, # c(0, 0),
         name = legendtitle,
         position = "right",
         colours = colorRampPalette(heatcolours)(colournumber), # Vector of colours to use for n-colour gradient.

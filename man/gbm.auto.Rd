@@ -21,6 +21,7 @@ gbm.auto(
   simp = TRUE,
   gridslat = 2,
   gridslon = 1,
+  samplesGridsAreaScaleFactor = 1,
   multiplot = TRUE,
   cols = grey.colors(1, 1, 1),
   linesfiles = TRUE,
@@ -99,6 +100,9 @@ defaults to "gaussian". Choose one.}
 \item{gridslat}{Column number for latitude in 'grids'.}
 
 \item{gridslon}{Column number for longitude in 'grids'.}
+
+\item{samplesGridsAreaScaleFactor}{Scale up or down factor so values in the predict-to pixels of
+'grids' match the spatial scale sampled by rows in 'samples'. Default 1 means no change.}
 
 \item{multiplot}{Create matrix plot of all line files? Default true.
 turn off if big n of exp vars causes an error due to margin size problems.}
