@@ -378,10 +378,10 @@ gbm.mapsf <- function(
     # CPUE scale colours
     {if (colourscale == "viridis")
       viridis::scale_fill_viridis(
-        if (!is.null(colourscalelimits)) limits = colourscalelimits, # c(0, 1),
-        if (!is.null(colourscalebreaks)) breaks = colourscalebreaks,
-        if (!is.null(colourscalelabels)) labels = colourscalelabels,
-        if (!is.null(colourscaleexpand)) expand = colourscaleexpand, # c(0, 0),
+        if (!is.null(colourscalelimits)) {limits = colourscalelimits}, # c(0, 1),
+        if (!is.null(colourscalebreaks)) {breaks = colourscalebreaks},
+        if (!is.null(colourscalelabels)) {labels = colourscalelabels},
+        if (!is.null(colourscaleexpand)) {expand = colourscaleexpand}, # c(0, 0),
         alpha = 1, # 0:1
         begin = 0, # hue
         end = 1, # hue
@@ -403,10 +403,10 @@ gbm.mapsf <- function(
     # CPUE scale colours
     {if (colourscale == "gradient")
       scale_fill_gradientn(
-        if (!is.null(colourscalelimits)) limits = colourscalelimits, # c(0, 1),
-        if (!is.null(colourscalebreaks)) breaks = colourscalebreaks,
-        if (!is.null(colourscalelabels)) labels = colourscalelabels,
-        if (!is.null(colourscaleexpand)) expand = colourscaleexpand, # c(0, 0),
+        # if (!is.null(colourscalelimits)) limits = colourscalelimits, # c(0, 1),
+        # if (!is.null(colourscalebreaks)) breaks = colourscalebreaks,
+        # if (!is.null(colourscalelabels)) labels = colourscalelabels,
+        # if (!is.null(colourscaleexpand)) expand = colourscaleexpand, # c(0, 0),
         name = legendtitle,
         position = "right",
         colours = colorRampPalette(heatcolours)(colournumber), # Vector of colours to use for n-colour gradient.
