@@ -306,19 +306,13 @@ gbm.mapsf <- function(
   # # don't need to see the rest, geom_stars & afters work outside of {ifelse}, not within: stops after later_spatial
   # # if order flipped (ggmap then layerspatial: layerspatial works)
 
+  # replace colourscale params with ggplot2 defaults if left NULL
+  if (is.null(colourscalebreaks)) colourscalebreaks <- ggplot2::waiver()
+  if (is.null(colourscalelabels)) colourscalelabels <- ggplot2::waiver()
+  if (is.null(colourscaleexpand)) colourscaleexpand <- ggplot2::waiver() # c(0, 0),
+
 
   # plot map
-
-  # if (mapsource != "gbm.basemap") {
-  #   ggmap::ggmap(myMap, # basemap CRS = 3857? Doesn't plot on its own, don't worry
-  #                darken = c(darkenproportion, "black"))
-  # } + # close mapsource if2
-
-  # if (mapsource == "gbm.basemap") {
-  #   ggplot() +   #plot lines by year
-  #     ggspatial::layer_spatial(shape, col = "black")
-  # } + # close mapsource if
-
   if (mapsource == "gbm.basemap") {
     p <- ggplot() +   #plot lines by year
       ggspatial::layer_spatial(shape, col = "black")
@@ -378,10 +372,10 @@ gbm.mapsf <- function(
     # CPUE scale colours
     {if (colourscale == "viridis")
       viridis::scale_fill_viridis(
-        if (!is.null(colourscalelimits)) {limits = colourscalelimits}, # c(0, 1),
-        if (!is.null(colourscalebreaks)) {breaks = colourscalebreaks},
-        if (!is.null(colourscalelabels)) {labels = colourscalelabels},
-        if (!is.null(colourscaleexpand)) {expand = colourscaleexpand}, # c(0, 0),
+        limits = colourscalelimits, # c(0, 1),
+        breaks = colourscalebreaks,
+        labels = colourscalelabels,
+        expand = colourscaleexpand, # c(0, 0),
         alpha = 1, # 0:1
         begin = 0, # hue
         end = 1, # hue
@@ -392,10 +386,7 @@ gbm.mapsf <- function(
         na.value = "grey50",
         guide = "colourbar",
         aesthetics = "fill",
-        # name = waiver(),
         name = legendtitle,
-        # limits = NA,
-        # position = "left"
         position = "right"
       )
     } +
@@ -403,10 +394,10 @@ gbm.mapsf <- function(
     # CPUE scale colours
     {if (colourscale == "gradient")
       scale_fill_gradientn(
-        # if (!is.null(colourscalelimits)) limits = colourscalelimits, # c(0, 1),
-        # if (!is.null(colourscalebreaks)) breaks = colourscalebreaks,
-        # if (!is.null(colourscalelabels)) labels = colourscalelabels,
-        # if (!is.null(colourscaleexpand)) expand = colourscaleexpand, # c(0, 0),
+        limits = colourscalelimits, # c(0, 1),
+        breaks = colourscalebreaks,
+        labels = colourscalelabels,
+        expand = colourscaleexpand, # c(0, 0),
         name = legendtitle,
         position = "right",
         colours = colorRampPalette(heatcolours)(colournumber), # Vector of colours to use for n-colour gradient.
