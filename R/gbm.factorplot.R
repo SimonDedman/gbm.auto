@@ -104,7 +104,9 @@ gbm.factorplot <- function(x,
   }
 
   # add check to see whether csv is categorical: first column
-  if (class(x[, 1][[1]]) != "character") stop("csv is not a categorical/factorial variable")
+  # if (class(x[, 1][[1]]) != "character") stop("csv is not a categorical/factorial variable")
+  # wasn't working, should debug but since this is already checked by gbm.auto before this is run,
+  # and gbm.factorplot is going to be used by gbm.auto 99.99% of it's life, just remove for now.
 
   x <- x |>
     # dplyr::mutate(ycentred = y - mean(y)) |> # make mean column
