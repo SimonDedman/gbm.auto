@@ -776,7 +776,7 @@ gbm.auto <- function(
                                           floor(sqrt(length(get(Bin_Best_Model)$contributions$var))) + 1)))
           dev.off()
           par(op)
-        } # close ZI     # younes
+        } # close if (fam1 == "bernoulli"
 
         if (gaus & exists("Gaus_Best_Model")) {
           png(filename = paste0("./",names(samples[i]),"/Gaus_Best_line.png"),
@@ -819,11 +819,14 @@ gbm.auto <- function(
 
           # create lines data to export to file. Need to recreate transformations from gbm.plot
           # Next 6 lines from GNG answer https://stats.stackexchange.com/a/144871/43360 which uses gbm.plot code
-          s <- match(get(Bin_Best_Model)$contributions$var[o],
-                     get(Bin_Best_Model)$gbm.call$predictor.names)
+
+          # CHANGED
+          # s <- match(get(Bin_Best_Model)$contributions$var[o], # original
+          #            get(Bin_Best_Model)$gbm.call$predictor.names)
 
           # create dataframe
-          plotgrid <- plot.gbm(get(Bin_Best_Model), s, return.grid = TRUE)
+          # plotgrid <- plot.gbm(get(Bin_Best_Model), s, return.grid = TRUE)
+          plotgrid <- plot.gbm(get(Bin_Best_Model), o, return.grid = TRUE) # CHANGED
 
           # This section centres the values around 0,
           # Inverts their position relative to 0 (top becomes bottom),
@@ -844,14 +847,16 @@ gbm.auto <- function(
 
           #If factor variable
           if (is.factor(plotgrid[,1])) {
-            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[s]]))
+            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Bin_Best_Model)$gbm.call$dataframe[,get(Bin_Best_Model)$gbm.call$gbm.x[o]])) # CHANGED
+            # needed at all? if it's a factor won't it already have levels?
           } # close if is factor
 
           if (linesfiles) {
             # write out csv
             write.csv(plotgrid, row.names = FALSE, na = "",
                       file = paste0("./", names(samples[i]), "/Bin_Best_line_",
-                                    as.character(get(Bin_Best_Model)$contributions$var[o]),
+                                    as.character(get(Bin_Best_Model)$gbm.call$predictor.names[o]), # CHANGED
+                                    # as.character(get(Bin_Best_Model)$contributions$var[o]),
                                     ".csv"))
           } #close linesfiles
 
@@ -915,29 +920,30 @@ gbm.auto <- function(
           mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
           dev.off()
 
-          u <- match(get(Gaus_Best_Model)$contributions$var[p],
-                     get(Gaus_Best_Model)$gbm.call$predictor.names)
+          # u <- match(get(Gaus_Best_Model)$contributions$var[p],
+          #            get(Gaus_Best_Model)$gbm.call$predictor.names)
 
-          plotgrid <- plot.gbm(get(Gaus_Best_Model), u, return.grid = TRUE)
+          plotgrid <- plot.gbm(get(Gaus_Best_Model), p, return.grid = TRUE)
           # plotgrid[,2] <- plotgrid[,2] - mean(plotgrid[,2])
           # plotgrid[,2] <- 1 / (1 + exp(-plotgrid[,2]))
           # plotgrid[,2] <- scale(plotgrid[,2], scale = FALSE)
           plotgrid$ycentred <- plotgrid$y - mean(plotgrid$y)
 
           if (is.factor(plotgrid[,1])) {
-            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Gaus_Best_Model)$gbm.call$dataframe[,get(Gaus_Best_Model)$gbm.call$gbm.x[u]]))
+            plotgrid[,1] <- factor(plotgrid[,1], levels = levels(get(Gaus_Best_Model)$gbm.call$dataframe[,get(Gaus_Best_Model)$gbm.call$gbm.x[p]]))
           } # close if is factor plotgrid
 
           if (linesfiles) {
             write.csv(plotgrid, row.names = FALSE, na = "",
                       file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
-                                    as.character(get(Gaus_Best_Model)$contributions$var[p]),
+                                    as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p]),
                                     ".csv"))
           } #close linesfiles
 
           if (is.factor(plotgrid[,1])) {
             gbm.factorplot(x = plotgrid,
-                           ggsavefilename = paste0("./", names(samples[i]), "/Gaus_Best_line_", as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[o]), "_gg.png"),
+                           ggsavefilename = paste0("Gaus_Best_line_", as.character(get(Gaus_Best_Model)$gbm.call$predictor.names[p]), "_gg.png"),
+                           ggsavepath = paste0("./", names(samples[i]), "/"),
                            ggsavewidth = 4*480,
                            ggsaveheight = 4*480,
                            ggsaveunits = "px",
