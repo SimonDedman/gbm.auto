@@ -815,6 +815,7 @@ gbm.auto <- function(
           mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
           # gbm.plot calls plot.gbm ~L47 but then centres to have 0 mean @L53
           # Asked Robert Hijmans to add a param to omit this: https://github.com/rspatial/dismo/issues/22
+          dev.off()
 
           # create lines data to export to file. Need to recreate transformations from gbm.plot
           # Next 6 lines from GNG answer https://stats.stackexchange.com/a/144871/43360 which uses gbm.plot code
@@ -887,7 +888,6 @@ gbm.auto <- function(
                                   as.character(get(Bin_Best_Model)$contributions$var[o]),
                                   ".csv"))
           } #close linesfiles
-          dev.off()
         } # close for o
       } # close if fam1 bernoulli / ZI option
 
@@ -908,6 +908,7 @@ gbm.auto <- function(
                  plot.layout = c(1, 1))
         # abline(h = 0, lty = 2) # https://github.com/SimonDedman/gbm.auto/issues/7 & https://github.com/rspatial/dismo/issues/41
         mtext("Marginal Effect", side = 2, line = 4.05, las = 0)
+        dev.off()
 
         if (linesfiles) {u <- match(get(Gaus_Best_Model)$contributions$var[p],
                                     get(Gaus_Best_Model)$gbm.call$predictor.names)
@@ -929,7 +930,7 @@ gbm.auto <- function(
                   file = paste0("./", names(samples[i]), "/Gaus_Best_line_",
                                 as.character(get(Gaus_Best_Model)$contributions$var[p]),
                                 ".csv"))} #close linesfiles
-        dev.off() }} # close if gaus
+      }} # close if gaus
 
       if (alerts) beep(2) # progress printer, right aligned for visibility
       print(paste0("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     Line plots created      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))
