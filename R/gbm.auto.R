@@ -106,12 +106,12 @@
 #' For Linux/*buntu systems, in terminal, type: 'sudo apt install libgeos-dev', 'sudo apt install
 #' libproj-dev', 'sudo apt install libgdal-dev'.
 #'
-#' 2. Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric
+#' 2. Error in FUN(X\[\[i\]\], ...) : only defined on a data frame with all numeric
 #' variables. Check your variable types are correct, e.g. numerics haven't been imported
 #' as factors because there's an errant first row of text information before the
 #' data. Remove NA rows from the response variable if present: convert blank
 #' cells to NA on import with read.csv(x, na.strings = "") then
-#' samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
+#' samples2 <- samples1\[-which(is.na(samples\[,resvar_column_number\])),\]
 #'
 #' 3. At bf=0.5, if nrows <= 42 gbm.step will crash. Use gbm.bfcheck to determine optimal viable bf
 #' size
@@ -142,7 +142,7 @@
 #'  samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum BF size. Similarly:
 #'  glm.fit: fitted probabilities numerically 0 or 1 occurred, and glm.fit: algorithm did not
 #'  converge. Similarly: Error in if (get(paste0("Gaus_BRT", ".tc", j, ".lr", k, ".bf",
-#'  l))$self.statistics$correlation[[1]]: argument is of length zero. See also: Error 15.
+#'  l))$self.statistics$correlation\[\[1\]\]: argument is of length zero. See also: Error 15.
 #'
 #' 10. Anomalous values can obfuscate clarity in line plots e.g. salinity range 32:35ppm but dataset
 #'  has errant 0 value: plot axis will be 0:35, and 99.99% of the data will be in the tiny bit at
@@ -151,7 +151,7 @@
 #' 11. Error in plot.new() : figure margins too large: In RStudio, adjust plot frame (usually bottom
 #'  right) to increase its size. Still fails? Set multiplot=FALSE.
 #'
-#' 12. Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"): can only
+#' 12. Error in dev.print(file = paste0("./", names(samples\[i\]), "/pred_dev_bin.jpeg"): can only
 #' print from a screen device. An earlier failed run (e.g. LR/BF too low) left a plotting device
 #' open. Close it with: 'dev.off()'.
 #'
@@ -168,7 +168,7 @@
 #' 16. If lineplots of factorial variables include empty columns be sure to remove unused levels
 #' with samples %<>% droplevels() before the gbm.auto run
 #'
-#' 17. Error in seq.default(from = min(x$var.levels[[i.var[i]]]), to = max(x$var.levels[[i.var[i]]])
+#' 17. Error in seq.default(from = min(x$var.levels\[\[i.var\[i\]\]\]), to = max(x$var.levels\[\[i.var\[i\]\]\])
 #' :'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
 #' , those zeroes became imaginary numbers. Use log1p() instead.
 #'

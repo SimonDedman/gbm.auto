@@ -205,13 +205,13 @@ gbm.auto but can be run alone, and generates representativeness surfaces from th
 gbm.rsb.
 }
 \details{
-Error in seq.default(xlim\link{1}, xlim\link{2}, by = byx):wrong sign in 'by' argument
+Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
 Check that your lat & long columns are the right way around. Ensure grids (predabund) data are
 gridded, i.e. they are in a regular pattern of same/similar lines of lat/lon, even if they're
 missing sections.
 
 Suggested parameter values:
-z = rsbdf\link{,"Unrepresentativeness"}
+z = rsbdf[,"Unrepresentativeness"]
 
 mapmain = "Unrepresentativeness: "
 

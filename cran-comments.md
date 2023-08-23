@@ -1,7 +1,7 @@
 ---
 title: "cran-comments"
 author: "Simon Dedman"
-date: "25 May 2023"
+date: "23 August 2023"
 output: html_document
 ---
 
@@ -19,9 +19,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 1 warnings | 2 notes
+
+Warnings:
+
+* "Rd files with duplicated alias 'gbm.auto': ‘gbm.auto-package.Rd’ ‘gbm.auto.Rd’". Have found no way to remove this, caused by lifecycle and usethis autogeneration of gbm.auto-package.R and Rd.
 
 Notes:
+
+* Possible code problems: no visible binding for global variables: named variables are column names in a csv exported by another function.
 
 * Non-standard things, png file created by examples, doesn't exist permanently.
 

@@ -11,6 +11,7 @@
 #' @importFrom ggspatial layer_spatial
 #' @importFrom lubridate today
 #' @importFrom stars geom_stars st_as_stars
+#' @importFrom stats setNames
 #' @importFrom sf st_set_crs st_bbox st_transform st_as_sfc st_as_sf st_buffer
 #' @importFrom starsExtra trim2
 #' @importFrom viridis scale_fill_viridis
@@ -101,13 +102,13 @@
 #'
 #' @details
 #'
-#' Error in seq.default(xlim[1], xlim[2], by = byx):wrong sign in 'by' argument
+#' Error in seq.default(xlim\[1\], xlim\[2\], by = byx):wrong sign in 'by' argument
 #' Check that your lat & long columns are the right way around. Ensure grids (predabund) data are
 #' gridded, i.e. they are in a regular pattern of same/similar lines of lat/lon, even if they're
 #' missing sections.
 #'
 #' Suggested parameter values:
-#' z = rsbdf[,"Unrepresentativeness"]
+#' z = rsbdf\[,"Unrepresentativeness"\]
 #'
 #' mapmain = "Unrepresentativeness: "
 #'
@@ -261,7 +262,7 @@ gbm.mapsf <- function(
       if (!inherits(map, "ggmap")) stop("map must be a ggmap object")
       # Extract the bounding box (in lat/lon) from the ggmap to a numeric vector,
       # and set the names to what sf::st_bbox expects:
-      map_bbox <- setNames(unlist(attr(map, "bb")), c("ymin", "xmin", "ymax", "xmax"))
+      map_bbox <- stats::setNames(unlist(attr(map, "bb")), c("ymin", "xmin", "ymax", "xmax"))
       # Convert the bbox to an sf polygon, transform it to 3857,
       # and convert back to a bbox (convoluted, but it works)
       bbox_3857 <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(sf::st_bbox(map_bbox, crs = 4326)), 3857))

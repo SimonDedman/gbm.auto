@@ -191,12 +191,12 @@ Errors and their origins:
 \item install ERROR: dependencies ‘rgdal’, ‘rgeos’ are not available for package ‘gbm.auto’.
 For Linux/*buntu systems, in terminal, type: 'sudo apt install libgeos-dev', 'sudo apt install
 libproj-dev', 'sudo apt install libgdal-dev'.
-\item Error in FUN(X[\link{i}], ...) : only defined on a data frame with all numeric
+\item Error in FUN(X[[i]], ...) : only defined on a data frame with all numeric
 variables. Check your variable types are correct, e.g. numerics haven't been imported
 as factors because there's an errant first row of text information before the
 data. Remove NA rows from the response variable if present: convert blank
 cells to NA on import with read.csv(x, na.strings = "") then
-samples2 <- samples1[-which(is.na(samples\link{,resvar_column_number})),]
+samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
 \item At bf=0.5, if nrows <= 42 gbm.step will crash. Use gbm.bfcheck to determine optimal viable bf
 size
 \item Maps/plots don't work/output. If on a Mac, try changing pngtype to "quartz".
@@ -220,13 +220,13 @@ in earlier BRT (normally Gaus run with highest TC). It may be that you don't hav
 samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum BF size. Similarly:
 glm.fit: fitted probabilities numerically 0 or 1 occurred, and glm.fit: algorithm did not
 converge. Similarly: Error in if (get(paste0("Gaus_BRT", ".tc", j, ".lr", k, ".bf",
-l))$self.statistics$correlation[\link{1}]: argument is of length zero. See also: Error 15.
+l))$self.statistics$correlation[[1]]: argument is of length zero. See also: Error 15.
 \item Anomalous values can obfuscate clarity in line plots e.g. salinity range 32:35ppm but dataset
 has errant 0 value: plot axis will be 0:35, and 99.99\% of the data will be in the tiny bit at
 the right. Clean your data beforehand.
 \item Error in plot.new() : figure margins too large: In RStudio, adjust plot frame (usually bottom
 right) to increase its size. Still fails? Set multiplot=FALSE.
-\item Error in dev.print(file = paste0("./", names(samples\link{i}), "/pred_dev_bin.jpeg"): can only
+\item Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"): can only
 print from a screen device. An earlier failed run (e.g. LR/BF too low) left a plotting device
 open. Close it with: 'dev.off()'.
 \item RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder.
@@ -238,7 +238,7 @@ distributions, ensure the response variables are positive integers, but if they 
 smaller learning rate.
 \item If lineplots of factorial variables include empty columns be sure to remove unused levels
 with samples \%<>\% droplevels() before the gbm.auto run
-\item Error in seq.default(from = min(x$var.levels[[i.var\link{i}]]), to = max(x$var.levels[[i.var\link{i}]])
+\item Error in seq.default(from = min(x$var.levels[[i.var[i]]]), to = max(x$var.levels[[i.var[i]]])
 :'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
 , those zeroes became imaginary numbers. Use log1p() instead.
 \item Error in loadNamespace...'dismo' 1.3-9 is being loaded, but >= 1.3.10 is required: first do
