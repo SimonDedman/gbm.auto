@@ -17,12 +17,9 @@ A data frame with 2136 rows and 46 variables:
 \item{Distance_to_Shore}{Metres, decimal}
 \item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
 \item{Scallop}{Average KwH Scallop effort from logbooks, Marine Institute and MMO combined}
-\item{MI_Av_E_Hr}{Average effort hours, Marine Institute Scallop VMS,
-0.03\emph{0.02 rectangles, all Irish Sea, 2006-14}
-\item{MI_Av_LPUE}{Average scallop CPUE, Marine Institute Scallop VMS,
-0.03}0.02 rectangles, all Irish Sea, 2006-14}
-\item{MI_Sum_Liv}{Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
-0.03*0.02 rectangles, all Irish Sea, 2006-14}
+\item{MI_Av_E_Hr}{Average effort hours, Marine Institute Scallop VMS, 0.03 x 0.02 rectangles, all Irish Sea, 2006-14}
+\item{MI_Av_LPUE}{Average scallop CPUE, Marine Institute Scallop VMS, 0.03 x 0.02 rectangles, all Irish Sea, 2006-14}
+\item{MI_Sum_Liv}{Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS, 0.03 x 0.02 rectangles, all Irish Sea, 2006-14}
 \item{Whelk}{MMO Whelk LPUE 2009-12, pivot, polygons to points}
 \item{MmoAvScKwh}{MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles}
 \item{Cod_C}{ICES IBTS CPUE of cod caught between 1994 - 2014 large enough to predate upon <= year 1 cuckoo rays}

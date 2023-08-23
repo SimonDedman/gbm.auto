@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/SimonDedman/gbm.auto/workflows/R-CMD-check--as-cran/badge.svg)](https://github.com/SimonDedman/gbm.auto/actions)
+[![R-CMD-check](https://github.com/SimonDedman/gbm.auto/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SimonDedman/gbm.auto/actions/workflows/R-CMD-check.yaml)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/gbm.auto)](https://cran.r-project.org/package=gbm.auto)
 [![CRAN RStudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/gbm.auto)](https://cran.r-project.org/package=gbm.auto)

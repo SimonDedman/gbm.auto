@@ -41,6 +41,7 @@
 #' Default 9.
 #' @param shape If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map,
 #' typically Crop_Map.shp, including the .shp. Default NULL.
+#' @param expandfactor Extents expansion factor for basemap. default 0.
 #' @param colourscale Scale fill colour scheme to use, default "viridis", other option is
 #' "gradient".
 #' @param colorscale Scale fill colour scheme to use, default NULL, populating this will overwrite

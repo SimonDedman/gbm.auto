@@ -16,12 +16,9 @@ A data frame with 378570 rows and 43 variables:
 \item{Distance_to_Shore}{Metres, decimal}
 \item{F_LPUE}{Commercial fishery LPUE in Kg/Hr}
 \item{Scallop}{Average KwH Scallop effort from logbooks, Marine Institute and MMO combined}
-\item{MI_Av_E_Hr}{Average effort hours, Marine Institute Scallop VMS,
-0.03\emph{0.02 rectangles, all Irish Sea, 2006-14}
-\item{MI_Av_LPUE}{Average scallop CPUE, Marine Institute Scallop VMS,
-0.03}0.02 rectangles, all Irish Sea, 2006-14}
-\item{MI_Sum_Liv}{Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS,
-0.03*0.02 rectangles, all Irish Sea, 2006-14}
+\item{MI_Av_E_Hr}{Average effort hours, Marine Institute Scallop VMS, 0.03 x 0.02 rectangles, all Irish Sea, 2006-14}
+\item{MI_Av_LPUE}{Average scallop CPUE, Marine Institute Scallop VMS, 0.03 x 0.02 rectangles, all Irish Sea, 2006-14}
+\item{MI_Sum_Liv}{Sum of live weight. Average scallop CPUE, Marine Institute Scallop VMS, 0.03 x 0.02 rectangles, all Irish Sea, 2006-14}
 \item{Whelk}{MMO Whelk LPUE 2009-12, pivot, polygons to points}
 \item{MmoAvScKwh}{MMO Scallop Effort 2009-12, pivot, polygons to points. ICES rectangles}
 \item{HubDist}{map calc, distance of grid point to nearest datras point representing it (for preds)}

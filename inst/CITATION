@@ -1,0 +1,12 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Gbm.auto: A software tool to simplify spatial modelling and Marine Protected Area planning",
+  author   = "Dedman, Simon and Officer, Rick and Clarke, Maurice and Reid, David G and Brophy, Deirdre",
+  journal  = "PloS ONE",
+  year     = "2017",
+  volume   = "12",
+  number   = "12",
+  pages    = "e0188955",
+  doi      = "https://doi.org/10.1371/journal.pone.0188955",
+  url      = "https://github.com/SimonDedman/gbm.auto"
+)

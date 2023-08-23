@@ -101,6 +101,8 @@ Default 9.}
 \item{shape}{If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map,
 typically Crop_Map.shp, including the .shp. Default NULL.}
 
+\item{expandfactor}{Extents expansion factor for basemap. default 0.}
+
 \item{colourscale}{Scale fill colour scheme to use, default "viridis", other option is
 "gradient".}
 

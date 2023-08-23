@@ -4,6 +4,9 @@ author: "Simon Dedman"
 date: "2023-05-25"
 output: html_document
 ---
+# v2023.08.23
+* citation added, various improvements and cleans, CRAN push
+
 # v2023.08.14
 * gbm.factorplot finished, included in gbm.auto, documented. lifecycle package used for function status.
 
