@@ -24,7 +24,7 @@ Imports:
     dplyr (>= 1.0.9),
     gbm (>= 2.1.1),
     ggmap (>= 3.0.2),
-    ggplot2 (>= 3.4.3),
+    ggplot2 (>= 3.4.2),
     ggspatial (>= 1.1.9),
     lifecycle,
     lubridate (>= 1.9.2),
