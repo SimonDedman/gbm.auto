@@ -99,7 +99,8 @@ Maps tiling zoom setup doesn't align to myLocation extents. Default TRUE.}
 Default 9.}
 
 \item{shape}{If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map,
-typically Crop_Map.shp, including the .shp. Default NULL.}
+typically Crop_Map.shp, including the .shp. Default NULL. Can also name an existing object in the
+environment, read in with sf::st_read.}
 
 \item{expandfactor}{Extents expansion factor for basemap. default 0.}
 

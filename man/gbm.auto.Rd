@@ -132,11 +132,10 @@ Default NULL, character vector, "./" for working directory.}
 
 \item{map}{Save abundance map png files?}
 
-\item{shape}{Set coast shapefile, else bounds calculated by gbm.map which
-then calls gbm.basemap to download and auto-generate the base map. Read in
-existing files by installing the shapefiles package then
-DesiredMapName <- read.shapefile("ShapeFileName")
-omitting the .shp extension.}
+\item{shape}{Enter the full path to downloaded map e.g. coastline shapefile, possibly from
+gbm.basemap, typically Crop_Map.shp, including the .shp. Can also name an existing object in the
+environment, read in with sf::st_read. Default NULL, in which case bounds calculated by gbm.map
+which then calls gbm.basemap to download and auto-generate the base map.}
 
 \item{RSB}{Run Unrepresentativeness surface builder? Default TRUE.}
 

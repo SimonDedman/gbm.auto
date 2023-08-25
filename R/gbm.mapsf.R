@@ -41,7 +41,8 @@
 #' @param mapzoom Highest number = zoomed in. Google: 3 (continent) - 21 (building). stamen: 0-18.
 #' Default 9.
 #' @param shape If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map,
-#' typically Crop_Map.shp, including the .shp. Default NULL.
+#' typically Crop_Map.shp, including the .shp. Default NULL. Can also name an existing object in the
+#'  environment, read in with sf::st_read.
 #' @param expandfactor Extents expansion factor for basemap. default 0.
 #' @param colourscale Scale fill colour scheme to use, default "viridis", other option is
 #' "gradient".
@@ -239,7 +240,9 @@ gbm.mapsf <- function(
 
   # mapsource
   if (mapsource == "gbm.basemap") {
-    shape = st_read(dsn = shape)
+    # if user provided location of .shp file, read in. If shape is already read with st_read, leave alone.
+    if (is.character(shape)) shape = st_read(dsn = shape)
+
 
     # autoheight <- (6 / (attr(myMap, "bb")[[4]] - attr(myMap, "bb")[[2]])) * (attr(myMap, "bb")[[3]] - attr(myMap, "bb")[[1]]) * 1.2
     # if (googlemap) autoheight <- 6.4 # googlemap pulls tiles for a centre point hence will always be square. But needs a bit extra for title area.

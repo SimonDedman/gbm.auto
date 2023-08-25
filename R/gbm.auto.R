@@ -71,11 +71,10 @@
 #' @param varint Calculate variable interactions? Default:TRUE, FALSE for error:
 #' "contrasts can be applied only to factors with 2 or more levels".
 #' @param map Save abundance map png files?
-#' @param shape Set coast shapefile, else bounds calculated by gbm.map which
-#' then calls gbm.basemap to download and auto-generate the base map. Read in
-#' existing files by installing the shapefiles package then
-#' DesiredMapName <- read.shapefile("ShapeFileName")
-#' omitting the .shp extension.
+#' @param shape Enter the full path to downloaded map e.g. coastline shapefile, possibly from
+#' gbm.basemap, typically Crop_Map.shp, including the .shp. Can also name an existing object in the
+#'  environment, read in with sf::st_read. Default NULL, in which case bounds calculated by gbm.map
+#'  which then calls gbm.basemap to download and auto-generate the base map.
 #' @param RSB Run Unrepresentativeness surface builder? Default TRUE.
 #' @param BnW Repeat maps in black and white e.g. for print journals. Default
 #' TRUE.
