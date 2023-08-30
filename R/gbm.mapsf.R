@@ -241,7 +241,7 @@ gbm.mapsf <- function(
     myLocation <- c(xmin, ymin, xmax, ymax)
   }
 
-  if (mapsource == "google" & mapzoom == NULL) {
+  if (mapsource == "google" & is.null(mapzoom)) {
     # Created lookup table for degrees to mapzoom by eye at all zoom levels
     lonvec <- c(0.00042724609375,
                 0.0008544921875,
