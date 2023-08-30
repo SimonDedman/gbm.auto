@@ -35,8 +35,8 @@
 #' @param bf Permutations of bag fraction allowed, can be single number, vector
 #' or list, per tc and lr. Defaults to 0.5.
 #' @param offset Column number or quoted name in samples, containing offset values relating to the
-#' samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
-#' https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .
+# samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
+# https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .
 #' @param n.trees From gbm.step, number of initial trees to fit. Can be
 #' single or list but not vector i.e. list(fam1,fam2).
 #' @param ZI Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
@@ -110,14 +110,14 @@
 #' as factors because there's an errant first row of text information before the
 #' data. Remove NA rows from the response variable if present: convert blank
 #' cells to NA on import with read.csv(x, na.strings = "") then
-#' samples2 <- samples1\[-which(is.na(samples\[,resvar_column_number\])),\]
+#' samples2 <- samples\[-which(is.na(samples\[,resvar_column_number\])),\]
 #'
-#' 3. At bf=0.5, if nrows <= 42 gbm.step will crash. Use gbm.bfcheck to determine optimal viable bf
-#' size
+#' 3. At BF=0.5, if nrows <= 42, gbm.step will crash. Use gbm.bfcheck to determine optimal viable BF
+#' size.
 #'
 #' 4. Maps/plots don't work/output. If on a Mac, try changing pngtype to "quartz".
 #'
-#' 5. Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
+#' 5. Error in while (delta.deviance > tolerance.test \& n.fitted <
 #' max.trees): missing value where TRUE/FALSE needed. If running a zero-inflated delta model
 #' (bernoulli/bin & gaussian/gaus), Data are expected to contain zeroes (lots of them in zero-
 #' inflated cases), have you already filtered them out, i.e. are only testing the positive cases?
@@ -125,12 +125,12 @@
 #'
 #' 6. Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric argument to
 #' mathematical function. LR or BF probably too low in earlier BRT (normally Gaus run with highest
-#' TC)
+#' TC).
 #'
 #' 7. Error in if (n.trees > x$n.trees) { : argument is of length zero}. LR or BF probably too low
 #' in earlier BRT (normally Gaus run with highest TC).
 #'
-#' 8. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w) The dataset size
+#' 8. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w): The dataset size
 #' is too small or subsampling rate is too large: nTrain*bag.fraction <= n.minobsinnode. LR or BF
 #' probably too low in earlier BRT (normally Gaus run with highest TC). It may be that you don't
 #' have enough positive samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum
@@ -147,7 +147,7 @@
 #'  has errant 0 value: plot axis will be 0:35, and 99.99% of the data will be in the tiny bit at
 #'  the right. Clean your data beforehand.
 #'
-#' 11. Error in plot.new() : figure margins too large: In RStudio, adjust plot frame (usually bottom
+#' 11. Error in plot.new() : figure margins too large: In RStudio, adjust plot pane (usually bottom
 #'  right) to increase its size. Still fails? Set multiplot=FALSE.
 #'
 #' 12. Error in dev.print(file = paste0("./", names(samples\[i\]), "/pred_dev_bin.jpeg"): can only
@@ -157,19 +157,20 @@
 #' 13. RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder.
 #'
 #' 14. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg", could not open
-#' file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
+#' file './resvar/pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
 #' illegal character e.g. /&'_. Fix with colnames(samples)[n] <- "BetterName".
 #'
 #' 15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running Poisson
 #' distributions, ensure the response variables are positive integers, but if they are, try a
-#' smaller learning rate.
+#' smaller LR.
 #'
 #' 16. If lineplots of factorial variables include empty columns be sure to remove unused levels
-#' with samples %<>% droplevels() before the gbm.auto run
+#' with samples %<>% droplevels() before the gbm.auto run.
 #'
-#' 17. Error in seq.default(from = min(x$var.levels\[\[i.var\[i\]\]\]), to = max(x$var.levels\[\[i.var\[i\]\]\])
-#' :'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
-#' , those zeroes became imaginary numbers. Use log1p() instead.
+#' 17. Error in seq.default(from = min(x$var.levels\[\[i.var\[i\]\]\]), to =
+#' max(x$var.levels\[\[i.var\[i\]\]\]):'from' must be a finite number. If you logged any expvars
+#' with log() and they has zeroes in them, those zeroes became imaginary numbers. Use
+#' log1p() instead.
 #'
 #' 18. Error in loadNamespace...'dismo' 1.3-9 is being loaded, but >= 1.3.10 is required: first do
 #' remotes::install_github("rspatial/dismo") then library(dismo).

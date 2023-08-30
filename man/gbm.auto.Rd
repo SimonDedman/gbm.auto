@@ -77,9 +77,7 @@ list(0.01,c(0.001, 0.0005)).}
 \item{bf}{Permutations of bag fraction allowed, can be single number, vector
 or list, per tc and lr. Defaults to 0.5.}
 
-\item{offset}{Column number or quoted name in samples, containing offset values relating to the
-samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
-https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .}
+\item{offset}{Column number or quoted name in samples, containing offset values relating to the}
 
 \item{n.trees}{From gbm.step, number of initial trees to fit. Can be
 single or list but not vector i.e. list(fam1,fam2).}
@@ -195,21 +193,21 @@ variables. Check your variable types are correct, e.g. numerics haven't been imp
 as factors because there's an errant first row of text information before the
 data. Remove NA rows from the response variable if present: convert blank
 cells to NA on import with read.csv(x, na.strings = "") then
-samples2 <- samples1[-which(is.na(samples[,resvar_column_number])),]
-\item At bf=0.5, if nrows <= 42 gbm.step will crash. Use gbm.bfcheck to determine optimal viable bf
-size
+samples2 <- samples[-which(is.na(samples[,resvar_column_number])),]
+\item At BF=0.5, if nrows <= 42, gbm.step will crash. Use gbm.bfcheck to determine optimal viable BF
+size.
 \item Maps/plots don't work/output. If on a Mac, try changing pngtype to "quartz".
-\item Error in while (delta.deviance > tolerance.test AMPERSAND n.fitted <
+\item Error in while (delta.deviance > tolerance.test \& n.fitted <
 max.trees): missing value where TRUE/FALSE needed. If running a zero-inflated delta model
 (bernoulli/bin & gaussian/gaus), Data are expected to contain zeroes (lots of them in zero-
 inflated cases), have you already filtered them out, i.e. are only testing the positive cases?
 Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to FALSE.
 \item Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric argument to
 mathematical function. LR or BF probably too low in earlier BRT (normally Gaus run with highest
-TC)
+TC).
 \item Error in if (n.trees > x$n.trees) { : argument is of length zero}. LR or BF probably too low
 in earlier BRT (normally Gaus run with highest TC).
-\item Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w) The dataset size
+\item Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w): The dataset size
 is too small or subsampling rate is too large: nTrain*bag.fraction <= n.minobsinnode. LR or BF
 probably too low in earlier BRT (normally Gaus run with highest TC). It may be that you don't
 have enough positive samples to run BRT modelling. Run gbm.bfcheck to check recommended minimum
@@ -223,23 +221,24 @@ l))$self.statistics$correlation[[1]]: argument is of length zero. See also: Erro
 \item Anomalous values can obfuscate clarity in line plots e.g. salinity range 32:35ppm but dataset
 has errant 0 value: plot axis will be 0:35, and 99.99\% of the data will be in the tiny bit at
 the right. Clean your data beforehand.
-\item Error in plot.new() : figure margins too large: In RStudio, adjust plot frame (usually bottom
+\item Error in plot.new() : figure margins too large: In RStudio, adjust plot pane (usually bottom
 right) to increase its size. Still fails? Set multiplot=FALSE.
 \item Error in dev.print(file = paste0("./", names(samples[i]), "/pred_dev_bin.jpeg"): can only
 print from a screen device. An earlier failed run (e.g. LR/BF too low) left a plotting device
 open. Close it with: 'dev.off()'.
 \item RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder.
 \item Error in grDevices::dev.copy(device = function (filename = "Rplot\%03d.jpeg", could not open
-file './P_PECTINATA..../pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
+file './resvar/pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
 illegal character e.g. /&'_. Fix with colnames(samples)\link{n} <- "BetterName".
 \item Error in gbm.fit: Poisson requires the response to be a positive integer. If running Poisson
 distributions, ensure the response variables are positive integers, but if they are, try a
-smaller learning rate.
+smaller LR.
 \item If lineplots of factorial variables include empty columns be sure to remove unused levels
-with samples \%<>\% droplevels() before the gbm.auto run
-\item Error in seq.default(from = min(x$var.levels[[i.var[i]]]), to = max(x$var.levels[[i.var[i]]])
-:'from' must be a finite number. If you logged any expvars with log() and they has zeroes in them
-, those zeroes became imaginary numbers. Use log1p() instead.
+with samples \%<>\% droplevels() before the gbm.auto run.
+\item Error in seq.default(from = min(x$var.levels[[i.var[i]]]), to =
+max(x$var.levels[[i.var[i]]]):'from' must be a finite number. If you logged any expvars
+with log() and they has zeroes in them, those zeroes became imaginary numbers. Use
+log1p() instead.
 \item Error in loadNamespace...'dismo' 1.3-9 is being loaded, but >= 1.3.10 is required: first do
 remotes::install_github("rspatial/dismo") then library(dismo).
 }

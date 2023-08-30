@@ -26,6 +26,8 @@
 #' @param myLocation Location for extents, format c(xmin, ymin, xmax, ymax). Default NULL, extents
 #' autocreated from data.
 #' @param trim Remove NA & <=0 values and crop to remaining date extents? Default TRUE.
+#' @param trimfivepct Replace anything < 5% of the max value (i.e. < 95% UD contour in home range
+#' analysis) with NA since it won't be drawn (for movegroup dBBMMs). Default FALSE.
 #' @param scale100 Scale Predicted Abundance to 100? Default FALSE.
 #' @param gmapsAPI Enter your Google maps API here, quoted character string. Default NULL.
 #' @param mapsource Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present
@@ -62,7 +64,7 @@
 #' studyspecies).
 #' @param plotsubtitle Plot subtitle, default ""CPUE". Can add the n of your individuals.
 #' @param legendtitle Legend title, default "CPUE".
-#' @param plotcaption Plot caption, default "gbm.auto::gbm.map" + today's date.
+#' @param plotcaption Plot caption, default "gbm.auto::gbm.mapsf" + today's date.
 #' @param axisxlabel Default "Longitude".
 #' @param axisylabel Default "Latitude".
 #' @param legendposition Vector of 2, format c(1,2), Proportional distance of (middle?) of legend
@@ -131,6 +133,7 @@ gbm.mapsf <- function(
     # Default NULL, extents autocreated from data.
     # c(-79.3, 25.68331, -79.24, 25.78)
     trim = TRUE, # remove NA & 0 values and crop to remaining date extents? Default TRUE.
+    trimfivepct = FALSE, # replace anything < 5% of the max value (i.e. < 95% UD contour in home range analysis) with NA since it won't be drawn (for movegroup dBBMMs).
     scale100 = FALSE, # scale Predicted Abundance to 100? Default FALSE.
     gmapsAPI = NULL, # enter your Google maps API here, quoted character string
     mapsource = "google", # Source for ggmap::get_map; uses Stamen as fallback if no Google Maps API present. Options: "google", "stamen", "gbm.basemap".
@@ -140,7 +143,7 @@ gbm.mapsf <- function(
     #  "terrain-labels", "terrain-lines", "toner-2010", "toner-2011",
     # "toner-background", "toner-hybrid", "toner-labels", "toner-lines", "toner-lite". Google options: “terrain”, “satellite”, “roadmap”, “hybrid”.
     darkenproportion = 0, # amount to darken the basemap, 0-1.
-    mapzoom = 9, # google: 3 (continent) - 21 (building). stamen: 0-18
+    mapzoom = NULL, # google: 3 (continent) - 21 (building). stamen: 0-18
     shape = NULL, # If mapsource is "gbm.basemap", enter the full path to gbm.basemaps downloaded map, typically Crop_Map.shp, including the .shp.
     expandfactor = 0, # extents expansion factor for basemap. default was 1.6
     colourscale = "viridis", # Scale fill colour scheme to use, default "viridis", other option is "gradient".
@@ -155,7 +158,7 @@ gbm.mapsf <- function(
     plottitle = paste0("Predicted abundance of ", studyspecies),
     plotsubtitle  = "CPUE", # Plot subtitle. Can add the n of your individuals.
     legendtitle = "CPUE",
-    plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+    plotcaption = paste0("gbm.auto::gbm.mapsf, ", lubridate::today()),
     axisxlabel = "Longitude",
     axisylabel = "Latitude",
     legendposition = c(0.05, 0.15), # Percent distance (of middle? of legend box) from L to R, percent distance from Bottom to Top.
@@ -214,10 +217,12 @@ gbm.mapsf <- function(
   }
 
   # location for extents, format c(xmin, ymin, xmax, ymax). Default NULL, extents autocreated from data.
-  myLocation <- c(min(predabund[,predabundlon], na.rm = TRUE),
-                  min(predabund[,predabundlat], na.rm = TRUE),
-                  max(predabund[,predabundlon], na.rm = TRUE),
-                  max(predabund[,predabundlat], na.rm = TRUE))
+  if (is.null(myLocation)) {
+    myLocation <- c(min(predabund[,predabundlon], na.rm = TRUE),
+                    min(predabund[,predabundlat], na.rm = TRUE),
+                    max(predabund[,predabundlon], na.rm = TRUE),
+                    max(predabund[,predabundlat], na.rm = TRUE))
+  }
 
 
   if (!is.null(gmapsAPI)) ggmap::register_google(key = gmapsAPI, # an api key
@@ -234,6 +239,63 @@ gbm.mapsf <- function(
     ymax <- ((myLocation[4] - ymid) * expandfactor) + ymid
     ymin <- ymid - ((ymid - myLocation[2]) * expandfactor)
     myLocation <- c(xmin, ymin, xmax, ymax)
+  }
+
+  if (mapsource == "google" & mapzoom == NULL) {
+    # Created lookup table for degrees to mapzoom by eye at all zoom levels
+    lonvec <- c(0.00042724609375,
+                0.0008544921875,
+                0.001708984375,
+                0.00341796875,
+                0.0068359375,
+                0.013671875,
+                0.02734375,
+                0.0546875,
+                0.109375,
+                0.21875,
+                0.4375,
+                0.875,
+                1.75,
+                3.5,
+                7,
+                13.5,
+                27,
+                55,
+                105,
+                145)
+    # lookup lat & lon against lookup table to get independent zoom levels
+    mapzoomlon <- 22 - (
+      findInterval(x = max(predabund[,predabundlon], na.rm = TRUE) - min(predabund[,predabundlon], na.rm = TRUE),
+                   vec = lonvec,
+                   left.open = TRUE
+      ) + 1)
+    latvec <- c(0.0003662109375,
+                0.000732421875,
+                0.00146484375,
+                0.0029296875,
+                0.005859375,
+                0.01171875,
+                0.0234375,
+                0.046875,
+                0.09375,
+                0.1875,
+                0.375,
+                0.75,
+                1.5,
+                3,
+                6,
+                12,
+                25,
+                47,
+                87,
+                145)
+    mapzoomlat <- 22 - (
+      findInterval(x = max(predabund[,predabundlat], na.rm = TRUE) - min(predabund[,predabundlat], na.rm = TRUE),
+                   vec = latvec,
+                   left.open = TRUE
+      ) + 1)
+    # Do MIN zoom i.e. least zoomed in since otherwise it will cut off one dimension's data
+    mapzoom <- min(mapzoomlon, mapzoomlat)
   }
 
   if (googlemap) myLocation <- c(mean(c(myLocation[1], myLocation[3])), mean(c(myLocation[2], myLocation[4]))) # googlemap needs a center lon lat
@@ -297,7 +359,7 @@ gbm.mapsf <- function(
 
   if (trim) { # trim raster extent to data?
     is.na(predabundstars[[1]]) <- predabundstars[[1]] == 0 # replace char pattern (0) in whole df/tbl with NA
-    is.na(predabundstars[[1]]) <- predabundstars[[1]] < (max(predabundstars[[1]], na.rm = TRUE) * 0.05) # replace anything < 95% contour with NA since it won't be drawn
+    if (trimfivepct) is.na(predabundstars[[1]]) <- predabundstars[[1]] < (max(predabundstars[[1]], na.rm = TRUE) * 0.05) # replace anything < 95% contour with NA since it won't be drawn
   }
   predabundstars <- starsExtra::trim2(predabundstars) # remove NA columns, which were all zero columns. This changes the bbox accordingly
   if (scale100) predabundstars[[1]] <- (predabundstars[[1]] / max(predabundstars[[1]], na.rm = TRUE)) * 100 # convert from raw values to 0:100 scale so legend is 0:100%

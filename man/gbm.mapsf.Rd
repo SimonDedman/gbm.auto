@@ -11,13 +11,14 @@ gbm.mapsf(
   predabundpreds = 3,
   myLocation = NULL,
   trim = TRUE,
+  trimfivepct = FALSE,
   scale100 = FALSE,
   gmapsAPI = NULL,
   mapsource = "google",
   googlemap = TRUE,
   maptype = "satellite",
   darkenproportion = 0,
-  mapzoom = 9,
+  mapzoom = NULL,
   shape = NULL,
   expandfactor = 0,
   colourscale = "viridis",
@@ -32,7 +33,7 @@ gbm.mapsf(
   plottitle = paste0("Predicted abundance of ", studyspecies),
   plotsubtitle = "CPUE",
   legendtitle = "CPUE",
-  plotcaption = paste0("gbm.auto::gbm.map, ", lubridate::today()),
+  plotcaption = paste0("gbm.auto::gbm.mapsf, ", lubridate::today()),
   axisxlabel = "Longitude",
   axisylabel = "Latitude",
   legendposition = c(0.05, 0.15),
@@ -76,6 +77,9 @@ in R if not already present as an object in the environment.}
 autocreated from data.}
 
 \item{trim}{Remove NA & <=0 values and crop to remaining date extents? Default TRUE.}
+
+\item{trimfivepct}{Replace anything < 5\% of the max value (i.e. < 95\% UD contour in home range
+analysis) with NA since it won't be drawn (for movegroup dBBMMs). Default FALSE.}
 
 \item{scale100}{Scale Predicted Abundance to 100? Default FALSE.}
 
@@ -134,7 +138,7 @@ studyspecies).}
 
 \item{legendtitle}{Legend title, default "CPUE".}
 
-\item{plotcaption}{Plot caption, default "gbm.auto::gbm.map" + today's date.}
+\item{plotcaption}{Plot caption, default "gbm.auto::gbm.mapsf" + today's date.}
 
 \item{axisxlabel}{Default "Longitude".}
 
