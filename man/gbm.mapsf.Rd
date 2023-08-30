@@ -92,10 +92,10 @@ to have run that functiuon already, and enter its location using the shape param
 \item{googlemap}{If pulling basemap from Google maps, this sets expansion factors since Google
 Maps tiling zoom setup doesn't align to myLocation extents. Default TRUE.}
 
-\item{maptype}{= "satellite", # Type of map for ggmap::get_map. Options: "terrain",
-"terrain-background", "satellite", "roadmap", "hybrid", "toner", "terrain-labels",
-"terrain-lines", "toner-2010", "toner-2011", "toner-background", "toner-hybrid", "toner-labels",
-"toner-lines", "toner-lite". Google options: “terrain”, “satellite”, “roadmap”, “hybrid”.}
+\item{maptype}{Type of map for ggmap::get_map param maptype. Options: Google mapsource: "terrain",
+"terrain-background", "satellite", "roadmap", "hybrid". Stamen mapsource: "terrain",
+"terrain-background", "terrain-labels", "terrain-lines", "watercolor", "toner", "toner-2010",
+"toner-2011", "toner-background", "toner-hybrid", "toner-labels", "toner-lines", "toner-lite".}
 
 \item{darkenproportion}{Amount to darken the google/stamen basemap, 0-1. Default 0.}
 
@@ -221,8 +221,29 @@ z = rsbdf[,"Unrepresentativeness"]
 mapmain = "Unrepresentativeness: "
 
 legendtitle = "UnRep 0-1"
+\subsection{How to get Google map basemaps}{
 
-How to get Google map basemaps:
+(from https://www.youtube.com/watch?v=O5cUoVpVUjU):
+\enumerate{
+\item Sign up with dev console: a. You must enter credit card details, but won’t be charged if your
+daily API requests stay under the limit. b. Follow the link:
+https://console.cloud.google.com/projectselector2/apis/dashboard?supportedpurview=project c.
+Sign up for Google cloud account (it may auto populate your current gmail), click agree and
+continue. d. Click the navigation email in the top left corner and click on Billing. e. Create a
+billing account – they will NOT auto charge after trial ends. f. Enter information, click on
+'start my free trial'. They may offer a free credit for trying out their service. More pricing
+details: https://mapsplatform.google.com/pricing/ . g. Click “Select a Project” then
+“New project” in the top right corner. h. Enter Project Name, leave Location as is, click
+“Create”. i. You should now see your project name at the top, where the drop-down menu is.
+\item Enable Maps and Places API: a. Click 'Library' on the left. b. In the search field type “Maps”
+. c. Scroll down, click “Maps Java Script API”. d. Click Enable. e. Click 'Library' again, search
+“Places”, click on “Places API”. f. Click Enable.
+\item Create Credentials for API  Key: a. Return to 'APIs & Services' page. b. Click on Credentials.
+c. At the top click 'Create Credentials > API Key'. d. API key should pop up with option to copy
+it. e. You can restrict the key if you want by following steps 4 & 5 here:
+https://www.youtube.com/watch?v=O5cUoVpVUjU&t=232s
+}
+}
 }
 \examples{
 \donttest{
