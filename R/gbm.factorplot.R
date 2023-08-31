@@ -116,7 +116,8 @@ gbm.factorplot <- function(x,
                   "ycentred" = tidyselect::last_col()) |> # attempt to address no visible binding for global variable ‘Category’
     # 2023-08-30 quoted Category to hopefully address gbm.factorplot: no visible binding for global variable ‘Category’
     # also need to do for ycentred
-    dplyr::arrange(ycentred) # re-order the x axis for categorical variables in order from high to low value
+    #1####
+    dplyr::arrange(.data$ycentred) # re-order the x axis for categorical variables in order from high to low value
 
   # re-reorder by factorplotlevels if present
   if (!is.null(factorplotlevels)) {
@@ -126,15 +127,17 @@ gbm.factorplot <- function(x,
     if (!all(factorplotlevels %in% x[, "Category"])) stop(paste0("The following level names not present in categories in x: ", # x$Category
                                                             factorplotlevels[!factorplotlevels %in% x[, "Category"]])) # x$Category
     x <- x |>
-      dplyr::mutate(Category = ordered(Category, levels = factorplotlevels)) |> # recreate Category as ordered factor with factorplotlevels. Can't quote "Category" in ordered
-      dplyr::arrange(Category) # arrange by labels (implicit). Can't quote "Category"
+      #234####
+      dplyr::mutate("Category" = ordered(.data$Category, levels = factorplotlevels)) |> # recreate Category as ordered factor with factorplotlevels. Can't quote "Category" in ordered
+      dplyr::arrange(.data$Category) # arrange by labels (implicit). Can't quote "Category"
   } else {
-    if (is.integer(x$Category)) x <- x |> dplyr::mutate(Category = ordered(Category)) # make integers ordered factor to avoid defaulting to continuous
+    if (is.integer(x$Category)) x <- x |> dplyr::mutate("Category" = ordered(.data$Category)) # make integers ordered factor to avoid defaulting to continuous
   }
 
   ggplot2::ggplot(x) +
-    ggplot2::geom_col(ggplot2::aes(x = Category, # x[, "Category"]
-                                   y = ycentred)) + # x[, "ycentred"]
+    #56####
+    ggplot2::geom_col(ggplot2::aes(x = .data$Category, # x[, "Category"]
+                                   y = .data$ycentred)) + # x[, "ycentred"]
     # rotate x axis labels
     ggplot2::guides(x =  ggplot2::guide_axis(angle = ggplot2guideaxisangle)) +
     # alter axis labels
