@@ -49,7 +49,7 @@
 #'
 #' @export
 #' @importFrom dplyr arrange mutate rename
-#' @importFrom ggplot2 aes element_blank element_line element_rect element_text geom_col ggplot ggsave guide_axis guides labs last_plot rel theme theme_minimal
+#' @importFrom ggplot2 aes element_blank element_line element_rect element_text geom_col ggplot ggsave guide_axis guides labs last_plot rel theme theme_minimal %+replace%
 #' @importFrom grid unit
 #' @importFrom lubridate today
 #' @importFrom readr read_csv
@@ -112,24 +112,29 @@ gbm.factorplot <- function(x,
     # dplyr::mutate(ycentred = y - mean(y)) |> # make mean column
     # The above exists already in gbm.auto L843
     # Also it uses preset colname y produced by gbm.auto.
-    dplyr::rename(Category = tidyselect::last_col(offset = 2)) |> # no first_col option
+    dplyr::rename("Category" = tidyselect::last_col(offset = 2), # no first_col option
+                  "ycentred" = tidyselect::last_col()) |> # attempt to address no visible binding for global variable ‘Category’
+    # 2023-08-30 quoted Category to hopefully address gbm.factorplot: no visible binding for global variable ‘Category’
+    # also need to do for ycentred
     dplyr::arrange(ycentred) # re-order the x axis for categorical variables in order from high to low value
 
   # re-reorder by factorplotlevels if present
   if (!is.null(factorplotlevels)) {
     # check level number matches x categories
-    if (length(factorplotlevels) != length(x$Category)) stop("number of factorplotlevels doesn't match number of categories in x")
+    if (length(factorplotlevels) != length(x[, "Category"])) stop("number of factorplotlevels doesn't match number of categories in x") # x$Category
     # check names match
-    if (!all(factorplotlevels %in% x$Category)) stop(paste0("The following level names not present in categories in x: ",
-                                                            factorplotlevels[!factorplotlevels %in% x$Category]))
+    if (!all(factorplotlevels %in% x[, "Category"])) stop(paste0("The following level names not present in categories in x: ", # x$Category
+                                                            factorplotlevels[!factorplotlevels %in% x[, "Category"]])) # x$Category
     x <- x |>
-      dplyr::mutate(Category = ordered(Category, factorplotlevels = factorplotlevels)) |> # recreate Category as ordered factor with factorplotlevels
-      dplyr::arrange(Category) # arrange by labels (implicit)
+      dplyr::mutate(Category = ordered(Category, levels = factorplotlevels)) |> # recreate Category as ordered factor with factorplotlevels. Can't quote "Category" in ordered
+      dplyr::arrange(Category) # arrange by labels (implicit). Can't quote "Category"
+  } else {
+    if (is.integer(x$Category)) x <- x |> dplyr::mutate(Category = ordered(Category)) # make integers ordered factor to avoid defaulting to continuous
   }
 
   ggplot2::ggplot(x) +
-    ggplot2::geom_col(ggplot2::aes(x = Category,
-                                   y = ycentred)) +
+    ggplot2::geom_col(ggplot2::aes(x = Category, # x[, "Category"]
+                                   y = ycentred)) + # x[, "ycentred"]
     # rotate x axis labels
     ggplot2::guides(x =  ggplot2::guide_axis(angle = ggplot2guideaxisangle)) +
     # alter axis labels

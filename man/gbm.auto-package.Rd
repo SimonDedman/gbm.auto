@@ -2,8 +2,8 @@
 % Please edit documentation in R/gbm.auto-package.R
 \docType{package}
 \name{gbm.auto-package}
-\alias{gbm.auto}
 \alias{gbm.auto-package}
+\alias{_PACKAGE}
 \title{gbm.auto: Automated Boosted Regression Tree Modelling and Mapping Suite}
 \description{
 Automates delta log-normal boosted regression tree abundance prediction. Loops through parameters provided (LR (learning rate), TC (tree complexity), BF (bag fraction)), chooses best, simplifies, & generates line, dot & bar plots, & outputs these & predictions & a report, makes predicted abundance maps, and Unrepresentativeness surfaces. Package core built around 'gbm' (gradient boosting machine) functions in 'dismo' (Hijmans, Phillips, Leathwick & Jane Elith, 2020 & ongoing), itself built around 'gbm' (Greenwell, Boehmke, Cunningham & Metcalfe, 2020 & ongoing, originally by Ridgeway). Indebted to Elith/Leathwick/Hastie 2008 'Working Guide' \doi{10.1111/j.1365-2656.2008.01390.x}; workflow follows Appendix S3. See \url{http://www.simondedman.com/} for published guides and papers using this package.
