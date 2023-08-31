@@ -197,7 +197,7 @@ samples2 <- samples[-which(is.na(samples[,resvar_column_number])),]
 \item At BF=0.5, if nrows <= 42, gbm.step will crash. Use gbm.bfcheck to determine optimal viable BF
 size.
 \item Maps/plots don't work/output. If on a Mac, try changing pngtype to "quartz".
-\item Error in while (delta.deviance > tolerance.test \& n.fitted <
+\item Error in while (delta.deviance > tolerance.test & n.fitted <
 max.trees): missing value where TRUE/FALSE needed. If running a zero-inflated delta model
 (bernoulli/bin & gaussian/gaus), Data are expected to contain zeroes (lots of them in zero-
 inflated cases), have you already filtered them out, i.e. are only testing the positive cases?

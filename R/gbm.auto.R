@@ -117,7 +117,7 @@
 #'
 #' 4. Maps/plots don't work/output. If on a Mac, try changing pngtype to "quartz".
 #'
-#' 5. Error in while (delta.deviance > tolerance.test \& n.fitted <
+#' 5. Error in while (delta.deviance > tolerance.test & n.fitted <
 #' max.trees): missing value where TRUE/FALSE needed. If running a zero-inflated delta model
 #' (bernoulli/bin & gaussian/gaus), Data are expected to contain zeroes (lots of them in zero-
 #' inflated cases), have you already filtered them out, i.e. are only testing the positive cases?
