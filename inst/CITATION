@@ -7,6 +7,6 @@ bibentry(
   volume   = "12",
   number   = "12",
   pages    = "e0188955",
-  doi      = "https://doi.org/10.1371/journal.pone.0188955",
+  doi      = "10.1371/journal.pone.0188955",
   url      = "https://github.com/SimonDedman/gbm.auto"
 )
