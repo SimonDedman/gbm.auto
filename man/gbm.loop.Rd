@@ -143,6 +143,9 @@ and calculates the Coefficient Of Variation in the predicted abundance scores
 for each site aka cell. This can be mapped, to spatially demonstrate the
 output variance range.
 }
+\details{
+Thanks to a 2023 improvement to gbm.auto and gbm.loop,
+}
 \examples{
 \donttest{
 # Not run: downloads and saves external data.

@@ -35,8 +35,8 @@
 #' @param bf Permutations of bag fraction allowed, can be single number, vector
 #' or list, per tc and lr. Defaults to 0.5.
 #' @param offset Column number or quoted name in samples, containing offset values relating to the
-# samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
-# https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .
+#' samples. A numeric vector of length equal to the number of cases. Similar to weighting, see
+#' https://towardsdatascience.com/offsetting-the-model-logic-to-implementation-7e333bc25798 .
 #' @param n.trees From gbm.step, number of initial trees to fit. Can be
 #' single or list but not vector i.e. list(fam1,fam2).
 #' @param ZI Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
@@ -1861,6 +1861,9 @@ gbm.auto <- function(
           #         ...)  # allows gbm.auto's optional terms to be passed to subfunctions:
           # # byx, byy, mapmain, heatcol, mapback, landcol, lejback, legendloc, grdfun, zero, quantile, heatcolours, colournumber
           # dev.off()
+
+          # BUG: stamen autozoom####
+          # Error in if (zoom == "auto" && location_type == "bbox") { : missing value where TRUE/FALSE needed
 
           gbm.mapsf(predabund = grids[c(gridslat, gridslon, predabund)],
                     # predabundlon = 2, # Longitude column number.

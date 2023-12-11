@@ -54,6 +54,10 @@
 #' @return Returns a data frame of lat, long, 1 predicted abundance per loop,
 #' and a final variance score per cell.
 #'
+#' @details
+#' Thanks to a 2023 improvement to gbm.auto and gbm.loop,
+#'
+#'
 #' @export
 #' @importFrom beepr beep
 #' @importFrom grDevices dev.off grey.colors png

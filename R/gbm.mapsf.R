@@ -325,12 +325,10 @@ gbm.mapsf <- function(
   if (mapsource == "gbm.basemap") {
     # if user provided location of .shp file, read in. If shape is already read with st_read, leave alone.
     if (is.character(shape)) shape = st_read(dsn = shape)
-
-
     # autoheight <- (6 / (attr(myMap, "bb")[[4]] - attr(myMap, "bb")[[2]])) * (attr(myMap, "bb")[[3]] - attr(myMap, "bb")[[1]]) * 1.2
     # if (googlemap) autoheight <- 6.4 # googlemap pulls tiles for a centre point hence will always be square. But needs a bit extra for title area.
     autoheight <- 6.4 # dummy
-    #autoheight####
+    #autoheight to build####
   } else { # mapsource ifelse
     myMap <- ggmap::get_map(
       location = myLocation, # -62.57564  28.64368  33.78889  63.68533 # stamen etc want a bounding box
