@@ -175,6 +175,9 @@
 #' 18. Error in loadNamespace...'dismo' 1.3-9 is being loaded, but >= 1.3.10 is required: first do
 #' remotes::install_github("rspatial/dismo") then library(dismo).
 #'
+#' 19. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
+#'  and gridslon are indexing the correct columns in grids.
+#'
 #' ALSO: check this section in the other functions run by gbm.auto e.g. gbm.map, gbm.basemap. Use
 #' traceback() to find the source of errors.
 #'

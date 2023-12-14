@@ -70,6 +70,9 @@
 #' 6. Error in attachNamespace("shapefiles"): namespace is already attached. Use:
 #' unloadNamespace("shapefiles") .
 #'
+#' 7. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
+#'  and gridslon are indexing the correct columns in grids.
+#'
 gbm.basemap <- function(
     bounds = NULL, # region to crop to: c(xmin,xmax,ymin,ymax)
     grids = NULL, # if bounds unspecified, name your grids database here

@@ -76,6 +76,8 @@ latitudes and longitudes, and not the wrong way around.
 \item If your download is timing out use options(timeout = 240).
 \item Error in attachNamespace("shapefiles"): namespace is already attached. Use:
 unloadNamespace("shapefiles") .
+\item Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
+and gridslon are indexing the correct columns in grids.
 }
 }
 \examples{
