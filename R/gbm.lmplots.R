@@ -54,14 +54,14 @@ gbm.lmplots <- function(samples = NULL, # dataframe
                         pointcol = "black", # points colour
                         ...
 ){
-  for (i in expvar) {
+  for (i in expvar) { # i <- "Tide"
     print(paste0("plotting ", which(expvar %in% i), "/", length(expvar), ": ", i))
     # overwrite xname if expvarnames present
     xname <- ifelse(test = is.null(expvarnames),
                     yes = i,
                     no = expvarnames[which(expvar %in% i)])
     # overwrite plotname if plotname present
-    plotname <- ifelse(test = is.null(plotname),
+    plotnameFun <- ifelse(test = is.null(plotname),
                        yes = xname,
                        no = plotname[which(expvar %in% i)])
     # overwrite yname if resvarname present
@@ -78,7 +78,7 @@ gbm.lmplots <- function(samples = NULL, # dataframe
       pngtype = c("cairo-png", "quartz", "Xlib"),
       # xlab = xname, # x axis label, parsed from xname unless specified
       # ylab = yname, # y axis label, parsed from yname unless specified
-      plotname = plotname, # filename for png, parsed from xname unless specified
+      plotname = plotnameFun, # filename for png, parsed from xname unless specified
       r2line = r2line, # plot rsquared trendline, default TRUE
       pointtext = pointtext, # label each point? Default false
       pointlabs = pointlabs, # point labels, defaults to resvar value
