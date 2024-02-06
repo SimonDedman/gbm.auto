@@ -33,9 +33,8 @@ mygrids <- gbm.auto::grids # load grids
 mysamples <- gbm.auto::samples # load samples
 setwd("/home/simon/Dropbox/Galway/Project Sections/5. Intro & Conclusion/Extra graphics/CofV/")
 
-# library("shapefiles")
-# Crop_Map <- read.shapefile("/home/simon/Desktop/gbm temp/CroppedMap/Crop_Map")
-library(mapplots)
+# Crop_Map <- st_read(dsn = paste0("Crop_Map", ".shp"), layer = savename, quiet = TRUE)
+# library(mapplots)
 data(coast)
 shape <- coast
 

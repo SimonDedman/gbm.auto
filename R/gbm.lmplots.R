@@ -33,10 +33,11 @@
 #'
 ## Simon Dedman 2018.08.30 & 2023-03-07
 ## To Run:
-# lmplot(x = samples[,expvar],
-#        y = samples[,resvar],
-#        xname = expvar,
-#        yname = resvar)
+# gbm.lmplots(samples = samples[,c(resvar, expvar)],
+#        expvar = expvar,
+#        resvar = resvar,
+#        expvarnames = expvar,
+#        resvarname = resvar)
 
 
 gbm.lmplots <- function(samples = NULL, # dataframe

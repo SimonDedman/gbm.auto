@@ -34,7 +34,6 @@
 #' @importFrom graphics lines par
 #' @importFrom utils download.file unzip
 #' @importFrom sf st_crop st_read st_write sf_use_s2
-# #' @importFrom shapefiles read.shapefile
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
 #' \donttest{
@@ -56,21 +55,14 @@
 #' 2. If rgdal install fails in Linux try:
 #' sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 #'
-#' 3. Error in as.environment(pos):no item called "package:shapefiles" on the
-#' search list: strange error occurring despite shapefiles being coded like all
-#' other packages. Correct output produced regardless.
-#'
-#' 4. subscript out of bounds: can't crop world map to your bounds.
+#' 3. subscript out of bounds: can't crop world map to your bounds.
 #' Check lat/lon are the right way around: check gridslat and gridslon point to the correct columns
 #' for lat and lon in grids, and those columns named (something like) lat and lon, ARE ACTUALLY the
 #' latitudes and longitudes, and not the wrong way around.
 #'
-#' 5. If your download is timing out use options(timeout = 240).
+#' 4. If your download is timing out use options(timeout = 240).
 #'
-#' 6. Error in attachNamespace("shapefiles"): namespace is already attached. Use:
-#' unloadNamespace("shapefiles") .
-#'
-#' 7. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
+#' 5. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
 #'  and gridslon are indexing the correct columns in grids.
 #'
 gbm.basemap <- function(
@@ -87,11 +79,6 @@ gbm.basemap <- function(
     extrabounds = FALSE # grow bounds 16pct each direction to expand rectangular datasets basemaps over the entire square area created by basemap in mapplots
     # returnsf = FALSE # obviated by gbm.mapsf
 ) { # Return object as simple features object? Default FALSE, returns as list format for draw.shape in mapplots, used in gbm.map
-
-  attachNamespace("shapefiles") # else Error in as.environment(pos): no item called "package:shapefiles" on the search list
-  # or Error during wrapup: no item called "package:shapefiles" on the search list
-  # despite shapefiles being in imports here, in namespace, & in description. Doesn't do this for any other package.
-  # But if I include this the line can get run twice, giving the error: "namespace(shapefiles) was already taken."
 
   oldwd <- getwd() # record original directory
   on.exit(setwd(oldwd), add = TRUE) # defensive block, thanks to Gregor Sayer
@@ -159,19 +146,10 @@ gbm.basemap <- function(
 
   world <- st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
   cropshp <- st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
-  # setwd(savedir) # setwd to savedir else saves CroppedMap folder in res folder
   setwd("../../") # setwd to savedir else saves CroppedMap folder in res folder
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
   st_write(cropshp, dsn = paste0(savename, ".shp"), append = FALSE) # append FALSE overwrites existing files
-
-  # if (returnsf) {
-  #   cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
-  # } else {
-  #   cropshp <- shapefiles::read.shapefile(savename) # read it back in with read.shapefile which results in the expected format for draw.shape in mapplots, used in gbm.map # shapefiles::
-  # }
-
-  cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
-
+  # cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
   print(paste("World map cropped and saved successfully"))
   return(cropshp)}

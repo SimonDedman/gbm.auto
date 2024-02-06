@@ -62,7 +62,7 @@ legend.grid and draw.grid in mapplots which is c("white", "yellow", "orange"
 
 \item{shape}{Basemap shape to draw, from draw.shape in mapplots. Defaults to
 NULL which calls gbm.basemap to generate it for you. First read in a shp file e.g. myshape <-
-shapefiles::read.shapefile("Crop_Map") WITHOUT the .shp extension, then use shape = myshape.}
+sf::st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE), then use shape = myshape.}
 
 \item{landcol}{Colour for 'null' area of map (for marine plots, this is
 land), from draw.shape in mapplots. Default "grey80" (light grey).}
