@@ -144,12 +144,12 @@ gbm.basemap <- function(
 
   setwd(paste("./", res, sep = "")) #setwd to res subfolder
 
-  world <- st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
-  cropshp <- st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
+  world <- sf::st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
+  cropshp <- sf::st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
   setwd("../../") # setwd to savedir else saves CroppedMap folder in res folder
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
-  st_write(cropshp, dsn = paste0(savename, ".shp"), append = FALSE) # append FALSE overwrites existing files
+  sf::st_write(cropshp, dsn = paste0(savename, ".shp"), append = FALSE) # append FALSE overwrites existing files
   # cropshp <- st_read(dsn = paste0(savename, ".shp"), layer = savename, quiet = TRUE) # read in worldmap
   print(paste("World map cropped and saved successfully"))
   return(cropshp)}
