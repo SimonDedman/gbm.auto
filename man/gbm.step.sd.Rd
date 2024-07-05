@@ -34,6 +34,8 @@ gbm.step.sd(
 )
 }
 \arguments{
+\item{data}{The input dataframe.}
+
 \item{gbm.x}{The predictors.}
 
 \item{gbm.y}{The response.}

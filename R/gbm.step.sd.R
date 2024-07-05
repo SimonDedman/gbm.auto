@@ -6,6 +6,7 @@
 #'  Hastie T, Tibshirani R, Friedman JH (2001) The Elements of Statistical Learning: Data Mining,
 #' Inference, and Prediction Springer-Verlag, New York.
 #'
+#' @param data The input dataframe.
 #' @param gbm.x The predictors.
 #' @param gbm.y The response.
 #' @param offset Allows an offset to be specified.
