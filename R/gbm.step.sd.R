@@ -6,7 +6,6 @@
 #'  Hastie T, Tibshirani R, Friedman JH (2001) The Elements of Statistical Learning: Data Mining,
 #' Inference, and Prediction Springer-Verlag, New York.
 #'
-#' @param data The input dataframe.
 #' @param gbm.x The predictors.
 #' @param gbm.y The response.
 #' @param offset Allows an offset to be specified.
@@ -42,6 +41,10 @@
 #'  identifies the optimal number of trees as that at which the holdout deviance is minimised and
 #'  fits a model with this number of trees, returning it as a gbm model along with additional
 #'  information from the cv selection process.
+#'
+#'  D squared is 1 - (cv.dev / total.deviance). Abeare thesis: For each of the
+#'  fitted models, the pseudo-R2, or D2, or Explained Deviance, was calculated
+#'  for comparison, where: D2 = 1 – (residual deviance/total deviance).
 #'
 #' requires gbm library from Cran
 #' requires roc and calibration scripts of J Elith
@@ -595,7 +598,7 @@ gbm.step.sd <- function(
 
   cv.stats <- list(deviance.mean = cv.dev,
                    deviance.se = cv.dev.se,
-                   d.squared = 1 - (cv.dev / total.deviance),
+                   d.squared = 1 - (cv.dev / total.deviance), # SD addition
                    correlation.mean = cv.cor,
                    correlation.se = cv.cor.se,
                    cv.rmse = cv.rmse,

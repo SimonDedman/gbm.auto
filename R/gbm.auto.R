@@ -73,7 +73,7 @@
 #' @param map Save abundance map png files?
 #' @param shape Enter the full path to downloaded map e.g. coastline shapefile, possibly from
 #' gbm.basemap, typically Crop_Map.shp, including the .shp. Can also name an existing object in the
-#'  environment, read in with sf::st_read. Default NULL, in which case bounds calculated by gbm.map
+#'  environment, read in with sf::st_read. Default NULL, in which case bounds calculated by gbm.mapsf
 #'  which then calls gbm.basemap to download and auto-generate the base map.
 #' @param RSB Run Unrepresentativeness surface builder? Default TRUE.
 #' @param BnW Repeat maps in black and white e.g. for print journals. Default
@@ -178,7 +178,7 @@
 #' 19. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
 #'  and gridslon are indexing the correct columns in grids.
 #'
-#' ALSO: check this section in the other functions run by gbm.auto e.g. gbm.map, gbm.basemap. Use
+#' ALSO: check this section in the other functions run by gbm.auto e.g. gbm.mapsf, gbm.basemap. Use
 #' traceback() to find the source of errors.
 #'
 #' I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
@@ -277,7 +277,7 @@ gbm.auto <- function(
     varint = TRUE,        # calculate variable interactions? Default:TRUE, FALSE
     # for error "contrasts can be applied only to factors with 2 or more levels"
     map = TRUE,           # save abundance map png files?
-    shape = NULL,         # set coast shapefile, else bounds calculated by gbm.map
+    shape = NULL,         # set coast shapefile, else bounds calculated by gbm.mapsf
     # which then calls gbm.basemap to download and auto-generate the base map.
     RSB = TRUE,           # run Unrepresentativeness surface builder?
     BnW = TRUE,           # repeat maps in black and white e.g. for print journals
@@ -291,8 +291,8 @@ gbm.auto <- function(
     grv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
     Bin_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
     Gaus_Preds = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals
-    ...)                  # Optional arguments for zero in breaks.grid in gbm.map,
-# legend in legend.grid in gbm.map, mapmain in gbm.map
+    ...)                  # Optional arguments for zero in breaks.grid in gbm.mapsf,
+# legend in legend.grid in gbm.mapsf, mapmain in gbm.map
 # (default = "Predicted CPUE (numbers per hour): ") and gbm.step (dismo package)
 # arguments max.trees and others.
 {
@@ -310,7 +310,7 @@ gbm.auto <- function(
   # predicted abundance maps, and Unrepresentativeness surfaces.
   #
   # Underlying functions are from packages gbm and dismo, functions from Elith
-  # et al. 2008 (bundled as gbm.utils.R), mapplots, and my own functions gbm.map,
+  # et al. 2008 (bundled as gbm.utils.R), mapplots, and my own functions gbm.mapsf,
   # gbm.rsb, gbm.valuemap, gbm.cons, gbm.basemap
 
   ####1. Check packages, start loop####

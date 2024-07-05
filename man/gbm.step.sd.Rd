@@ -34,8 +34,6 @@ gbm.step.sd(
 )
 }
 \arguments{
-\item{data}{The input dataframe.}
-
 \item{gbm.x}{The predictors.}
 
 \item{gbm.y}{The response.}
@@ -104,6 +102,10 @@ processed, calculates the average holdout residual deviance and its standard err
 identifies the optimal number of trees as that at which the holdout deviance is minimised and
 fits a model with this number of trees, returning it as a gbm model along with additional
 information from the cv selection process.
+
+D squared is 1 - (cv.dev / total.deviance). Abeare thesis: For each of the
+fitted models, the pseudo-R2, or D2, or Explained Deviance, was calculated
+for comparison, where: D2 = 1 – (residual deviance/total deviance).
 
 requires gbm library from Cran
 requires roc and calibration scripts of J Elith

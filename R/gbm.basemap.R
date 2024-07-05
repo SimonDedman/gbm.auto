@@ -139,14 +139,14 @@ gbm.basemap <- function(
     setwd(savedir)
     unzip("GSHHG.zip")
     setwd("GSHHS_shp")}
-    , setwd(getzip) # else just setwd to there
+    , setwd(file.path(getzip, "GSHHS_shp")) # else just setwd to there, including GSHHS_shp
   )
 
-  setwd(paste("./", res, sep = "")) #setwd to res subfolder
-
+  setwd(res) #setwd to res subfolder
   world <- sf::st_read(dsn = paste0("GSHHS_", res, "_L1.shp"), layer = paste0("GSHHS_", res, "_L1"), quiet = TRUE) # read in worldmap
   cropshp <- sf::st_crop(world, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax) # crop to extents
-  setwd("../../") # setwd to savedir else saves CroppedMap folder in res folder
+
+  setwd(savedir) # setwd to savedir else saves CroppedMap folder in res folder
   dir.create("CroppedMap") # create conservation maps directory
   setwd("CroppedMap")
   sf::st_write(cropshp, dsn = paste0(savename, ".shp"), append = FALSE) # append FALSE overwrites existing files

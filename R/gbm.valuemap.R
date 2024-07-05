@@ -10,17 +10,33 @@
 #' All maps list the percentage of the avoid-variables total that is overlapped
 #' by the MPA in the map legend.
 #'
+#' Bpa is the volume of biomass under the 2D abundance surface e.g. predabund
+#' from gbm.auto. B (biomass), * HRMSY (Fmsy proportion) = Bpa. You may be able
+#' to get Fmsy from stock asssessments etc.
+#' maploops: explain concept of biomass vs effort, combo in the middle (default
+#' weighting 1:1 can change with good/badweight), and Conservation from gbm.cons.
+#'
 #' @param dbase Data.frame to load. Expects Lon, Lat & data columns: predicted
 #' abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto.
 #' @param loncolno Column number in dbase which has longitudes.
 #' @param latcolno Column number in dbase which has latitudes.
 #' @param goodcols Which column numbers are abundances (where higher = better)?
 #' List them in order of highest conservation importance first e.g. c(3,1,2,4).
+#'  Either numeric column number or quoted character column name.
 #' @param badcols Which col no.s are 'negative' e.g. fishing (where higher =
-#' worse)?
+#' worse)? Either numeric column number or quoted character column name.
 #' @param conservecol Conservation column, from gbm.cons.
 #' @param plotthis Vector of variable types to plot. Delete any,or all w/ NULL.
-#' @param maploops Vector of sort loops to run.
+#' @param maploops Vector of sort loops to run. See Dedman et al 2017 "Towards a
+#'  flexible Decision Support Tool for MSY-based Marine Protected Area design
+#'  for skates and rays";
+#'  https://academic.oup.com/icesjms/article/74/2/576/2669563 . All 4 options
+#'  create a total MPA which conserves Bpa, but in different ways: Biomass
+#'  closes areas of high biomass first. Effort closes areas of high fisheries
+#'  area last. Combo strikes a balance between the two, and you can change the
+#'  default 1:1 balance with goodweight and badweight parameters. Conservation
+#'  uses the output of gbm.cons to prioritise closure of areas of high
+#'  conservation value, which may not be identical to areas of highest biomass.
 #' @param savedir Save outputs to a temporary directory (default) else change to
 #'  current directory e.g. "/home/me/folder". Do not use getwd() here.
 #' @param savethis Export all data as csv?
@@ -112,8 +128,17 @@ gbm.valuemap <- function(
     shape <- gbm.basemap(bounds = bounds, extrabounds = TRUE)
   } # close isnull shape
 
-  goodname = colnames(dbase)[goodcols] #the response variable(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
-  badname = colnames(dbase)[badcols] #ditto for badcols. Both of these moved out of function parameters list to foce user to specify in colnames
+  # allow users to enter good & badcols as character column names or numeric column numbers
+  if (is.numeric(goodcols)) {
+    goodname = colnames(dbase)[goodcols] #the response variable(s) name(s), e.g. species name(s), or collective term if agglomerating >1 response variable. Single character string, not a vector. No spaces or terminal periods.
+  } else {
+    goodname <- goodcols
+  }
+  if (is.numeric(badcols)) {
+    badname = colnames(dbase)[badcols] #ditto for badcols. Both of these moved out of function parameters list to foce user to specify in colnames
+  } else {
+    badname <- badcols
+  }
 
   # Check goodweight & badweight are the same length as goodcols & badcols
   if (!is.null(goodweight)) if (!length(goodweight) == length(goodcols)) stop("number of goodweights doesn't match number of goodcols")
@@ -128,10 +153,10 @@ gbm.valuemap <- function(
 
   # If weighting factors given, multiply then sum scaled values & create objects, else sum & create objects
   if (!is.null(goodweight)) gooddata <- as.matrix(dbase[,dbasecoln + seq(1, length(goodcols))]) %*% diag(goodweight, ncol = length(goodcols)) #diag converts vector to matrix
-  if (is.null(goodweight)) gooddata = dbase[,dbasecoln + seq(1,length(goodcols))]
+  if (is.null(goodweight)) gooddata <- dbase[,dbasecoln + seq(1,length(goodcols))]
   # assuming there's only going to be one baddata column.
-  if (!is.null(badweight)) baddata = as.matrix(dbase[,dbasecoln + length(goodcols) + seq(1,length(badcols))]) %*% diag(badweight, ncol = length(badcols)) #is matrix
-  if (is.null(badweight)) baddata = dbase[,dbasecoln + length(goodcols) + seq(1, length(badcols))]  #is numeric
+  if (!is.null(badweight)) baddata <- as.matrix(dbase[,dbasecoln + length(goodcols) + seq(1,length(badcols))]) %*% diag(badweight, ncol = length(badcols)) #is matrix
+  if (is.null(badweight)) baddata <- dbase[,dbasecoln + length(goodcols) + seq(1, length(badcols))]  #is numeric
 
   ####map baddata####
   if ("bad" %in% plotthis) {

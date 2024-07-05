@@ -134,7 +134,7 @@ Default NULL, character vector, "./" for working directory.}
 
 \item{shape}{Enter the full path to downloaded map e.g. coastline shapefile, possibly from
 gbm.basemap, typically Crop_Map.shp, including the .shp. Can also name an existing object in the
-environment, read in with sf::st_read. Default NULL, in which case bounds calculated by gbm.map
+environment, read in with sf::st_read. Default NULL, in which case bounds calculated by gbm.mapsf
 which then calls gbm.basemap to download and auto-generate the base map.}
 
 \item{RSB}{Run Unrepresentativeness surface builder? Default TRUE.}
@@ -247,7 +247,7 @@ remotes::install_github("rspatial/dismo") then library(dismo).
 and gridslon are indexing the correct columns in grids.
 }
 
-ALSO: check this section in the other functions run by gbm.auto e.g. gbm.map, gbm.basemap. Use
+ALSO: check this section in the other functions run by gbm.auto e.g. gbm.mapsf, gbm.basemap. Use
 traceback() to find the source of errors.
 
 I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on

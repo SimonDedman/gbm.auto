@@ -37,16 +37,26 @@ abundances, fishing effort etc. E.g.: Abundance_Preds_All.csv from gbm.auto.}
 \item{latcolno}{Column number in dbase which has latitudes.}
 
 \item{goodcols}{Which column numbers are abundances (where higher = better)?
-List them in order of highest conservation importance first e.g. c(3,1,2,4).}
+List them in order of highest conservation importance first e.g. c(3,1,2,4).
+Either numeric column number or quoted character column name.}
 
 \item{badcols}{Which col no.s are 'negative' e.g. fishing (where higher =
-worse)?}
+worse)? Either numeric column number or quoted character column name.}
 
 \item{conservecol}{Conservation column, from gbm.cons.}
 
 \item{plotthis}{Vector of variable types to plot. Delete any,or all w/ NULL.}
 
-\item{maploops}{Vector of sort loops to run.}
+\item{maploops}{Vector of sort loops to run. See Dedman et al 2017 "Towards a
+flexible Decision Support Tool for MSY-based Marine Protected Area design
+for skates and rays";
+https://academic.oup.com/icesjms/article/74/2/576/2669563 . All 4 options
+create a total MPA which conserves Bpa, but in different ways: Biomass
+closes areas of high biomass first. Effort closes areas of high fisheries
+area last. Combo strikes a balance between the two, and you can change the
+default 1:1 balance with goodweight and badweight parameters. Conservation
+uses the output of gbm.cons to prioritise closure of areas of high
+conservation value, which may not be identical to areas of highest biomass.}
 
 \item{savedir}{Save outputs to a temporary directory (default) else change to
 current directory e.g. "/home/me/folder". Do not use getwd() here.}
@@ -91,6 +101,13 @@ subsequent species starting from the most conservationally at-risk species,
 resulting in one MPA map per species, and a multicolour MPA map of all.
 All maps list the percentage of the avoid-variables total that is overlapped
 by the MPA in the map legend.
+}
+\details{
+Bpa is the volume of biomass under the 2D abundance surface e.g. predabund
+from gbm.auto. B (biomass), * HRMSY (Fmsy proportion) = Bpa. You may be able
+to get Fmsy from stock asssessments etc.
+maploops: explain concept of biomass vs effort, combo in the middle (default
+weighting 1:1 can change with good/badweight), and Conservation from gbm.cons.
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}
