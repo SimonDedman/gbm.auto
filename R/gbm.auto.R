@@ -127,7 +127,7 @@
 #' mathematical function. LR or BF probably too low in earlier BRT (normally Gaus run with highest
 #' TC).
 #'
-#' 7. Error in if (n.trees > x$n.trees) { : argument is of length zero}. LR or BF probably too low
+#' 7. Error in if (n.trees > x$n.trees) argument is of length zero. LR or BF probably too low
 #' in earlier BRT (normally Gaus run with highest TC).
 #'
 #' 8. Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w): The dataset size
@@ -158,7 +158,7 @@
 #'
 #' 14. Error in grDevices::dev.copy(device = function (filename = "Rplot%03d.jpeg", could not open
 #' file './resvar/pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
-#' illegal character e.g. /&'_. Fix with colnames(samples)[n] <- "BetterName".
+#' illegal character e.g. /&'_. Fix with colnames(samples)\[n\] <- "BetterName".
 #'
 #' 15. Error in gbm.fit: Poisson requires the response to be a positive integer. If running Poisson
 #' distributions, ensure the response variables are positive integers, but if they are, try a

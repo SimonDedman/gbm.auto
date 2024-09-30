@@ -207,7 +207,7 @@ Or do you only have positive cases? If so only run (e.g.) Gaussian: set ZI to FA
 \item Error in round(gbm.object$cv.statistics$deviance.mean, 4) : non-numeric argument to
 mathematical function. LR or BF probably too low in earlier BRT (normally Gaus run with highest
 TC).
-\item Error in if (n.trees > x$n.trees) { : argument is of length zero}. LR or BF probably too low
+\item Error in if (n.trees > x$n.trees) argument is of length zero. LR or BF probably too low
 in earlier BRT (normally Gaus run with highest TC).
 \item Error in gbm.fit(x, y, offset = offset, distribution = distribution, w = w): The dataset size
 is too small or subsampling rate is too large: nTrain*bag.fraction <= n.minobsinnode. LR or BF
@@ -231,7 +231,7 @@ open. Close it with: 'dev.off()'.
 \item RStudio crashed: set alerts=F and pause cloud sync programs if outputting to a synced folder.
 \item Error in grDevices::dev.copy(device = function (filename = "Rplot\%03d.jpeg", could not open
 file './resvar/pred_dev_bin.jpeg' (or similar). Your resvar column name contains an
-illegal character e.g. /&'_. Fix with colnames(samples)\link{n} <- "BetterName".
+illegal character e.g. /&'_. Fix with colnames(samples)[n] <- "BetterName".
 \item Error in gbm.fit: Poisson requires the response to be a positive integer. If running Poisson
 distributions, ensure the response variables are positive integers, but if they are, try a
 smaller LR.
