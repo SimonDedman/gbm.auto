@@ -1,9 +1,12 @@
 ---
 title: "NEWS.md"
 author: "Simon Dedman"
-date: "2023-05-25"
+date: "2024-09-30"
 output: html_document
 ---
+# v2024.09.30
+* shapefiles and other rgdal dependencies removed, CRAn push
+
 # v2023.08.31
 * factorplot improvements, mapsf autocalculates google maps mapzoom level, CRAN push
 

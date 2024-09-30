@@ -18,10 +18,6 @@ calibration, and gbm.predict.grids, as well as running my packages
 gbm.bfcheck, gbm.basemap, gbm.map, gbm.rsb, gbm.cons, gbm.valuemap, and
 gbm.loop.
 
-Especially on Linux systems it is recommended to type, in terminal: sudo
-apt install libgeos-dev sudo apt install libproj-dev sudo apt install
-libgdal-dev then manually install rgeos and rgdal in R/RStudio.
-
 Also see each script’s Details section in the manual pages, as these
 frequently contain tips or common bugfixes.
 

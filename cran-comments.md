@@ -1,7 +1,7 @@
 ---
 title: "cran-comments"
 author: "Simon Dedman"
-date: "31 August 2023"
+date: "30 September 2024"
 output: html_document
 ---
 
@@ -12,18 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ***
 
 ## Test environments
-* local R installation, R 4.2.2, xubuntu 23.04
+* local R installation, R 4.4.1, xubuntu 24.04
 * win-builder (devel and release)
 
 ***
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
-
-Notes:
-
-* Non-standard things, png file created by examples, doesn't exist permanently.
+0 errors | 0 warnings | 0 notes
 
 ***
 

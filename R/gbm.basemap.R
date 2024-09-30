@@ -28,7 +28,7 @@
 #' @return basemap coastline file for gbm.map in gbm.auto. "cropshp"
 #' SpatialPolygonsDataFrame in in local environment & user-named files in
 #' "CroppedMap" folder. Load later with maptools function:
-#' MyMap <- readShapePoly("./CroppedMap/Crop_Map")
+#' MyMap <- sf::st_read(dsn = "./CroppedMap/Crop_Map.shp", layer = "Crop_Map, quiet = TRUE)
 #'
 #' @export
 #' @importFrom graphics lines par
@@ -52,17 +52,14 @@
 #' in the correct directory relative to it. This error means it looked for the
 #' folder and couldn't find it.
 #'
-#' 2. If rgdal install fails in Linux try:
-#' sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
-#'
-#' 3. subscript out of bounds: can't crop world map to your bounds.
+#' 2. subscript out of bounds: can't crop world map to your bounds.
 #' Check lat/lon are the right way around: check gridslat and gridslon point to the correct columns
 #' for lat and lon in grids, and those columns named (something like) lat and lon, ARE ACTUALLY the
 #' latitudes and longitudes, and not the wrong way around.
 #'
-#' 4. If your download is timing out use options(timeout = 240).
+#' 3. If your download is timing out use options(timeout = 240).
 #'
-#' 5. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
+#' 4. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
 #'  and gridslon are indexing the correct columns in grids.
 #'
 gbm.basemap <- function(

@@ -49,7 +49,7 @@ datasets basemaps over the entire square area created by basemap in mapplots.}
 basemap coastline file for gbm.map in gbm.auto. "cropshp"
 SpatialPolygonsDataFrame in in local environment & user-named files in
 "CroppedMap" folder. Load later with maptools function:
-MyMap <- readShapePoly("./CroppedMap/Crop_Map")
+MyMap <- sf::st_read(dsn = "./CroppedMap/Crop_Map.shp", layer = "Crop_Map, quiet = TRUE)
 }
 \description{
 Downloads unzips crops & saves NOAAs global coastline shapefiles to user-set
@@ -64,8 +64,6 @@ errors and their origins:
 If you've specified the location of the local GSHHS_shp folder, ensure you're
 in the correct directory relative to it. This error means it looked for the
 folder and couldn't find it.
-\item If rgdal install fails in Linux try:
-sudo apt-get install libgdal-dev && sudo apt-get install libproj-dev"
 \item subscript out of bounds: can't crop world map to your bounds.
 Check lat/lon are the right way around: check gridslat and gridslon point to the correct columns
 for lat and lon in grids, and those columns named (something like) lat and lon, ARE ACTUALLY the
