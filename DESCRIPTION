@@ -13,7 +13,7 @@ Description: Automates delta log-normal boosted regression tree abundance
     & Metcalfe, 2020 & ongoing, originally by Ridgeway). Indebted to
     Elith/Leathwick/Hastie 2008 'Working Guide'
     <doi:10.1111/j.1365-2656.2008.01390.x>; workflow follows Appendix S3.
-    See <http://www.simondedman.com/> for published guides and papers
+    See <https://www.simondedman.com/> for published guides and papers
     using this package.
 License: MIT + file LICENSE
 Depends:

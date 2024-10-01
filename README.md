@@ -22,7 +22,7 @@ Also see each script’s Details section in the manual pages, as these
 frequently contain tips or common bugfixes.
 
 I strongly recommend that you download papers 1 to 5 (or just the
-doctoral thesis) on <http://www.simondedman.com>, with emphasis on P4
+doctoral thesis) on <https://www.simondedman.com>, with emphasis on P4
 (the guide) and P1 (statistical background). Elith et al 2008
 (<https://besjournals.onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2008.01390.x>)
 is also strongly recommended. Also it’s imperative you read the R help
