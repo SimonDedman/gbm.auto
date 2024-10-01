@@ -26,7 +26,7 @@ Automatically runs numerous processes from R packages 'gbm' and 'dismo' and scri
 
 Also see each script's Details section in the manual pages, as these frequently contain tips or common bugfixes.
 
-I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background). Elith et al 2008 (<https://www.doi.org/10.1111/j.1365-2656.2008.01390.x>) is also strongly recommended. Also it's imperative you read the R help files for each function before you use them. In RStudio: Packages tab, scroll to gbm.auto, click its name, the click the function to see its man (manual) page. Read the whole thing. Function man pages can also be accessed from the console by typing
+I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on <http://www.simondedman.com>, with emphasis on P4 (the guide) and P1 (statistical background). Elith et al 2008 (<https://besjournals.onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2008.01390.x>) is also strongly recommended. Also it's imperative you read the R help files for each function before you use them. In RStudio: Packages tab, scroll to gbm.auto, click its name, the click the function to see its man (manual) page. Read the whole thing. Function man pages can also be accessed from the console by typing
 
 ``` r
 ?function

@@ -252,7 +252,7 @@ traceback() to find the source of errors.
 
 I strongly recommend that you download papers 1 to 5 (or just the doctoral thesis) on
 \url{http://www.simondedman.com}, with emphasis on P4 (the guide) and P1 (statistical background).
-Elith et al 2008 (\url{http://refhub.elsevier.com/S0304-3800(15)00207-0/sbref0085}) is also strongly
+Elith et al 2008 (\url{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2008.01390.x}) is also strongly
 recommended.
 Just because you CAN try every conceivable combination of tc, lr, bf, all, at once doesn't mean
 you should. Try a range of lr in shrinking orders of magnitude from 0.1 to 0.000001, find the
