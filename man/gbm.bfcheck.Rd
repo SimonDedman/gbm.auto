@@ -24,8 +24,8 @@ due to bf & samples rows limit. Simon Dedman, 2016, simondedman@gmail.com,
 GitHub.com/SimonDedman/gbm.auto
 }
 \examples{
-data(samples)
-gbm.bfcheck(samples = samples, resvar = "Cuckoo")
+data(MySamples)
+gbm.bfcheck(samples = MySamples, resvar = "Cuckoo")
 }
 \author{
 Simon Dedman, \email{simondedman@gmail.com}

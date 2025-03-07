@@ -267,10 +267,10 @@ either outperform 0.5.
 # https://drive.google.com/file/d/1WHYpftP3roozVKwi_R_IpW7tlZIhZA7r
 # /view?usp=sharing
 library(gbm.auto)
-data(grids)
-data(samples)
+data(MyGrids)
+data(MySamples)
 # Set your working directory
-gbm.auto(grids = grids, samples = samples, expvar = c(4:8, 10), resvar = 11,
+gbm.auto(grids = MyGrids, samples = MySamples, expvar = c(4:8, 10), resvar = 11,
 tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)}
 
 }

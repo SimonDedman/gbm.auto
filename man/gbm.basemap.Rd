@@ -29,7 +29,7 @@ latitude.}
 longitude.}
 
 \item{getzip}{Download & unpack GSHHS data to WD? "TRUE" else
-absolute/relative reference to GSHHS_shp folder, including that folder.}
+absolute/relative reference to the folder containing the GSHHS_shp folder.}
 
 \item{zipvers}{GSHHS version, in case it updates. Please email developer (SD)
 if this is incorrect.}
@@ -76,8 +76,8 @@ and gridslon are indexing the correct columns in grids.
 \examples{
 \donttest{
 # Not run: downloads and saves external data.
-data(samples)
-mybounds <- c(range(samples[,3]),range(samples[,2]))
+data(MySamples)
+mybounds <- c(range(MySamples[,3]),range(MySamples[,2]))
 gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
 savename = "My_Crop_Map", res = "f")
 # In this example GSHHS folder already downloaded to the working directory

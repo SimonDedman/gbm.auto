@@ -198,10 +198,10 @@
 #' # https://drive.google.com/file/d/1WHYpftP3roozVKwi_R_IpW7tlZIhZA7r
 #' # /view?usp=sharing
 #' library(gbm.auto)
-#' data(grids)
-#' data(samples)
+#' data(MyGrids)
+#' data(MySamples)
 #' # Set your working directory
-#' gbm.auto(grids = grids, samples = samples, expvar = c(4:8, 10), resvar = 11,
+#' gbm.auto(grids = MyGrids, samples = MySamples, expvar = c(4:8, 10), resvar = 11,
 #' tc = c(2,7), lr = c(0.005, 0.001), ZI = TRUE, savegbm = FALSE)}
 #'
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
@@ -285,6 +285,7 @@ gbm.auto <- function(
     # BRTs e.g. gbm.loop can cause RStudio to crash, if so set this to FALSE
     pngtype = c("cairo-png", "quartz", "Xlib"), # file-type for png files,
     # alternatively try "quartz" on Mac
+    # if (Sys.info()["sysname"] == "Darwin") "quartz" else "cairo-png")
     gaus = TRUE,          # do fam2 (typically Gaussian) runs as well as Bin? Default TRUE.
     MLEvaluate = TRUE,    # do machine learning evaluation metrics & plots? Default TRUE
     brv = NULL, # addresses devtools::check's no visible binding for global variable https://cran.r-project.org/web/packages/data.table/vignettes/datatable-importing.html#globals

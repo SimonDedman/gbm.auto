@@ -12,7 +12,7 @@
 #' @param gridslon If bounds unspecified, specify which column in grids is
 #' longitude.
 #' @param getzip Download & unpack GSHHS data to WD? "TRUE" else
-#' absolute/relative reference to GSHHS_shp folder, including that folder.
+#' absolute/relative reference to the folder containing the GSHHS_shp folder.
 #' @param zipvers GSHHS version, in case it updates. Please email developer (SD)
 #'  if this is incorrect.
 #' @param savedir Save outputs to a temporary directory (default) else change to
@@ -38,8 +38,8 @@
 #' @examples
 #' \donttest{
 #' # Not run: downloads and saves external data.
-#' data(samples)
-#' mybounds <- c(range(samples[,3]),range(samples[,2]))
+#' data(MySamples)
+#' mybounds <- c(range(MySamples[,3]),range(MySamples[,2]))
 #' gbm.basemap(bounds = mybounds, getzip = "./GSHHS_shp/",
 #' savename = "My_Crop_Map", res = "f")
 #' # In this example GSHHS folder already downloaded to the working directory
@@ -67,7 +67,7 @@ gbm.basemap <- function(
     grids = NULL, # if bounds unspecified, name your grids database here
     gridslat = NULL, # if bounds unspecified, specify which column in grids is latitude
     gridslon = NULL, # if bounds unspecified, specify which column in grids is longitude
-    getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to GSHHS_shp folder, including that folder
+    getzip = TRUE, # download & unpack GSHHS data to WD? "TRUE" else absolute/relative reference to the folder containing the GSHHS_shp folder
     zipvers = "2.3.7", # GSHHS version, in case it updates. Please email developer if this is incorrect
     savedir = tempdir(), # save outputs to a temporary directory (default) else
     # change to current directory e.g. "/home/me/folder". Do not use getwd() here.

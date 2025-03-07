@@ -4,6 +4,9 @@ author: "Simon Dedman"
 date: "2024-10-01"
 output: html_document
 ---
+# v2025.03.06
+* grids and samples data objects in data.R renamed to MyGrids and MySamples, and references to them updated in all script run examples. Fixes scope conflict whereby grids data would be in the environment when gbm.auto is run with grids parameter defaulting to NULL.
+
 # v2024.10.01
 * shapefiles and other rgdal dependencies removed, CRAn push
 

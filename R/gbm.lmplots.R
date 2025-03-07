@@ -33,7 +33,7 @@
 #'
 ## Simon Dedman 2018.08.30 & 2023-03-07
 ## To Run:
-# gbm.lmplots(samples = samples[,c(resvar, expvar)],
+# gbm.lmplots(samples = MySamples[,c(resvar, expvar)],
 #        expvar = expvar,
 #        resvar = resvar,
 #        expvarnames = expvar,

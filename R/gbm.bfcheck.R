@@ -13,8 +13,8 @@
 #' @export
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @examples
-#' data(samples)
-#' gbm.bfcheck(samples = samples, resvar = "Cuckoo")
+#' data(MySamples)
+#' gbm.bfcheck(samples = MySamples, resvar = "Cuckoo")
 gbm.bfcheck <- function(
   samples, # samples dataset, same as gbm.auto
   resvar, # response variable column in samples

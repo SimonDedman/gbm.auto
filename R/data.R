@@ -169,11 +169,11 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name grids
-#' @usage data(grids)
+#' @name MyGrids
+#' @usage data(MyGrids)
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @source <http://oar.marine.ie/handle/10793/958>
-"grids"
+"MyGrids"
 
 #' Data: Numbers of 4 ray species caught in 2137 Irish Sea trawls, 1994 to 2014
 #'
@@ -203,11 +203,11 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @name samples
-#' @usage data(samples)
+#' @name MySamples
+#' @usage data(MySamples)
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
 #' @source <http://oar.marine.ie/handle/10793/958>
-"samples"
+"MySamples"
 
 #' Data: Predicted abundances of 4 ray species generated using gbm.auto
 #'

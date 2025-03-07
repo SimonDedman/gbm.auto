@@ -69,10 +69,10 @@
 #' \donttest{
 #' # Not run: downloads and saves external data.
 #' library("gbm.auto")
-#' data(grids) # load grids
-#' data(samples) # load samples
-#' gbmloopexample <- gbm.loop(loops = 2, samples = samples,
-#' grids = grids, expvar = c(4:10), resvar = 11, simp = F)
+#' data(MyGrids) # load grids
+#' data(MySamples) # load MySamples
+#' gbmloopexample <- gbm.loop(loops = 2, samples = MySamples,
+#' grids = MyGrids, expvar = c(4:10), resvar = 11, simp = F)
 #' }
 #'
 #' @author Simon Dedman, \email{simondedman@@gmail.com}
