@@ -673,7 +673,10 @@ gbm.auto <- function(
         # do fam1 runs if it's bin only (fam1 bin, gaus (ie fam2) false), or if it's delta & ZI
         if (fam1 == "bernoulli" & (!gaus | (gaus & ZI)) & exists("Bin_Best_Model")) {
           Bin_Best_Simp_Check <- gbm.simplify(get(Bin_Best_Model))
-          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", fam1, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
+          # dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", fam1, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
+          # WRONG ####
+          # this prints the last combo not the chosen combo
+          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", Bin_Best_Name, ".jpeg"), device = jpeg, width = 600)
           # if best number of variables to remove isn't 0 (i.e. it's worth simplifying),
           # re-run best model (Bin_Best_Model, using gbm.call to get its values) with
           # just-calculated best number of variables to remove, removed. gbm.x asks which
@@ -708,7 +711,7 @@ gbm.auto <- function(
         # Same for Gaus
         if (gaus & exists("Gaus_Best_Model")) {
           Gaus_Best_Simp_Check <- gbm.simplify(get(Gaus_Best_Model))
-          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", fam2, "_tc",j,"lr",k,"bf",l,".jpeg"), device = jpeg, width = 600)
+          dev.print(file = paste0("./",names(samples[i]),"/simp_drops_", Gaus_Best_Name, ".jpeg"), device = jpeg, width = 600)
           if (min(Gaus_Best_Simp_Check$deviance.summary$mean) < 0) {
             assign("Gaus_Best_Simp",
                    gbm.step.sd(data = grv_yes,
