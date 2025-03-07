@@ -41,8 +41,10 @@
 #' single or list but not vector i.e. list(fam1,fam2).
 #' @param ZI Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
 #' delta BRT, log-normalised Gaus, reverse log-norm and bias corrected. FALSE:
-#' do Gaussian only, no log-normalisation. "CHECK": Tests data for you. Default is
-#'  "CHECK". TRUE and FALSE aren't in quotes, "CHECK" is.
+#' do Gaussian only, no log-normalisation. "CHECK": Tests data for you. Default
+#' is "CHECK". TRUE and FALSE aren't in quotes, "CHECK" is. The easiest way to
+#' run a single i.e. non-delta model, e.g. just gaussian, is to set ZI to FALSE,
+#'  change the fam2 family as needed, and leave gaus as TRUE.
 #' @param fam1 Probability distribution family for 1st part of delta process,
 #' defaults to "bernoulli". Choose one.
 #' @param fam2 Probability distribution family for 2nd part of delta process,
@@ -440,7 +442,7 @@ gbm.auto <- function(
     # if user has asked code to check for ZI, check it & set new ZI status
     if (ZI == "CHECK") if (sum(samples[,i] == 0, na.rm = TRUE) / length(samples[,i]) >= 0.5) ZI = TRUE else ZI = FALSE
     # ensure resvar has zeroes (expects mix of successful & unsuccessful samples for bernoulli/binary runs)
-    if (!ZI) if (min(samples[i]) > 0) print("No zeroes in response variable. If using a zero inflated model, Method expects unsuccessful, as well as successful, samples")
+    if (!ZI) if (min(samples[i]) > 0) print("No zeroes in response variable. If using a zero inflated model, method expects unsuccessful, as well as successful, samples")
 
     # create binary (0/1) response variable, for bernoulli BRTs
     samples$brv <- ifelse(samples[i] > 0, 1, 0)

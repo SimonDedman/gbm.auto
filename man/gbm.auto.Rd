@@ -86,8 +86,10 @@ single or list but not vector i.e. list(fam1,fam2).}
 
 \item{ZI}{Are data zero-inflated? TRUE FALSE "CHECK". Choose one. TRUE:
 delta BRT, log-normalised Gaus, reverse log-norm and bias corrected. FALSE:
-do Gaussian only, no log-normalisation. "CHECK": Tests data for you. Default is
-"CHECK". TRUE and FALSE aren't in quotes, "CHECK" is.}
+do Gaussian only, no log-normalisation. "CHECK": Tests data for you. Default
+is "CHECK". TRUE and FALSE aren't in quotes, "CHECK" is. The easiest way to
+run a single i.e. non-delta model, e.g. just gaussian, is to set ZI to FALSE,
+change the fam2 family as needed, and leave gaus as TRUE.}
 
 \item{fam1}{Probability distribution family for 1st part of delta process,
 defaults to "bernoulli". Choose one.}
@@ -245,6 +247,11 @@ log1p() instead.
 remotes::install_github("rspatial/dismo") then library(dismo).
 \item Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
 and gridslon are indexing the correct columns in grids.
+\item Error in grids[, gridslon]: incorrect number of dimensions, and Error
+in if (randomvar): argument is not interpretable as logical, and maybe others.
+Check everything entered in function call is assigne to a parameter, else it
+will be incorrectly presumed to be the grids, randomvar, or subsequent
+parameter, probably incorrectly, and cause these errors.
 }
 
 ALSO: check this section in the other functions run by gbm.auto e.g. gbm.mapsf, gbm.basemap. Use
