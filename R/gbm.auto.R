@@ -364,6 +364,7 @@ gbm.auto <- function(
   if ("tbl" %in% class(samples)) samples <- as.data.frame(samples)
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
+  browser() # test grids object incorrectly present error
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
     if (is.null(shape)) {
       if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
