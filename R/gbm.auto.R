@@ -178,6 +178,12 @@
 #' 19. Error in if (scope >= 160) res <- "c" : missing value where TRUE/FALSE needed. Check gridslat
 #'  and gridslon are indexing the correct columns in grids.
 #'
+#' 20. Error in grids\[, gridslon\]: incorrect number of dimensions, and Error
+#' in if (randomvar): argument is not interpretable as logical, and maybe others.
+#' Check everything entered in function call is assigne to a parameter, else it
+#' will be incorrectly presumed to be the grids, randomvar, or subsequent
+#' parameter, probably incorrectly, and cause these errors.
+#'
 #' ALSO: check this section in the other functions run by gbm.auto e.g. gbm.mapsf, gbm.basemap. Use
 #' traceback() to find the source of errors.
 #'
@@ -364,7 +370,6 @@ gbm.auto <- function(
   if ("tbl" %in% class(samples)) samples <- as.data.frame(samples)
 
   # create basemap using gbm.basemap & these bounds, else basemap will be called for every map
-  browser() # test grids object incorrectly present error
   if (!is.null(grids)) if (map) { # create basemap grids not null, map requested, basemap not provided
     if (is.null(shape)) {
       if (!exists("gbm.basemap")) {stop("you need to install gbm.basemap to run this function")}
