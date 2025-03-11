@@ -605,7 +605,6 @@ gbm.auto <- function(
             m <- m + 1 # Add to loop counter for Gaus best model selection
             ####7. Gaussian BRT####
             print(paste0("Running ", fam2, " BRT, tc=",j,", lr=",k,", bf=",l))
-            write.csv(x = grv_yes[,grvcol], file = paste0("./",names(samples[i]),"/grv.csv"), row.names = FALSE)
             assign(paste0("Gaus_BRT",".tc",j,".lr",k,".bf",l),
                    gbm.step.sd(data = grv_yes,
                                gbm.x = expvar,
