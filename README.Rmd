@@ -145,6 +145,9 @@ And the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 remotes::install_github("SimonDedman/gbm.auto")
 ```
+For linux installations, first install libraries which allow gdal, units, and s2 dependencies to install, with:
+
+`sudo apt install libgdal-dev libudunits2-dev libabsl-dev`
 
 ***
 

@@ -1,9 +1,12 @@
 ---
 title: "NEWS.md"
 author: "Simon Dedman"
-date: "2024-10-01"
+date: "2025-08-11"
 output: html_document
 ---
+#v2025.08.11
+* renamed ML model explainer docx to remove hyphens for mac installs
+
 # v2025.03.06
 * grids and samples data objects in data.R renamed to MyGrids and MySamples, and references to them updated in all script run examples. Fixes scope conflict whereby grids data would be in the environment when gbm.auto is run with grids parameter defaulting to NULL.
 
