@@ -31,11 +31,12 @@ savename = stringi::stri_replace_all_fixed(str = readfile,
 readr::read_csv(paste0(readloc, readfile)) |>
   dplyr::mutate(ycentred = y - mean(y)) |> # centre y conforming to plot.gbm format
   dplyr::rename(Category = last_col(offset = 2)) |> # Rename first column to a generic name. No first_col option
-  # dplyr::case_match(Category, # uncomment this to change the category values to new names if desired.
+  # dplyr::mutate(Category = dplyr::recode_values( # uncomment to change category values to new names if desired.
+  #                   Category,
   #                   "OLD NAME 1" ~ "NEW NAME 1",
   #                   "OLD NAME 2" ~ "NEW NAME 2",
   #                   "OLD NAME 3" ~ "NEW NAME 3",
-  #                   .default = Category) |>
+  #                   default = Category)) |>
   # make category an ordered factor. Default alphabetical, can change as desired.
   dplyr::mutate(Category = ordered(Category, levels = Category)) |>
   # re-order the x axis for categorical variables so they're in order from high to low or can add factor levels

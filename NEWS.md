@@ -1,9 +1,12 @@
 ---
 title: "NEWS.md"
 author: "Simon Dedman"
-date: "2025-08-11"
+date: "2026-03-03"
 output: html_document
 ---
+#v2026.03.03
+* added hex logo, removed case_match in categorical_pdp_plotter
+
 #v2025.08.11
 * renamed ML model explainer docx to remove hyphens for mac installs
 
